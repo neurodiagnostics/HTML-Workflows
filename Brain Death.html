@@ -877,12 +877,46 @@ function aset(k, v) {
 }
 
 function ancset(k, v) {
+  // Each ancillary test key has its own valid values - only clear buttons for this specific key
+  const keyVals = {
+    ancind:   ['required','not_required'],
+    anc4v:    ['consistent','flow','notdone'],
+    ancspect: ['consistent','uptake','notdone'],
+    anctcd:   ['consistent','flow','notdone'],
+    anceeg:   ['noted']
+  };
+  // Map JS keys to HTML element IDs
+  const itemIds = {
+    ancind:   'anc-ind-item',
+    anc4v:    'anc-4v-item',
+    ancspect: 'anc-spect-item',
+    anctcd:   'anc-tcd-item',
+    anceeg:   'anc-eeg-item'
+  };
+  const vals = keyVals[k] || [];
+  const itemId = itemIds[k];
+
+  // Toggle: if already selected, deselect (except anceeg which is acknowledge-only)
+  if (S[k] === v && k !== 'anceeg') {
+    S[k] = null;
+    vals.forEach(val => {
+      const b = document.getElementById(k+'-'+val);
+      if (b) b.classList.remove('ay','an','aw','at','ab');
+    });
+    const item = document.getElementById(itemId);
+    if (item) item.className = 'crit';
+    return;
+  }
+
   S[k] = v;
-  const item = document.getElementById(k+'-item');
-  ['required','not_required','consistent','flow','notdone','uptake','noted'].forEach(val => {
+  const item = document.getElementById(itemId);
+
+  // Clear only this key's buttons
+  vals.forEach(val => {
     const b = document.getElementById(k+'-'+val);
-    if (b) b.classList.remove('ay','an','aw','at');
+    if (b) b.classList.remove('ay','an','aw','at','ab');
   });
+
   const chosen = document.getElementById(k+'-'+v);
   if (chosen) {
     if (['not_required','consistent','noted'].includes(v)) chosen.classList.add('ay');
@@ -891,6 +925,8 @@ function ancset(k, v) {
     else chosen.classList.add('ab');
   }
   if (item) {
+    // Preserve the EEG card's special red styling
+    if (k === 'anceeg') return;
     item.className = 'crit ' + (['not_required','consistent','noted'].includes(v) ? 'c-yes' : ['flow','uptake'].includes(v) ? 'c-no' : 'c-abs');
   }
 }
@@ -1007,6 +1043,8 @@ function rv() {
   const ancillaryRequired = S.ancind === 'required' || S.neuroimg === 'infra' || S.co2 === 'unknown' || examOmitted || apneaAbort;
   const ancillaryConsistent = ['anc4v','ancspect','anctcd'].some(k => S[k] === 'consistent');
   const ancillaryNegative = ['anc4v','ancspect','anctcd'].some(k => S[k] === 'flow' || S[k] === 'uptake');
+  // Apnea requirement is met if test was positive, OR if aborted but ancillary confirms absent perfusion
+  const apneaRequirementMet = apneaPos || (apneaAbort && ancillaryConsistent);
 
   let v;
   if (!prereqsMet) {
@@ -1017,12 +1055,12 @@ function rv() {
     v = { cls:'vn', t:'Examination Inconsistent with BD/DNC', d:'One or more brainstem reflexes were found to be intact, or motor activity inconsistent with BD/DNC was observed. The patient does not meet neurologic criteria for brain death at this time. Reassess and investigate further.' };
   } else if (apneaNeg) {
     v = { cls:'vn', t:'Apnea Test Negative — BD/DNC Not Met', d:'Spontaneous respiratory effort was observed during the apnea test. BD/DNC cannot be established. The presence of respiratory drive indicates residual brainstem function. Investigate further.' };
-  } else if (ancillaryRequired && ancillaryNegative) {
-    v = { cls:'vn', t:'Ancillary Testing Does Not Support BD/DNC', d:'Ancillary testing was required and demonstrated residual cerebral perfusion or activity. BD/DNC cannot be established. Reassess clinical scenario and evaluate for reversible causes.' };
+  } else if (ancillaryNegative) {
+    v = { cls:'vn', t:'Ancillary Testing Does Not Support BD/DNC', d:'Ancillary testing demonstrated residual cerebral perfusion or activity. BD/DNC cannot be established. Reassess clinical scenario and evaluate for reversible causes.' };
   } else if (ancillaryRequired && !ancillaryConsistent) {
-    v = { cls:'va', t:'BD/DNC Evaluation Incomplete', d:'Ancillary testing was required but results are pending or indeterminate. BD/DNC cannot be formally declared until ancillary testing is completed and demonstrates absent cerebral perfusion consistent with BD/DNC.' };
-  } else if (examAllAbsent && apneaPos && (!ancillaryRequired || ancillaryConsistent)) {
-    v = { cls:'ve', t:'Criteria Consistent with BD/DNC', d:'All three pillars established: (1) coma with absent brainstem reflexes on neurologic examination, (2) apnea test positive at adequate PaCO₂ stimulus, and (3) confounders excluded with identified catastrophic mechanism. Criteria are consistent with Brain Death / Death by Neurologic Criteria per 2023 AAN/AAP/CNS/SCCM Consensus Guideline. Declaration requires compliance with institutional policy and applicable state law. Time of death is the time of the final confirmatory test (or second examination if ancillary not required).' };
+    v = { cls:'va', t:'BD/DNC Evaluation Incomplete', d:'Ancillary testing is required but no consistent result has been recorded yet. BD/DNC cannot be formally declared until at least one ancillary test demonstrates absent cerebral perfusion consistent with BD/DNC.' };
+  } else if (examAllAbsent && apneaRequirementMet && (!ancillaryRequired || ancillaryConsistent)) {
+    v = { cls:'ve', t:'Criteria Consistent with BD/DNC', d:'All required pillars established: (1) coma with absent brainstem reflexes on neurologic examination, (2) apnea test positive or ancillary testing confirms absent cerebral perfusion, and (3) confounders excluded with identified catastrophic mechanism. Criteria are consistent with Brain Death / Death by Neurologic Criteria per 2023 AAN/AAP/CNS/SCCM Consensus Guideline. Declaration requires compliance with institutional policy and applicable state law. Time of death is the time of the final confirmatory test.' };
   } else {
     v = { cls:'va', t:'Assessment Incomplete', d:'Not all components of the evaluation have been completed. Review each step to identify outstanding items.' };
   }
@@ -1197,6 +1235,9 @@ function copyDoc() {
 function resetAll() {
   Object.keys(S).forEach(k => S[k] = null);
   document.querySelectorAll('.crit').forEach(el => el.className = 'crit');
+  // Restore EEG card special styling after blanket reset
+  const eegItem = document.getElementById('anc-eeg-item');
+  if (eegItem) eegItem.className = 'crit c-no';
   document.querySelectorAll('.abtn').forEach(b => b.classList.remove('ay','an','at','aw','ab'));
   document.querySelectorAll('.crit-detail').forEach(d => d.classList.remove('open'));
   document.querySelectorAll('.xbtn').forEach(b => b.textContent = 'details ▾');
