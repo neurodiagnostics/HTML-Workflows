@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CBD 2013 Criteria · Diagnostic Navigator</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+  --bg:        #0d1117;
+  --card:      #161b22;
+  --card2:     #1c2330;
+  --border:    #3a4556;
+  --border2:   #4a5f7a;
+  --green:     #3fb950;
+  --green-bg:  rgba(63,185,80,0.10);
+  --green-bd:  rgba(63,185,80,0.35);
+  --red:       #f85149;
+  --red-bg:    rgba(248,81,73,0.10);
+  --red-bd:    rgba(248,81,73,0.35);
+  --amber:     #e3b341;
+  --amber-bg:  rgba(227,179,65,0.10);
+  --amber-bd:  rgba(227,179,65,0.35);
+  --blue:      #58a6ff;
+  --blue-bg:   rgba(88,166,255,0.10);
+  --blue-bd:   rgba(88,166,255,0.35);
+  --lime:      #7ee787;
+  --lime-bg:   rgba(126,231,135,0.10);
+  --lime-bd:   rgba(126,231,135,0.35);
+  --text:      #e6edf3;
+  --text2:     #aab4c0;
+  --text3:     #6e7f94;
+  --sans:  'Inter', system-ui, sans-serif;
+  --mono:  'IBM Plex Mono', monospace;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg); color: var(--text); font-family: var(--sans); font-size: 14px; line-height: 1.5; min-height: 100vh; }
+.app { max-width: 960px; margin: 0 auto; padding: 0 20px 80px; }
+
+header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+.h-title { font-size: 19px; font-weight: 700; }
+.h-title span { color: var(--lime); }
+.h-sub { font-family: var(--mono); font-size: 10px; color: var(--text3); margin-top: 3px; line-height: 1.5; }
+.reset-btn { background: var(--card2); border: 1px solid var(--border); color: var(--text2); font-family: var(--mono); font-size: 11px; padding: 6px 14px; cursor: pointer; border-radius: 4px; transition: all 0.15s; white-space: nowrap; }
+.reset-btn:hover { border-color: var(--lime); color: var(--lime); }
+
+.prog-track { height: 3px; background: var(--border); margin-bottom: 20px; border-radius: 2px; }
+.prog-fill { height: 100%; background: linear-gradient(90deg, var(--lime), #bbf7d0); border-radius: 2px; transition: width 0.4s ease; box-shadow: 0 0 6px rgba(126,231,135,0.4); }
+
+.steps { display: flex; border-bottom: 1px solid var(--border); margin-bottom: 20px; overflow-x: auto; }
+.stab { flex: 1; min-width: 70px; padding: 7px 4px 9px; text-align: center; font-family: var(--mono); font-size: 9px; color: var(--text3); border-bottom: 2px solid transparent; margin-bottom: -1px; transition: all 0.2s; line-height: 1.3; }
+.stab .sn { display: block; font-size: 13px; font-weight: 600; margin-bottom: 1px; }
+.stab.active { color: var(--lime); border-bottom-color: var(--lime); }
+.stab.done   { color: var(--green); border-bottom-color: var(--green); }
+
+.card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 22px; margin-bottom: 12px; }
+.ctitle { font-size: 12px; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; margin-bottom: 3px; }
+.csub { font-size: 12px; color: var(--text2); margin-bottom: 16px; line-height: 1.5; }
+
+.slabel { display: flex; align-items: center; gap: 8px; font-family: var(--mono); font-size: 10px; font-weight: 500; color: var(--text2); letter-spacing: 0.07em; text-transform: uppercase; margin-bottom: 9px; padding-bottom: 6px; border-bottom: 1px solid var(--border); }
+.pill { font-size: 9px; padding: 1px 7px; border-radius: 20px; border: 1px solid; margin-left: auto; }
+.pill-r  { border-color: var(--red);   color: var(--red);   background: var(--red-bg); }
+.pill-a  { border-color: var(--amber); color: var(--amber); background: var(--amber-bg); }
+.pill-l  { border-color: var(--lime);  color: var(--lime);  background: var(--lime-bg); }
+.pill-g  { border-color: var(--green); color: var(--green); background: var(--green-bg); }
+
+.crit { border: 1px solid var(--border); border-radius: 6px; margin-bottom: 5px; overflow: hidden; transition: border-color 0.15s, background 0.15s; }
+.crit.c-yes  { border-color: var(--green-bd);  background: var(--green-bg); }
+.crit.c-no   { border-color: var(--red-bd);    background: var(--red-bg); }
+.crit.c-pres { border-color: var(--lime-bd);   background: var(--lime-bg); }
+.crit.c-abs  { border-color: var(--border2);   background: var(--card2); }
+.crit.c-part { border-color: var(--amber-bd);  background: var(--amber-bg); }
+
+.crit-main { display: flex; align-items: center; gap: 8px; padding: 10px 13px; }
+.crit-name { flex: 1; font-size: 13px; font-weight: 500; color: var(--text); line-height: 1.3; }
+.xbtn { background: none; border: 1px solid var(--border); color: var(--text3); font-size: 11px; cursor: pointer; padding: 2px 8px; font-family: var(--mono); white-space: nowrap; transition: all 0.15s; flex-shrink: 0; border-radius: 3px; }
+.xbtn:hover { color: var(--blue); border-color: var(--blue); }
+
+.crit-detail { display: none; padding: 10px 13px 12px; font-size: 12px; color: var(--text); line-height: 1.65; border-top: 1px solid var(--border); }
+.crit-detail.open { display: block; }
+.cnote { margin-top: 8px; padding: 8px 11px; background: var(--card2); border-left: 3px solid var(--border2); font-family: var(--mono); font-size: 10px; color: var(--text2); line-height: 1.75; border-radius: 0 3px 3px 0; }
+.cnote strong { color: var(--text); }
+
+.brow { display: flex; border-top: 1px solid var(--border); }
+.abtn { flex: 1; padding: 8px 6px; background: none; border: none; border-right: 1px solid var(--border); color: var(--text2); font-family: var(--mono); font-size: 11px; cursor: pointer; transition: all 0.12s; text-transform: uppercase; letter-spacing: 0.04em; font-weight: 500; }
+.abtn:last-child { border-right: none; }
+.abtn:hover { background: var(--card2); color: var(--text); }
+.abtn.ay { background: var(--green-bg); color: var(--green); font-weight: 700; }
+.abtn.an { background: var(--red-bg);   color: var(--red);   font-weight: 700; }
+.abtn.al { background: var(--lime-bg);  color: var(--lime);  font-weight: 700; }
+.abtn.ab { background: var(--blue-bg);  color: var(--blue);  font-weight: 700; }
+.abtn.aa { background: var(--card2);    color: var(--text2); font-weight: 700; }
+.abtn.aw { background: var(--amber-bg); color: var(--amber); font-weight: 700; }
+
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; }
+@media (max-width: 600px) { .two-col { grid-template-columns: 1fr; } }
+
+/* Phenotype selector cards */
+.phen-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 8px; margin-bottom: 10px; }
+@media (max-width: 600px) { .phen-grid { grid-template-columns: 1fr; } }
+.phen-card { border: 1px solid var(--border); border-radius: 6px; overflow: hidden; cursor: pointer; transition: all 0.2s; background: var(--card2); }
+.phen-card:hover { border-color: var(--border2); }
+.phen-card.sel-prob { border-color: var(--green-bd); background: var(--green-bg); }
+.phen-card.sel-poss { border-color: var(--amber-bd); background: var(--amber-bg); }
+.phen-card.sel-none { border-color: var(--border2); background: var(--card2); }
+.phen-header { padding: 10px 12px 6px; display: flex; align-items: center; gap: 8px; }
+.phen-code { font-family: var(--mono); font-size: 10px; font-weight: 700; padding: 1px 7px; border-radius: 3px; border: 1px solid; }
+.phen-title { font-size: 13px; font-weight: 700; color: var(--text); }
+.phen-body { padding: 0 12px 10px; font-size: 11px; color: var(--text2); line-height: 1.5; }
+.phen-btns { display: flex; border-top: 1px solid var(--border); }
+.pbtn { flex: 1; padding: 7px 4px; background: none; border: none; border-right: 1px solid var(--border); color: var(--text3); font-family: var(--mono); font-size: 10px; cursor: pointer; transition: all 0.12s; text-transform: uppercase; }
+.pbtn:last-child { border-right: none; }
+.pbtn:hover { background: var(--card2); color: var(--text); }
+.pbtn.py { background: var(--green-bg); color: var(--green); font-weight: 700; }
+.pbtn.pp { background: var(--amber-bg); color: var(--amber); font-weight: 700; }
+.pbtn.pn { background: var(--card2); color: var(--text2); font-weight: 700; }
+
+/* Sub-feature checklist */
+.subfeats { padding: 8px 12px 10px; border-top: 1px solid var(--border); display: none; }
+.subfeats.open { display: block; }
+.sfrow { display: flex; align-items: center; gap: 8px; padding: 5px 0; border-bottom: 1px solid var(--border); }
+.sfrow:last-child { border-bottom: none; }
+.sfcheck { width: 18px; height: 18px; border-radius: 4px; border: 1px solid var(--border2); background: var(--card2); cursor: pointer; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 11px; transition: all 0.15s; }
+.sfcheck.checked { background: var(--green-bg); border-color: var(--green-bd); color: var(--green); }
+.sfcheck.checked-a { background: var(--amber-bg); border-color: var(--amber-bd); color: var(--amber); }
+.sfname { flex: 1; font-size: 12px; color: var(--text); }
+.sf-req { font-family: var(--mono); font-size: 9px; color: var(--text3); }
+
+.alrt { padding: 9px 13px; border-radius: 5px; font-size: 12px; line-height: 1.55; margin-top: 12px; border-left: 3px solid; display: none; }
+.alrt.show { display: block; }
+.aok  { border-color: var(--green); background: var(--green-bg); color: #7ee787; }
+.awn  { border-color: var(--amber); background: var(--amber-bg); color: var(--amber); }
+.aerr { border-color: var(--red);   background: var(--red-bg);   color: #ff7b72; }
+.ainf { border-color: var(--blue);  background: var(--blue-bg);  color: var(--blue); }
+.alim { border-color: var(--lime);  background: var(--lime-bg);  color: var(--lime); }
+
+.lbox { background: var(--card2); border: 1px solid var(--border); border-radius: 5px; padding: 12px 15px; font-size: 12px; color: var(--text2); line-height: 1.75; margin-bottom: 14px; }
+.lbox strong { color: var(--text); }
+.ll { color: var(--lime);  font-weight: 600; }
+.lg { color: var(--green); font-weight: 600; }
+.la { color: var(--amber); font-weight: 600; }
+.lr { color: var(--red);   font-weight: 600; }
+.lb { color: var(--blue);  font-weight: 600; }
+
+.tally { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+.chip { display: flex; align-items: center; gap: 5px; padding: 5px 11px; border-radius: 20px; font-family: var(--mono); font-size: 11px; border: 1px solid var(--border); background: var(--card2); color: var(--text2); }
+.chip .n { font-size: 14px; font-weight: 700; }
+.cl { border-color: var(--lime-bd);  background: var(--lime-bg);  color: var(--lime); }
+.cg { border-color: var(--green-bd); background: var(--green-bg); color: var(--green); }
+.ca { border-color: var(--amber-bd); background: var(--amber-bg); color: var(--amber); }
+.cr { border-color: var(--red-bd);   background: var(--red-bg);   color: var(--red); }
+
+.nav-row { display: flex; justify-content: space-between; align-items: center; margin-top: 20px; gap: 10px; }
+.nbtn { padding: 9px 22px; border-radius: 5px; font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; border: 1px solid; cursor: pointer; font-weight: 500; transition: all 0.15s; }
+.np { background: var(--lime); border-color: var(--lime); color: #0d1117; font-weight: 700; }
+.np:hover { background: #bbf7d0; border-color: #bbf7d0; }
+.np:disabled { opacity: 0.3; cursor: not-allowed; }
+.ns { background: transparent; border-color: var(--border2); color: var(--text2); }
+.ns:hover { border-color: var(--text); color: var(--text); }
+
+.screen { display: none; }
+.screen.active { display: block; animation: fu 0.25s ease; }
+@keyframes fu { from { opacity:0; transform:translateY(5px); } to { opacity:1; transform:translateY(0); } }
+
+/* VERDICT */
+.vban { border-radius: 8px; padding: 22px 26px; margin-bottom: 16px; border: 2px solid; text-align: center; }
+.vprob { border-color: var(--green); background: var(--green-bg); }
+.vposs { border-color: var(--amber); background: var(--amber-bg); }
+.vno   { border-color: var(--red);   background: var(--red-bg); }
+.vlbl { font-family: var(--mono); font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase; opacity: 0.6; margin-bottom: 5px; }
+.vtitle { font-size: 22px; font-weight: 700; margin-bottom: 6px; }
+.vprob .vtitle { color: var(--green); }
+.vposs .vtitle { color: var(--amber); }
+.vno   .vtitle { color: var(--red); }
+.vphen { font-family: var(--mono); font-size: 11px; padding: 2px 10px; border-radius: 20px; border: 1px solid; display: inline-block; margin-bottom: 7px; }
+.vdesc { font-size: 12px; color: var(--text2); line-height: 1.7; max-width: 640px; margin: 0 auto; }
+
+/* SUMMARY */
+.sum-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+@media (max-width: 580px) { .sum-grid { grid-template-columns: 1fr; } }
+.sblock { background: var(--card); border: 1px solid var(--border); border-radius: 6px; overflow: hidden; }
+.sbtitle { font-family: var(--mono); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; padding: 7px 11px; border-bottom: 1px solid var(--border); color: var(--text2); background: var(--card2); }
+.srow { display: flex; align-items: flex-start; gap: 8px; padding: 6px 11px; border-bottom: 1px solid var(--border); font-size: 12px; }
+.srow:last-child { border-bottom: none; }
+.dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; margin-top: 4px; }
+.dg  { background: var(--green); } .dr  { background: var(--red); }
+.dl  { background: var(--lime); }  .da  { background: var(--amber); } .dgr { background: var(--text3); }
+.sname { flex: 1; color: var(--text); line-height: 1.4; }
+.stag { font-family: var(--mono); font-size: 9px; padding: 1px 7px; border-radius: 10px; border: 1px solid; white-space: nowrap; }
+.tg  { border-color: var(--green-bd); color: var(--green); }
+.tr  { border-color: var(--red-bd);   color: var(--red); }
+.tl  { border-color: var(--lime-bd);  color: var(--lime); }
+.ta  { border-color: var(--amber-bd); color: var(--amber); }
+.tgr { border-color: var(--border2);  color: var(--text3); }
+
+.doc-header { display: flex; align-items: center; gap: 8px; margin-bottom: 5px; }
+.doc-tog { flex: 1; text-align: left; background: var(--card2); border: 1px solid var(--border2); border-radius: 5px; color: var(--text2); font-family: var(--mono); font-size: 11px; padding: 8px 13px; cursor: pointer; transition: all 0.15s; letter-spacing: 0.04em; }
+.doc-tog:hover { border-color: var(--lime); color: var(--lime); }
+.copy-btn { background: var(--card2); border: 1px solid var(--border2); border-radius: 5px; color: var(--text2); font-family: var(--mono); font-size: 11px; padding: 8px 14px; cursor: pointer; white-space: nowrap; transition: all 0.15s; display: none; }
+.copy-btn.visible { display: block; }
+.copy-btn:hover { border-color: var(--green); color: var(--green); }
+.copy-btn.copied { border-color: var(--green); color: var(--green); background: var(--green-bg); }
+.doc-body { display: none; background: var(--card2); border: 1px solid var(--border2); border-radius: 5px; padding: 13px 15px; font-family: var(--mono); font-size: 11px; color: var(--text2); line-height: 1.85; white-space: pre-wrap; margin-bottom: 12px; }
+.doc-body.open { display: block; }
+</style>
+</head>
+<body>
+<div class="app">
+
+<header>
+  <div>
+    <div class="h-title">CBD <span>2013 Diagnostic Criteria</span></div>
+    <div class="h-sub">Armstrong MJ, Litvan I et al. · Neurology 2013;80:496–503 · doi:10.1212/WNL.0b013e31827f0fd1<br>International Consortium · Clinical Research (cr-CBD) and Possible (p-CBD) Criteria</div>
+  </div>
+  <button class="reset-btn" onclick="resetAll()">↺ Reset</button>
+</header>
+
+<div class="prog-track"><div class="prog-fill" id="pf" style="width:0%"></div></div>
+
+<div class="steps">
+  <div class="stab active" id="st0"><span class="sn">1</span>Prerequisites</div>
+  <div class="stab" id="st1"><span class="sn">2</span>Phenotype</div>
+  <div class="stab" id="st2"><span class="sn">3</span>CBS Features</div>
+  <div class="stab" id="st3"><span class="sn">4</span>Exclusions</div>
+  <div class="stab" id="st4"><span class="sn">5</span>Verdict</div>
+</div>
+
+<!-- ══ SCREEN 0: PREREQUISITES ══ -->
+<div class="screen active" id="s0">
+<div class="card">
+  <div class="ctitle" style="color:var(--lime);">Step 1 · Prerequisites (Both cr-CBD and p-CBD)</div>
+  <div class="csub">These entry criteria apply to both the clinical research criteria for probable CBD (cr-CBD) and the possible CBD criteria (p-CBD). They differ only in age cutoff and family history.</div>
+
+  <div class="lbox">
+    <strong>Two sets of criteria (Table 5):</strong><br>
+    <span class="ll">cr-CBD (Clinical Research Criteria for Probable Sporadic CBD):</span> More specific — maximizes chance of diagnosing true CBD pathology without other tau contamination. Requires age ≥50, no family history, no tau mutations. Phenotype: Probable CBS <em>or</em> FBS/naPPA + ≥1 CBS feature.<br>
+    <span class="la">p-CBD (Possible CBD Criteria):</span> Broader — still emphasizes tau pathology but more inclusive. No age minimum, family history allowed, tau mutations allowed. Includes PSPS phenotype. Phenotype: Possible CBS <em>or</em> FBS/naPPA/PSPS + ≥1 CBS feature (b–f only).
+  </div>
+
+  <div class="slabel">Shared mandatory prerequisites <span class="pill pill-r">BOTH SETS</span></div>
+
+  <div class="crit" id="onset-item">
+    <div class="crit-main">
+      <div class="crit-name">Insidious onset and gradual progression</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      The onset must be insidious (not sudden) and the course must be one of gradual progression. Acute or subacute presentations, or step-wise deterioration, should prompt consideration of alternative diagnoses — particularly Creutzfeldt-Jakob disease (CJD), which may mimic CBS with rapid progression. Neither patient with CBD died in the first year in a rapidly progressive dementia series (vs. 8/22 CJD cases dying within 12 months of onset).
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="set('onset','yes')" id="onset-yes">✓ Insidious onset, gradual progression</button>
+      <button class="abtn" onclick="set('onset','no')"  id="onset-no" >✗ Acute or stepwise onset</button>
+    </div>
+  </div>
+
+  <div class="crit" id="duration-item">
+    <div class="crit-main">
+      <div class="crit-name">Symptom duration of at least 1 year</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      A minimum of 1 year of symptoms is required to exclude rapidly progressive conditions more likely to represent other pathologies (especially CJD). Mean disease duration in compiled CBD cases was 6.6 years (SD 2.4, range 2.0–12.5). Mean time to presentation in one series was 3.0 years after symptom onset.
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="set('duration','yes')" id="duration-yes">✓ ≥1 year symptom duration</button>
+      <button class="abtn" onclick="set('duration','no')"  id="duration-no" >✗ &lt;1 year</button>
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:16px;">cr-CBD specific prerequisites <span class="pill pill-l">PROBABLE ONLY</span></div>
+
+  <div class="two-col">
+    <div class="crit" id="age-item">
+      <div class="crit-main">
+        <div class="crit-name">Age at onset ≥50 years (cr-CBD) / No minimum (p-CBD)</div>
+        <button class="xbtn" onclick="xp(this)">details ▾</button>
+      </div>
+      <div class="crit-detail">
+        Age ≥50 is required for cr-CBD — this will identify 98% of CBD cases and exclude pathologies with younger age at onset (e.g., FTLD). Mean age at CBD symptom onset was 63.7 years (SD 7.0, range 45–77.2). No age minimum is set for p-CBD, allowing for young-onset familial CBD cases related to tau mutations.
+      </div>
+      <div class="brow">
+        <button class="abtn" onclick="set('age','ge50')" id="age-ge50">✓ ≥50 years (both cr-CBD + p-CBD)</button>
+        <button class="abtn" onclick="set('age','lt50')" id="age-lt50">⚠ &lt;50 years (p-CBD only)</button>
+      </div>
+    </div>
+    <div class="crit" id="famhx-item">
+      <div class="crit-main">
+        <div class="crit-name">Family history (&gt;1 relative with similar neurodegenerative disease)</div>
+        <button class="xbtn" onclick="xp(this)">details ▾</button>
+      </div>
+      <div class="crit-detail">
+        A family history of &gt;1 relative with a similar neurodegenerative disease excludes cr-CBD (sporadic) but is permitted in p-CBD. Familial CBD-like cases may be associated with MAPT tau mutations (e.g., N296N) producing CBD-like pathology. Note: familial CBS may also reflect GRN mutations with FTLD-TDP pathology — a non-tau etiology that would then be excluded by the mutation exclusion criteria.
+      </div>
+      <div class="brow">
+        <button class="abtn" onclick="set('famhx','no')"  id="famhx-no" >✓ No family history</button>
+        <button class="abtn" onclick="set('famhx','yes')" id="famhx-yes">⚠ Positive family history (p-CBD only)</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="a0" class="alrt"></div>
+  <div class="nav-row"><div></div><button class="nbtn np" id="n0" onclick="go(1)" disabled>Next: Phenotype Assessment →</button></div>
+</div>
+</div>
+
+<!-- ══ SCREEN 1: PHENOTYPE SELECTION ══ -->
+<div class="screen" id="s1">
+<div class="card">
+  <div class="ctitle" style="color:var(--lime);">Step 2 · Clinical Phenotype (Table 4)</div>
+  <div class="csub">Four phenotypes are associated with CBD pathology. Select which phenotype(s) are present. The phenotype determines which criteria set (cr-CBD vs. p-CBD) can be applied. CBS features (a–f) will be assessed in Step 3.</div>
+
+  <div class="lbox">
+    <strong>Phenotype requirements (Table 5):</strong><br>
+    <span class="ll">cr-CBD:</span> Probable CBS <em>or</em> FBS/naPPA + ≥1 CBS feature (a–f)<br>
+    <span class="la">p-CBD:</span> Possible CBS <em>or</em> FBS/naPPA/PSPS + ≥1 CBS feature (b–f, NOT feature a)<br><br>
+    PSPS is included only in p-CBD — it is much more likely to represent PSP than CBD.
+  </div>
+
+  <div class="phen-grid">
+    <!-- CBS -->
+    <div class="phen-card" id="pc-cbs">
+      <div class="phen-header">
+        <div class="phen-code" style="border-color:var(--lime-bd);color:var(--lime);">CBS</div>
+        <div class="phen-title">Corticobasal Syndrome</div>
+      </div>
+      <div class="phen-body">
+        <strong>Probable CBS:</strong> Asymmetric — ≥2 of motor (a–c) + ≥2 of cortical (d–f)<br>
+        <strong>Possible CBS:</strong> May be symmetric — ≥1 of motor (a–c) + ≥1 of cortical (d–f)<br>
+        <em>Motor (a–c): rigidity/akinesia, dystonia, myoclonus<br>Cortical (d–f): orobuccal/limb apraxia, cortical sensory deficit, alien limb</em>
+      </div>
+      <div class="phen-btns">
+        <button class="pbtn" onclick="setPhen('cbs','prob')" id="cbs-prob">Probable CBS (cr-CBD)</button>
+        <button class="pbtn" onclick="setPhen('cbs','poss')" id="cbs-poss">Possible CBS (p-CBD)</button>
+        <button class="pbtn" onclick="setPhen('cbs','none')" id="cbs-none">Absent</button>
+      </div>
+    </div>
+    <!-- FBS -->
+    <div class="phen-card" id="pc-fbs">
+      <div class="phen-header">
+        <div class="phen-code" style="border-color:var(--lime-bd);color:var(--lime);">FBS</div>
+        <div class="phen-title">Frontal Behavioral-Spatial Syndrome</div>
+      </div>
+      <div class="phen-body">
+        ≥2 of: (a) executive dysfunction, (b) behavioral or personality changes, (c) visuospatial deficits<br>
+        <em>When present: needs ≥1 CBS feature (a–f for cr-CBD; b–f for p-CBD) to fulfill phenotype requirement</em>
+      </div>
+      <div class="phen-btns">
+        <button class="pbtn" onclick="setPhen('fbs','yes')"  id="fbs-yes">✓ Present (≥2 features)</button>
+        <button class="pbtn" onclick="setPhen('fbs','part')" id="fbs-part">⚠ Partial (1 feature)</button>
+        <button class="pbtn" onclick="setPhen('fbs','none')" id="fbs-none">Absent</button>
+      </div>
+    </div>
+    <!-- naPPA -->
+    <div class="phen-card" id="pc-nappa">
+      <div class="phen-header">
+        <div class="phen-code" style="border-color:var(--lime-bd);color:var(--lime);">naPPA</div>
+        <div class="phen-title">Nonfluent/Agrammatic variant PPA</div>
+      </div>
+      <div class="phen-body">
+        Effortful, agrammatic speech + ≥1 of: (a) impaired grammar/sentence comprehension with relatively preserved single-word comprehension, or (b) groping, distorted speech production (apraxia of speech)<br>
+        <em>When present: needs ≥1 CBS feature (a–f for cr-CBD; b–f for p-CBD)</em>
+      </div>
+      <div class="phen-btns">
+        <button class="pbtn" onclick="setPhen('nappa','yes')"  id="nappa-yes">✓ Present</button>
+        <button class="pbtn" onclick="setPhen('nappa','part')" id="nappa-part">⚠ Partial</button>
+        <button class="pbtn" onclick="setPhen('nappa','none')" id="nappa-none">Absent</button>
+      </div>
+    </div>
+    <!-- PSPS -->
+    <div class="phen-card" id="pc-psps">
+      <div class="phen-header">
+        <div class="phen-code" style="border-color:var(--amber-bd);color:var(--amber);">PSPS</div>
+        <div class="phen-title">PSP Syndrome <span style="font-size:10px;color:var(--text3);">p-CBD only</span></div>
+      </div>
+      <div class="phen-body">
+        ≥3 of: (a) axial or symmetric limb rigidity/akinesia, (b) postural instability or falls, (c) urinary incontinence, (d) behavioral changes, (e) supranuclear vertical gaze palsy or decreased velocity of vertical saccades<br>
+        <em>Allowed only in p-CBD — PSPS is much more likely to represent PSP than CBD</em>
+      </div>
+      <div class="phen-btns">
+        <button class="pbtn" onclick="setPhen('psps','yes')"  id="psps-yes">✓ Present (≥3 features)</button>
+        <button class="pbtn" onclick="setPhen('psps','part')" id="psps-part">⚠ Partial (&lt;3)</button>
+        <button class="pbtn" onclick="setPhen('psps','none')" id="psps-none">Absent</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="a1" class="alrt"></div>
+  <div class="nav-row">
+    <button class="nbtn ns" onclick="go(0)">← Back</button>
+    <button class="nbtn np" onclick="go(2)">Next: CBS Feature Assessment →</button>
+  </div>
+</div>
+</div>
+
+<!-- ══ SCREEN 2: CBS FEATURES (a–f) ══ -->
+<div class="screen" id="s2">
+<div class="card">
+  <div class="ctitle" style="color:var(--lime);">Step 3 · CBS Features (a–f)</div>
+  <div class="csub">These six features define the corticobasal syndrome and also serve as required adjunct features for FBS, naPPA, and PSPS phenotypes. For PSPS in p-CBD, only features b–f are eligible (not feature a).</div>
+
+  <div class="lbox">
+    <strong>CBS feature requirements for non-CBS phenotypes:</strong><br>
+    <span class="ll">cr-CBD:</span> FBS or naPPA requires ≥1 CBS feature from (a–f)<br>
+    <span class="la">p-CBD:</span> FBS, naPPA, or PSPS requires ≥1 CBS feature from (b–f) only — feature (a) limb rigidity/akinesia is excluded as an adjunct feature for p-CBD non-CBS phenotypes<br><br>
+    <strong>CBS sub-feature thresholds (for CBS phenotype itself — Table 4):</strong><br>
+    Probable CBS: Asymmetric + ≥2 motor (a–c) + ≥2 cortical (d–f)<br>
+    Possible CBS: ≥1 motor (a–c) + ≥1 cortical (d–f) [may be symmetric]
+  </div>
+
+  <div class="slabel">Motor features (a–c) — Corticobasal motor</div>
+
+  <div class="crit" id="sf-a-item">
+    <div class="crit-main">
+      <div class="crit-name">(a) Limb rigidity or akinesia</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      Limb rigidity (85% of compiled CBD cases, 57% at presentation) and bradykinesia/akinesia (76% overall, 48% at presentation) are the most common motor findings. Asymmetry was documented in 73% of CBD cases with parkinsonism. The nature of limb rigidity may relate to parkinsonism, dystonia, or gegenhalten/paratonia. For CBS phenotype: must be asymmetric for Probable CBS; may be symmetric for Possible CBS. Note: (a) does NOT count as a CBS adjunct feature for p-CBD non-CBS phenotypes.
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setSF('a','asym')" id="sf-a-asym">✓ Present — Asymmetric</button>
+      <button class="abtn" onclick="setSF('a','sym')"  id="sf-a-sym" >✓ Present — Symmetric</button>
+      <button class="abtn" onclick="setSF('a','no')"   id="sf-a-no"  >✗ Absent</button>
+    </div>
+  </div>
+
+  <div class="crit" id="sf-b-item">
+    <div class="crit-main">
+      <div class="crit-name">(b) Limb dystonia</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      Limb dystonia is a CBS-defining feature — 38% of compiled CBD cases had it (20% at presentation). Clinical series report higher rates (59–71%) in mixed CBS/CBD series, suggesting lower true frequency in pathology-confirmed cases. May be superimposed on myoclonus. For CBD, the nature of dystonia is poorly characterized — limb dystonia may coexist with parkinsonism or higher cortical features. The presence of limb dystonia, bradykinesia, and rigidity can make assessing ideomotor apraxia challenging.
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setSF('b','asym')" id="sf-b-asym">✓ Present — Asymmetric</button>
+      <button class="abtn" onclick="setSF('b','sym')"  id="sf-b-sym" >✓ Present — Symmetric</button>
+      <button class="abtn" onclick="setSF('b','no')"   id="sf-b-no"  >✗ Absent</button>
+    </div>
+  </div>
+
+  <div class="crit" id="sf-c-item">
+    <div class="crit-main">
+      <div class="crit-name">(c) Limb myoclonus</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      Myoclonus in 27% of compiled CBD cases (15% at presentation) — notably lower than rates reported in CBS clinical series (55–93%). May be superimposed on dystonia. Most commonly in upper extremities, occasionally face. Types described: focal myoclonus, stimulus-sensitive myoclonus, action myoclonus. Low-amplitude action myoclonus may be mistaken for tremor. A very short latency cortical reflex myoclonus may be characteristic in CBS but not confirmed in CBD specifically.
+      <div class="cnote">Note: Low-amplitude action myoclonus may resemble tremor. Repetitive myoclonic bursts in CBD may be mistaken for tremor in some case reports.</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setSF('c','asym')" id="sf-c-asym">✓ Present — Asymmetric</button>
+      <button class="abtn" onclick="setSF('c','sym')"  id="sf-c-sym" >✓ Present — Symmetric</button>
+      <button class="abtn" onclick="setSF('c','no')"   id="sf-c-no"  >✗ Absent</button>
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:14px;">Higher cortical features (d–f) — Corticobasal cortical</div>
+
+  <div class="crit" id="sf-d-item">
+    <div class="crit-main">
+      <div class="crit-name">(d) Orobuccal or limb apraxia</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      Limb apraxia in 57% of compiled CBD cases (45% at presentation) — core to all previous diagnostic criteria. Ideomotor apraxia is most commonly described. Limb-kinetic apraxia also reported in some series. Orobuccal apraxia may co-occur. Importantly: the presence of limb dystonia, bradykinesia, and rigidity can make assessing ideomotor apraxia challenging, and diagnosing limb-kinetic apraxia is essentially impossible in this context. "Apraxia of eyelid opening" is often a misnomer representing pretarsal blepharospasm rather than true apraxia.
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setSF('d','yes')" id="sf-d-yes">✓ Present</button>
+      <button class="abtn" onclick="setSF('d','no')"  id="sf-d-no" >✗ Absent</button>
+    </div>
+  </div>
+
+  <div class="crit" id="sf-e-item">
+    <div class="crit-main">
+      <div class="crit-name">(e) Cortical sensory deficit</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      Cortical sensory loss (astereognosis, graphesthesia, tactile extinction) in approximately 27% of compiled CBD cases where reported (25% at presentation). Less than half of compiled cases had data on cortical sensory testing — the true frequency may differ. Visual neglect can also occur in CBD (but also in AD). Cortical sensory deficit reflects parietal cortex involvement and is an important lateralized higher cortical sign.
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setSF('e','yes')" id="sf-e-yes">✓ Present</button>
+      <button class="abtn" onclick="setSF('e','no')"  id="sf-e-no" >✗ Absent</button>
+    </div>
+  </div>
+
+  <div class="crit" id="sf-f-item">
+    <div class="crit-main">
+      <div class="crit-name">(f) Alien limb phenomena — more than simple levitation</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      Alien limb in 30% of compiled CBD cases (22% at presentation). Definition includes complex unintentional limb movements interfering with normal tasks, and the sensation that a limb was foreign or had a will of its own. Criteria specify "more than simple levitation" — isolated limb levitation without the above features does not qualify. What constitutes alien limb remains a matter of debate and varies across criteria sets; this operationalization attempts to distinguish pathological alien limb from simple motor overflow or levitation.
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setSF('f','yes')" id="sf-f-yes">✓ Present</button>
+      <button class="abtn" onclick="setSF('f','no')"  id="sf-f-no" >✗ Absent</button>
+    </div>
+  </div>
+
+  <!-- Asymmetry qualifier for CBS -->
+  <div class="crit" id="asymm-item" style="margin-top:10px;">
+    <div class="crit-main">
+      <div class="crit-name">Overall asymmetry of presentation (motor features)</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      Asymmetry is required for Probable CBS (not required for Possible CBS). Asymmetry of parkinsonism was documented in 73% of compiled CBD cases with parkinsonism. Asymmetry is one of the distinguishing features of CBS vs. PSP — PSP-Richardson syndrome typically has more symmetric or axially predominant parkinsonism.
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="set('asymm','yes')"  id="asymm-yes">✓ Clear asymmetry</button>
+      <button class="abtn" onclick="set('asymm','mild')" id="asymm-mild">⚠ Mild / questionable</button>
+      <button class="abtn" onclick="set('asymm','no')"   id="asymm-no"  >✗ Symmetric</button>
+    </div>
+  </div>
+
+  <div class="tally">
+    <div class="chip" id="motor-chip"><span class="n" id="motor-n">0</span>Motor CBS (a–c)</div>
+    <div class="chip" id="cortical-chip"><span class="n" id="cortical-n">0</span>Cortical CBS (d–f)</div>
+  </div>
+
+  <div id="a2" class="alrt"></div>
+  <div class="nav-row">
+    <button class="nbtn ns" onclick="go(1)">← Back</button>
+    <button class="nbtn np" onclick="go(3)">Next: Exclusion Criteria →</button>
+  </div>
+</div>
+</div>
+
+<!-- ══ SCREEN 3: EXCLUSIONS ══ -->
+<div class="screen" id="s3">
+<div class="card">
+  <div class="ctitle" style="color:var(--red);">Step 4 · Exclusion Criteria (Both cr-CBD and p-CBD)</div>
+  <div class="csub">All seven exclusion criteria apply to both cr-CBD and p-CBD. Any single positive exclusion criterion prevents a CBD diagnosis. These are not ranked — any one disqualifies.</div>
+
+  <div class="lbox">
+    <strong>Exclusion criteria for both cr-CBD and p-CBD (Table 5 footnote a):</strong><br>
+    1. Evidence of Lewy body disease: classic 4-Hz PD resting tremor, excellent and sustained levodopa response, or hallucinations<br>
+    2. Evidence of MSA: dysautonomia or prominent cerebellar signs<br>
+    3. Evidence of ALS: presence of both upper AND lower motor neuron signs<br>
+    4. Semantic- or logopenic-variant PPA<br>
+    5. Structural lesion suggestive of focal cause<br>
+    6. GRN mutation or reduced plasma progranulin; TDP-43 mutations; FUS mutations<br>
+    7. Evidence of AD: low CSF Aβ42/tau ratio or positive amyloid PET (¹¹C-PiB); or genetic mutation suggesting AD (presenilin, APP)<br><br>
+    <strong>Note on tau mutations (MAPT):</strong> These are an exclusion for cr-CBD but not p-CBD. GRN/TDP-43/FUS are exclusions for both.
+  </div>
+
+  <div class="two-col">
+    <div class="crit" id="exc-lbd-item">
+      <div class="crit-main"><div class="crit-name">Evidence of Lewy body disease — classic 4-Hz PD resting tremor, excellent and sustained levodopa response, or hallucinations</div><button class="xbtn" onclick="xp(this)">details ▾</button></div>
+      <div class="crit-detail">Classic 4–6 Hz resting tremor with excellent and sustained levodopa response is highly suggestive of idiopathic PD. Hallucinations strongly suggest PD or DLB — only a single published CBD patient had hallucinations (with levodopa treatment); hallucinations not associated with levodopa were also rarely described in brain bank subjects. Transient mild–moderate levodopa improvement can occur in CBD, but sustained response is rare and an exclusion. Levodopa-induced dyskinesias rarely develop in CBD.</div>
+      <div class="brow"><button class="abtn" onclick="set('exc_lbd','no')" id="exc_lbd-no">✓ Absent</button><button class="abtn" onclick="set('exc_lbd','yes')" id="exc_lbd-yes">✕ Present — Excludes CBD</button></div>
+    </div>
+    <div class="crit" id="exc-msa-item">
+      <div class="crit-main"><div class="crit-name">Evidence of MSA — dysautonomia or prominent cerebellar signs</div><button class="xbtn" onclick="xp(this)">details ▾</button></div>
+      <div class="crit-detail">Prominent dysautonomia (orthostatic hypotension, urinary/bowel dysfunction, sexual dysfunction) or prominent cerebellar features (limb or gait ataxia, cerebellar dysarthria) suggest multiple system atrophy rather than CBD. CBD series do not routinely describe these features. "Prominent" is the operative word — mild autonomic features or a single subtle cerebellar sign may not warrant exclusion without clinical judgment.</div>
+      <div class="brow"><button class="abtn" onclick="set('exc_msa','no')" id="exc_msa-no">✓ Absent</button><button class="abtn" onclick="set('exc_msa','yes')" id="exc_msa-yes">✕ Present — Excludes CBD</button></div>
+    </div>
+    <div class="crit" id="exc-als-item">
+      <div class="crit-main"><div class="crit-name">Evidence of ALS — both upper AND lower motor neuron signs</div></div>
+      <div class="crit-detail">The co-presence of UMN (hyperreflexia, spasticity, Babinski) AND LMN (fasciculations, wasting, reduced reflexes) signs in multiple body regions suggests ALS/MND spectrum. Upper motor neuron signs alone are not excluded (they occur in CBD) — it is the multisegmental combined UMN + LMN pattern that excludes.</div>
+      <div class="brow"><button class="abtn" onclick="set('exc_als','no')" id="exc_als-no">✓ Absent</button><button class="abtn" onclick="set('exc_als','yes')" id="exc_als-yes">✕ Present — Excludes CBD</button></div>
+    </div>
+    <div class="crit" id="exc-ppa-item">
+      <div class="crit-main"><div class="crit-name">Semantic- or logopenic-variant PPA</div><button class="xbtn" onclick="xp(this)">details ▾</button></div>
+      <div class="crit-detail">Semantic variant PPA (svPPA) — fluent speech, impaired single-word comprehension, semantic knowledge loss — is associated with FTLD-TDP (GRN or C9orf72) or FTLD-tau (rarely CBD). Logopenic variant PPA — word-finding pauses, sentence repetition impairment — is strongly associated with AD pathology. Neither is associated with CBD. Only the nonfluent/agrammatic variant PPA (naPPA) is a CBD phenotype.</div>
+      <div class="brow"><button class="abtn" onclick="set('exc_ppa','no')" id="exc_ppa-no">✓ Absent</button><button class="abtn" onclick="set('exc_ppa','yes')" id="exc_ppa-yes">✕ Present — Excludes CBD</button></div>
+    </div>
+    <div class="crit" id="exc-structural-item">
+      <div class="crit-main"><div class="crit-name">Structural lesion suggestive of focal cause</div></div>
+      <div class="brow"><button class="abtn" onclick="set('exc_structural','no')" id="exc_structural-no">✓ Absent</button><button class="abtn" onclick="set('exc_structural','yes')" id="exc_structural-yes">✕ Present — Excludes CBD</button></div>
+    </div>
+    <div class="crit" id="exc-mutations-item">
+      <div class="crit-main"><div class="crit-name">GRN mutation or reduced plasma progranulin; TDP-43 mutations; FUS mutations</div><button class="xbtn" onclick="xp(this)">details ▾</button></div>
+      <div class="crit-detail">These mutations are associated with non-tau (TDP-43 or FUS) FTLD pathology rather than CBD tau pathology — they are exclusions for both cr-CBD and p-CBD. Familial CBS may be associated with GRN mutations (FTLD-TDP) rather than CBD. Note: MAPT tau mutations are separately an exclusion for cr-CBD only (not p-CBD). GRN/TDP-43/FUS remain exclusions for both.</div>
+      <div class="brow"><button class="abtn" onclick="set('exc_mutations','no')" id="exc_mutations-no">✓ Absent</button><button class="abtn" onclick="set('exc_mutations','yes')" id="exc_mutations-yes">✕ Present — Excludes CBD</button></div>
+    </div>
+    <div class="crit" id="exc-ad-item">
+      <div class="crit-main"><div class="crit-name">Evidence of AD — low CSF Aβ42/tau ratio, positive ¹¹C-PiB amyloid PET, or AD genetic mutation (presenilin, APP)</div><button class="xbtn" onclick="xp(this)">details ▾</button></div>
+      <div class="crit-detail">Results strongly suggestive of AD pathology on CSF (low Aβ42/tau ratio) or amyloid PET (positive ¹¹C-PiB PET) are exclusion criteria. Caveat: excluding cases with evidence of amyloid may result in missing approximately 14% of CBD cases (Dickson, personal communication, 2012) — coexisting amyloid pathology is relatively common. Genetic mutations associated with AD (presenilin-1/2, APP) are also exclusion criteria.
+      </div>
+      <div class="brow"><button class="abtn" onclick="set('exc_ad','no')" id="exc_ad-no">✓ Absent / Not suggestive of AD</button><button class="abtn" onclick="set('exc_ad','yes')" id="exc_ad-yes">✕ Present — Excludes CBD</button></div>
+    </div>
+    <!-- MAPT - cr-CBD only exclusion -->
+    <div class="crit" id="exc-mapt-item">
+      <div class="crit-main"><div class="crit-name">MAPT tau mutation — exclusion for cr-CBD only; permitted in p-CBD</div><button class="xbtn" onclick="xp(this)">details ▾</button></div>
+      <div class="crit-detail">Tau mutations (MAPT) have resulted in CBD-like pathology (e.g., N296N mutation causing CBD-like pathology including astrocytic plaques and swollen achromatic neurons). Whether these familial CBD-like cases should be classified with typical sporadic CBD is unclear. cr-CBD requires sporadic occurrence and excludes MAPT mutations. p-CBD permits MAPT tau mutations, allowing inclusion of familial cases in broader research protocols targeting tau pathology as a class.</div>
+      <div class="brow"><button class="abtn" onclick="set('exc_mapt','no')" id="exc_mapt-no">✓ No MAPT mutation (both cr-CBD + p-CBD)</button><button class="abtn" onclick="set('exc_mapt','yes')" id="exc_mapt-yes">⚠ MAPT mutation present (p-CBD only)</button></div>
+    </div>
+  </div>
+
+  <div id="a3" class="alrt"></div>
+  <div class="nav-row">
+    <button class="nbtn ns" onclick="go(2)">← Back</button>
+    <button class="nbtn np" onclick="go(4)">Generate Verdict →</button>
+  </div>
+</div>
+</div>
+
+<!-- ══ SCREEN 4: VERDICT ══ -->
+<div class="screen" id="s4">
+  <div id="vout"></div>
+  <div class="doc-header">
+    <button class="doc-tog" onclick="toggleDoc()">▼ Documentation Note</button>
+    <button class="copy-btn" id="copy-btn" onclick="copyDoc()">⎘ Copy</button>
+  </div>
+  <div class="doc-body" id="dn"></div>
+  <div class="nav-row">
+    <button class="nbtn ns" onclick="go(3)">← Back</button>
+    <button class="nbtn np" onclick="resetAll()">↺ New Evaluation</button>
+  </div>
+</div>
+
+</div><!-- /app -->
+<script>
+const S = {
+  // Prerequisites
+  onset:null, duration:null, age:null, famhx:null,
+  // Phenotypes
+  cbs:null, fbs:null, nappa:null, psps:null,
+  // CBS sub-features a–f and asymmetry
+  sf_a:null, sf_b:null, sf_c:null, sf_d:null, sf_e:null, sf_f:null,
+  asymm:null,
+  // Exclusions
+  exc_lbd:null, exc_msa:null, exc_als:null, exc_ppa:null,
+  exc_structural:null, exc_mutations:null, exc_ad:null, exc_mapt:null
+};
+let cur = 0;
+
+const EXCL_HARD = ['exc_lbd','exc_msa','exc_als','exc_ppa','exc_structural','exc_mutations','exc_ad'];
+// exc_mapt is exclusion only for cr-CBD
+
+function set(k, v) {
+  S[k] = v;
+  const item = document.getElementById(k+'-item');
+  if(item) item.className='crit';
+  ['yes','no','ge50','lt50','asym','sym','mild','part'].forEach(x=>{
+    const b=document.getElementById(k+'-'+x); if(b) b.classList.remove('ay','an','al','ab','aa','aw');
+  });
+  const map={yes:'ay',no:'an',ge50:'ay',lt50:'aw',asym:'ay',sym:'aw',mild:'aw',part:'aw'};
+  const btn=document.getElementById(k+'-'+v); if(btn) btn.classList.add(map[v]||'aa');
+  if(item){
+    if(['yes','no','ge50','asym'].includes(v) && !k.startsWith('exc_')) item.classList.add('c-yes');
+    if(v==='yes' && k.startsWith('exc_')) item.classList.add('c-no');
+    if(v==='no' && k.startsWith('exc_')) item.classList.add('c-yes');
+    if(['lt50','mild','part','sym'].includes(v)) item.classList.add('c-part');
+    if(k==='exc_mapt'&&v==='yes') item.classList.add('c-part');
+    if(k==='exc_mapt'&&v==='no') item.classList.add('c-yes');
+    if(v==='no'&&!k.startsWith('exc_')) item.classList.add('c-abs');
+  }
+  ui();
+}
+
+function setPhen(phen, v) {
+  S[phen] = v;
+  const card = document.getElementById('pc-'+phen);
+  ['prob','yes','poss','part','none'].forEach(x=>{
+    const b=document.getElementById(phen+'-'+x); if(b) b.classList.remove('py','pp','pn');
+  });
+  if(card) card.className='phen-card';
+  if(v==='prob') { const b=document.getElementById(phen+'-prob'); if(b) b.classList.add('py'); if(card) card.classList.add('sel-prob'); }
+  else if(v==='yes') { const b=document.getElementById(phen+'-yes'); if(b) b.classList.add('py'); if(card) card.classList.add('sel-prob'); }
+  else if(v==='poss') { const b=document.getElementById(phen+'-poss'); if(b) b.classList.add('pp'); if(card) card.classList.add('sel-poss'); }
+  else if(v==='part') { const b=document.getElementById(phen+'-part'); if(b) b.classList.add('pp'); if(card) card.classList.add('sel-poss'); }
+  else { const b=document.getElementById(phen+'-none'); if(b) b.classList.add('pn'); if(card) card.classList.add('sel-none'); }
+  ui();
+}
+
+function setSF(sf, v) {
+  S['sf_'+sf] = v;
+  const item = document.getElementById('sf-'+sf+'-item');
+  if(item) item.className='crit';
+  ['yes','no','asym','sym'].forEach(x=>{
+    const b=document.getElementById('sf-'+sf+'-'+x); if(b) b.classList.remove('ay','an','al','aw');
+  });
+  const map={yes:'ay',no:'an',asym:'ay',sym:'aw'};
+  const btn=document.getElementById('sf-'+sf+'-'+v); if(btn) btn.classList.add(map[v]||'aa');
+  if(item){
+    if(['yes','asym'].includes(v)) item.classList.add('c-pres');
+    else if(v==='sym') item.classList.add('c-part');
+    else item.classList.add('c-abs');
+  }
+  ui();
+}
+
+// CBS feature state helpers
+function sfPresent(sf) { return S['sf_'+sf]==='asym'||S['sf_'+sf]==='sym'||S['sf_'+sf]==='yes'; }
+function sfAsym(sf) { return S['sf_'+sf]==='asym'; }
+function motorCount() { return ['a','b','c'].filter(sfPresent).length; }
+function corticalCount() { return ['d','e','f'].filter(sfPresent).length; }
+function motorCountAsym() { return ['a','b','c'].filter(sfAsym).length; }
+function corticalCountAsym() { return ['d','e','f'].filter(sfAsym).length; }
+
+// CBS phenotype threshold checks
+function probCBS() {
+  const asym = S.asymm==='yes';
+  const m = motorCount(), c = corticalCount();
+  return asym && m>=2 && c>=2;
+}
+function possCBS() {
+  const m = motorCount(), c = corticalCount();
+  return m>=1 && c>=1;
+}
+
+// Non-CBS phenotype adjunct CBS feature checks
+// cr-CBD adjunct: ≥1 of a–f
+function hasCBSadjunct_cr() { return ['a','b','c','d','e','f'].some(sfPresent); }
+// p-CBD adjunct: ≥1 of b–f (NOT a)
+function hasCBSadjunct_p() { return ['b','c','d','e','f'].some(sfPresent); }
+
+function anyHardExclusion() { return EXCL_HARD.some(k=>S[k]==='yes'); }
+function maptExclusion() { return S.exc_mapt==='yes'; }
+
+function prereqMetCR() { return S.onset==='yes' && S.duration==='yes' && S.age==='ge50' && S.famhx==='no'; }
+function prereqMetP() {
+  return S.onset==='yes' && S.duration==='yes'
+    && (S.age==='ge50'||S.age==='lt50')
+    && (S.famhx==='no'||S.famhx==='yes');
+}
+
+// VERDICT ENGINE
+function verdict() {
+  if(!S.onset||!S.duration) return {cls:'vno',t:'Incomplete Assessment',d:'Complete all steps to generate a verdict.'};
+  if(S.onset==='no'||S.duration==='no') return {cls:'vno',t:'Prerequisites Not Met',d:'Both insidious onset/gradual progression AND ≥1 year symptom duration are required for any CBD diagnosis. Rapidly progressive presentations should prompt consideration of CJD and other mimics.'};
+  if(anyHardExclusion()) {
+    const ex=EXCL_HARD.filter(k=>S[k]==='yes').map(k=>({exc_lbd:'Lewy body disease features',exc_msa:'MSA features (dysautonomia/cerebellar)',exc_als:'Combined UMN+LMN signs (ALS)',exc_ppa:'Semantic- or logopenic-variant PPA',exc_structural:'Structural lesion',exc_mutations:'GRN/TDP-43/FUS mutation',exc_ad:'Evidence of Alzheimer disease'}[k]||k)).join(', ');
+    return {cls:'vno',t:'Excluded from CBD Diagnosis',d:'One or more absolute exclusion criteria are present: '+ex+'. CBD diagnosis (neither cr-CBD nor p-CBD) can be made. Reassess the differential diagnosis.'};
+  }
+
+  const cbsProb = S.cbs==='prob' || (S.cbs==='poss'&&probCBS());
+  const cbsPoss = possCBS() && (S.cbs==='poss'||S.cbs==='prob');
+  const fbsFull = S.fbs==='yes';
+  const nappaFull = S.nappa==='yes';
+  const pspsFull = S.psps==='yes';
+
+  // cr-CBD: Probable CBS OR (FBS/naPPA + ≥1 CBS a-f); no MAPT; prereqs met
+  if(prereqMetCR() && !maptExclusion()) {
+    if(cbsProb) return {cls:'vprob',t:'Probable CBD (cr-CBD)',phen:'Clinical Research Criteria — Probable CBS phenotype',d:'Insidious gradual onset ≥1 year, age ≥50, no family history, no tau mutation, no exclusion criteria. Probable CBS fulfilled (asymmetric, ≥2 motor CBS features, ≥2 cortical CBS features). Clinical Research Criteria for Probable Sporadic CBD (cr-CBD) are met. This category aims for maximum specificity for CBD pathology without contamination from other tau-based diagnoses.'};
+    if(fbsFull && hasCBSadjunct_cr()) return {cls:'vprob',t:'Probable CBD (cr-CBD)',phen:'FBS phenotype + CBS feature(s)',d:'Clinical Research Criteria met with Frontal Behavioral-Spatial Syndrome phenotype (≥2 features) plus ≥1 CBS adjunct feature (a–f). Sporadic, age ≥50, no tau mutation, no exclusions.'};
+    if(nappaFull && hasCBSadjunct_cr()) return {cls:'vprob',t:'Probable CBD (cr-CBD)',phen:'naPPA phenotype + CBS feature(s)',d:'Clinical Research Criteria met with Nonfluent/Agrammatic variant PPA phenotype plus ≥1 CBS adjunct feature (a–f). Sporadic, age ≥50, no tau mutation, no exclusions.'};
+  }
+
+  // p-CBD: Possible CBS OR (FBS/naPPA/PSPS + ≥1 CBS b-f); prereqs met; family hx/age/MAPT all permitted
+  if(prereqMetP()) {
+    if(cbsPoss) return {cls:'vposs',t:'Possible CBD (p-CBD)',phen:'Possible CBS phenotype',d:'Possible CBD criteria met with Possible CBS phenotype (≥1 motor + ≥1 cortical CBS feature; symmetry permitted). This broader category emphasizes clinical presentations consistent with CBD but may also overlap with other tau-based pathologies including PSP. Useful when directed research targets tau pathology as a class.'};
+    if(fbsFull && hasCBSadjunct_p()) return {cls:'vposs',t:'Possible CBD (p-CBD)',phen:'FBS phenotype + CBS feature(s)',d:'Possible CBD criteria met with FBS phenotype (≥2 features) plus ≥1 CBS adjunct feature (b–f).'};
+    if(nappaFull && hasCBSadjunct_p()) return {cls:'vposs',t:'Possible CBD (p-CBD)',phen:'naPPA phenotype + CBS feature(s)',d:'Possible CBD criteria met with naPPA phenotype plus ≥1 CBS adjunct feature (b–f).'};
+    if(pspsFull && hasCBSadjunct_p()) return {cls:'vposs',t:'Possible CBD (p-CBD)',phen:'PSPS phenotype + CBS feature(s)',d:'Possible CBD criteria met with PSP Syndrome phenotype (≥3 features) plus ≥1 CBS adjunct feature (b–f). Note: PSPS is much more likely to represent PSP pathology than CBD — p-CBD criteria are only appropriate here if directed at tau-based pathology as a class. Consider MDS-PSP criteria also.'};
+    // Partial phenotypes — no criteria met
+    if((S.fbs==='part'||S.nappa==='part'||S.psps==='part')&&hasCBSadjunct_p()) return {cls:'vno',t:'CBD Criteria Not Met — Partial Phenotype',d:'A partial phenotype is present with CBS adjunct features, but full phenotype criteria are not fulfilled. FBS requires ≥2 features; naPPA requires effortful agrammatic speech + ≥1 additional feature; PSPS requires ≥3 features. Continue clinical assessment — phenotype may evolve over time.'};
+  }
+
+  // cr-CBD partial
+  if(prereqMetCR() && !maptExclusion() && cbsPoss && !cbsProb) return {cls:'vposs',t:'Possible CBD Only (p-CBD) — Probable CBS Not Fulfilled',d:'Possible CBS is present (≥1 motor + ≥1 cortical) but Probable CBS requires asymmetric onset + ≥2 motor features + ≥2 cortical features. cr-CBD criteria are not met. p-CBD possible criteria may be applicable if age/family history/MAPT requirements are relaxed.'};
+
+  return {cls:'vno',t:'CBD Criteria Not Met',d:'Present findings do not fulfill criteria for either cr-CBD (Probable CBD) or p-CBD (Possible CBD). Review phenotype assessment: cr-CBD requires Probable CBS or (FBS/naPPA + ≥1 CBS feature); p-CBD requires Possible CBS or (FBS/naPPA/PSPS + ≥1 CBS feature b–f). Continue clinical observation — CBD phenotype may evolve over time. Mean presentation in one series was 3 years after symptom onset.'};
+}
+
+function ui() {
+  // Step 0
+  const a0=document.getElementById('a0'),n0=document.getElementById('n0');
+  const prereqBasic = S.onset==='yes'&&S.duration==='yes';
+  if(prereqBasic){
+    const crMet=prereqMetCR(), pMet=prereqMetP();
+    if(crMet) sa(a0,'aok','✓ cr-CBD prerequisites met (insidious/gradual, ≥1yr, age ≥50, no family history). p-CBD prerequisites also met.');
+    else if(pMet) sa(a0,'awn','◈ p-CBD prerequisites met (insidious/gradual, ≥1yr). cr-CBD requires age ≥50 and no family history — one or more conditions not met for cr-CBD.');
+    n0.disabled=false;
+  } else if(S.onset==='no'||S.duration==='no') { sa(a0,'aerr','✕ Essential prerequisites not met — CBD criteria cannot be applied.'); n0.disabled=true; }
+  else { ha(a0); n0.disabled=true; }
+
+  // Step 1
+  const a1=document.getElementById('a1');
+  const hasPhen=[S.cbs,S.fbs,S.nappa,S.psps].some(v=>v&&v!=='none');
+  if(hasPhen) sa(a1,'alim','◈ Phenotype(s) selected. Proceed to CBS feature assessment — required for all phenotypes.');
+  else ha(a1);
+
+  // Step 2 — CBS feature tally
+  const mn=document.getElementById('motor-n'); if(mn) mn.textContent=motorCount();
+  const cn=document.getElementById('cortical-n'); if(cn) cn.textContent=corticalCount();
+  const mc=document.getElementById('motor-chip'); const cc=document.getElementById('cortical-chip');
+  if(mc){mc.className='chip';if(motorCount()>=2)mc.classList.add('cg');else if(motorCount()>=1)mc.classList.add('cl');}
+  if(cc){cc.className='chip';if(corticalCount()>=2)cc.classList.add('cg');else if(corticalCount()>=1)cc.classList.add('cl');}
+  const a2=document.getElementById('a2');
+  if(probCBS()) sa(a2,'aok','✓ Probable CBS criteria met: asymmetric + ≥2 motor + ≥2 cortical features.');
+  else if(possCBS()) sa(a2,'awn','◈ Possible CBS criteria met (≥1 motor + ≥1 cortical). Probable CBS requires asymmetric + ≥2 motor + ≥2 cortical — not yet fulfilled.');
+  else if([S.sf_a,S.sf_b,S.sf_c,S.sf_d,S.sf_e,S.sf_f].some(v=>v!==null)) sa(a2,'aerr','⚠ CBS phenotype requires ≥1 motor (a–c) AND ≥1 cortical (d–f) feature. Non-CBS phenotypes (FBS/naPPA/PSPS) require ≥1 CBS adjunct feature.');
+  else ha(a2);
+
+  // Step 3 exclusions
+  const a3=document.getElementById('a3');
+  if(anyHardExclusion()) sa(a3,'aerr','✕ Absolute exclusion criterion met — CBD diagnosis not possible.');
+  else if(maptExclusion()) sa(a3,'awn','⚠ MAPT tau mutation present — cr-CBD excluded (sporadic only). p-CBD remains possible.');
+  else if(EXCL_HARD.every(k=>S[k]==='no')&&S.exc_mapt==='no') sa(a3,'aok','✓ No exclusion criteria triggered — both cr-CBD and p-CBD remain eligible.');
+  else ha(a3);
+}
+
+function sa(el,cls,msg){if(!el)return;el.className='alrt show '+cls;el.innerHTML=msg;}
+function ha(el){if(el)el.classList.remove('show');}
+
+function rv() {
+  const v=verdict();
+  const sfNames={a:'(a) Limb rigidity/akinesia',b:'(b) Limb dystonia',c:'(c) Limb myoclonus',d:'(d) Orobuccal/limb apraxia',e:'(e) Cortical sensory deficit',f:'(f) Alien limb phenomena'};
+  const sfState=sf=>S['sf_'+sf]==='asym'?'Present (asymmetric)':S['sf_'+sf]==='sym'?'Present (symmetric)':S['sf_'+sf]==='yes'?'Present':'Absent';
+  const excNames={exc_lbd:'Lewy body disease features',exc_msa:'MSA (dysautonomia/cerebellar)',exc_als:'Combined UMN+LMN signs (ALS)',exc_ppa:'Semantic/logopenic PPA',exc_structural:'Structural lesion',exc_mutations:'GRN/TDP-43/FUS mutation',exc_ad:'Evidence of AD',exc_mapt:'MAPT tau mutation (cr-CBD only)'};
+
+  let html=`<div class="vban ${v.cls}"><div class="vlbl">Armstrong MJ, Litvan I et al. · Neurology 2013;80:496–503</div><div class="vtitle">${v.t}</div>${v.phen?`<div class="vphen" style="border-color:currentColor;margin-bottom:7px;">${v.phen}</div>`:''}<div class="vdesc">${v.d}</div></div>`;
+
+  html+=`<div class="sum-grid">`;
+
+  // Prerequisites + phenotypes
+  html+=`<div class="sblock"><div class="sbtitle">Prerequisites + Phenotypes</div>`;
+  [['Insidious onset/gradual progression','onset'],['Duration ≥1 year','duration'],['Age ≥50 (cr-CBD)','age'],['No family history (cr-CBD)','famhx']].forEach(([nm,k])=>{
+    const v2=S[k]; const ok=v2==='yes'||v2==='ge50'||v2==='no'&&k==='famhx';
+    const warn=v2==='lt50'||v2==='yes'&&k==='famhx';
+    html+=`<div class="srow"><div class="dot ${ok?'dg':warn?'da':'dgr'}"></div><div class="sname">${nm}</div><div class="stag ${ok?'tg':warn?'ta':'tgr'}">${v2||'—'}</div></div>`;
+  });
+  const phenRows={CBS:S.cbs,FBS:S.fbs,naPPA:S.nappa,PSPS:S.psps};
+  Object.entries(phenRows).forEach(([nm,v2])=>{
+    const ok=v2==='prob'||v2==='yes';const warn=v2==='poss'||v2==='part';
+    if(v2&&v2!=='none') html+=`<div class="srow"><div class="dot ${ok?'dl':warn?'da':'dgr'}"></div><div class="sname">Phenotype: ${nm}</div><div class="stag ${ok?'tl':warn?'ta':'tgr'}">${v2}</div></div>`;
+  });
+  html+=`</div>`;
+
+  // CBS features
+  html+=`<div class="sblock"><div class="sbtitle">CBS Features (a–f)</div>`;
+  ['a','b','c','d','e','f'].forEach(sf=>{
+    const present=sfPresent(sf);
+    html+=`<div class="srow"><div class="dot ${present?'dl':'dgr'}"></div><div class="sname">${sfNames[sf]}</div><div class="stag ${present?'tl':'tgr'}">${sfState(sf)}</div></div>`;
+  });
+  html+=`<div class="srow"><div class="dot ${S.asymm==='yes'?'dl':'dgr'}"></div><div class="sname">Asymmetry</div><div class="stag ${S.asymm==='yes'?'tl':S.asymm==='mild'?'ta':'tgr'}">${S.asymm||'—'}</div></div>`;
+  html+=`<div class="srow" style="border-top:1px solid var(--border);"><div class="dot ${motorCount()>=2?'dg':motorCount()>=1?'dl':'dgr'}"></div><div class="sname" style="font-weight:600;">Motor (a–c): ${motorCount()}/3 · Cortical (d–f): ${corticalCount()}/3</div></div>`;
+  html+=`</div>`;
+  html+=`</div>`;
+
+  // Exclusions
+  html+=`<div class="sblock" style="margin-bottom:12px;"><div class="sbtitle">Exclusion Criteria</div>`;
+  Object.entries(excNames).forEach(([k,nm])=>{
+    const v2=S[k];
+    html+=`<div class="srow"><div class="dot ${v2==='no'?'dg':v2==='yes'?'dr':v2==='mapt_cr'?'da':'dgr'}"></div><div class="sname">${nm}</div><div class="stag ${v2==='no'?'tg':v2==='yes'?'tr':v2?'ta':'tgr'}">${v2==='no'?'Absent':v2==='yes'?'PRESENT (excludes)':v2||'Not assessed'}</div></div>`;
+  });
+  html+=`</div>`;
+
+  document.getElementById('vout').innerHTML=html;
+
+  // Doc note
+  let note=`MOVEMENT DISORDERS / COGNITIVE NEUROLOGY CONSULTATION\nCriteria for the Diagnosis of Corticobasal Degeneration\nArmstrong MJ, Litvan I, Lang AE, et al. Neurology. 2013;80:496–503. doi:10.1212/WNL.0b013e31827f0fd1\nDate: ${new Date().toLocaleDateString()}\n\nPREREQUISITES\n  Insidious onset / gradual progression: ${S.onset==='yes'?'Met':'Not met'}\n  Symptom duration ≥1 year: ${S.duration==='yes'?'Met':'Not met'}\n  Age at onset ≥50 (cr-CBD): ${S.age==='ge50'?'Met':S.age==='lt50'?'<50 years (p-CBD only)':'Not assessed'}\n  No family history >1 relative (cr-CBD): ${S.famhx==='no'?'Met':S.famhx==='yes'?'Positive family history (p-CBD permitted)':'Not assessed'}\n\nPHENOTYPE\n  CBS: ${S.cbs||'Not selected'}\n  FBS: ${S.fbs||'Not selected'}\n  naPPA: ${S.nappa||'Not selected'}\n  PSPS: ${S.psps||'Not selected'} (p-CBD only)\n\nCBS FEATURES (Table 4)\n`;
+  ['a','b','c','d','e','f'].forEach(sf=>{ note+=`  ${sfNames[sf]}: ${sfState(sf)}\n`; });
+  note+=`  Asymmetry: ${S.asymm||'Not assessed'}\n  Motor features (a–c): ${motorCount()}/3\n  Cortical features (d–f): ${corticalCount()}/3\n  Probable CBS criteria met: ${probCBS()?'YES':'NO'} (requires asymmetric + ≥2 motor + ≥2 cortical)\n  Possible CBS criteria met: ${possCBS()?'YES':'NO'} (requires ≥1 motor + ≥1 cortical)\n\nEXCLUSION CRITERIA\n`;
+  Object.entries(excNames).forEach(([k,nm])=>{ note+=`  ${nm}: ${S[k]==='no'?'Absent':S[k]==='yes'?'PRESENT — EXCLUDES CBD':'Not assessed'}\n`; });
+  note+=`  Any exclusion triggered: ${anyHardExclusion()?'YES — CBD diagnosis not possible':'No'}\n\nCBD CLASSIFICATION (Table 5)\n${v.t}${v.phen?' — '+v.phen:''}\n${v.d}\n\nDiagnostic framework:\n  cr-CBD (Clinical Research Criteria — Probable Sporadic CBD): More specific. Requires age ≥50, sporadic, no tau mutation, no family history. Phenotype: Probable CBS or FBS/naPPA + ≥1 CBS feature (a–f). Goal: minimize contamination from other tau-based diagnoses for research cohorts.\n  p-CBD (Possible CBD Criteria): Broader. No age minimum, permits family history, permits MAPT tau mutations, includes PSPS phenotype. Phenotype: Possible CBS or FBS/naPPA/PSPS + ≥1 CBS feature (b–f only — NOT feature a). Goal: captures CBD cases while still emphasizing tau-based pathology; higher false-positive rate.\n\nKey points:\n  - CBD pathology is predicted antemortem in only 25–56% of cases — a definitive clinical diagnosis remains challenging\n  - CBS is the most common clinical phenotype (37.1%) but PSPS (23.3%), FTD (13.8%), and aphasia (4.8%) are also common CBD presentations\n  - Exclusion of amyloid evidence (CSF/PET) may miss ~14% of CBD cases with co-existing amyloid pathology (Dickson)\n  - No laboratory-supported diagnostic category is proposed — imaging and CSF biomarkers lack sufficient validation for CBD\n  - Mean age at onset 63.7 years (range 45–77.2), mean disease duration 6.6 years (range 2.0–12.5)\n\nRef: Armstrong MJ, Litvan I, Lang AE, et al. Criteria for the diagnosis of corticobasal degeneration. Neurology. 2013;80:496–503.`;
+  document.getElementById('dn').textContent=note;
+}
+
+function go(n){
+  document.getElementById('s'+cur).classList.remove('active');
+  document.getElementById('s'+n).classList.add('active');
+  for(let i=0;i<5;i++){const d=document.getElementById('st'+i);d.classList.remove('active','done');if(i<n)d.classList.add('done');else if(i===n)d.classList.add('active');}
+  cur=n;
+  document.getElementById('pf').style.width=((n/4)*100)+'%';
+  if(n===4) rv();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function xp(btn){
+  const d=btn.closest('.crit').querySelector('.crit-detail');if(!d)return;
+  const o=d.classList.toggle('open');
+  btn.textContent=o?'close ▴':'details ▾';
+}
+
+function toggleDoc(){
+  const body=document.getElementById('dn'),btn=document.getElementById('copy-btn'),tog=document.querySelector('.doc-tog');
+  if(!body)return;
+  const open=body.classList.toggle('open');
+  if(tog)tog.textContent=open?'▲ Documentation Note':'▼ Documentation Note';
+  if(btn)btn.classList.toggle('visible',open);
+}
+
+function copyDoc(){
+  const body=document.getElementById('dn'),btn=document.getElementById('copy-btn');
+  if(!body)return;
+  const text=body.textContent||body.innerText;
+  navigator.clipboard.writeText(text).then(()=>{if(btn){btn.textContent='✓ Copied';btn.classList.add('copied');setTimeout(()=>{btn.textContent='⎘ Copy';btn.classList.remove('copied');},2000);}})
+  .catch(()=>{const ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);if(btn){btn.textContent='✓ Copied';btn.classList.add('copied');setTimeout(()=>{btn.textContent='⎘ Copy';btn.classList.remove('copied');},2000);}});
+}
+
+function resetAll(){
+  Object.keys(S).forEach(k=>S[k]=null);
+  document.querySelectorAll('.crit').forEach(el=>el.className='crit');
+  document.querySelectorAll('.abtn').forEach(b=>b.classList.remove('ay','an','al','ab','aa','aw'));
+  document.querySelectorAll('.pbtn').forEach(b=>b.classList.remove('py','pp','pn'));
+  document.querySelectorAll('.phen-card').forEach(c=>c.className='phen-card');
+  document.querySelectorAll('.crit-detail').forEach(d=>d.classList.remove('open'));
+  document.querySelectorAll('.xbtn').forEach(b=>b.textContent='details ▾');
+  ['a0','a1','a2','a3'].forEach(id=>{const el=document.getElementById(id);if(el)el.classList.remove('show');});
+  const dn=document.getElementById('dn');if(dn)dn.classList.remove('open');
+  const cb=document.getElementById('copy-btn');if(cb)cb.classList.remove('visible','copied');
+  const tog=document.querySelector('.doc-tog');if(tog)tog.textContent='▼ Documentation Note';
+  go(0);
+  document.getElementById('n0').disabled=true;
+}
+
+ui();
+</script>
+</body>
+</html>

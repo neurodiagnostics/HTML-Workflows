@@ -1,0 +1,1218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Brain Death / DNC Navigator · AAN 2023</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+  --bg:        #0d1117;
+  --card:      #161b22;
+  --card2:     #1c2330;
+  --border:    #3a4556;
+  --border2:   #4a5f7a;
+  --green:     #3fb950;
+  --green-bg:  rgba(63,185,80,0.10);
+  --green-bd:  rgba(63,185,80,0.35);
+  --red:       #f85149;
+  --red-bg:    rgba(248,81,73,0.10);
+  --red-bd:    rgba(248,81,73,0.35);
+  --amber:     #e3b341;
+  --amber-bg:  rgba(227,179,65,0.10);
+  --amber-bd:  rgba(227,179,65,0.35);
+  --blue:      #58a6ff;
+  --blue-bg:   rgba(88,166,255,0.10);
+  --blue-bd:   rgba(88,166,255,0.35);
+  --purple:    #bc8cff;
+  --purple-bg: rgba(188,140,255,0.10);
+  --purple-bd: rgba(188,140,255,0.35);
+  --teal:      #39d0d8;
+  --teal-bg:   rgba(57,208,216,0.10);
+  --teal-bd:   rgba(57,208,216,0.35);
+  --text:      #e6edf3;
+  --text2:     #aab4c0;
+  --text3:     #6e7f94;
+  --sans:  'Inter', system-ui, sans-serif;
+  --mono:  'IBM Plex Mono', monospace;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg); color: var(--text); font-family: var(--sans); font-size: 14px; line-height: 1.5; min-height: 100vh; }
+.app { max-width: 900px; margin: 0 auto; padding: 0 20px 80px; }
+
+/* HEADER */
+header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+.h-title { font-size: 19px; font-weight: 700; }
+.h-title span { color: var(--teal); }
+.h-sub { font-family: var(--mono); font-size: 10px; color: var(--text3); margin-top: 3px; }
+.reset-btn { background: var(--card2); border: 1px solid var(--border); color: var(--text2); font-family: var(--mono); font-size: 11px; padding: 6px 14px; cursor: pointer; border-radius: 4px; transition: all 0.15s; white-space: nowrap; }
+.reset-btn:hover { border-color: var(--teal); color: var(--teal); }
+
+/* PROGRESS */
+.prog-track { height: 3px; background: var(--border); margin-bottom: 20px; border-radius: 2px; }
+.prog-fill { height: 100%; background: linear-gradient(90deg, var(--teal), #8af0f5); border-radius: 2px; transition: width 0.4s ease; box-shadow: 0 0 6px rgba(57,208,216,0.4); }
+
+/* STEP TABS */
+.steps { display: flex; border-bottom: 1px solid var(--border); margin-bottom: 20px; overflow-x: auto; }
+.stab { flex: 1; min-width: 76px; padding: 7px 4px 9px; text-align: center; font-family: var(--sans); font-size: 11px; font-weight: 600; color: var(--text3); border-bottom: 2px solid transparent; margin-bottom: -1px; transition: all 0.2s; line-height: 1.3; }
+.stab .sn { display: block; font-size: 15px; font-weight: 700; margin-bottom: 2px; }
+.stab.active { color: var(--teal); border-bottom-color: var(--teal); }
+.stab.done   { color: var(--green); border-bottom-color: var(--green); }
+
+/* CARD */
+.card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 22px; margin-bottom: 12px; }
+.ctitle { font-size: 12px; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; margin-bottom: 3px; }
+.csub { font-size: 12px; color: var(--text2); margin-bottom: 16px; line-height: 1.45; }
+
+/* SECTION LABEL */
+.slabel { display: flex; align-items: center; gap: 8px; font-family: var(--mono); font-size: 10px; font-weight: 500; color: var(--text2); letter-spacing: 0.07em; text-transform: uppercase; margin-bottom: 9px; padding-bottom: 6px; border-bottom: 1px solid var(--border); }
+.pill { font-size: 9px; padding: 1px 7px; border-radius: 20px; border: 1px solid; margin-left: auto; }
+.pill-r { border-color: var(--red);    color: var(--red);    background: var(--red-bg); }
+.pill-a { border-color: var(--amber);  color: var(--amber);  background: var(--amber-bg); }
+.pill-t { border-color: var(--teal);   color: var(--teal);   background: var(--teal-bg); }
+.pill-g { border-color: var(--green);  color: var(--green);  background: var(--green-bg); }
+.pill-b { border-color: var(--blue);   color: var(--blue);   background: var(--blue-bg); }
+
+/* CRITERION ROW */
+.crit { border: 1px solid var(--border); border-radius: 6px; margin-bottom: 5px; overflow: hidden; transition: border-color 0.15s, background 0.15s; }
+.crit.c-yes  { border-color: var(--green-bd);  background: var(--green-bg); }
+.crit.c-no   { border-color: var(--red-bd);    background: var(--red-bg); }
+.crit.c-met  { border-color: var(--teal-bd);   background: var(--teal-bg); }
+.crit.c-abs  { border-color: var(--border2);   background: var(--card2); }
+.crit.c-warn { border-color: var(--amber-bd);  background: var(--amber-bg); }
+
+.crit-main { display: flex; align-items: center; gap: 10px; padding: 10px 13px; }
+.crit-name { flex: 1; font-size: 13px; font-weight: 500; color: var(--text); line-height: 1.3; }
+.xbtn { background: none; border: 1px solid var(--border); color: var(--text3); font-size: 11px; cursor: pointer; padding: 2px 8px; font-family: var(--mono); white-space: nowrap; transition: all 0.15s; flex-shrink: 0; border-radius: 3px; }
+.xbtn:hover { color: var(--blue); border-color: var(--blue); }
+
+.crit-detail { display: none; padding: 10px 13px 12px; font-size: 12px; color: var(--text); line-height: 1.65; border-top: 1px solid var(--border); }
+.crit-detail.open { display: block; }
+.cnote { margin-top: 8px; padding: 7px 10px; background: var(--card2); border-left: 3px solid var(--border2); font-family: var(--mono); font-size: 10px; color: var(--text2); line-height: 1.7; font-style: italic; border-radius: 0 3px 3px 0; }
+.cnote-warn { border-left-color: var(--amber); }
+.cnote-red  { border-left-color: var(--red); }
+.cnote-grn  { border-left-color: var(--green); }
+
+/* BUTTON ROW */
+.brow { display: flex; border-top: 1px solid var(--border); }
+.abtn { flex: 1; padding: 8px 6px; background: none; border: none; border-right: 1px solid var(--border); color: var(--text2); font-family: var(--mono); font-size: 11px; cursor: pointer; transition: all 0.12s; text-transform: uppercase; letter-spacing: 0.04em; font-weight: 500; }
+.abtn:last-child { border-right: none; }
+.abtn:hover { background: var(--card2); color: var(--text); }
+.abtn.ay  { background: var(--green-bg);  color: var(--green);  font-weight: 700; }
+.abtn.an  { background: var(--red-bg);    color: var(--red);    font-weight: 700; }
+.abtn.at  { background: var(--teal-bg);   color: var(--teal);   font-weight: 700; }
+.abtn.aw  { background: var(--amber-bg);  color: var(--amber);  font-weight: 700; }
+.abtn.ab  { background: var(--blue-bg);   color: var(--blue);   font-weight: 700; }
+
+/* TWO-COL */
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; }
+@media (max-width: 600px) { .two-col { grid-template-columns: 1fr; } }
+
+/* ALERT */
+.alrt { padding: 9px 13px; border-radius: 5px; font-size: 12px; line-height: 1.5; margin-top: 12px; border-left: 3px solid; display: none; }
+.alrt.show { display: block; }
+.aok  { border-color: var(--green);  background: var(--green-bg);  color: #7ee787; }
+.awn  { border-color: var(--amber);  background: var(--amber-bg);  color: var(--amber); }
+.aerr { border-color: var(--red);    background: var(--red-bg);    color: #ff7b72; }
+.ainf { border-color: var(--blue);   background: var(--blue-bg);   color: var(--blue); }
+.ateal{ border-color: var(--teal);   background: var(--teal-bg);   color: var(--teal); }
+
+/* LOGIC BOX */
+.lbox { background: var(--card2); border: 1px solid var(--border); border-radius: 5px; padding: 11px 15px; font-size: 12px; color: var(--text2); line-height: 1.7; margin-bottom: 16px; }
+.lbox strong { color: var(--text); }
+.lg { color: var(--green);  font-weight: 600; }
+.la { color: var(--amber);  font-weight: 600; }
+.lr { color: var(--red);    font-weight: 600; }
+.lt { color: var(--teal);   font-weight: 600; }
+.lb { color: var(--blue);   font-weight: 600; }
+
+/* TALLY */
+.tally { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+.chip { display: flex; align-items: center; gap: 5px; padding: 5px 12px; border-radius: 20px; font-family: var(--mono); font-size: 11px; border: 1px solid var(--border); background: var(--card2); color: var(--text2); }
+.chip .n { font-size: 15px; font-weight: 700; }
+.cg { border-color: var(--green-bd);  background: var(--green-bg);  color: var(--green); }
+.cr { border-color: var(--red-bd);    background: var(--red-bg);    color: var(--red); }
+.ca { border-color: var(--amber-bd);  background: var(--amber-bg);  color: var(--amber); }
+.ct { border-color: var(--teal-bd);   background: var(--teal-bg);   color: var(--teal); }
+
+/* NAV */
+.nav-row { display: flex; justify-content: space-between; align-items: center; margin-top: 20px; gap: 10px; }
+.nbtn { padding: 9px 22px; border-radius: 5px; font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; border: 1px solid; cursor: pointer; font-weight: 500; transition: all 0.15s; }
+.np { background: var(--teal); border-color: var(--teal); color: #0d1117; font-weight: 700; }
+.np:hover { background: #8af0f5; border-color: #8af0f5; }
+.np:disabled { opacity: 0.3; cursor: not-allowed; }
+.ns { background: transparent; border-color: var(--border2); color: var(--text2); }
+.ns:hover { border-color: var(--text); color: var(--text); }
+
+/* SCREEN */
+.screen { display: none; }
+.screen.active { display: block; animation: fu 0.25s ease; }
+@keyframes fu { from { opacity:0; transform:translateY(5px); } to { opacity:1; transform:translateY(0); } }
+
+/* VERDICT */
+.vban { border-radius: 8px; padding: 22px 26px; margin-bottom: 16px; text-align: center; border: 2px solid; }
+.ve   { border-color: var(--green);  background: var(--green-bg); }
+.vt   { border-color: var(--teal);   background: var(--teal-bg); }
+.va   { border-color: var(--amber);  background: var(--amber-bg); }
+.vn   { border-color: var(--red);    background: var(--red-bg); }
+.vlbl { font-family: var(--mono); font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase; opacity: 0.6; margin-bottom: 5px; }
+.vtitle { font-size: 24px; font-weight: 700; margin-bottom: 7px; letter-spacing: -0.01em; }
+.ve .vtitle { color: var(--green); }
+.vt .vtitle { color: var(--teal); }
+.va .vtitle { color: var(--amber); }
+.vn .vtitle { color: var(--red); }
+.vdesc { font-size: 12px; color: var(--text2); line-height: 1.7; max-width: 580px; margin: 0 auto; }
+
+/* SUMMARY */
+.sum-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+@media (max-width: 580px) { .sum-grid { grid-template-columns: 1fr; } }
+.sblock { background: var(--card); border: 1px solid var(--border); border-radius: 6px; overflow: hidden; }
+.sbtitle { font-family: var(--mono); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; padding: 7px 11px; border-bottom: 1px solid var(--border); color: var(--text2); background: var(--card2); }
+.srow { display: flex; align-items: flex-start; gap: 8px; padding: 6px 11px; border-bottom: 1px solid var(--border); font-size: 12px; }
+.srow:last-child { border-bottom: none; }
+.dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; margin-top: 4px; }
+.dg  { background: var(--green); }
+.dr  { background: var(--red); }
+.dt  { background: var(--teal); }
+.dgr { background: var(--text3); }
+.da  { background: var(--amber); }
+.sname { flex: 1; color: var(--text); }
+.stag { font-family: var(--mono); font-size: 9px; padding: 1px 7px; border-radius: 10px; border: 1px solid; white-space: nowrap; }
+.tg  { border-color: var(--green-bd);  color: var(--green); }
+.tr  { border-color: var(--red-bd);    color: var(--red); }
+.tt  { border-color: var(--teal-bd);   color: var(--teal); }
+.tgr { border-color: var(--border2);   color: var(--text3); }
+.ta  { border-color: var(--amber-bd);  color: var(--amber); }
+
+/* DISCLAIMER */
+.disclaimer { background: rgba(248,81,73,0.08); border: 1px solid var(--red-bd); border-left: 4px solid var(--red); border-radius: 6px; padding: 10px 14px; margin-bottom: 18px; display: flex; align-items: flex-start; gap: 10px; }
+.disclaimer-icon { color: var(--red); font-size: 15px; flex-shrink: 0; margin-top: 1px; }
+.disclaimer-text { font-size: 11px; color: #ff9490; line-height: 1.6; font-family: var(--mono); }
+.disclaimer-text strong { color: var(--red); font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; display: block; margin-bottom: 2px; }
+.doc-header { display: flex; align-items: center; gap: 8px; margin-bottom: 5px; }
+.doc-tog { flex: 1; text-align: left; background: var(--card2); border: 1px solid var(--border2); border-radius: 5px; color: var(--text2); font-family: var(--mono); font-size: 11px; padding: 8px 13px; cursor: pointer; transition: all 0.15s; letter-spacing: 0.04em; }
+.doc-tog:hover { border-color: var(--teal); color: var(--teal); }
+.copy-btn { background: var(--card2); border: 1px solid var(--border2); border-radius: 5px; color: var(--text2); font-family: var(--mono); font-size: 11px; padding: 8px 14px; cursor: pointer; white-space: nowrap; transition: all 0.15s; display: none; }
+.copy-btn.visible { display: block; }
+.copy-btn:hover { border-color: var(--green); color: var(--green); }
+.copy-btn.copied { border-color: var(--green); color: var(--green); background: var(--green-bg); }
+.doc-body { display: none; background: var(--card2); border: 1px solid var(--border2); border-radius: 5px; padding: 13px 15px; font-family: var(--mono); font-size: 11px; color: var(--text2); line-height: 1.85; white-space: pre-wrap; margin-bottom: 12px; }
+.doc-body.open { display: block; }
+
+/* INFO BOX */
+.ibox { background: var(--card2); border: 1px solid var(--border); border-radius: 5px; padding: 11px 15px; font-size: 12px; color: var(--text2); line-height: 1.7; margin-top: 10px; }
+.ibox strong { color: var(--text); }
+
+/* APNEA STEPS */
+.step-list { counter-reset: apnea-step; margin-bottom: 12px; }
+.step-item { display: flex; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 12px; color: var(--text2); line-height: 1.5; }
+.step-item:last-child { border-bottom: none; }
+.step-num { font-family: var(--mono); font-size: 11px; font-weight: 700; color: var(--teal); min-width: 20px; }
+</style>
+</head>
+<body>
+<div class="app">
+
+<header>
+  <div>
+    <div class="h-title">Brain Death / <span>DNC</span> Navigator</div>
+    <div class="h-sub">DNC = Death by Neurologic Criteria · Greer DM et al. · Neurology 2023;101:1112–1132 · doi:10.1212/WNL.0000000000207740 · AAN/AAP/CNS/SCCM</div>
+  </div>
+  <button class="reset-btn" onclick="resetAll()">↺ Reset</button>
+</header>
+
+<div class="prog-track"><div class="prog-fill" id="pf" style="width:0%"></div></div>
+
+<div class="steps">
+  <div class="stab active" id="st0"><span class="sn">1</span>Prerequisites</div>
+  <div class="stab" id="st1"><span class="sn">2</span>Confounders</div>
+  <div class="stab" id="st2"><span class="sn">3</span>Neuro Exam</div>
+  <div class="stab" id="st3"><span class="sn">4</span>Apnea Test</div>
+  <div class="stab" id="st4"><span class="sn">5</span>Ancillary</div>
+  <div class="stab" id="st5"><span class="sn">6</span>Verdict</div>
+</div>
+
+<!-- ══ SCREEN 0: PREREQUISITES ══ -->
+<div class="screen active" id="s0">
+<div class="card">
+  <div class="disclaimer" style="margin-bottom:16px;">
+    <div class="disclaimer-icon">⚠</div>
+    <div class="disclaimer-text">
+      <strong>Educational Use Only</strong>
+      This tool is intended for clinical education and training purposes only. It does not replace expert clinician assessment, institutional protocol, or applicable legal requirements. It may not be used to formally determine or declare brain death / death by neurologic criteria. All BD/DNC determinations must be performed by qualified clinicians in accordance with the 2023 AAN/AAP/CNS/SCCM guideline, institutional policy, and state law.
+    </div>
+  </div>
+  <div class="ctitle" style="color:var(--teal);">Step 1 · Prerequisites for BD/DNC Evaluation</div>
+  <div class="csub">All prerequisites must be satisfied before initiating the BD/DNC evaluation. Each item must be confirmed. A single unmet prerequisite requires deferral or alternative approach.</div>
+
+  <div class="lbox">
+    <strong>Guiding principle (Rec. 7a, Level A):</strong> BD/DNC evaluation can only be initiated when a patient has sustained a <span class="lt">catastrophic, permanent brain injury</span> caused by an <span class="lt">identified mechanism known to lead to BD/DNC</span>. This presumption of non-brain-death must be actively disproved through a standardized process.
+  </div>
+
+  <div class="slabel">A · Etiology &amp; Neuroimaging <span class="pill pill-r">ALL MANDATORY</span></div>
+
+  <div class="crit" id="etiol-item">
+    <div class="crit-main">
+      <div class="crit-name">Identified catastrophic brain injury with known mechanism consistent with BD/DNC</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      A definitive etiology must be established that is known to cause BD/DNC. Accepted causes include: traumatic brain injury, subarachnoid hemorrhage, intracerebral hemorrhage, massive ischemic stroke, hypoxic-ischemic brain injury (HIBI, e.g. post-cardiac arrest), intracranial infection with malignant cerebral edema, and space-occupying lesions causing herniation. Early after injury, imaging findings may not yet demonstrate full severity; repeat neuroimaging can document progression. If no mechanism is identified, BD/DNC evaluation must not proceed.
+      <div class="cnote cnote-red">Reversible mimics that can produce clinical BD/DNC appearance: Guillain-Barré syndrome, leptomeningeal carcinomatosis, snake envenomation, botulism, high cervical cord injuries, severe metabolic encephalopathy. These must be excluded by clinical context and workup (Rec. 7b, Level A).</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="pset('etiol','yes')" id="etiol-yes">✓ Identified</button>
+      <button class="abtn" onclick="pset('etiol','no')"  id="etiol-no">✗ Not identified — defer evaluation</button>
+    </div>
+  </div>
+
+  <div class="crit" id="neuroimg-item">
+    <div class="crit-main">
+      <div class="crit-name">Neuroimaging consistent with severe, irreversible brain injury</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      CT or MRI must demonstrate an acute CNS injury consistent with the profound loss of brain function (2010 AAN; reaffirmed 2023). For primary infratentorial injury (e.g., posterior fossa hemorrhage or infarct): the 2023 guideline requires confirmation of <strong>catastrophic supratentorial injury</strong> on neuroimaging before initiating the BD/DNC evaluation, to meet the UDDA requirement of loss of function of the brain as a whole. If isolated infratentorial pathology is present, ancillary testing demonstrating absent cerebral blood flow is recommended even if clinical exam and apnea test are consistent with BD/DNC.
+      <div class="cnote cnote-warn">Primary infratentorial injury — special consideration: Ancillary testing to demonstrate absent cerebral blood flow is recommended regardless of clinical exam result (Neurology CPJ 2023; World Brain Death Project 2020).</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="pset('neuroimg','yes')"  id="neuroimg-yes">✓ Consistent with severe injury</button>
+      <button class="abtn" onclick="pset('neuroimg','infra')" id="neuroimg-infra">⚠ Isolated infratentorial — ancillary required</button>
+      <button class="abtn" onclick="pset('neuroimg','no')"   id="neuroimg-no">✗ Insufficient / no imaging</button>
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:14px;">B · Observation Period &amp; Environment <span class="pill pill-r">MANDATORY</span></div>
+
+  <div class="crit" id="obs-item">
+    <div class="crit-main">
+      <div class="crit-name">Adequate observation period to confirm severity and permanency</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      The patient must be observed for sufficient time to determine the severity and permanency of the brain injury and to exclude confounders (Rec. 4, Level A). The 2023 guideline does not mandate a specific numeric waiting period for adults but requires that the permanency of injury be established before evaluation. For children: additional minimum observation intervals apply (not covered in this adult-focused tool). Clinical judgment — guided by the acuity and mechanism of injury — determines adequacy. The evaluation must occur in an environment with staff trained to manage the cardiopulmonary complications of apnea testing.
+      <div class="cnote">No legislated mandatory waiting period exists in most US states for adults. Institutional policy may add requirements. Ensure hemodynamic stability and resuscitation to physiologic targets before proceeding.</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="pset('obs','yes')" id="obs-yes">✓ Adequate observation confirmed</button>
+      <button class="abtn" onclick="pset('obs','no')"  id="obs-no">✗ Insufficient — defer</button>
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:14px;">C · Examiner Qualifications <span class="pill pill-r">MANDATORY</span></div>
+
+  <div class="crit" id="exam-item">
+    <div class="crit-main">
+      <div class="crit-name">Examiner is credentialed, trained, and competent in BD/DNC evaluation</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      Attending clinicians performing BD/DNC examinations must be appropriately credentialed members of the hospital's medical staff and adequately trained and competent in the evaluation of BD/DNC in adults (Rec. 6a, Level A). Eligible specialties include: intensivists, neurologists, neurosurgeons, and others per institutional credentialing. APPs may perform BD/DNC evaluations independently only if permitted by local law and institutional standards and if appropriately credentialed (Rec. 6b, Level A). Trainees must be directly supervised at the bedside by a qualifying attending for the entirety of the evaluation (Rec. 6c, Level A).
+      <div class="cnote cnote-red">Conflict of interest (Rec. 3, Level A): Any clinician involved in surgical recovery of organs for transplantation must NOT be involved in BD/DNC evaluation. BD/DNC examiners must consider only the interests of their patient.</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="pset('exam','yes')" id="exam-yes">✓ Qualified examiner confirmed</button>
+      <button class="abtn" onclick="pset('exam','no')"  id="exam-no">✗ Not credentialed — do not proceed</button>
+    </div>
+  </div>
+
+  <div id="a0" class="alrt"></div>
+  <div class="nav-row">
+    <div></div>
+    <button class="nbtn np" id="n0" onclick="go(1)" disabled>Next: Confounders →</button>
+  </div>
+</div>
+</div>
+
+<!-- ══ SCREEN 1: CONFOUNDERS ══ -->
+<div class="screen" id="s1">
+<div class="card">
+  <div class="ctitle" style="color:var(--amber);">Step 2 · Exclude Confounders</div>
+  <div class="csub">All reversible conditions that could mimic or interfere with BD/DNC must be corrected or excluded. Any unresolved confounder invalidates the clinical examination.</div>
+
+  <div class="lbox">
+    <strong>Key principle:</strong> Conditions such as metabolic derangements, intoxication, or medications can depress the CNS and result in a comatose state with absent brainstem reflexes that is <span class="la">reversible</span>. These must be systematically excluded before the neurologic examination and apnea test are considered valid. Document explicitly in the medical record.
+  </div>
+
+  <div class="slabel">A · Temperature <span class="pill pill-r">MUST CORRECT</span></div>
+  <div class="crit" id="temp-item">
+    <div class="crit-main">
+      <div class="crit-name">Core temperature ≥36°C (96.8°F)</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      Hypothermia may blunt or abolish brainstem reflexes independent of brain injury. The 2023 AAN guideline requires that temperature be at or above 36°C before proceeding. Active rewarming to this threshold is required in hypothermic patients. In patients managed with targeted temperature management (TTM) post-cardiac arrest: the 2023 guideline recommends that BD/DNC evaluation not begin until at least 24 hours after rewarming to ≥36°C (though TTM itself does not preclude subsequent BD/DNC determination once rewarmed).
+      <div class="cnote">For TTM patients: allow adequate washout time from sedatives and neuromuscular blockers used during TTM before proceeding.</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="cset('temp','met')"   id="temp-met">✓ ≥36°C confirmed</button>
+      <button class="abtn" onclick="cset('temp','unmet')" id="temp-unmet">✗ &lt;36°C — rewarm first</button>
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:14px;">B · Hemodynamics <span class="pill pill-r">MUST CORRECT</span></div>
+  <div class="crit" id="bp-item">
+    <div class="crit-main">
+      <div class="crit-name">Systolic BP ≥100 mmHg (adults) or MAP ≥75 mmHg</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      Hypotension may suppress brain function independently of injury. Vasopressors and fluids should be optimized to achieve hemodynamic stability before evaluation. The apnea test abort threshold during the test is SBP ≤100 mmHg or MAP ≤75 mmHg in adults despite vasopressor/inotrope support (eTable 2, 2023 guideline supplement). ECMO does not preclude BD/DNC evaluation; specialized techniques (CO₂ blending into oxygenator) are available for apnea testing in ECMO patients.
+      <div class="cnote cnote-warn">ECMO consideration: Venoarterial (VA) ECMO supports circulation but does not independently produce brain function. Specialized apnea testing protocols apply — consult the 2023 guideline supplement.</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="cset('bp','met')"   id="bp-met">✓ Hemodynamics acceptable</button>
+      <button class="abtn" onclick="cset('bp','unmet')" id="bp-unmet">✗ Hypotensive — stabilize first</button>
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:14px;">C · CNS-Depressant Drugs &amp; Neuromuscular Blockade <span class="pill pill-r">MUST EXCLUDE</span></div>
+  <div class="crit" id="drug-item">
+    <div class="crit-main">
+      <div class="crit-name">No residual effect of CNS depressants, sedatives, anesthetics, or neuromuscular blockers</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      CNS depressants (barbiturates, benzodiazepines, opioids, propofol, dexmedetomidine, ketamine) and neuromuscular blocking agents (NMBAs) can all produce reversible clinical findings mimicking BD/DNC. All must have adequate time for metabolism/excretion, taking into account altered hepatic and renal function in critically ill patients. For barbiturates: serum levels should be checked; therapeutic coma from barbiturates may require ancillary testing. For NMBAs: train-of-four (TOF) testing must confirm 4/4 twitches before proceeding. Blood toxicology screening is recommended if drug ingestion is suspected.
+      <div class="cnote cnote-red">High-dose barbiturate coma: Clinical examination is unreliable even at sub-therapeutic levels. Ancillary cerebral blood flow testing is recommended/required in this scenario.</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="cset('drug','met')"   id="drug-met">✓ No residual drug effect</button>
+      <button class="abtn" onclick="cset('drug','unmet')" id="drug-unmet">⚠ Drug effect present — ancillary testing required</button>
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:14px;">D · Metabolic Derangements <span class="pill pill-r">MUST CORRECT</span></div>
+  <div class="two-col">
+    <div class="crit" id="meta-item">
+      <div class="crit-main">
+        <div class="crit-name">No severe electrolyte, acid-base, or endocrine disturbance</div>
+        <button class="xbtn" onclick="xp(this)">details ▾</button>
+      </div>
+      <div class="crit-detail">
+        The 2023 guideline acknowledges that determination of specific cut-off laboratory values is arbitrary, but lists metabolic derangements that warrant correction before proceeding (eTable 1). These include: severe hyponatremia or hypernatremia, severe hypocalcemia or hypercalcemia, severe hypophosphatemia, severe hypermagnesemia, severe hepatic failure (hyperammonemia), severe hypothyroidism (myxedema coma), Addisonian crisis, and severe acidosis or alkalosis not attributable to injury.
+        <div class="cnote">Ammonia and thyroid function tests are NOT routinely measured but should be obtained if encephalopathy of unclear etiology.</div>
+      </div>
+      <div class="brow">
+        <button class="abtn" onclick="cset('meta','met')"   id="meta-met">✓ No significant derangement</button>
+        <button class="abtn" onclick="cset('meta','unmet')" id="meta-unmet">✗ Derangement — correct first</button>
+      </div>
+    </div>
+
+    <div class="crit" id="pao2-item">
+      <div class="crit-main">
+        <div class="crit-name">PaO₂ ≥200 mmHg on 100% FiO₂ (pre-apnea test oxygenation)</div>
+        <button class="xbtn" onclick="xp(this)">details ▾</button>
+      </div>
+      <div class="crit-detail">
+        Before initiating the apnea test, the patient must be pre-oxygenated with 100% FiO₂ for 10 minutes to achieve a PaO₂ ≥200 mmHg. This provides an adequate oxygen reservoir during the apnea period to prevent hypoxemia before the PaCO₂ threshold is reached. A baseline ABG should be drawn at the start of apnea testing to document PaCO₂. This is an apnea-test-specific prerequisite and is assessed here to allow planning.
+        <div class="cnote cnote-grn">Preoxygenation target: PaO₂ &gt;200 mmHg ensures ~10 minutes of apnea time before SpO₂ drops below 85% in most patients — sufficient for PaCO₂ to rise to ≥60 mmHg.</div>
+      </div>
+      <div class="brow">
+        <button class="abtn" onclick="cset('pao2','met')"   id="pao2-met">✓ Oxygenation adequate</button>
+        <button class="abtn" onclick="cset('pao2','unmet')" id="pao2-unmet">✗ Hypoxemic — defer apnea test</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="a1" class="alrt"></div>
+  <div class="nav-row">
+    <button class="nbtn ns" onclick="go(0)">← Back</button>
+    <button class="nbtn np" id="n1" onclick="go(2)" disabled>Next: Neurologic Exam →</button>
+  </div>
+</div>
+</div>
+
+<!-- ══ SCREEN 2: NEUROLOGIC EXAMINATION ══ -->
+<div class="screen" id="s2">
+<div class="card">
+  <div class="ctitle" style="color:var(--red);">Step 3 · Neurologic Examination</div>
+  <div class="csub">All components must be absent for the examination to be consistent with BD/DNC. Any single preserved response indicates brain or brainstem function and is <strong>inconsistent with BD/DNC</strong>.</div>
+
+  <div class="lbox">
+    <strong>Core concept (Rec. 5, Level A):</strong> Spontaneous breathing, absence of coma, any intact brainstem reflex, or motor activity <em>other than</em> spinally mediated reflexes indicate brain function. BD/DNC cannot be declared if any component is present or equivocal. The examination focuses on demonstrating loss of all brainstem reflexes, as complete loss of the brainstem reticular activating system is the most robust predictor of permanence.
+  </div>
+
+  <div class="slabel">A · Consciousness &amp; Motor Response <span class="pill pill-r">ALL ABSENT REQUIRED</span></div>
+  <div class="two-col">
+    <div class="crit" id="coma-item">
+      <div class="crit-main">
+        <div class="crit-name">Deep coma — no response to noxious stimuli</div>
+        <button class="xbtn" onclick="xp(this)">details ▾</button>
+      </div>
+      <div class="crit-detail">
+        No evidence of consciousness or awareness. Patients must show no purposeful or reflexive motor response to noxious stimulation anywhere on the body. Apply noxious stimuli to the head/face (supraorbital pressure, TMJ pressure) and trunk/limbs. The GCS motor score must be 1 (no response), not decorticate or decerebrate posturing, and not withdrawal to painful stimuli.
+        <div class="cnote cnote-warn">Spinal reflexes: Spinally-mediated movements (Lazarus sign, triple flexion, limb movements to stimulation) may occur after BD/DNC and do NOT indicate brain function. They represent intact spinal cord reflex arcs and must be distinguished from brainstem-mediated responses.</div>
+      </div>
+      <div class="brow">
+        <button class="abtn" onclick="eset('coma','absent')"  id="coma-absent">✓ Coma confirmed — no response to noxious stimuli</button>
+        <button class="abtn" onclick="eset('coma','present')" id="coma-present">✗ Response elicited — not BD/DNC</button>
+      </div>
+    </div>
+
+    <div class="crit" id="motor-item">
+      <div class="crit-main">
+        <div class="crit-name">No brain/brainstem-mediated motor movements</div>
+        <button class="xbtn" onclick="xp(this)">details ▾</button>
+      </div>
+      <div class="crit-detail">
+        No decerebrate or decorticate posturing. No purposeful movements. No seizures. The 2023 guideline includes a table of spinal reflexes adapted from the World Brain Death Project (JAMA 2020) to assist in distinguishing spinal from brainstem-mediated movements. Examples of acceptable spinal reflexes: Babinski sign, triple flexion, finger jerks, undulating toe sign, arm-raising (Lazarus sign). These do not preclude BD/DNC determination.
+      </div>
+      <div class="brow">
+        <button class="abtn" onclick="eset('motor','absent')"  id="motor-absent">✓ No brainstem motor responses</button>
+        <button class="abtn" onclick="eset('motor','present')" id="motor-present">✗ Brainstem movement present</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:14px;">B · Pupillary Reflex <span class="pill pill-r">MUST BE ABSENT</span></div>
+  <div class="crit" id="pupil-item">
+    <div class="crit-main">
+      <div class="crit-name">Absent pupillary light reflex bilaterally — pupils fixed (typically mid-position or dilated)</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      Both pupils must be non-reactive to bright light. Pupils are typically 4–9 mm (mid-position to dilated) in BD/DNC. A bright, focused light source should be used. Assess direct and consensual responses bilaterally. The pupillary light reflex arc involves CN II (afferent) and CN III (efferent via ciliary ganglion); bilateral absence indicates midbrain dysfunction. Asymmetric or unequal pupils alone are not sufficient — both must be completely non-reactive.
+      <div class="cnote cnote-warn">Caveats: Prior mydriatics (atropine, phenylephrine drops), severe miosis from opioid overdose (may prevent dilation), ocular trauma, or pre-existing Adie's tonic pupil may confound assessment. Document bilateral testing with a bright light source explicitly.</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="eset('pupil','absent')"  id="pupil-absent">✓ Pupils fixed, non-reactive bilaterally</button>
+      <button class="abtn" onclick="eset('pupil','present')" id="pupil-present">✗ Pupillary reaction present — not BD/DNC</button>
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:14px;">C · Oculomotor Reflexes <span class="pill pill-r">BOTH ABSENT REQUIRED</span></div>
+  <div class="two-col">
+    <div class="crit" id="ocr-item">
+      <div class="crit-main">
+        <div class="crit-name">Absent oculocephalic reflex (doll's eyes)</div>
+        <button class="xbtn" onclick="xp(this)">details ▾</button>
+      </div>
+      <div class="crit-detail">
+        Rapidly turn the head side-to-side and up/down. Eyes should remain fixed (no conjugate deviation in the opposite direction). Tests the MLF, PPRF, and CN III/VI via vestibular pathways. In BD/DNC, eyes move passively with the head (no counterrolling). This reflex may be OMITTED if there is cervical spine instability or injury — document reason for omission. If omitted, the oculovestibular reflex becomes more critical.
+        <div class="cnote">C-spine injury: If oculocephalic reflex cannot be safely performed, the oculovestibular reflex must be performed bilaterally and may require ancillary testing if equivocal.</div>
+      </div>
+      <div class="brow">
+        <button class="abtn" onclick="eset('ocr','absent')"   id="ocr-absent">✓ Reflex absent — eyes move with head</button>
+        <button class="abtn" onclick="eset('ocr','present')"  id="ocr-present">✗ Reflex present — eyes deviate</button>
+        <button class="abtn" onclick="eset('ocr','omitted')"  id="ocr-omitted">— C-spine: omit/ancillary</button>
+      </div>
+    </div>
+
+    <div class="crit" id="ovr-item">
+      <div class="crit-main">
+        <div class="crit-name">Absent oculovestibular reflex (cold caloric) bilaterally</div>
+        <button class="xbtn" onclick="xp(this)">details ▾</button>
+      </div>
+      <div class="crit-detail">
+        Inspect ear canals for occlusion or TM perforation. With HOB at 30°, instill ≥30 mL of ice-cold water slowly into one ear, observe for 60 seconds. Allow 5 minutes between sides. In BD/DNC: no deviation of the eyes toward the irrigated ear (absent tonic deviation). Tests CN VIII, brainstem vestibular nuclei, MLF, and CN III/VI. This is typically the more sensitive test of the two oculomotor reflexes.
+        <div class="cnote cnote-warn">Bilateral absence required. Sedatives (especially benzodiazepines) can suppress caloric responses. Cerumen occlusion or perforated TM may prevent adequate testing — document and consider ancillary testing if both ears are untestable.</div>
+      </div>
+      <div class="brow">
+        <button class="abtn" onclick="eset('ovr','absent')"  id="ovr-absent">✓ Reflex absent — no eye deviation bilaterally</button>
+        <button class="abtn" onclick="eset('ovr','present')" id="ovr-present">✗ Reflex present — tonic deviation seen</button>
+        <button class="abtn" onclick="eset('ovr','untest')"  id="ovr-untest">— Untestable bilaterally</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:14px;">D · Corneal, Gag &amp; Cough Reflexes <span class="pill pill-r">ALL ABSENT REQUIRED</span></div>
+  <div class="two-col">
+    <div class="crit" id="corneal-item">
+      <div class="crit-main">
+        <div class="crit-name">Absent corneal reflex bilaterally</div>
+        <button class="xbtn" onclick="xp(this)">details ▾</button>
+      </div>
+      <div class="crit-detail">
+        Lightly touch each cornea with a cotton wisp or cotton swab — observe for any eyelid movement (blink). Tests CN V (afferent: ophthalmic branch) and CN VII (efferent: orbicularis oculi). Contact lens use can reduce corneal sensitivity; this should be noted. Bilateral absence indicates bilateral CN V and/or VII nuclear or nerve dysfunction. Direct eye injury may confound the ipsilateral response.
+      </div>
+      <div class="brow">
+        <button class="abtn" onclick="eset('corneal','absent')"  id="corneal-absent">✓ Reflex absent — no blink bilaterally</button>
+        <button class="abtn" onclick="eset('corneal','present')" id="corneal-present">✗ Reflex present — blink elicited</button>
+      </div>
+    </div>
+
+    <div class="crit" id="gag-item">
+      <div class="crit-main">
+        <div class="crit-name">Absent gag reflex</div>
+        <button class="xbtn" onclick="xp(this)">details ▾</button>
+      </div>
+      <div class="crit-detail">
+        Stimulate the posterior pharynx bilaterally with a Yankauer suction catheter or tongue depressor. Observe for any pharyngeal or palatal contraction. Tests CN IX (afferent: glossopharyngeal) and CN X (efferent: vagus). In intubated patients, this test must still be performed — gently stimulate the pharynx around the ETT. Suctioning the back of the throat on both sides is the preferred technique per 2023 guideline supplement (eTable).
+        <div class="cnote">In BD/DNC, there should be no pharyngeal movement whatsoever. Even partial response (slight palatal twitch) is inconsistent with BD/DNC.</div>
+      </div>
+      <div class="brow">
+        <button class="abtn" onclick="eset('gag','absent')"  id="gag-absent">✓ Reflex absent — no pharyngeal response</button>
+        <button class="abtn" onclick="eset('gag','present')" id="gag-present">✗ Reflex present — pharyngeal movement seen</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="crit" id="cough-item">
+    <div class="crit-main">
+      <div class="crit-name">Absent cough reflex to deep tracheal suctioning</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      Pass a suction catheter deep into the trachea via the ETT and apply suction. Observe for any cough effort or bronchospasm. Tests CN X and medullary cough center. In BD/DNC: no cough or respiratory effort, no chest wall movement. This test also provides early information about respiratory drive that will be formally assessed in the apnea test. Deep suctioning (to carina) provides the strongest stimulus.
+      <div class="cnote cnote-grn">The cough reflex test and apnea test both assess medullary function. A positive cough to suctioning (any respiratory effort) is inconsistent with BD/DNC and makes a positive apnea test unlikely.</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="eset('cough','absent')"  id="cough-absent">✓ Reflex absent — no cough to deep suction</button>
+      <button class="abtn" onclick="eset('cough','present')" id="cough-present">✗ Reflex present — cough elicited, not BD/DNC</button>
+    </div>
+  </div>
+
+  <div class="tally" style="margin-top:14px;">
+    <div class="chip ct"><span class="n" id="en">0</span>/7 Exam Components Absent</div>
+    <div class="chip cr"><span class="n" id="epn">0</span>Present (disqualifying)</div>
+  </div>
+
+  <div id="a2" class="alrt"></div>
+  <div class="nav-row">
+    <button class="nbtn ns" onclick="go(1)">← Back</button>
+    <button class="nbtn np" id="n2" onclick="go(3)" disabled>Next: Apnea Test →</button>
+  </div>
+</div>
+</div>
+
+<!-- ══ SCREEN 3: APNEA TEST ══ -->
+<div class="screen" id="s3">
+<div class="card">
+  <div class="ctitle" style="color:var(--blue);">Step 4 · Apnea Test</div>
+  <div class="csub">The apnea test is a mandatory component of BD/DNC determination. Minimum one apnea test is required in adults (after the final neurologic examination). It assesses medullary respiratory center function by challenging respiratory drive with hypercarbia and acidosis.</div>
+
+  <div class="lbox">
+    <strong>Physiologic basis:</strong> Medullary chemoreceptors are stimulated by rising PaCO₂ and falling pH. In BD/DNC, there is no respiratory response despite profound hypercarbia. The PaCO₂ target of <span class="lb">≥60 mmHg AND ≥20 mmHg above pre-apnea baseline</span> (with pH &lt;7.30) provides a maximal adequate stimulus. The rate of PaCO₂ rise averages ~3 mmHg/min but is highly variable (0.5–10.5 mmHg/min); ABGs should be checked every 2 minutes.
+  </div>
+
+  <div class="slabel">A · Apnea Test Technique <span class="pill pill-b">SEQUENTIAL STEPS</span></div>
+  <div class="ibox">
+    <div class="step-list">
+      <div class="step-item"><div class="step-num">1</div><div>Pre-oxygenate with 100% FiO₂ for 10 minutes. Adjust ventilator to achieve PaCO₂ at the patient's known baseline (or ~35–45 mmHg if unknown) and pH 7.35–7.45. Draw baseline ABG.</div></div>
+      <div class="step-item"><div class="step-num">2</div><div>If PEEP is high, gradually reduce to ≤5 cmH₂O as tolerated. Ensure hemodynamics are acceptable (SBP ≥100 mmHg, MAP ≥75 mmHg). Continue vasopressors as needed.</div></div>
+      <div class="step-item"><div class="step-num">3</div><div>Disconnect from ventilator (or switch to T-piece/CPAP). Deliver O₂ at 6 L/min via catheter through ETT (or maintain 100% FiO₂ by CPAP/T-piece). Monitor SpO₂, HR, BP, ECG continuously.</div></div>
+      <div class="step-item"><div class="step-num">4</div><div>Observe closely for any respiratory movement (nasal flare, intercostal muscle use, abdominal breathing, diaphragm contraction). Even a single breath = test negative = not BD/DNC.</div></div>
+      <div class="step-item"><div class="step-num">5</div><div>Draw ABG every 2 minutes. Continue until PaCO₂ ≥60 mmHg AND ≥20 mmHg above baseline, AND pH &lt;7.30 (in patients without chronic CO₂ retention). This typically requires 8–10 minutes.</div></div>
+      <div class="step-item"><div class="step-num">6</div><div>If no respiratory effort is observed at target PaCO₂/pH: apnea test is POSITIVE (consistent with BD/DNC). Reconnect ventilator. Obtain final ABG before reconnection if possible.</div></div>
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:14px;">B · Apnea Test Result <span class="pill pill-r">REQUIRED</span></div>
+  <div class="crit" id="apnea-item">
+    <div class="crit-main">
+      <div class="crit-name">Apnea test result: No respiratory effort at adequate PaCO₂ target</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      <strong>Target criteria for positive apnea test (2023 AAN guideline, eTable 2):</strong>
+      <br><br>
+      Standard patient (no chronic CO₂ retention): PaCO₂ ≥60 mmHg AND ≥20 mmHg above pre-apnea baseline, AND pH &lt;7.30, with <strong>no respiratory effort observed</strong>.
+      <br><br>
+      Known chronic CO₂ retainer with known baseline: PaCO₂ ≥60 mmHg AND ≥20 mmHg above the patient's known chronic premorbid baseline.
+      <br><br>
+      Suspected chronic CO₂ retainer with unknown baseline: PaCO₂ ≥60 mmHg AND ≥20 mmHg above pre-apnea test level — however, <strong>ancillary testing is required</strong> in addition.
+      <div class="cnote cnote-red">Abort criteria (immediately reconnect ventilator): SpO₂ &lt;85%; SBP ≤100 mmHg or MAP ≤75 mmHg in adults despite vasopressors; cardiac arrhythmia with hemodynamic instability. If aborted before reaching target PaCO₂ and patient was stable, repeat after re-preoxygenation OR perform ancillary test.</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="aset('apnea','positive')"  id="apnea-positive">✓ Positive — no respiratory effort at target PaCO₂</button>
+      <button class="abtn" onclick="aset('apnea','negative')"  id="apnea-negative">✗ Negative — respiratory effort observed</button>
+      <button class="abtn" onclick="aset('apnea','aborted')"   id="apnea-aborted">⚠ Aborted — ancillary test required</button>
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:14px;">C · Chronic CO₂ Retention Status (for apnea test interpretation)</div>
+  <div class="crit" id="co2-item">
+    <div class="crit-main">
+      <div class="crit-name">Patient's chronic CO₂ retention status</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      This determines the applicable PaCO₂ threshold for the apnea test. Patients with COPD, obesity hypoventilation syndrome, or other causes of chronic hypercapnia have a higher baseline PaCO₂ and therefore require a higher absolute PaCO₂ target (≥20 mmHg above their known premorbid baseline). If the baseline is unknown, the standard threshold (≥60 mmHg AND ≥20 mmHg above pre-test level) applies, but ancillary testing is required to confirm BD/DNC.
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="aset('co2','none')"    id="co2-none">No chronic retention</button>
+      <button class="abtn" onclick="aset('co2','known')"   id="co2-known">Chronic retention, baseline known</button>
+      <button class="abtn" onclick="aset('co2','unknown')" id="co2-unknown">Chronic retention suspected, baseline unknown → ancillary required</button>
+    </div>
+  </div>
+
+  <div id="a3" class="alrt"></div>
+  <div class="nav-row">
+    <button class="nbtn ns" onclick="go(2)">← Back</button>
+    <button class="nbtn np" id="n3" onclick="go(4)" disabled>Next: Ancillary Testing →</button>
+  </div>
+</div>
+</div>
+
+<!-- ══ SCREEN 4: ANCILLARY TESTING ══ -->
+<div class="screen" id="s4">
+<div class="card">
+  <div class="ctitle" style="color:var(--purple);">Step 5 · Ancillary Testing</div>
+  <div class="csub">Ancillary testing is NOT required if the clinical examination and apnea test can be safely and fully completed without confounders. It is required only when the clinical assessment cannot be completed or is unreliable.</div>
+
+  <div class="lbox">
+    <strong>Key principle:</strong> BD/DNC determination is based on clinical assessment. Ancillary testing is required only when (1) confounders cannot be fully excluded, (2) the apnea test is aborted or cannot be safely performed, (3) examination components are untestable (e.g., facial trauma, bilateral TM rupture), (4) primary infratentorial injury is present, or (5) suspected chronic CO₂ retention with unknown baseline. <span class="la">No ancillary test is 100% sensitive or specific</span> — each has limitations noted below.
+  </div>
+
+  <div class="slabel">A · Indication for Ancillary Testing <span class="pill pill-a">ASSESS FIRST</span></div>
+  <div class="crit" id="anc-ind-item">
+    <div class="crit-main">
+      <div class="crit-name">Is ancillary testing required?</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      <strong>Situations requiring ancillary testing per 2023 AAN guideline:</strong>
+      <br>• Any component of the neurologic examination cannot be performed or interpreted (e.g., facial/head trauma, bilateral ear canal obstruction)
+      <br>• Apnea test aborted before reaching PaCO₂ target due to hemodynamic instability or hypoxemia
+      <br>• Apnea test cannot be safely initiated (severe hypoxemia, severe hemodynamic instability)
+      <br>• Drug effect cannot be fully excluded (e.g., high-dose barbiturate coma)
+      <br>• Primary infratentorial injury — ancillary test for absent cerebral blood flow recommended even if clinical exam and apnea test are consistent with BD/DNC
+      <br>• Suspected chronic CO₂ retention with unknown baseline PaCO₂
+      <br>• Institutional policy or state law requires ancillary confirmation
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="ancset('ancind','required')" id="ancind-required">⚠ Required (one or more indications above)</button>
+      <button class="abtn" onclick="ancset('ancind','not_required')" id="ancind-not_required">✓ Not required — clinical exam + apnea test complete</button>
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:14px;">B · Accepted Ancillary Tests (2023 AAN — Level A recommendations)</div>
+
+  <div class="crit" id="anc-4v-item">
+    <div class="crit-main">
+      <div class="crit-name">4-vessel catheter cerebral angiography — considered historical gold standard</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      Intra-arterial contrast injection into bilateral carotid and vertebral arteries demonstrates absent intracranial filling beyond the entry of vessels into the dura (in anterior and posterior circulations). Represents circulatory arrest from severely elevated ICP exceeding MAP. BD/DNC finding: no intracranial flow bilaterally. This is the most definitive perfusion study (Level A recommendation). Limitations: invasive, requires transport to angio suite, contrast exposure, arterial access, time-consuming.
+      <div class="cnote cnote-grn">Gold standard for cerebral circulatory arrest. Specifically assesses absence of flow bilaterally in anterior AND posterior circulations — critical for infratentorial injury assessment.</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="ancset('anc4v','consistent')" id="anc4v-consistent">✓ No intracranial perfusion bilaterally</button>
+      <button class="abtn" onclick="ancset('anc4v','flow')"       id="anc4v-flow">✗ Flow present — not BD/DNC by this test</button>
+      <button class="abtn" onclick="ancset('anc4v','notdone')"    id="anc4v-notdone">— Not performed</button>
+    </div>
+  </div>
+
+  <div class="crit" id="anc-spect-item">
+    <div class="crit-main">
+      <div class="crit-name">Radionuclide perfusion scintigraphy (SPECT with ⁹⁹ᵐTc-HMPAO preferred)</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      SPECT with a BBB-crossing agent (⁹⁹ᵐTc-HMPAO or ⁹⁹ᵐTc-ECD) is preferred; planar radionuclide angiography with a BBB-crossing agent or, if necessary, a non-BBB-crossing agent is acceptable (Level A). BD/DNC finding: absent tracer uptake in the brain — "hollow skull" or "empty lightbulb" sign on SPECT. Widely available and practical. Does not require hemodynamic stability during imaging (tracer injected at bedside; imaging can follow). Limitations: requires nuclear medicine access; open fontanelle or skull defects/craniectomy may affect results; does not assess posterior fossa well with planar technique.
+      <div class="cnote">Preferred over CTA or MRA by 2023 AAN guideline. SPECT is included in the accepted ancillary tests; CTA and MRA are NOT recommended by the 2023 AAN guideline due to insufficient validation.</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="ancset('ancspect','consistent')" id="ancspect-consistent">✓ No cerebral tracer uptake</button>
+      <button class="abtn" onclick="ancset('ancspect','uptake')"     id="ancspect-uptake">✗ Tracer uptake present</button>
+      <button class="abtn" onclick="ancset('ancspect','notdone')"    id="ancspect-notdone">— Not performed</button>
+    </div>
+  </div>
+
+  <div class="crit" id="anc-tcd-item">
+    <div class="crit-main">
+      <div class="crit-name">Transcranial Doppler ultrasonography (TCD)</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      Widely available, non-invasive, bedside. BD/DNC findings (any one of the following in bilateral anterior AND posterior circulation vessels, documented bilaterally and on serial examinations): reverberating flow, small systolic spikes (&lt;50 cm/s) without diastolic flow, or absent flow. Must be performed by an experienced operator. Sensitivity is lower than catheter angiography or SPECT; absent temporal windows (15–20% of patients) limit assessment. If bilateral temporal window is absent, a second ancillary test should be performed.
+      <div class="cnote cnote-warn">Limitations: Requires adequate temporal and suboccipital windows. Low sensitivity for posterior fossa — less reliable for primary infratentorial injury. Operator-dependent. The 2023 AAN guideline accepts TCD as ancillary (Level A) but acknowledges limited evidence quality.</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="ancset('anctcd','consistent')" id="anctcd-consistent">✓ Consistent — reverberating flow / small systolic spikes / absent flow bilaterally</button>
+      <button class="abtn" onclick="ancset('anctcd','flow')"       id="anctcd-flow">✗ Diastolic or normal flow present</button>
+      <button class="abtn" onclick="ancset('anctcd','notdone')"    id="anctcd-notdone">— Not performed / inadequate windows</button>
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:14px;">C · Modalities No Longer Recommended <span class="pill pill-r">NOT RECOMMENDED — 2023 AAN</span></div>
+
+  <div class="crit c-no" id="anc-eeg-item" style="border-color:var(--red-bd); background:var(--red-bg);">
+    <div class="crit-main">
+      <div class="crit-name" style="color:var(--red);">⛔ EEG / Auditory Evoked Potentials (AEP) / Somatosensory Evoked Potentials (SEP) — <em>no longer accepted ancillary tests</em></div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      <strong style="color:var(--red);">2023 AAN Recommendation (Level B): Do NOT use EEG, AEP, or SEP as ancillary tests to assist with the diagnosis of BD/DNC.</strong>
+      <br><br>
+      EEG assesses only cerebral hemisphere electrical activity — it cannot confirm absent brainstem function, which is the core requirement of BD/DNC. An isoelectric ("flat") EEG is therefore insufficient. Additional problems: EEG is highly susceptible to ICU electrical artifact, and is unreliable in the presence of sedatives (especially barbiturates) and metabolic derangements. AEPs and SEPs share similar limitations and are similarly excluded.
+      <div class="cnote cnote-red">This is a change from prior practice. Some institutions historically used isoelectric EEG as a confirmatory ancillary test — this is explicitly not supported by the 2023 AAN/AAP/CNS/SCCM consensus guideline. If your institution's protocol still lists EEG, consult your neurology/NCC service to update to the 2023 standard.</div>
+    </div>
+    <div style="padding: 9px 13px; background: rgba(248,81,73,0.15); border-top: 1px solid var(--red-bd); font-size: 11px; color: var(--red); font-family: var(--mono); font-weight: 600; letter-spacing: 0.03em;">
+      ⛔ EEG / AEP / SEP must NOT be used — select below to acknowledge and continue
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="ancset('anceeg','noted')" id="anceeg-noted">✓ Acknowledged — EEG/AEP/SEP will not be used for BD/DNC determination</button>
+    </div>
+  </div>
+
+  <div id="a4" class="alrt"></div>
+  <div class="nav-row">
+    <button class="nbtn ns" onclick="go(3)">← Back</button>
+    <button class="nbtn np" onclick="go(5)">Next: Verdict →</button>
+  </div>
+</div>
+</div>
+
+<!-- ══ SCREEN 5: VERDICT ══ -->
+<div class="screen" id="s5">
+<div id="vout"></div>
+
+<div class="sum-grid" id="sout"></div>
+
+<div class="doc-header">
+  <button class="doc-tog" onclick="toggleDoc()">▼ Documentation Note</button>
+  <button class="copy-btn" id="copy-btn" onclick="copyDoc()">⎘ Copy</button>
+</div>
+<div class="doc-body" id="dn"></div>
+
+<div class="nav-row">
+  <button class="nbtn ns" onclick="go(4)">← Back</button>
+  <button class="nbtn np" onclick="resetAll()">↺ Start Over</button>
+</div>
+</div>
+
+</div><!-- /app -->
+
+<script>
+// STATE
+const S = {
+  // Prerequisites
+  etiol: null, neuroimg: null, obs: null, exam: null,
+  // Confounders
+  temp: null, bp: null, drug: null, meta: null, pao2: null,
+  // Neuro exam
+  coma: null, motor: null, pupil: null, ocr: null, ovr: null, corneal: null, gag: null, cough: null,
+  // Apnea
+  apnea: null, co2: null,
+  // Ancillary
+  ancind: null, anc4v: null, ancspect: null, anctcd: null, anceeg: null,
+};
+
+let cur = 0;
+
+function ui() {
+  document.getElementById('n0').disabled = true;
+}
+
+function pset(k, v) {
+  S[k] = v;
+  const item = document.getElementById(k+'-item');
+  const allKeys = ['etiol','neuroimg','obs','exam'];
+  allKeys.forEach(key => {
+    const btn_yes = document.getElementById(key+'-yes');
+    const btn_no  = document.getElementById(key+'-no');
+    const btn_infra = document.getElementById(key+'-infra');
+  });
+  // Style the chosen item
+  ['yes','no','infra'].forEach(val => {
+    const b = document.getElementById(k+'-'+val);
+    if (b) { b.classList.remove('ay','an','aw'); }
+  });
+  const chosen = document.getElementById(k+'-'+v);
+  if (chosen) {
+    if (v === 'yes') chosen.classList.add('ay');
+    else if (v === 'no') chosen.classList.add('an');
+    else if (v === 'infra') chosen.classList.add('aw');
+  }
+  if (item) {
+    item.className = 'crit ' + (v === 'yes' ? 'c-yes' : v === 'no' ? 'c-no' : 'c-warn');
+  }
+  checkPrereqs();
+}
+
+function cset(k, v) {
+  S[k] = v;
+  const item = document.getElementById(k+'-item');
+  ['met','unmet'].forEach(val => {
+    const b = document.getElementById(k+'-'+val);
+    if (b) { b.classList.remove('at','an','aw'); }
+  });
+  const chosen = document.getElementById(k+'-'+v);
+  if (chosen) chosen.classList.add(v === 'met' ? 'at' : k === 'drug' ? 'aw' : 'an');
+  if (item) item.className = 'crit ' + (v === 'met' ? 'c-met' : k === 'drug' ? 'c-warn' : 'c-no');
+  checkConfs();
+}
+
+function eset(k, v) {
+  S[k] = v;
+  const item = document.getElementById(k+'-item');
+  ['absent','present','omitted','untest'].forEach(val => {
+    const b = document.getElementById(k+'-'+val);
+    if (b) b.classList.remove('ay','an','ab','aw');
+  });
+  const chosen = document.getElementById(k+'-'+v);
+  if (chosen) {
+    if (v === 'absent') chosen.classList.add('ay');
+    else if (v === 'present') chosen.classList.add('an');
+    else chosen.classList.add('aw');
+  }
+  if (item) {
+    item.className = 'crit ' + (v === 'absent' ? 'c-yes' : v === 'present' ? 'c-no' : 'c-warn');
+  }
+  checkExam();
+}
+
+function aset(k, v) {
+  S[k] = v;
+  const item = document.getElementById(k+'-item');
+  ['positive','negative','aborted','none','known','unknown'].forEach(val => {
+    const b = document.getElementById(k+'-'+val);
+    if (b) b.classList.remove('ay','an','aw','at','ab');
+  });
+  const chosen = document.getElementById(k+'-'+v);
+  if (chosen) {
+    if (v === 'positive' || v === 'none' || v === 'known') chosen.classList.add('ay');
+    else if (v === 'negative') chosen.classList.add('an');
+    else chosen.classList.add('aw');
+  }
+  if (item) {
+    item.className = 'crit ' + (v === 'positive' || v === 'none' || v === 'known' ? 'c-yes' : v === 'negative' ? 'c-no' : 'c-warn');
+  }
+  checkApnea();
+}
+
+function ancset(k, v) {
+  S[k] = v;
+  const item = document.getElementById(k+'-item');
+  ['required','not_required','consistent','flow','notdone','uptake','noted'].forEach(val => {
+    const b = document.getElementById(k+'-'+val);
+    if (b) b.classList.remove('ay','an','aw','at');
+  });
+  const chosen = document.getElementById(k+'-'+v);
+  if (chosen) {
+    if (['not_required','consistent','noted'].includes(v)) chosen.classList.add('ay');
+    else if (['flow','uptake'].includes(v)) chosen.classList.add('an');
+    else if (v === 'required') chosen.classList.add('aw');
+    else chosen.classList.add('ab');
+  }
+  if (item) {
+    item.className = 'crit ' + (['not_required','consistent','noted'].includes(v) ? 'c-yes' : ['flow','uptake'].includes(v) ? 'c-no' : 'c-abs');
+  }
+}
+
+function checkPrereqs() {
+  const a = document.getElementById('a0');
+  const allSet = S.etiol !== null && S.neuroimg !== null && S.obs !== null && S.exam !== null;
+  const anyNo = S.etiol === 'no' || S.neuroimg === 'no' || S.obs === 'no' || S.exam === 'no';
+  const allYes = S.etiol === 'yes' && (S.neuroimg === 'yes' || S.neuroimg === 'infra') && S.obs === 'yes' && S.exam === 'yes';
+  a.className = 'alrt';
+  if (!allSet) { a.classList.remove('show'); document.getElementById('n0').disabled = true; return; }
+  if (anyNo) {
+    a.classList.add('show','aerr');
+    a.innerHTML = '⛔ One or more prerequisites not met. BD/DNC evaluation cannot be initiated. Address barriers before proceeding.';
+    document.getElementById('n0').disabled = true;
+  } else if (S.neuroimg === 'infra') {
+    a.classList.add('show','awn');
+    a.innerHTML = '⚠ Primary infratentorial injury noted. Ancillary testing to demonstrate absent cerebral blood flow is recommended even if neurologic examination and apnea test are consistent with BD/DNC (2023 AAN; WBDP JAMA 2020). Proceed with evaluation but plan ancillary testing.';
+    document.getElementById('n0').disabled = false;
+  } else if (allYes) {
+    a.classList.add('show','aok');
+    a.innerHTML = '✓ All prerequisites met. Proceed to confounder exclusion.';
+    document.getElementById('n0').disabled = false;
+  }
+}
+
+function checkConfs() {
+  const a = document.getElementById('a1');
+  const allSet = S.temp !== null && S.bp !== null && S.drug !== null && S.meta !== null && S.pao2 !== null;
+  // Drug effect unmet is a warning (allow proceed, but ancillary required); others are hard blocks
+  const hardBlock = ['temp','bp','meta','pao2'].some(k => S[k] === 'unmet');
+  const drugWarning = S.drug === 'unmet';
+  const allMet = ['temp','bp','drug','meta','pao2'].every(k => S[k] === 'met');
+  a.className = 'alrt';
+  if (!allSet) { a.classList.remove('show'); document.getElementById('n1').disabled = true; return; }
+  if (hardBlock) {
+    a.classList.add('show','aerr');
+    a.innerHTML = '⛔ Physiologic confounder(s) not corrected (temperature, hemodynamics, metabolic, or oxygenation). Clinical examination results will be unreliable. Correct all confounders before proceeding.';
+    document.getElementById('n1').disabled = true;
+  } else if (drugWarning) {
+    a.classList.add('show','awn');
+    a.innerHTML = '⚠ Drug/NMB effect not fully excluded — ancillary testing will be required to confirm BD/DNC (clinical examination alone is unreliable). You may proceed, but plan ancillary testing in Step 5.';
+    document.getElementById('n1').disabled = false;
+  } else {
+    a.classList.add('show','aok');
+    a.innerHTML = '✓ All confounders addressed. Proceed to neurologic examination.';
+    document.getElementById('n1').disabled = false;
+  }
+}
+
+function checkExam() {
+  const examKeys = ['coma','motor','pupil','ocr','ovr','corneal','gag','cough'];
+  const absent = examKeys.filter(k => S[k] === 'absent' || S[k] === 'omitted');
+  const present = examKeys.filter(k => S[k] === 'present');
+  const untest = examKeys.filter(k => S[k] === 'untest' || S[k] === 'omitted');
+
+  document.getElementById('en').textContent = absent.length;
+  document.getElementById('epn').textContent = present.length;
+
+  const en = document.getElementById('en').closest('.chip');
+  const ep = document.getElementById('epn').closest('.chip');
+  en.className = 'chip ' + (absent.length === examKeys.length ? 'cg' : absent.length > 0 ? 'ct' : '');
+  ep.className = 'chip ' + (present.length > 0 ? 'cr' : '');
+
+  const a = document.getElementById('a2');
+  a.className = 'alrt';
+  const allAssessed = examKeys.every(k => S[k] !== null);
+  if (!allAssessed) { a.classList.remove('show'); document.getElementById('n2').disabled = true; return; }
+  if (present.length > 0) {
+    a.classList.add('show','aerr');
+    a.innerHTML = `⛔ ${present.length} exam component(s) intact — BD/DNC criteria not met by clinical examination. BD/DNC cannot be determined. Reassess and investigate further.`;
+    document.getElementById('n2').disabled = true;
+  } else if (untest.length > 0) {
+    a.classList.add('show','awn');
+    a.innerHTML = `⚠ ${untest.length} component(s) omitted or untestable — ancillary testing will be required. Proceed to apnea test, then ancillary testing.`;
+    document.getElementById('n2').disabled = false;
+  } else {
+    a.classList.add('show','aok');
+    a.innerHTML = `✓ All ${examKeys.length} components of the neurologic examination are absent — consistent with BD/DNC. Proceed to apnea test.`;
+    document.getElementById('n2').disabled = false;
+  }
+}
+
+function checkApnea() {
+  const a = document.getElementById('a3');
+  a.className = 'alrt';
+  const done = S.apnea !== null && S.co2 !== null;
+  if (!done) { a.classList.remove('show'); document.getElementById('n3').disabled = true; return; }
+  if (S.apnea === 'negative') {
+    a.classList.add('show','aerr');
+    a.innerHTML = '⛔ Apnea test negative — respiratory effort observed. BD/DNC criteria NOT met. The diagnosis cannot be made. Investigate underlying respiratory drive.';
+    document.getElementById('n3').disabled = true;
+  } else if (S.apnea === 'aborted' || S.co2 === 'unknown') {
+    a.classList.add('show','awn');
+    a.innerHTML = '⚠ Apnea test aborted or CO₂ baseline unknown — ancillary testing is required to complete BD/DNC determination. Proceed to ancillary testing step.';
+    document.getElementById('n3').disabled = false;
+  } else if (S.apnea === 'positive') {
+    a.classList.add('show','aok');
+    a.innerHTML = '✓ Apnea test positive — no respiratory effort observed at adequate PaCO₂/pH stimulus. Consistent with BD/DNC. Proceed to ancillary assessment.';
+    document.getElementById('n3').disabled = false;
+  }
+}
+
+function rv() {
+  const examKeys = ['coma','motor','pupil','ocr','ovr','corneal','gag','cough'];
+  const prereqsMet = S.etiol !== 'no' && S.neuroimg !== 'no' && S.obs !== 'no' && S.exam !== 'no';
+  const confsMet = ['temp','bp','drug','meta','pao2'].every(k => S[k] === 'met');
+  const examPresent = examKeys.some(k => S[k] === 'present');
+  const examAllAbsent = examKeys.every(k => S[k] === 'absent');
+  const examOmitted = examKeys.some(k => S[k] === 'omitted' || S[k] === 'untest');
+  const apneaPos = S.apnea === 'positive';
+  const apneaNeg = S.apnea === 'negative';
+  const apneaAbort = S.apnea === 'aborted';
+  const ancillaryRequired = S.ancind === 'required' || S.neuroimg === 'infra' || S.co2 === 'unknown' || examOmitted || apneaAbort;
+  const ancillaryConsistent = ['anc4v','ancspect','anctcd'].some(k => S[k] === 'consistent');
+  const ancillaryNegative = ['anc4v','ancspect','anctcd'].some(k => S[k] === 'flow' || S[k] === 'uptake');
+
+  let v;
+  if (!prereqsMet) {
+    v = { cls:'vn', t:'Prerequisites Not Met', d:'One or more mandatory prerequisites were not satisfied. BD/DNC evaluation should not have been initiated or cannot be completed as described. Address barriers and reassess.' };
+  } else if (!confsMet) {
+    v = { cls:'vn', t:'Confounders Not Excluded', d:'One or more confounders were identified and not fully corrected. The neurologic examination and apnea test cannot be considered reliable. Correct all confounders, then repeat the evaluation.' };
+  } else if (examPresent) {
+    v = { cls:'vn', t:'Examination Inconsistent with BD/DNC', d:'One or more brainstem reflexes were found to be intact, or motor activity inconsistent with BD/DNC was observed. The patient does not meet neurologic criteria for brain death at this time. Reassess and investigate further.' };
+  } else if (apneaNeg) {
+    v = { cls:'vn', t:'Apnea Test Negative — BD/DNC Not Met', d:'Spontaneous respiratory effort was observed during the apnea test. BD/DNC cannot be established. The presence of respiratory drive indicates residual brainstem function. Investigate further.' };
+  } else if (ancillaryRequired && ancillaryNegative) {
+    v = { cls:'vn', t:'Ancillary Testing Does Not Support BD/DNC', d:'Ancillary testing was required and demonstrated residual cerebral perfusion or activity. BD/DNC cannot be established. Reassess clinical scenario and evaluate for reversible causes.' };
+  } else if (ancillaryRequired && !ancillaryConsistent) {
+    v = { cls:'va', t:'BD/DNC Evaluation Incomplete', d:'Ancillary testing was required but results are pending or indeterminate. BD/DNC cannot be formally declared until ancillary testing is completed and demonstrates absent cerebral perfusion consistent with BD/DNC.' };
+  } else if (examAllAbsent && apneaPos && (!ancillaryRequired || ancillaryConsistent)) {
+    v = { cls:'ve', t:'Criteria Consistent with BD/DNC', d:'All three pillars established: (1) coma with absent brainstem reflexes on neurologic examination, (2) apnea test positive at adequate PaCO₂ stimulus, and (3) confounders excluded with identified catastrophic mechanism. Criteria are consistent with Brain Death / Death by Neurologic Criteria per 2023 AAN/AAP/CNS/SCCM Consensus Guideline. Declaration requires compliance with institutional policy and applicable state law. Time of death is the time of the final confirmatory test (or second examination if ancillary not required).' };
+  } else {
+    v = { cls:'va', t:'Assessment Incomplete', d:'Not all components of the evaluation have been completed. Review each step to identify outstanding items.' };
+  }
+
+  const examNames = { coma:'Deep coma — no response to noxious stimuli', motor:'No brainstem motor movements', pupil:'Absent pupillary light reflex bilaterally', ocr:'Absent oculocephalic reflex', ovr:'Absent oculovestibular reflex bilaterally', corneal:'Absent corneal reflex bilaterally', gag:'Absent gag reflex', cough:'Absent cough reflex' };
+
+  let html = `<div class="disclaimer" style="margin-bottom:14px;">
+    <div class="disclaimer-icon">⚠</div>
+    <div class="disclaimer-text">
+      <strong>Educational Use Only</strong>
+      This result is generated for educational purposes only. It does not constitute a formal determination of brain death / death by neurologic criteria and may not be used as such. All BD/DNC declarations require qualified clinician examination, institutional policy compliance, and applicable legal authority.
+    </div>
+  </div>
+  <div class="vban ${v.cls}">
+    <div class="vlbl">AAN/AAP/CNS/SCCM 2023 · Brain Death / Death by Neurologic Criteria · Greer DM et al. Neurology 2023;101:1112–1132</div>
+    <div class="vtitle">${v.t}</div>
+    <div class="vdesc">${v.d}</div>
+  </div>`;
+
+  document.getElementById('vout').innerHTML = html;
+
+  let shtml = '';
+
+  // Prerequisites block
+  shtml += `<div class="sblock"><div class="sbtitle">Prerequisites</div>`;
+  const preqMap = { etiol:'Catastrophic injury identified', neuroimg:'Neuroimaging consistent', obs:'Adequate observation', exam:'Qualified examiner' };
+  Object.entries(preqMap).forEach(([k,name]) => {
+    const v2 = S[k];
+    const ok = v2 === 'yes' || v2 === 'infra';
+    const cls = v2 === null ? 'dgr' : ok ? 'dg' : 'dr';
+    const tag = v2 === null ? 'tgr' : ok ? 'tg' : 'tr';
+    const lbl = v2 === null ? 'NOT ASSESSED' : ok ? (v2 === 'infra' ? 'INFRATENTORIAL' : 'MET') : 'NOT MET';
+    shtml += `<div class="srow"><div class="dot ${cls}"></div><div class="sname">${name}</div><div class="stag ${tag}">${lbl}</div></div>`;
+  });
+  shtml += `</div>`;
+
+  // Confounders block
+  shtml += `<div class="sblock"><div class="sbtitle">Confounders Excluded</div>`;
+  const confMap = { temp:'Temperature ≥36°C', bp:'Hemodynamics acceptable', drug:'No CNS depressant effect', meta:'No metabolic derangement', pao2:'Oxygenation adequate' };
+  Object.entries(confMap).forEach(([k,name]) => {
+    const v2 = S[k];
+    const ok = v2 === 'met';
+    const cls = v2 === null ? 'dgr' : ok ? 'dg' : 'dr';
+    const tag = v2 === null ? 'tgr' : ok ? 'tg' : 'tr';
+    const lbl = v2 === null ? 'NOT ASSESSED' : ok ? 'EXCLUDED' : 'NOT EXCLUDED';
+    shtml += `<div class="srow"><div class="dot ${cls}"></div><div class="sname">${name}</div><div class="stag ${tag}">${lbl}</div></div>`;
+  });
+  shtml += `</div>`;
+
+  // Neuro exam block
+  shtml += `<div class="sblock"><div class="sbtitle">Neurologic Examination</div>`;
+  const examKeys2 = ['coma','motor','pupil','ocr','ovr','corneal','gag','cough'];
+  examKeys2.forEach(k => {
+    const v2 = S[k];
+    const ok = v2 === 'absent';
+    const bad = v2 === 'present';
+    const skip = v2 === 'omitted' || v2 === 'untest';
+    const cls = v2 === null ? 'dgr' : ok ? 'dg' : bad ? 'dr' : 'da';
+    const tag = v2 === null ? 'tgr' : ok ? 'tg' : bad ? 'tr' : 'ta';
+    const lbl = v2 === null ? 'NOT ASSESSED' : ok ? 'ABSENT' : bad ? 'PRESENT' : 'OMITTED/UNTEST';
+    shtml += `<div class="srow"><div class="dot ${cls}"></div><div class="sname">${examNames[k]}</div><div class="stag ${tag}">${lbl}</div></div>`;
+  });
+  shtml += `</div>`;
+
+  // Apnea + ancillary block
+  shtml += `<div class="sblock"><div class="sbtitle">Apnea Test &amp; Ancillary</div>`;
+  const apneaOk = S.apnea === 'positive';
+  shtml += `<div class="srow"><div class="dot ${S.apnea === null ? 'dgr' : apneaOk ? 'dg' : S.apnea === 'aborted' ? 'da' : 'dr'}"></div><div class="sname">Apnea test</div><div class="stag ${S.apnea === null ? 'tgr' : apneaOk ? 'tg' : S.apnea === 'aborted' ? 'ta' : 'tr'}">${S.apnea === null ? 'NOT PERFORMED' : S.apnea.toUpperCase()}</div></div>`;
+  const ancTests = { anc4v:'4-vessel angiography', ancspect:'Radionuclide scintigraphy', anctcd:'TCD ultrasonography' };
+  Object.entries(ancTests).forEach(([k,name]) => {
+    const v2 = S[k];
+    const ok = v2 === 'consistent';
+    const bad = v2 === 'flow' || v2 === 'uptake';
+    const cls = v2 === null || v2 === 'notdone' ? 'dgr' : ok ? 'dg' : 'dr';
+    const tag = v2 === null || v2 === 'notdone' ? 'tgr' : ok ? 'tg' : 'tr';
+    const lbl = v2 === null || v2 === 'notdone' ? 'NOT DONE' : ok ? 'CONSISTENT' : 'FLOW PRESENT';
+    shtml += `<div class="srow"><div class="dot ${cls}"></div><div class="sname">${name}</div><div class="stag ${tag}">${lbl}</div></div>`;
+  });
+  shtml += `</div>`;
+
+  document.getElementById('sout').innerHTML = shtml;
+
+  // Documentation note
+  const now = new Date().toLocaleDateString();
+  const examAbsent = examKeys2.filter(k=>S[k]==='absent').map(k=>examNames[k]);
+  const examPresent2 = examKeys2.filter(k=>S[k]==='present').map(k=>examNames[k]);
+  const examOmit = examKeys2.filter(k=>S[k]==='omitted'||S[k]==='untest').map(k=>examNames[k]);
+
+  let note = `NEUROLOGY / NEUROCRITICAL CARE\nBrain Death / Death by Neurologic Criteria (BD/DNC) Evaluation\nAAN/AAP/CNS/SCCM 2023 Consensus Guideline\nGreer DM et al. Neurology. 2023;101(24):1112–1132. doi:10.1212/WNL.0000000000207740\nDate: ${now}\n\n`;
+  note += `RESULT: ${v.t}\n\n`;
+  note += `PREREQUISITES\n`;
+  note += `  Catastrophic injury identified: ${S.etiol === 'yes' ? 'Yes' : S.etiol === 'no' ? 'No' : 'Not assessed'}\n`;
+  note += `  Neuroimaging: ${S.neuroimg === 'yes' ? 'Consistent with severe irreversible injury' : S.neuroimg === 'infra' ? 'Isolated infratentorial — ancillary testing required' : S.neuroimg === 'no' ? 'Not adequate' : 'Not assessed'}\n`;
+  note += `  Adequate observation period: ${S.obs === 'yes' ? 'Confirmed' : S.obs === 'no' ? 'Not confirmed' : 'Not assessed'}\n`;
+  note += `  Qualified examiner: ${S.exam === 'yes' ? 'Confirmed' : S.exam === 'no' ? 'Not confirmed' : 'Not assessed'}\n\n`;
+  note += `CONFOUNDERS EXCLUDED\n`;
+  note += `  Temperature ≥36°C: ${S.temp === 'met' ? 'Confirmed' : S.temp === 'unmet' ? 'NOT met' : 'Not assessed'}\n`;
+  note += `  Hemodynamics acceptable: ${S.bp === 'met' ? 'Confirmed' : S.bp === 'unmet' ? 'NOT met' : 'Not assessed'}\n`;
+  note += `  No CNS depressant/NMB effect: ${S.drug === 'met' ? 'Confirmed' : S.drug === 'unmet' ? 'NOT excluded' : 'Not assessed'}\n`;
+  note += `  No metabolic derangement: ${S.meta === 'met' ? 'Confirmed' : S.meta === 'unmet' ? 'NOT corrected' : 'Not assessed'}\n`;
+  note += `  Oxygenation (PaO₂ ≥200 mmHg pre-apnea): ${S.pao2 === 'met' ? 'Adequate' : S.pao2 === 'unmet' ? 'Inadequate' : 'Not assessed'}\n\n`;
+  note += `NEUROLOGIC EXAMINATION (AAN 2023 — all components must be absent)\n`;
+  note += `  Components absent (${examAbsent.length}/8): ${examAbsent.length > 0 ? examAbsent.join(', ') : 'None'}\n`;
+  note += `  Components present (disqualifying): ${examPresent2.length > 0 ? examPresent2.join(', ') : 'None'}\n`;
+  if (examOmit.length > 0) note += `  Components omitted/untestable: ${examOmit.join(', ')}\n`;
+  note += `\nAPNEA TEST\n`;
+  note += `  Result: ${S.apnea === 'positive' ? 'POSITIVE — no respiratory effort observed at adequate PaCO₂/pH stimulus' : S.apnea === 'negative' ? 'NEGATIVE — respiratory effort observed' : S.apnea === 'aborted' ? 'ABORTED — ancillary testing required' : 'Not performed'}\n`;
+  note += `  CO₂ retention status: ${S.co2 === 'none' ? 'No chronic retention' : S.co2 === 'known' ? 'Chronic retention, baseline known' : S.co2 === 'unknown' ? 'Chronic retention suspected, unknown baseline — ancillary required' : 'Not assessed'}\n`;
+  note += `  Target: PaCO₂ ≥60 mmHg AND ≥20 mmHg above baseline; pH <7.30\n\n`;
+  note += `ANCILLARY TESTING\n`;
+  note += `  Indication: ${S.ancind === 'required' ? 'Required' : S.ancind === 'not_required' ? 'Not required — clinical assessment complete' : 'Not assessed'}\n`;
+  note += `  4-vessel catheter angiography: ${S.anc4v === 'consistent' ? 'Consistent with BD/DNC (no intracranial perfusion)' : S.anc4v === 'flow' ? 'Inconsistent — flow present' : 'Not performed'}\n`;
+  note += `  Radionuclide scintigraphy: ${S.ancspect === 'consistent' ? 'Consistent with BD/DNC (no tracer uptake)' : S.ancspect === 'uptake' ? 'Inconsistent — uptake present' : 'Not performed'}\n`;
+  note += `  TCD ultrasonography: ${S.anctcd === 'consistent' ? 'Consistent with BD/DNC (reverberating/absent flow)' : S.anctcd === 'flow' ? 'Inconsistent — diastolic flow present' : 'Not performed'}\n`;
+  note += `  Note: EEG, AEP, SEP are NOT recommended as ancillary tests per 2023 AAN guideline (Level B).\n\n`;
+  note += `OVERALL DETERMINATION\n${v.t}\n${v.d}\n\n`;
+  note += `IMPORTANT CAVEATS\n`;
+  note += `  - Time of death: time of final confirmatory test (apnea test if ancillary not required; final ancillary test if required)\n`;
+  note += `  - Declaration requires compliance with institutional policy and applicable state/regional law\n`;
+  note += `  - Examiner must not be involved in organ procurement decisions (Rec. 3, Level A)\n`;
+  note += `  - Spinal reflexes (Lazarus sign, triple flexion) may persist after BD/DNC and do not negate determination\n\n`;
+  note += `Reference: Greer DM, Kirschen MP, Lewis A, et al. Pediatric and Adult Brain Death/Death by Neurologic Criteria Consensus Guideline. Neurology. 2023;101(24):1112–1132. doi:10.1212/WNL.0000000000207740\nEndorsed by: Neurocritical Care Society (September 28, 2023)`;
+  document.getElementById('dn').textContent = note;
+}
+
+function go(n) {
+  document.getElementById('s'+cur).classList.remove('active');
+  document.getElementById('s'+n).classList.add('active');
+  for (let i=0; i<6; i++) {
+    const d = document.getElementById('st'+i);
+    d.classList.remove('active','done');
+    if (i < n) d.classList.add('done');
+    else if (i === n) d.classList.add('active');
+  }
+  cur = n;
+  document.getElementById('pf').style.width = ((n/5)*100)+'%';
+  if (n === 5) rv();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function xp(btn) {
+  const d = btn.closest('.crit').querySelector('.crit-detail');
+  if (!d) return;
+  const o = d.classList.toggle('open');
+  btn.textContent = o ? 'close ▴' : 'details ▾';
+}
+
+function toggleDoc() {
+  const body = document.getElementById('dn');
+  const btn  = document.getElementById('copy-btn');
+  const tog  = document.querySelector('.doc-tog');
+  if (!body) return;
+  const open = body.classList.toggle('open');
+  if (tog) tog.textContent = open ? '▲ Documentation Note' : '▼ Documentation Note';
+  if (btn) btn.classList.toggle('visible', open);
+}
+
+function copyDoc() {
+  const body = document.getElementById('dn');
+  const btn  = document.getElementById('copy-btn');
+  if (!body) return;
+  const text = body.textContent || body.innerText;
+  navigator.clipboard.writeText(text).then(() => {
+    if (btn) { btn.textContent='✓ Copied'; btn.classList.add('copied'); setTimeout(()=>{ btn.textContent='⎘ Copy'; btn.classList.remove('copied'); },2000); }
+  }).catch(() => {
+    const ta=document.createElement('textarea'); ta.value=text; ta.style.position='fixed'; ta.style.opacity='0';
+    document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
+    if (btn) { btn.textContent='✓ Copied'; btn.classList.add('copied'); setTimeout(()=>{ btn.textContent='⎘ Copy'; btn.classList.remove('copied'); },2000); }
+  });
+}
+
+function resetAll() {
+  Object.keys(S).forEach(k => S[k] = null);
+  document.querySelectorAll('.crit').forEach(el => el.className = 'crit');
+  document.querySelectorAll('.abtn').forEach(b => b.classList.remove('ay','an','at','aw','ab'));
+  document.querySelectorAll('.crit-detail').forEach(d => d.classList.remove('open'));
+  document.querySelectorAll('.xbtn').forEach(b => b.textContent = 'details ▾');
+  ['a0','a1','a2','a3','a4'].forEach(id => { const el=document.getElementById(id); if(el) el.classList.remove('show'); });
+  const dn=document.getElementById('dn'); if(dn) { dn.classList.remove('open'); dn.textContent=''; }
+  const cb=document.getElementById('copy-btn'); if(cb) cb.classList.remove('visible','copied');
+  const tog=document.querySelector('.doc-tog'); if(tog) tog.textContent='▼ Documentation Note';
+  const vout=document.getElementById('vout'); if(vout) vout.innerHTML='';
+  const sout=document.getElementById('sout'); if(sout) sout.innerHTML='';
+  const en=document.getElementById('en'); if(en) en.textContent='0';
+  const epn=document.getElementById('epn'); if(epn) epn.textContent='0';
+  go(0);
+  document.getElementById('n0').disabled = true;
+}
+
+ui();
+</script>
+</body>
+</html>

@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gold Coast Criteria · ALS Diagnosis</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+  --bg:        #0d1117;
+  --card:      #161b22;
+  --card2:     #1c2330;
+  --border:    #3a4556;
+  --border2:   #4a5f7a;
+  --green:     #3fb950;
+  --green-bg:  rgba(63,185,80,0.10);
+  --green-bd:  rgba(63,185,80,0.35);
+  --red:       #f85149;
+  --red-bg:    rgba(248,81,73,0.10);
+  --red-bd:    rgba(248,81,73,0.35);
+  --amber:     #e3b341;
+  --amber-bg:  rgba(227,179,65,0.10);
+  --amber-bd:  rgba(227,179,65,0.35);
+  --blue:      #58a6ff;
+  --blue-bg:   rgba(88,166,255,0.10);
+  --blue-bd:   rgba(88,166,255,0.35);
+  --teal:      #39c5aa;
+  --teal-bg:   rgba(57,197,170,0.10);
+  --teal-bd:   rgba(57,197,170,0.35);
+  --text:      #e6edf3;
+  --text2:     #aab4c0;
+  --text3:     #6e7f94;
+  --sans:  'Inter', system-ui, sans-serif;
+  --mono:  'IBM Plex Mono', monospace;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg); color: var(--text); font-family: var(--sans); font-size: 14px; line-height: 1.5; min-height: 100vh; }
+.app { max-width: 900px; margin: 0 auto; padding: 0 20px 80px; }
+
+/* HEADER */
+header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+.h-title { font-size: 19px; font-weight: 700; }
+.h-title span { color: var(--teal); }
+.h-sub { font-family: var(--mono); font-size: 10px; color: var(--text3); margin-top: 3px; line-height: 1.5; }
+.reset-btn { background: var(--card2); border: 1px solid var(--border); color: var(--text2); font-family: var(--mono); font-size: 11px; padding: 6px 14px; cursor: pointer; border-radius: 4px; transition: all 0.15s; white-space: nowrap; }
+.reset-btn:hover { border-color: var(--teal); color: var(--teal); }
+
+/* PROGRESS */
+.prog-track { height: 3px; background: var(--border); margin-bottom: 20px; border-radius: 2px; }
+.prog-fill { height: 100%; background: linear-gradient(90deg, var(--teal), #7ee8d4); border-radius: 2px; transition: width 0.4s ease; box-shadow: 0 0 6px rgba(57,197,170,0.4); }
+
+/* STEP TABS */
+.steps { display: flex; border-bottom: 1px solid var(--border); margin-bottom: 20px; overflow-x: auto; }
+.stab { flex: 1; min-width: 76px; padding: 7px 4px 9px; text-align: center; font-family: var(--mono); font-size: 9px; color: var(--text3); border-bottom: 2px solid transparent; margin-bottom: -1px; transition: all 0.2s; line-height: 1.3; }
+.stab .sn { display: block; font-size: 14px; font-weight: 600; margin-bottom: 1px; }
+.stab.active { color: var(--teal); border-bottom-color: var(--teal); }
+.stab.done   { color: var(--green); border-bottom-color: var(--green); }
+
+/* CARD */
+.card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 22px; margin-bottom: 12px; }
+.ctitle { font-size: 12px; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; margin-bottom: 3px; }
+.csub { font-size: 12px; color: var(--text2); margin-bottom: 16px; line-height: 1.5; }
+
+/* SECTION LABEL */
+.slabel { display: flex; align-items: center; gap: 8px; font-family: var(--mono); font-size: 10px; font-weight: 500; color: var(--text2); letter-spacing: 0.07em; text-transform: uppercase; margin-bottom: 9px; padding-bottom: 6px; border-bottom: 1px solid var(--border); }
+.pill { font-size: 9px; padding: 1px 7px; border-radius: 20px; border: 1px solid; margin-left: auto; }
+.pill-r { border-color: var(--red);   color: var(--red);   background: var(--red-bg); }
+.pill-a { border-color: var(--amber); color: var(--amber); background: var(--amber-bg); }
+.pill-t { border-color: var(--teal);  color: var(--teal);  background: var(--teal-bg); }
+.pill-g { border-color: var(--green); color: var(--green); background: var(--green-bg); }
+
+/* CRITERION ROW */
+.crit { border: 1px solid var(--border); border-radius: 6px; margin-bottom: 5px; overflow: hidden; transition: border-color 0.15s, background 0.15s; }
+.crit.c-yes  { border-color: var(--green-bd); background: var(--green-bg); }
+.crit.c-no   { border-color: var(--red-bd);   background: var(--red-bg); }
+.crit.c-pres { border-color: var(--teal-bd);  background: var(--teal-bg); }
+.crit.c-abs  { border-color: var(--border2);  background: var(--card2); }
+.crit.c-part { border-color: var(--amber-bd); background: var(--amber-bg); }
+
+.crit-main { display: flex; align-items: center; gap: 10px; padding: 10px 13px; }
+.crit-name { flex: 1; font-size: 13px; font-weight: 500; color: var(--text); line-height: 1.3; }
+.xbtn { background: none; border: 1px solid var(--border); color: var(--text3); font-size: 11px; cursor: pointer; padding: 2px 8px; font-family: var(--mono); white-space: nowrap; transition: all 0.15s; flex-shrink: 0; border-radius: 3px; }
+.xbtn:hover { color: var(--blue); border-color: var(--blue); }
+
+.crit-detail { display: none; padding: 10px 13px 12px; font-size: 12px; color: var(--text); line-height: 1.65; border-top: 1px solid var(--border); }
+.crit-detail.open { display: block; }
+.cnote { margin-top: 8px; padding: 8px 11px; background: var(--card2); border-left: 3px solid var(--border2); font-family: var(--mono); font-size: 10px; color: var(--text2); line-height: 1.75; border-radius: 0 3px 3px 0; }
+.cnote strong { color: var(--text); }
+
+/* BUTTON ROW */
+.brow { display: flex; border-top: 1px solid var(--border); }
+.abtn { flex: 1; padding: 8px 6px; background: none; border: none; border-right: 1px solid var(--border); color: var(--text2); font-family: var(--mono); font-size: 11px; cursor: pointer; transition: all 0.12s; text-transform: uppercase; letter-spacing: 0.04em; font-weight: 500; }
+.abtn:last-child { border-right: none; }
+.abtn:hover { background: var(--card2); color: var(--text); }
+.abtn.ay  { background: var(--green-bg);  color: var(--green);  font-weight: 700; }
+.abtn.an  { background: var(--red-bg);    color: var(--red);    font-weight: 700; }
+.abtn.at  { background: var(--teal-bg);   color: var(--teal);   font-weight: 700; }
+.abtn.aa  { background: var(--card2);     color: var(--text2);  font-weight: 700; }
+.abtn.aw  { background: var(--amber-bg);  color: var(--amber);  font-weight: 700; }
+
+/* THREE-BTN shorthand */
+.brow-3 .abtn { flex: 1; }
+
+/* TWO-COL */
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; }
+@media (max-width: 600px) { .two-col { grid-template-columns: 1fr; } }
+
+/* ALERT */
+.alrt { padding: 9px 13px; border-radius: 5px; font-size: 12px; line-height: 1.55; margin-top: 12px; border-left: 3px solid; display: none; }
+.alrt.show { display: block; }
+.aok  { border-color: var(--green); background: var(--green-bg); color: #7ee787; }
+.awn  { border-color: var(--amber); background: var(--amber-bg); color: var(--amber); }
+.aerr { border-color: var(--red);   background: var(--red-bg);   color: #ff7b72; }
+.ainf { border-color: var(--blue);  background: var(--blue-bg);  color: var(--blue); }
+.ateal{ border-color: var(--teal);  background: var(--teal-bg);  color: var(--teal); }
+
+/* LOGIC BOX */
+.lbox { background: var(--card2); border: 1px solid var(--border); border-radius: 5px; padding: 12px 15px; font-size: 12px; color: var(--text2); line-height: 1.75; margin-bottom: 16px; }
+.lbox strong { color: var(--text); }
+.lg { color: var(--green);  font-weight: 600; }
+.la { color: var(--amber);  font-weight: 600; }
+.lr { color: var(--red);    font-weight: 600; }
+.lt { color: var(--teal);   font-weight: 600; }
+
+/* TALLY */
+.tally { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+.chip { display: flex; align-items: center; gap: 5px; padding: 5px 12px; border-radius: 20px; font-family: var(--mono); font-size: 11px; border: 1px solid var(--border); background: var(--card2); color: var(--text2); }
+.chip .n { font-size: 15px; font-weight: 700; }
+.cg { border-color: var(--green-bd); background: var(--green-bg); color: var(--green); }
+.cr { border-color: var(--red-bd);   background: var(--red-bg);   color: var(--red); }
+.ca { border-color: var(--amber-bd); background: var(--amber-bg); color: var(--amber); }
+.ct { border-color: var(--teal-bd);  background: var(--teal-bg);  color: var(--teal); }
+
+/* REGION GRID */
+.region-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 14px; }
+@media (max-width: 640px) { .region-grid { grid-template-columns: repeat(2, 1fr); } }
+
+.region-card { background: var(--card2); border: 1px solid var(--border); border-radius: 6px; padding: 12px 10px; text-align: center; transition: all 0.2s; }
+.region-card.r-met { border-color: var(--teal-bd); background: var(--teal-bg); }
+.region-card.r-partial { border-color: var(--amber-bd); background: var(--amber-bg); }
+.region-card.r-none { border-color: var(--border2); background: var(--card2); }
+
+.region-name { font-size: 12px; font-weight: 700; color: var(--text); margin-bottom: 8px; letter-spacing: 0.03em; }
+.region-tag { font-family: var(--mono); font-size: 9px; padding: 2px 8px; border-radius: 10px; border: 1px solid; display: inline-block; margin-bottom: 8px; }
+.rt-both { border-color: var(--teal-bd);  color: var(--teal); }
+.rt-umn  { border-color: var(--amber-bd); color: var(--amber); }
+.rt-lmn  { border-color: var(--blue-bd);  color: var(--blue); }
+.rt-none { border-color: var(--border2);  color: var(--text3); }
+
+.region-btns { display: flex; flex-direction: column; gap: 4px; margin-top: 6px; }
+.rbtn { padding: 5px 4px; border: 1px solid var(--border); border-radius: 4px; background: none; color: var(--text3); font-family: var(--mono); font-size: 9px; cursor: pointer; transition: all 0.12s; text-transform: uppercase; letter-spacing: 0.03em; font-weight: 500; }
+.rbtn:hover { background: var(--card); color: var(--text); border-color: var(--border2); }
+.rbtn.r-both-a { background: var(--teal-bg);  color: var(--teal);  border-color: var(--teal-bd);  font-weight: 700; }
+.rbtn.r-umn-a  { background: var(--amber-bg); color: var(--amber); border-color: var(--amber-bd); font-weight: 700; }
+.rbtn.r-lmn-a  { background: var(--blue-bg);  color: var(--blue);  border-color: var(--blue-bd);  font-weight: 700; }
+.rbtn.r-none-a { background: var(--card2);     color: var(--text2); border-color: var(--border2);  font-weight: 700; }
+
+/* NAV */
+.nav-row { display: flex; justify-content: space-between; align-items: center; margin-top: 20px; gap: 10px; }
+.nbtn { padding: 9px 22px; border-radius: 5px; font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; border: 1px solid; cursor: pointer; font-weight: 500; transition: all 0.15s; }
+.np { background: var(--teal); border-color: var(--teal); color: #0d1117; font-weight: 700; }
+.np:hover { background: #7ee8d4; border-color: #7ee8d4; }
+.np:disabled { opacity: 0.3; cursor: not-allowed; }
+.ns { background: transparent; border-color: var(--border2); color: var(--text2); }
+.ns:hover { border-color: var(--text); color: var(--text); }
+
+/* SCREEN */
+.screen { display: none; }
+.screen.active { display: block; animation: fu 0.25s ease; }
+@keyframes fu { from { opacity:0; transform:translateY(5px); } to { opacity:1; transform:translateY(0); } }
+
+/* VERDICT */
+.vban { border-radius: 8px; padding: 22px 26px; margin-bottom: 16px; text-align: center; border: 2px solid; }
+.ve { border-color: var(--green); background: var(--green-bg); }
+.vt { border-color: var(--teal);  background: var(--teal-bg); }
+.vn { border-color: var(--red);   background: var(--red-bg); }
+.va { border-color: var(--amber); background: var(--amber-bg); }
+.vlbl { font-family: var(--mono); font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase; opacity: 0.6; margin-bottom: 5px; }
+.vtitle { font-size: 24px; font-weight: 700; margin-bottom: 7px; letter-spacing: -0.01em; }
+.ve .vtitle { color: var(--green); }
+.vt .vtitle { color: var(--teal); }
+.vn .vtitle { color: var(--red); }
+.va .vtitle { color: var(--amber); }
+.vdesc { font-size: 12px; color: var(--text2); line-height: 1.7; max-width: 580px; margin: 0 auto; }
+
+/* SUMMARY */
+.sum-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+@media (max-width: 580px) { .sum-grid { grid-template-columns: 1fr; } }
+.sblock { background: var(--card); border: 1px solid var(--border); border-radius: 6px; overflow: hidden; }
+.sbtitle { font-family: var(--mono); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; padding: 7px 11px; border-bottom: 1px solid var(--border); color: var(--text2); background: var(--card2); }
+.srow { display: flex; align-items: flex-start; gap: 8px; padding: 6px 11px; border-bottom: 1px solid var(--border); font-size: 12px; }
+.srow:last-child { border-bottom: none; }
+.dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; margin-top: 4px; }
+.dg  { background: var(--green); }
+.dr  { background: var(--red); }
+.dt  { background: var(--teal); }
+.da  { background: var(--amber); }
+.dgr { background: var(--text3); }
+.sname { flex: 1; color: var(--text); line-height: 1.4; }
+.stag { font-family: var(--mono); font-size: 9px; padding: 1px 7px; border-radius: 10px; border: 1px solid; white-space: nowrap; }
+.tg  { border-color: var(--green-bd); color: var(--green); }
+.tr  { border-color: var(--red-bd);   color: var(--red); }
+.tt  { border-color: var(--teal-bd);  color: var(--teal); }
+.ta  { border-color: var(--amber-bd); color: var(--amber); }
+.tgr { border-color: var(--border2);  color: var(--text3); }
+
+/* DOC NOTE */
+.doc-header { display: flex; align-items: center; gap: 8px; margin-bottom: 5px; }
+.doc-tog { flex: 1; text-align: left; background: var(--card2); border: 1px solid var(--border2); border-radius: 5px; color: var(--text2); font-family: var(--mono); font-size: 11px; padding: 8px 13px; cursor: pointer; transition: all 0.15s; letter-spacing: 0.04em; }
+.doc-tog:hover { border-color: var(--teal); color: var(--teal); }
+.copy-btn { background: var(--card2); border: 1px solid var(--border2); border-radius: 5px; color: var(--text2); font-family: var(--mono); font-size: 11px; padding: 8px 14px; cursor: pointer; white-space: nowrap; transition: all 0.15s; display: none; }
+.copy-btn.visible { display: block; }
+.copy-btn:hover { border-color: var(--green); color: var(--green); }
+.copy-btn.copied { border-color: var(--green); color: var(--green); background: var(--green-bg); }
+.doc-body { display: none; background: var(--card2); border: 1px solid var(--border2); border-radius: 5px; padding: 13px 15px; font-family: var(--mono); font-size: 11px; color: var(--text2); line-height: 1.85; white-space: pre-wrap; margin-bottom: 12px; }
+.doc-body.open { display: block; }
+
+/* FOOTNOTE */
+.fn { font-family: var(--mono); font-size: 10px; color: var(--text3); margin-top: 10px; line-height: 1.6; }
+</style>
+</head>
+<body>
+<div class="app">
+
+<header>
+  <div>
+    <div class="h-title">Gold Coast <span>ALS Criteria</span></div>
+    <div class="h-sub">Shefner JM et al. · Clin Neurophysiol 2020;131(8):1975–1978 · doi:10.1016/j.clinph.2020.04.005<br>Gold Coast Consensus Conference, September 2019 · IFCN / WFN / ALSA / MND Association</div>
+  </div>
+  <button class="reset-btn" onclick="resetAll()">↺ Reset</button>
+</header>
+
+<div class="prog-track"><div class="prog-fill" id="pf" style="width:0%"></div></div>
+
+<div class="steps">
+  <div class="stab active" id="st0"><span class="sn">1</span>Progression</div>
+  <div class="stab" id="st1"><span class="sn">2</span>UMN / LMN</div>
+  <div class="stab" id="st2"><span class="sn">3</span>Body Regions</div>
+  <div class="stab" id="st3"><span class="sn">4</span>Exclusions</div>
+  <div class="stab" id="st4"><span class="sn">5</span>Verdict</div>
+</div>
+
+<!-- ══════ SCREEN 0: PROGRESSIVE MOTOR IMPAIRMENT ══════ -->
+<div class="screen active" id="s0">
+<div class="card">
+  <div class="ctitle" style="color:var(--teal);">Step 1 · Criterion 1 — Progressive Motor Impairment</div>
+  <div class="csub">The Gold Coast Criteria collapse Definite, Probable, and Possible ALS into a single diagnostic entity. All three criteria must be met simultaneously.</div>
+
+  <div class="lbox">
+    <strong>Gold Coast Criteria (Table 1, Shefner et al. 2020) — all 3 required:</strong><br>
+    <span class="lt">1.</span> Progressive motor impairment documented by history or repeated clinical assessment, preceded by normal motor function<br>
+    <span class="lt">2.</span> UMN + LMN dysfunction in ≥1 body region (both in same region if only one region involved), OR LMN dysfunction alone in ≥2 body regions<br>
+    <span class="lt">3.</span> Investigations excluding other disease processes
+  </div>
+
+  <div class="slabel">Criterion 1 · Progressive Motor Impairment <span class="pill pill-r">REQUIRED</span></div>
+
+  <div class="crit" id="prog-item">
+    <div class="crit-main">
+      <div class="crit-name">Progressive motor impairment documented by history or repeated clinical assessment, preceded by normal motor function</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      Progression must be clearly documented — either by history (patient/caregiver report of new or worsening motor deficits over time) or by repeated clinical assessments demonstrating objective decline. The motor impairment must be preceded by a period of normal motor function, distinguishing ALS from static or congenital motor disorders.
+      <div class="cnote">
+        <strong>Key points from Gold Coast consensus:</strong> ALS is a clinically focal onset disease in most cases, though generalized onset is recognized. Progression may be asymmetric and multifocal. The criteria do not specify a minimum duration of progression — clinical judgment determines whether the course is clearly progressive. Cognitive and behavioural changes (up to 50% of ALS patients; ALS-FTD in ~15%) are now recognized as part of the disease spectrum but are <em>not required</em> for diagnosis.
+      </div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="set('prog','yes')" id="prog-yes">✓ Documented progression from normal baseline</button>
+      <button class="abtn" onclick="set('prog','no')"  id="prog-no" >✗ Not established</button>
+    </div>
+  </div>
+
+  <div id="a0" class="alrt"></div>
+  <div class="nav-row"><div></div><button class="nbtn np" id="n0" onclick="go(1)" disabled>Next: UMN / LMN Dysfunction →</button></div>
+</div>
+</div>
+
+<!-- ══════ SCREEN 1: UMN / LMN DEFINITIONS ══════ -->
+<div class="screen" id="s1">
+<div class="card">
+  <div class="ctitle" style="color:var(--teal);">Step 2 · Define UMN and LMN Signs</div>
+  <div class="csub">Review the Gold Coast definitions of UMN and LMN dysfunction. You will apply these in the body region assessment (Step 3).</div>
+
+  <div class="slabel">Upper Motor Neuron Dysfunction <span class="pill pill-a">≥1 of the following</span></div>
+
+  <div class="crit" id="umn1-item">
+    <div class="crit-main">
+      <div class="crit-name">Increased deep tendon reflexes — including reflex in a clinically weak/wasted muscle, or spread to adjacent muscles</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      Hyperreflexia in a limb with clinical weakness and wasting is a key UMN sign in ALS — the combination of LMN (weakness, wasting) and UMN (hyperreflexia) in the same muscle is pathognomonic. Reflex spread (e.g., jaw jerk from a facial tap, crossed adductor response) also qualifies. A preserved or brisk reflex in a clinically denervated muscle is highly suspicious for concurrent UMN involvement.
+      <div class="cnote">A reflex that is simply present (grade 2+) in a weak muscle qualifies — it need not be pathologically brisk. The key is that in the context of significant LMN dysfunction (wasting, weakness), a preserved or increased reflex indicates co-existing UMN involvement.</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="set('umn1','present')" id="umn1-present">✓ Present</button>
+      <button class="abtn" onclick="set('umn1','absent')"  id="umn1-absent" >✗ Absent</button>
+    </div>
+  </div>
+
+  <div class="crit" id="umn2-item">
+    <div class="crit-main">
+      <div class="crit-name">Pathological reflexes — Hoffman sign, Babinski sign, crossed adductor reflex, or snout reflex</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      Any of: Hoffman sign (finger flexion response to middle finger PIP flick — bilateral is more specific), Babinski sign (extensor plantar response), crossed adductor reflex (contralateral adductor activation with ipsilateral knee jerk), snout/pout reflex (orbicularis oris contraction with lip tap — indicates bilateral corticobulbar involvement). These are unambiguous UMN signs.
+      <div class="cnote">Isolated extensor plantar response can be non-specific (age, cervical myelopathy) — its significance should be interpreted in clinical context. Bilateral Hoffman sign is more specific for UMN dysfunction than unilateral. A brisk jaw jerk in isolation may reflect normal variants in the elderly.</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="set('umn2','present')" id="umn2-present">✓ Present</button>
+      <button class="abtn" onclick="set('umn2','absent')"  id="umn2-absent" >✗ Absent</button>
+    </div>
+  </div>
+
+  <div class="crit" id="umn3-item">
+    <div class="crit-main">
+      <div class="crit-name">Velocity-dependent increase in tone (spasticity)</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      Clasp-knife quality resistance to passive limb movement that increases with velocity — distinct from rigidity (velocity-independent, Parkinson's) and paratonia (gegenhalten). In ALS, spasticity may be subtle early, particularly in a limb with coexisting significant LMN dysfunction (hypotonia from denervation may mask spasticity).
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="set('umn3','present')" id="umn3-present">✓ Present</button>
+      <button class="abtn" onclick="set('umn3','absent')"  id="umn3-absent" >✗ Absent</button>
+    </div>
+  </div>
+
+  <div class="crit" id="umn4-item">
+    <div class="crit-main">
+      <div class="crit-name">Slowed, poorly coordinated voluntary movement not attributable to LMN weakness or Parkinsonian features</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      UMN-pattern slowing: slowness of fine motor tasks (finger tapping, rapid alternating movements) that is disproportionate to the degree of weakness or wasting, suggesting corticospinal dysfunction. Must be distinguished from bradykinesia (Parkinson's — pill-rolling, rigidity, hypomimia) and from pure LMN weakness (which can also slow movements but without the dissociation). Pseudobulbar features (emotional lability, slowed tongue movements) also reflect corticobulbar UMN involvement.
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="set('umn4','present')" id="umn4-present">✓ Present</button>
+      <button class="abtn" onclick="set('umn4','absent')"  id="umn4-absent" >✗ Absent</button>
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:16px;">Lower Motor Neuron Dysfunction <span class="pill pill-a">Clinical OR EMG (see below)</span></div>
+
+  <div class="lbox">
+    <strong>LMN dysfunction requires EITHER:</strong><br>
+    <span class="lt">Clinical:</span> Muscle weakness AND muscle wasting in the same muscle/region<br>
+    <span class="lt">EMG:</span> Chronic neurogenic change (large MUPs — increased duration and/or amplitude; polyphasia and MUP instability are supportive but not obligatory) AND ongoing denervation (fibrillation potentials, positive sharp waves, OR fasciculation potentials)<br><br>
+    <strong>Region-level LMN threshold (for body region counting):</strong> Abnormalities in ≥2 limb muscles innervated by different roots AND different nerves, OR 1 bulbar muscle, OR 1 thoracic muscle — by clinical exam or EMG.
+  </div>
+
+  <div class="crit" id="lmn-clin-item">
+    <div class="crit-main">
+      <div class="crit-name">Clinical LMN evidence — muscle weakness AND wasting</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      Both weakness (reduced MRC grade, <5/5) AND visible or palpable muscle wasting must be present in the same muscle or muscle group. Weakness alone without atrophy, or atrophy alone (e.g., disuse), does not qualify for the clinical LMN criterion. Fasciculations visible on inspection provide additional supportive evidence but are not sufficient alone for clinical LMN diagnosis under Gold Coast.
+      <div class="cnote">Fasciculations are not required, but their diffuse presence substantially increases diagnostic confidence. Tongue fasciculations are particularly specific for bulbar LMN involvement. Absence of fasciculations should prompt consideration of alternative diagnoses.</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="set('lmnclin','present')" id="lmnclin-present">✓ Weakness + wasting present</button>
+      <button class="abtn" onclick="set('lmnclin','absent')"  id="lmnclin-absent" >✗ Not clinically evident</button>
+    </div>
+  </div>
+
+  <div class="crit" id="lmn-emg-item">
+    <div class="crit-main">
+      <div class="crit-name">EMG LMN evidence — chronic neurogenic change AND ongoing denervation</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      <strong>Chronic neurogenic change (mandatory):</strong> Large motor unit potentials — increased duration and/or increased amplitude. Polyphasia and MUP instability (satellite potentials, nascent MUPs) are supportive but not obligatory.<br><br>
+      <strong>Ongoing denervation (mandatory — at least one of):</strong> Fibrillation potentials, positive sharp waves, OR fasciculation potentials.<br><br>
+      EMG LMN signs can substitute for clinical weakness/wasting — this is the primary advantage of EMG, allowing identification of sub-clinical LMN involvement in clinically unaffected muscles, thereby facilitating earlier diagnosis.
+      <div class="cnote">Per Gold Coast consensus: NCS/EMG remains a critically important (though not obligatory) investigation. It should be used to exclude other nerve diseases (multifocal motor neuropathy, Kennedy's disease, radiculopathy, myopathy) and to identify LMN involvement in clinically silent muscles. A thorough EMG screen of multiple body regions is standard of care in ALS evaluation.</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="set('lmnemg','present')" id="lmnemg-present">✓ EMG criteria met</button>
+      <button class="abtn" onclick="set('lmnemg','absent')"  id="lmnemg-absent" >✗ EMG criteria not met / not performed</button>
+    </div>
+  </div>
+
+  <div class="tally" style="margin-top:14px;">
+    <div class="chip" id="umn-chip"><span class="n" id="umn-n">0</span>UMN sign(s)</div>
+    <div class="chip" id="lmn-chip"><span class="n" id="lmn-n">—</span>LMN</div>
+  </div>
+
+  <div id="a1" class="alrt"></div>
+  <div class="nav-row">
+    <button class="nbtn ns" onclick="go(0)">← Back</button>
+    <button class="nbtn np" onclick="go(2)">Next: Body Regions →</button>
+  </div>
+</div>
+</div>
+
+<!-- ══════ SCREEN 2: BODY REGIONS ══════ -->
+<div class="screen" id="s2">
+<div class="card">
+  <div class="ctitle" style="color:var(--teal);">Step 3 · Criterion 2 — Body Region Assessment</div>
+  <div class="csub">Four body regions: Bulbar, Cervical, Thoracic, Lumbosacral. Assign UMN/LMN status to each region based on your Step 2 findings.</div>
+
+  <div class="lbox">
+    <strong>Criterion 2 is met by EITHER:</strong><br>
+    <span class="lt">Option A:</span> UMN + LMN dysfunction in the <strong>same</strong> body region (≥1 region with both)<br>
+    <span class="lt">Option B:</span> LMN dysfunction alone in ≥2 body regions (no UMN required)<br><br>
+    <strong>LMN involvement in a region requires:</strong> ≥2 limb muscles from different roots AND different nerves (by exam or EMG), OR 1 bulbar muscle, OR 1 thoracic muscle.
+  </div>
+
+  <div class="region-grid">
+    <!-- BULBAR -->
+    <div class="region-card" id="rc-bulbar">
+      <div class="region-name">Bulbar</div>
+      <div class="region-tag" id="rt-bulbar">—</div>
+      <div class="region-btns">
+        <button class="rbtn" onclick="setRegion('bulbar','both')" id="rb-bulbar-both">UMN + LMN</button>
+        <button class="rbtn" onclick="setRegion('bulbar','umn')"  id="rb-bulbar-umn" >UMN only</button>
+        <button class="rbtn" onclick="setRegion('bulbar','lmn')"  id="rb-bulbar-lmn" >LMN only</button>
+        <button class="rbtn" onclick="setRegion('bulbar','none')" id="rb-bulbar-none">Unaffected</button>
+      </div>
+    </div>
+    <!-- CERVICAL -->
+    <div class="region-card" id="rc-cervical">
+      <div class="region-name">Cervical</div>
+      <div class="region-tag" id="rt-cervical">—</div>
+      <div class="region-btns">
+        <button class="rbtn" onclick="setRegion('cervical','both')" id="rb-cervical-both">UMN + LMN</button>
+        <button class="rbtn" onclick="setRegion('cervical','umn')"  id="rb-cervical-umn" >UMN only</button>
+        <button class="rbtn" onclick="setRegion('cervical','lmn')"  id="rb-cervical-lmn" >LMN only</button>
+        <button class="rbtn" onclick="setRegion('cervical','none')" id="rb-cervical-none">Unaffected</button>
+      </div>
+    </div>
+    <!-- THORACIC -->
+    <div class="region-card" id="rc-thoracic">
+      <div class="region-name">Thoracic</div>
+      <div class="region-tag" id="rt-thoracic">—</div>
+      <div class="region-btns">
+        <button class="rbtn" onclick="setRegion('thoracic','both')" id="rb-thoracic-both">UMN + LMN</button>
+        <button class="rbtn" onclick="setRegion('thoracic','umn')"  id="rb-thoracic-umn" >UMN only</button>
+        <button class="rbtn" onclick="setRegion('thoracic','lmn')"  id="rb-thoracic-lmn" >LMN only</button>
+        <button class="rbtn" onclick="setRegion('thoracic','none')" id="rb-thoracic-none">Unaffected</button>
+      </div>
+    </div>
+    <!-- LUMBOSACRAL -->
+    <div class="region-card" id="rc-lumbosacral">
+      <div class="region-name">Lumbosacral</div>
+      <div class="region-tag" id="rt-lumbosacral">—</div>
+      <div class="region-btns">
+        <button class="rbtn" onclick="setRegion('lumbosacral','both')" id="rb-lumbosacral-both">UMN + LMN</button>
+        <button class="rbtn" onclick="setRegion('lumbosacral','umn')"  id="rb-lumbosacral-umn" >UMN only</button>
+        <button class="rbtn" onclick="setRegion('lumbosacral','lmn')"  id="rb-lumbosacral-lmn" >LMN only</button>
+        <button class="rbtn" onclick="setRegion('lumbosacral','none')" id="rb-lumbosacral-none">Unaffected</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="tally">
+    <div class="chip ct"><span class="n" id="both-n">0</span>Region(s) with UMN+LMN</div>
+    <div class="chip" style="border-color:var(--blue-bd);background:var(--blue-bg);color:var(--blue);"><span class="n" id="lmn-only-n">0</span>LMN-only region(s)</div>
+  </div>
+
+  <p class="fn">ⓘ Thoracic LMN: paraspinal muscles on EMG, or thoracic level sensory level if available clinically. Bulbar LMN: tongue atrophy/fasciculations, dysarthria, dysphagia from lower bulbar weakness. Cervical/lumbosacral LMN: ≥2 muscles from different roots and different nerves.</p>
+
+  <div id="a2" class="alrt"></div>
+  <div class="nav-row">
+    <button class="nbtn ns" onclick="go(1)">← Back</button>
+    <button class="nbtn np" onclick="go(3)">Next: Exclusions →</button>
+  </div>
+</div>
+</div>
+
+<!-- ══════ SCREEN 3: EXCLUSIONS ══════ -->
+<div class="screen" id="s3">
+<div class="card">
+  <div class="ctitle" style="color:var(--red);">Step 4 · Criterion 3 — Exclusion of Other Disease Processes</div>
+  <div class="csub">Investigations should be guided by the clinical presentation. The appropriate workup is not fixed — it depends on what alternative diagnoses are plausible in a given patient.</div>
+
+  <div class="lbox">
+    <strong>Gold Coast Criteria (Footnote 4):</strong> "The appropriate investigations depend on the clinical presentation, and may include nerve conduction studies and needle EMG, MRI or other imaging, fluid studies of blood or CSF, or other modalities as clinically necessary." The criteria do not mandate a specific test panel — clinical judgment determines which investigations are needed to exclude relevant mimics.
+  </div>
+
+  <div class="slabel">Core investigations to consider <span class="pill pill-t">CONTEXT-DEPENDENT</span></div>
+
+  <div class="crit" id="ncs-item">
+    <div class="crit-main">
+      <div class="crit-name">NCS/EMG — excluded multifocal motor neuropathy, Kennedy disease, radiculopathy, myopathy</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      NCS is critically important to exclude: multifocal motor neuropathy (MMN — conduction block on motor NCS, responds to IVIg), Kennedy disease (X-linked spinobulbar muscular atrophy — sensory NCS abnormal, AR repeat expansion on genetics), hereditary spastic paraplegia mimics, radiculopathy/plexopathy (structural MRI, sensory NCS). Myopathy (elevated CK, short-duration MUPs on EMG, biopsy if needed).
+      <div class="cnote">EMG is not obligatory per Gold Coast, but the consensus group stated it is "critically important." It is the single most useful investigation for confirming LMN involvement in sub-clinical muscles and excluding mimics. A thorough screen of ≥2–3 body regions is standard.</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="set('ncs','done')"     id="ncs-done"    >✓ Done — no mimic identified</button>
+      <button class="abtn" onclick="set('ncs','pending')"  id="ncs-pending" >⌛ Pending</button>
+      <button class="abtn" onclick="set('ncs','notdone')"  id="ncs-notdone" >— Not performed</button>
+    </div>
+  </div>
+
+  <div class="crit" id="mri-item">
+    <div class="crit-main">
+      <div class="crit-name">Neuroimaging — excluded structural causes (cervical myelopathy, brainstem lesion, cortical lesion)</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      MRI brain and spine is indicated in most ALS evaluations to exclude: cervical spondylotic myelopathy (the most important structural mimic — cord compression causing UMN signs in lower limbs), brainstem lesion (glioma, MS — mimicking bulbar involvement), cortical lesion (stroke, tumor — mimicking UMN signs). ALS-specific MRI findings (corticospinal tract T2 signal, motor cortex atrophy, iron deposition on SWI) are supportive but not diagnostic.
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="set('mri','done')"    id="mri-done"   >✓ Done — no structural mimic</button>
+      <button class="abtn" onclick="set('mri','pending')" id="mri-pending">⌛ Pending</button>
+      <button class="abtn" onclick="set('mri','notdone')" id="mri-notdone">— Not performed</button>
+    </div>
+  </div>
+
+  <div class="crit" id="bloods-item">
+    <div class="crit-main">
+      <div class="crit-name">Blood / CSF studies — excluded metabolic, inflammatory, and genetic mimics</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      Context-dependent panel. Core blood tests: CK (elevated in MMN, myopathy, Kennedy disease; mildly elevated in ALS), B12, copper, thyroid function, paraneoplastic panel (if relevant), GM1 antibodies (MMN), anti-HMGCR/anti-SRP if myopathy suspected. Genetic testing: SOD1, C9orf72, FUS, TARDBP — relevant for counseling and emerging gene therapies; Kennedy disease (AR repeat in SBMA gene). CSF: useful if inflammatory/infectious CNS disease is in the differential. Neurofilament light chain (NfL) and NfH are supportive biomarkers — elevated in ALS but not yet in formal diagnostic criteria.
+      <div class="cnote">Neurofilament levels (NfL/NfH — blood or CSF) are the most promising emerging biomarker in ALS. They correlate with disease progression rate and survival, and can help distinguish ALS from mimics. However, they are not currently incorporated into the Gold Coast Criteria as a diagnostic criterion.</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="set('bloods','done')"    id="bloods-done"   >✓ Done — no mimic identified</button>
+      <button class="abtn" onclick="set('bloods','pending')" id="bloods-pending">⌛ Pending</button>
+      <button class="abtn" onclick="set('bloods','notdone')" id="bloods-notdone">— Not performed / N/A</button>
+    </div>
+  </div>
+
+  <div class="crit" id="mimic-item">
+    <div class="crit-main">
+      <div class="crit-name">Overall assessment — alternative diagnosis identified?</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      Based on the clinical presentation, EMG, imaging, and lab findings, has an alternative diagnosis been identified that better explains the findings? Common mimics in practice: multifocal motor neuropathy, Kennedy disease (SBMA), cervical myeloradiculopathy, primary lateral sclerosis (UMN only for ≥4 years), hereditary spastic paraplegia, inclusion body myositis, myasthenia gravis (bulbar mimics), lymphoma, paraneoplastic motor neuron disease, hirayama disease (young onset), post-polio syndrome.
+      <div class="cnote">PLS (Primary Lateral Sclerosis) is specifically relevant: patients with UMN signs in ≥2 body regions but <strong>no LMN signs for ≥4 years</strong> from symptom onset are classified as PLS rather than ALS. Gold Coast criteria do not separately diagnose PLS — these patients would not fulfill Criterion 2 for ALS until LMN signs appear.</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="set('mimic','no')"  id="mimic-no" >✓ No alternative diagnosis identified</button>
+      <button class="abtn" onclick="set('mimic','yes')" id="mimic-yes">✕ Alternative diagnosis identified / suspected</button>
+    </div>
+  </div>
+
+  <div id="a3" class="alrt"></div>
+  <div class="nav-row">
+    <button class="nbtn ns" onclick="go(2)">← Back</button>
+    <button class="nbtn np" onclick="go(4)">Generate Verdict →</button>
+  </div>
+</div>
+</div>
+
+<!-- ══════ SCREEN 4: VERDICT ══════ -->
+<div class="screen" id="s4">
+  <div id="vout"></div>
+  <div id="sout"></div>
+  <div class="doc-header">
+    <button class="doc-tog" onclick="toggleDoc()">▼ Documentation Note</button>
+    <button class="copy-btn" id="copy-btn" onclick="copyDoc()">⎘ Copy</button>
+  </div>
+  <div class="doc-body" id="dn"></div>
+  <div class="nav-row">
+    <button class="nbtn ns" onclick="go(3)">← Back</button>
+    <button class="nbtn np" onclick="resetAll()">↺ New Evaluation</button>
+  </div>
+</div>
+
+</div><!-- /app -->
+<script>
+// STATE
+const S = {
+  prog: null,
+  umn1:null, umn2:null, umn3:null, umn4:null,
+  lmnclin:null, lmnemg:null,
+  regions: { bulbar:null, cervical:null, thoracic:null, lumbosacral:null },
+  ncs:null, mri:null, bloods:null, mimic:null
+};
+let cur = 0;
+
+// Generic setter for non-region items
+function set(k, v) {
+  S[k] = v;
+  const item = document.getElementById(k+'-item');
+  if (item) item.className = 'crit';
+  const allVals = ['yes','no','present','absent','done','pending','notdone'];
+  allVals.forEach(x => {
+    const b = document.getElementById(k+'-'+x); if(b) b.classList.remove('ay','an','at','aa','aw');
+  });
+  const cls = { yes:'ay', no:'an', present:'at', absent:'aa', done:'ay', pending:'aw', notdone:'aa' }[v] || 'aa';
+  const btn = document.getElementById(k+'-'+v);
+  if (btn) btn.classList.add(cls);
+  if (item) {
+    if (v==='yes'||v==='done')    item.classList.add('c-yes');
+    else if (v==='no')             item.classList.add('c-no');
+    else if (v==='present')        item.classList.add('c-pres');
+    else if (v==='absent'||v==='notdone') item.classList.add('c-abs');
+    else if (v==='pending')        item.classList.add('c-part');
+  }
+  ui();
+}
+
+// Region setter
+function setRegion(region, val) {
+  S.regions[region] = val;
+  const regions = ['bulbar','cervical','thoracic','lumbosacral'];
+  const vals = ['both','umn','lmn','none'];
+  // Clear all buttons for this region
+  vals.forEach(v => {
+    const b = document.getElementById('rb-'+region+'-'+v);
+    if (b) b.classList.remove('r-both-a','r-umn-a','r-lmn-a','r-none-a');
+  });
+  const clsMap = { both:'r-both-a', umn:'r-umn-a', lmn:'r-lmn-a', none:'r-none-a' };
+  const btn = document.getElementById('rb-'+region+'-'+val);
+  if (btn) btn.classList.add(clsMap[val]);
+  // Update card appearance
+  const card = document.getElementById('rc-'+region);
+  if (card) { card.className = 'region-card'; if(val==='both') card.classList.add('r-met'); else if(val==='umn'||val==='lmn') card.classList.add('r-partial'); else card.classList.add('r-none'); }
+  // Update region tag
+  const tag = document.getElementById('rt-'+region);
+  if (tag) {
+    const labels = { both:'UMN + LMN', umn:'UMN only', lmn:'LMN only', none:'Unaffected' };
+    const tagCls = { both:'rt-both', umn:'rt-umn', lmn:'rt-lmn', none:'rt-none' };
+    tag.textContent = labels[val] || '—';
+    tag.className = 'region-tag ' + (tagCls[val]||'');
+  }
+  ui();
+}
+
+function regionCounts() {
+  const r = S.regions;
+  const keys = ['bulbar','cervical','thoracic','lumbosacral'];
+  const bothRegions = keys.filter(k=>r[k]==='both').length;
+  const lmnOnlyRegions = keys.filter(k=>r[k]==='lmn').length;
+  const totalLMN = keys.filter(k=>r[k]==='both'||r[k]==='lmn').length;
+  // Criterion 2 met?
+  const optionA = bothRegions >= 1;
+  const optionB = totalLMN >= 2 && lmnOnlyRegions > 0; // at least some LMN-only
+  // Actually: Option B = LMN in ≥2 regions regardless of UMN
+  const optionB2 = totalLMN >= 2;
+  return { both: bothRegions, lmnOnly: lmnOnlyRegions, totalLMN, optionA, optionB: bothRegions===0 && totalLMN>=2, crit2: optionA || (totalLMN>=2) };
+}
+
+function umnCount() { return ['umn1','umn2','umn3','umn4'].filter(k=>S[k]==='present').length; }
+function lmnMet()   { return S.lmnclin==='present' || S.lmnemg==='present'; }
+
+function ui() {
+  const umn = umnCount();
+  const lmn = lmnMet();
+  const rc = regionCounts();
+
+  // UMN chip
+  const uc = document.getElementById('umn-chip'); if(uc){ uc.className='chip '+(umn>0?'ct':''); document.getElementById('umn-n').textContent=umn; }
+  // LMN chip
+  const lc = document.getElementById('lmn-chip'); if(lc){ lc.className='chip '+(lmn?'cg':''); document.getElementById('lmn-n').textContent=lmn?'Met':'Not met'; }
+  // Region tally
+  const bn = document.getElementById('both-n'); if(bn) bn.textContent=rc.both;
+  const ln = document.getElementById('lmn-only-n'); if(ln) ln.textContent=rc.lmnOnly;
+
+  // Step 0
+  const a0=document.getElementById('a0'), n0=document.getElementById('n0');
+  if(S.prog==='yes'){ sa(a0,'aok','✓ Progressive motor impairment established. Proceed to UMN/LMN assessment.'); n0.disabled=false; }
+  else if(S.prog==='no'){ sa(a0,'aerr','✕ Criterion 1 not met — Gold Coast ALS Criteria cannot be fulfilled without documented progressive motor impairment from a normal baseline.'); n0.disabled=true; }
+  else { ha(a0); n0.disabled=true; }
+
+  // Step 1
+  const a1=document.getElementById('a1');
+  if(umn>0 && lmn){ sa(a1,'aok','✓ UMN sign(s) identified and LMN criterion met. Assign to body regions in Step 3.'); }
+  else if(umn>0 && !lmn && ['lmnclin','lmnemg'].some(k=>S[k]!==null)){ sa(a1,'awn','⚠ UMN signs present, but LMN criterion not yet met. Remember LMN can be established clinically (weakness+wasting) OR by EMG.'); }
+  else if(umn===0 && lmn){ sa(a1,'ainf','ⓘ LMN met, no UMN signs identified. Criterion 2 can still be met by LMN dysfunction in ≥2 body regions (Option B). Proceed to body regions.'); }
+  else { ha(a1); }
+
+  // Step 2 alert
+  const a2=document.getElementById('a2');
+  if(rc.crit2){ sa(a2,'aok','✓ Criterion 2 met — '+(rc.optionA?'UMN+LMN co-present in '+rc.both+' region(s)':'LMN dysfunction in '+rc.totalLMN+' regions')+(rc.optionA&&rc.totalLMN>=2?' ('+rc.totalLMN+' total LMN regions)':'')+'.');  }
+  else if(rc.both===0 && rc.totalLMN===1){ sa(a2,'awn','⚠ Only 1 region with LMN involvement and no co-localized UMN signs. Criterion 2 requires either UMN+LMN in the same region, or LMN in ≥2 regions. Assess additional regions or await clinical evolution.'); }
+  else if(['bulbar','cervical','thoracic','lumbosacral'].some(k=>S.regions[k]!==null)){ sa(a2,'awn','⚠ Criterion 2 not yet met. Continue body region assessment.'); }
+  else ha(a2);
+
+  // Step 3
+  const a3=document.getElementById('a3');
+  if(S.mimic==='yes'){ sa(a3,'aerr','✕ Alternative diagnosis identified — Gold Coast ALS Criteria cannot be fulfilled until alternative diagnoses are excluded. Criterion 3 is not met.'); }
+  else if(S.mimic==='no'){ sa(a3,'aok','✓ No alternative diagnosis identified. Criterion 3 satisfied.'); }
+  else ha(a3);
+}
+
+function sa(el,cls,msg){ if(!el)return; el.className='alrt show '+cls; el.innerHTML=msg; }
+function ha(el){ if(el) el.classList.remove('show'); }
+
+// VERDICT
+function verdict() {
+  const rc = regionCounts();
+  const lmn = lmnMet();
+  const umn = umnCount();
+  if(S.prog !== 'yes') return { cls:'vn', t:'Criterion 1 Not Met', d:'Progressive motor impairment from a normal baseline has not been established. All three Gold Coast criteria must be satisfied simultaneously for an ALS diagnosis.' };
+  if(S.mimic === 'yes') return { cls:'vn', t:'Alternative Diagnosis Identified', d:'Criterion 3 is not satisfied. An alternative diagnosis has been identified or is suspected. Gold Coast ALS criteria cannot be fulfilled until other disease processes are excluded by appropriate investigation.' };
+  if(!rc.crit2) {
+    if(rc.totalLMN === 1 && rc.both === 0) return { cls:'va', t:'Criterion 2 Not Yet Met', d:'Only one body region with LMN involvement and no co-localized UMN signs. Criterion 2 requires UMN+LMN in at least one region, or LMN dysfunction in at least two regions. Continued clinical observation and EMG of additional regions is recommended.' };
+    if(!lmn && umn>0) return { cls:'va', t:'LMN Criterion Not Met', d:'UMN signs are present, but LMN dysfunction has not been established by clinical exam or EMG. Consider thorough EMG of multiple body regions. UMN-predominant presentations without LMN signs for ≥4 years may fulfill criteria for Primary Lateral Sclerosis.' };
+    return { cls:'va', t:'Criteria Not Yet Fulfilled', d:'Progressive motor impairment is established and no alternative diagnosis has been identified, but Criterion 2 (UMN+LMN co-localization or LMN in ≥2 regions) is not yet met. Reassess after further clinical observation, EMG, and/or repeat examination.' };
+  }
+  // All criteria met
+  const excPending = [S.ncs, S.mri, S.bloods].some(v=>v==='pending');
+  if(excPending) return { cls:'vt', t:'ALS Diagnosis Supported — Workup Pending', d:'All three Gold Coast criteria are met on current information. However, some investigations remain pending. Final confirmation of Criterion 3 awaits completion of outstanding workup. Clinical judgment should guide management while results are obtained.' };
+  return { cls:'ve', t:'ALS — Gold Coast Criteria Met', d:'All three Gold Coast criteria are satisfied: (1) documented progressive motor impairment from normal baseline, (2) '+( rc.both>=1 ? 'UMN+LMN co-present in '+rc.both+' region(s)' : 'LMN dysfunction in '+rc.totalLMN+' body regions')+', (3) alternative diagnoses excluded. This is a single diagnostic entity — Gold Coast does not subcategorize into Definite, Probable, or Possible ALS.' };
+}
+
+// RENDER
+function rv() {
+  const v = verdict();
+  const rc = regionCounts();
+  const umnSigns = ['umn1','umn2','umn3','umn4'].filter(k=>S[k]==='present');
+  const umnNames = { umn1:'Increased DTRs (preserved in weak/wasted muscle, or spread)', umn2:'Pathological reflexes (Hoffman, Babinski, crossed adductor, snout)', umn3:'Velocity-dependent spasticity', umn4:'Slowed voluntary movement (not LMN or parkinsonian)' };
+  const regionNames = { bulbar:'Bulbar', cervical:'Cervical', thoracic:'Thoracic', lumbosacral:'Lumbosacral' };
+  const regionStatus = { both:'UMN + LMN', umn:'UMN only', lmn:'LMN only', none:'Unaffected' };
+  const invNames = { done:'Completed — no mimic', pending:'Pending', notdone:'Not performed' };
+  const regions = ['bulbar','cervical','thoracic','lumbosacral'];
+
+  let html = `<div class="vban ${v.cls}">
+    <div class="vlbl">Gold Coast Criteria · ALS Classification · Shefner et al. Clin Neurophysiol 2020</div>
+    <div class="vtitle">${v.t}</div>
+    <div class="vdesc">${v.d}</div>
+  </div>`;
+
+  html += `<div class="sum-grid">`;
+  // Body regions
+  html += `<div class="sblock"><div class="sbtitle">Body Regions</div>`;
+  regions.forEach(r => {
+    const st = S.regions[r];
+    const dotCls = st==='both'?'dt':st==='lmn'?'dt':st==='umn'?'da':'dgr';
+    const tagCls = st==='both'?'tt':st==='lmn'?'tt':st==='umn'?'ta':'tgr';
+    html += `<div class="srow"><div class="dot ${dotCls}"></div><div class="sname">${regionNames[r]}</div><div class="stag ${tagCls}">${st?regionStatus[st]:'Not assessed'}</div></div>`;
+  });
+  html += `</div>`;
+  // UMN + LMN summary
+  html += `<div class="sblock"><div class="sbtitle">UMN / LMN Evidence</div>`;
+  if(umnSigns.length>0) umnSigns.forEach(k=>{ html+=`<div class="srow"><div class="dot dt"></div><div class="sname">${umnNames[k]}</div><div class="stag tt">UMN</div></div>`; });
+  else html+=`<div class="srow"><div class="dot dgr"></div><div class="sname" style="color:var(--text3);">No UMN signs identified</div></div>`;
+  html += `<div class="srow"><div class="dot ${S.lmnclin==='present'?'dg':'dgr'}"></div><div class="sname">Clinical LMN (weakness + wasting)</div><div class="stag ${S.lmnclin==='present'?'tg':'tgr'}">${S.lmnclin==='present'?'MET':'NOT MET'}</div></div>`;
+  html += `<div class="srow"><div class="dot ${S.lmnemg==='present'?'dg':'dgr'}"></div><div class="sname">EMG LMN (neurogenic + denervation)</div><div class="stag ${S.lmnemg==='present'?'tg':'tgr'}">${S.lmnemg==='present'?'MET':'NOT MET'}</div></div>`;
+  html += `</div>`;
+  html += `</div>`;
+
+  // Investigations
+  html += `<div class="sblock" style="margin-bottom:12px;"><div class="sbtitle">Investigations (Criterion 3)</div>`;
+  [['ncs','NCS / EMG'],['mri','Neuroimaging (MRI brain/spine)'],['bloods','Blood / CSF / Genetic studies']].forEach(([k,nm])=>{
+    const st = S[k];
+    const dc = st==='done'?'dg':st==='pending'?'da':'dgr';
+    const tc = st==='done'?'tg':st==='pending'?'ta':'tgr';
+    html += `<div class="srow"><div class="dot ${dc}"></div><div class="sname">${nm}</div><div class="stag ${tc}">${st?invNames[st]:'Not assessed'}</div></div>`;
+  });
+  html += `<div class="srow"><div class="dot ${S.mimic==='no'?'dg':S.mimic==='yes'?'dr':'dgr'}"></div><div class="sname">Alternative diagnosis excluded</div><div class="stag ${S.mimic==='no'?'tg':S.mimic==='yes'?'tr':'tgr'}">${S.mimic==='no'?'CONFIRMED':S.mimic==='yes'?'NOT EXCLUDED':'NOT ASSESSED'}</div></div>`;
+  html += `</div>`;
+
+  document.getElementById('vout').innerHTML = html;
+
+  // Documentation note
+  let note = `NEUROMUSCULAR / ALS CONSULTATION\nGold Coast Criteria Assessment for Amyotrophic Lateral Sclerosis\nShefner JM et al. Clin Neurophysiol. 2020;131(8):1975–1978. doi:10.1016/j.clinph.2020.04.005\nGold Coast Consensus Conference, September 2019 (IFCN / WFN / ALSA / MND Association)\nDate: ${new Date().toLocaleDateString()}\n\n`;
+  note += `CRITERION 1 — PROGRESSIVE MOTOR IMPAIRMENT\n  Documented progressive motor impairment from normal baseline: ${S.prog==='yes'?'Yes — established by history/repeated examination':'Not established'}\n\n`;
+  note += `CRITERION 2 — UMN / LMN DYSFUNCTION IN BODY REGIONS\n\nUMN Signs:\n`;
+  if(umnSigns.length>0) umnSigns.forEach(k=>{ note+=`  - ${umnNames[k]}\n`; });
+  else note+=`  No UMN signs identified\n`;
+  note+=`\nLMN Evidence:\n  Clinical (weakness + wasting): ${S.lmnclin==='present'?'Met':'Not met'}\n  EMG (chronic neurogenic + ongoing denervation): ${S.lmnemg==='present'?'Met':'Not met / not performed'}\n\nBody Region Assessment:\n`;
+  regions.forEach(r=>{ note+=`  ${regionNames[r]}: ${S.regions[r]?regionStatus[S.regions[r]]:'Not assessed'}\n`; });
+  note+=`\n  Regions with UMN+LMN co-involvement: ${rc.both}/4\n  Regions with LMN involvement (total): ${rc.totalLMN}/4\n  Criterion 2 met: ${rc.crit2?'YES':'NO'}\n  Pathway: ${rc.both>=1?'Option A (UMN+LMN in same region)':rc.totalLMN>=2?'Option B (LMN in ≥2 regions)':'Not met'}\n\n`;
+  note+=`CRITERION 3 — EXCLUSION OF ALTERNATIVE DIAGNOSES\n  NCS/EMG: ${S.ncs?invNames[S.ncs]:'Not documented'}\n  MRI brain/spine: ${S.mri?invNames[S.mri]:'Not documented'}\n  Blood/CSF/genetics: ${S.bloods?invNames[S.bloods]:'Not documented'}\n  Alternative diagnosis identified: ${S.mimic==='no'?'No — Criterion 3 satisfied':S.mimic==='yes'?'YES — Criterion 3 NOT met':'Not assessed'}\n\n`;
+  note+=`GOLD COAST CRITERIA — FINAL CLASSIFICATION\n${v.t}\n${v.d}\n\n`;
+  note+=`Key distinctions from prior criteria:\n  - Replaces El Escorial (1994/2000) and Awaji (2008) multi-tier categories\n  - Single diagnostic entity — no subcategories (Definite/Probable/Possible)\n  - UMN signs currently by clinical exam only; TMS/MRI/NfL are supportive but not criteria\n  - Cognitive/behavioural changes (ALS-FTD in ~15%, cognitive change in ~50%) are recognized\n    but not required for diagnosis — classify separately per Strong et al. 2017 criteria\n  - EMG is critically important (not obligatory) for sub-clinical LMN detection and mimic exclusion\n\nRef: Shefner JM, Al-Chalabi A, Baker MR, et al. A proposal for new diagnostic criteria for ALS. Clin Neurophysiol. 2020;131(8):1975–1978.`;
+  document.getElementById('dn').textContent = note;
+}
+
+function go(n) {
+  document.getElementById('s'+cur).classList.remove('active');
+  document.getElementById('s'+n).classList.add('active');
+  for(let i=0;i<5;i++){
+    const d=document.getElementById('st'+i);
+    d.classList.remove('active','done');
+    if(i<n) d.classList.add('done'); else if(i===n) d.classList.add('active');
+  }
+  cur=n;
+  document.getElementById('pf').style.width=((n/4)*100)+'%';
+  if(n===4) rv();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function xp(btn) {
+  const d = btn.closest('.crit').querySelector('.crit-detail'); if(!d) return;
+  const o = d.classList.toggle('open');
+  btn.textContent = o ? 'close ▴' : 'details ▾';
+}
+
+function toggleDoc() {
+  const body=document.getElementById('dn'), btn=document.getElementById('copy-btn'), tog=document.querySelector('.doc-tog');
+  if(!body) return;
+  const open=body.classList.toggle('open');
+  if(tog) tog.textContent=open?'▲ Documentation Note':'▼ Documentation Note';
+  if(btn) btn.classList.toggle('visible',open);
+}
+
+function copyDoc() {
+  const body=document.getElementById('dn'), btn=document.getElementById('copy-btn');
+  if(!body) return;
+  const text=body.textContent||body.innerText;
+  navigator.clipboard.writeText(text).then(()=>{ if(btn){ btn.textContent='✓ Copied'; btn.classList.add('copied'); setTimeout(()=>{ btn.textContent='⎘ Copy'; btn.classList.remove('copied'); },2000); } })
+  .catch(()=>{ const ta=document.createElement('textarea'); ta.value=text; ta.style.position='fixed'; ta.style.opacity='0'; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); if(btn){ btn.textContent='✓ Copied'; btn.classList.add('copied'); setTimeout(()=>{ btn.textContent='⎘ Copy'; btn.classList.remove('copied'); },2000); } });
+}
+
+function resetAll() {
+  Object.keys(S).forEach(k=>{ if(k!=='regions') S[k]=null; });
+  Object.keys(S.regions).forEach(k=>S.regions[k]=null);
+  document.querySelectorAll('.crit').forEach(el=>el.className='crit');
+  document.querySelectorAll('.abtn').forEach(b=>b.classList.remove('ay','an','at','aa','aw'));
+  document.querySelectorAll('.rbtn').forEach(b=>b.classList.remove('r-both-a','r-umn-a','r-lmn-a','r-none-a'));
+  document.querySelectorAll('.region-card').forEach(c=>c.className='region-card');
+  document.querySelectorAll('.region-tag').forEach(t=>{ t.textContent='—'; t.className='region-tag'; });
+  document.querySelectorAll('.crit-detail').forEach(d=>d.classList.remove('open'));
+  document.querySelectorAll('.xbtn').forEach(b=>b.textContent='details ▾');
+  ['a0','a1','a2','a3'].forEach(id=>{ const el=document.getElementById(id); if(el) el.classList.remove('show'); });
+  const dn=document.getElementById('dn'); if(dn) dn.classList.remove('open');
+  const cb=document.getElementById('copy-btn'); if(cb) cb.classList.remove('visible','copied');
+  const tog=document.querySelector('.doc-tog'); if(tog) tog.textContent='▼ Documentation Note';
+  go(0);
+  document.getElementById('n0').disabled=true;
+}
+
+ui();
+</script>
+</body>
+</html>

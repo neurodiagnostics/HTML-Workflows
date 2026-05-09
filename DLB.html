@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DLB 2017 Criteria · Diagnostic Navigator</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+  --bg:        #0d1117;
+  --card:      #161b22;
+  --card2:     #1c2330;
+  --border:    #3a4556;
+  --border2:   #4a5f7a;
+  --green:     #3fb950;
+  --green-bg:  rgba(63,185,80,0.10);
+  --green-bd:  rgba(63,185,80,0.35);
+  --red:       #f85149;
+  --red-bg:    rgba(248,81,73,0.10);
+  --red-bd:    rgba(248,81,73,0.35);
+  --amber:     #e3b341;
+  --amber-bg:  rgba(227,179,65,0.10);
+  --amber-bd:  rgba(227,179,65,0.35);
+  --blue:      #58a6ff;
+  --blue-bg:   rgba(88,166,255,0.10);
+  --blue-bd:   rgba(88,166,255,0.35);
+  --rose:      #e879a0;
+  --rose-bg:   rgba(232,121,160,0.10);
+  --rose-bd:   rgba(232,121,160,0.35);
+  --text:      #e6edf3;
+  --text2:     #aab4c0;
+  --text3:     #6e7f94;
+  --sans:  'Inter', system-ui, sans-serif;
+  --mono:  'IBM Plex Mono', monospace;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg); color: var(--text); font-family: var(--sans); font-size: 14px; line-height: 1.5; min-height: 100vh; }
+.app { max-width: 960px; margin: 0 auto; padding: 0 20px 80px; }
+
+header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+.h-title { font-size: 19px; font-weight: 700; }
+.h-title span { color: var(--rose); }
+.h-sub { font-family: var(--mono); font-size: 10px; color: var(--text3); margin-top: 3px; line-height: 1.5; }
+.reset-btn { background: var(--card2); border: 1px solid var(--border); color: var(--text2); font-family: var(--mono); font-size: 11px; padding: 6px 14px; cursor: pointer; border-radius: 4px; transition: all 0.15s; white-space: nowrap; }
+.reset-btn:hover { border-color: var(--rose); color: var(--rose); }
+
+.prog-track { height: 3px; background: var(--border); margin-bottom: 20px; border-radius: 2px; }
+.prog-fill { height: 100%; background: linear-gradient(90deg, var(--rose), #f9a8d4); border-radius: 2px; transition: width 0.4s ease; box-shadow: 0 0 6px rgba(232,121,160,0.4); }
+
+.steps { display: flex; border-bottom: 1px solid var(--border); margin-bottom: 20px; overflow-x: auto; }
+.stab { flex: 1; min-width: 72px; padding: 7px 4px 9px; text-align: center; font-family: var(--mono); font-size: 9px; color: var(--text3); border-bottom: 2px solid transparent; margin-bottom: -1px; transition: all 0.2s; line-height: 1.3; }
+.stab .sn { display: block; font-size: 13px; font-weight: 600; margin-bottom: 1px; }
+.stab.active { color: var(--rose); border-bottom-color: var(--rose); }
+.stab.done   { color: var(--green); border-bottom-color: var(--green); }
+
+.card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 22px; margin-bottom: 12px; }
+.ctitle { font-size: 12px; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; margin-bottom: 3px; }
+.csub { font-size: 12px; color: var(--text2); margin-bottom: 16px; line-height: 1.5; }
+
+.slabel { display: flex; align-items: center; gap: 8px; font-family: var(--mono); font-size: 10px; font-weight: 500; color: var(--text2); letter-spacing: 0.07em; text-transform: uppercase; margin-bottom: 9px; padding-bottom: 6px; border-bottom: 1px solid var(--border); }
+.pill { font-size: 9px; padding: 1px 7px; border-radius: 20px; border: 1px solid; margin-left: auto; }
+.pill-r  { border-color: var(--red);   color: var(--red);   background: var(--red-bg); }
+.pill-a  { border-color: var(--amber); color: var(--amber); background: var(--amber-bg); }
+.pill-ro { border-color: var(--rose);  color: var(--rose);  background: var(--rose-bg); }
+.pill-g  { border-color: var(--green); color: var(--green); background: var(--green-bg); }
+.pill-b  { border-color: var(--blue);  color: var(--blue);  background: var(--blue-bg); }
+
+/* Weight badges */
+.wbadge { font-family: var(--mono); font-size: 9px; padding: 2px 7px; border-radius: 3px; border: 1px solid; flex-shrink: 0; letter-spacing: 0.04em; }
+.wb-core { border-color: var(--rose-bd);  color: var(--rose);  background: var(--rose-bg); }
+.wb-supp { border-color: var(--amber-bd); color: var(--amber); background: var(--amber-bg); }
+.wb-indic { border-color: var(--blue-bd); color: var(--blue);  background: var(--blue-bg); }
+
+.crit { border: 1px solid var(--border); border-radius: 6px; margin-bottom: 5px; overflow: hidden; transition: border-color 0.15s, background 0.15s; }
+.crit.c-yes  { border-color: var(--green-bd);  background: var(--green-bg); }
+.crit.c-no   { border-color: var(--red-bd);    background: var(--red-bg); }
+.crit.c-pres { border-color: var(--rose-bd);   background: var(--rose-bg); }
+.crit.c-abs  { border-color: var(--border2);   background: var(--card2); }
+.crit.c-part { border-color: var(--amber-bd);  background: var(--amber-bg); }
+.crit.c-blue { border-color: var(--blue-bd);   background: var(--blue-bg); }
+
+.crit-main { display: flex; align-items: center; gap: 8px; padding: 10px 13px; }
+.crit-name { flex: 1; font-size: 13px; font-weight: 500; color: var(--text); line-height: 1.3; }
+.xbtn { background: none; border: 1px solid var(--border); color: var(--text3); font-size: 11px; cursor: pointer; padding: 2px 8px; font-family: var(--mono); white-space: nowrap; transition: all 0.15s; flex-shrink: 0; border-radius: 3px; }
+.xbtn:hover { color: var(--blue); border-color: var(--blue); }
+
+.crit-detail { display: none; padding: 10px 13px 12px; font-size: 12px; color: var(--text); line-height: 1.65; border-top: 1px solid var(--border); }
+.crit-detail.open { display: block; }
+.cnote { margin-top: 8px; padding: 8px 11px; background: var(--card2); border-left: 3px solid var(--border2); font-family: var(--mono); font-size: 10px; color: var(--text2); line-height: 1.75; border-radius: 0 3px 3px 0; }
+.cnote strong { color: var(--text); }
+
+.brow { display: flex; border-top: 1px solid var(--border); }
+.abtn { flex: 1; padding: 8px 6px; background: none; border: none; border-right: 1px solid var(--border); color: var(--text2); font-family: var(--mono); font-size: 11px; cursor: pointer; transition: all 0.12s; text-transform: uppercase; letter-spacing: 0.04em; font-weight: 500; }
+.abtn:last-child { border-right: none; }
+.abtn:hover { background: var(--card2); color: var(--text); }
+.abtn.ay { background: var(--green-bg); color: var(--green); font-weight: 700; }
+.abtn.an { background: var(--red-bg);   color: var(--red);   font-weight: 700; }
+.abtn.ar { background: var(--rose-bg);  color: var(--rose);  font-weight: 700; }
+.abtn.ab { background: var(--blue-bg);  color: var(--blue);  font-weight: 700; }
+.abtn.aa { background: var(--card2);    color: var(--text2); font-weight: 700; }
+.abtn.aw { background: var(--amber-bg); color: var(--amber); font-weight: 700; }
+
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; }
+@media (max-width: 600px) { .two-col { grid-template-columns: 1fr; } }
+
+.alrt { padding: 9px 13px; border-radius: 5px; font-size: 12px; line-height: 1.55; margin-top: 12px; border-left: 3px solid; display: none; }
+.alrt.show { display: block; }
+.aok  { border-color: var(--green); background: var(--green-bg); color: #7ee787; }
+.awn  { border-color: var(--amber); background: var(--amber-bg); color: var(--amber); }
+.aerr { border-color: var(--red);   background: var(--red-bg);   color: #ff7b72; }
+.ainf { border-color: var(--blue);  background: var(--blue-bg);  color: var(--blue); }
+.arose{ border-color: var(--rose);  background: var(--rose-bg);  color: var(--rose); }
+
+.lbox { background: var(--card2); border: 1px solid var(--border); border-radius: 5px; padding: 12px 15px; font-size: 12px; color: var(--text2); line-height: 1.75; margin-bottom: 14px; }
+.lbox strong { color: var(--text); }
+.lo { color: var(--rose);  font-weight: 600; }
+.lg { color: var(--green); font-weight: 600; }
+.la { color: var(--amber); font-weight: 600; }
+.lr { color: var(--red);   font-weight: 600; }
+.lb { color: var(--blue);  font-weight: 600; }
+
+.tally { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+.chip { display: flex; align-items: center; gap: 5px; padding: 5px 11px; border-radius: 20px; font-family: var(--mono); font-size: 11px; border: 1px solid var(--border); background: var(--card2); color: var(--text2); }
+.chip .n { font-size: 14px; font-weight: 700; }
+.cr { border-color: var(--rose-bd);  background: var(--rose-bg);  color: var(--rose); }
+.cg { border-color: var(--green-bd); background: var(--green-bg); color: var(--green); }
+.cb { border-color: var(--blue-bd);  background: var(--blue-bg);  color: var(--blue); }
+.ca { border-color: var(--amber-bd); background: var(--amber-bg); color: var(--amber); }
+
+.nav-row { display: flex; justify-content: space-between; align-items: center; margin-top: 20px; gap: 10px; }
+.nbtn { padding: 9px 22px; border-radius: 5px; font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; border: 1px solid; cursor: pointer; font-weight: 500; transition: all 0.15s; }
+.np { background: var(--rose); border-color: var(--rose); color: #0d1117; font-weight: 700; }
+.np:hover { background: #f9a8d4; border-color: #f9a8d4; }
+.np:disabled { opacity: 0.3; cursor: not-allowed; }
+.ns { background: transparent; border-color: var(--border2); color: var(--text2); }
+.ns:hover { border-color: var(--text); color: var(--text); }
+
+.screen { display: none; }
+.screen.active { display: block; animation: fu 0.25s ease; }
+@keyframes fu { from { opacity:0; transform:translateY(5px); } to { opacity:1; transform:translateY(0); } }
+
+/* VERDICT */
+.vban { border-radius: 8px; padding: 22px 26px; margin-bottom: 16px; border: 2px solid; text-align: center; }
+.vprob { border-color: var(--green);  background: var(--green-bg); }
+.vposs { border-color: var(--amber);  background: var(--amber-bg); }
+.vless { border-color: var(--blue);   background: var(--blue-bg); }
+.vno   { border-color: var(--red);    background: var(--red-bg); }
+.vlbl { font-family: var(--mono); font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase; opacity: 0.6; margin-bottom: 5px; }
+.vtitle { font-size: 22px; font-weight: 700; margin-bottom: 6px; letter-spacing: -0.01em; }
+.vprob .vtitle { color: var(--green); }
+.vposs .vtitle { color: var(--amber); }
+.vless .vtitle { color: var(--blue); }
+.vno   .vtitle { color: var(--red); }
+.vphen { font-family: var(--mono); font-size: 11px; padding: 2px 10px; border-radius: 20px; border: 1px solid; display: inline-block; margin-bottom: 7px; }
+.vdesc { font-size: 12px; color: var(--text2); line-height: 1.7; max-width: 620px; margin: 0 auto; }
+
+/* LOGIC GRID — Table 1 combination rules visualized */
+.combo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; }
+@media (max-width: 580px) { .combo-grid { grid-template-columns: 1fr; } }
+.combo-card { border: 1px solid var(--border); border-radius: 6px; padding: 12px 13px; font-size: 12px; line-height: 1.55; background: var(--card2); transition: all 0.2s; }
+.combo-card.met { border-color: var(--green-bd); background: var(--green-bg); }
+.combo-card.unmet { border-color: var(--border2); }
+.combo-title { font-family: var(--mono); font-size: 10px; font-weight: 700; margin-bottom: 4px; }
+.combo-card.met .combo-title { color: var(--green); }
+.combo-card.unmet .combo-title { color: var(--text3); }
+
+/* SUMMARY */
+.sum-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+@media (max-width: 580px) { .sum-grid { grid-template-columns: 1fr; } }
+.sblock { background: var(--card); border: 1px solid var(--border); border-radius: 6px; overflow: hidden; }
+.sbtitle { font-family: var(--mono); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; padding: 7px 11px; border-bottom: 1px solid var(--border); color: var(--text2); background: var(--card2); }
+.srow { display: flex; align-items: flex-start; gap: 8px; padding: 6px 11px; border-bottom: 1px solid var(--border); font-size: 12px; }
+.srow:last-child { border-bottom: none; }
+.dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; margin-top: 4px; }
+.dg  { background: var(--green); } .dr  { background: var(--red); }
+.dro { background: var(--rose); }  .db  { background: var(--blue); }
+.da  { background: var(--amber); } .dgr { background: var(--text3); }
+.sname { flex: 1; color: var(--text); line-height: 1.4; }
+.stag { font-family: var(--mono); font-size: 9px; padding: 1px 7px; border-radius: 10px; border: 1px solid; white-space: nowrap; }
+.tg  { border-color: var(--green-bd); color: var(--green); }
+.tr  { border-color: var(--red-bd);   color: var(--red); }
+.tro { border-color: var(--rose-bd);  color: var(--rose); }
+.tb  { border-color: var(--blue-bd);  color: var(--blue); }
+.ta  { border-color: var(--amber-bd); color: var(--amber); }
+.tgr { border-color: var(--border2);  color: var(--text3); }
+
+.doc-header { display: flex; align-items: center; gap: 8px; margin-bottom: 5px; }
+.doc-tog { flex: 1; text-align: left; background: var(--card2); border: 1px solid var(--border2); border-radius: 5px; color: var(--text2); font-family: var(--mono); font-size: 11px; padding: 8px 13px; cursor: pointer; transition: all 0.15s; letter-spacing: 0.04em; }
+.doc-tog:hover { border-color: var(--rose); color: var(--rose); }
+.copy-btn { background: var(--card2); border: 1px solid var(--border2); border-radius: 5px; color: var(--text2); font-family: var(--mono); font-size: 11px; padding: 8px 14px; cursor: pointer; white-space: nowrap; transition: all 0.15s; display: none; }
+.copy-btn.visible { display: block; }
+.copy-btn:hover { border-color: var(--green); color: var(--green); }
+.copy-btn.copied { border-color: var(--green); color: var(--green); background: var(--green-bg); }
+.doc-body { display: none; background: var(--card2); border: 1px solid var(--border2); border-radius: 5px; padding: 13px 15px; font-family: var(--mono); font-size: 11px; color: var(--text2); line-height: 1.85; white-space: pre-wrap; margin-bottom: 12px; }
+.doc-body.open { display: block; }
+</style>
+</head>
+<body>
+<div class="app">
+
+<header>
+  <div>
+    <div class="h-title">DLB <span>2017 Consensus Criteria</span></div>
+    <div class="h-sub">McKeith IG et al. · Neurology 2017;89:88–100 · doi:10.1212/WNL.0000000000004058<br>Fourth Consensus Report of the DLB Consortium</div>
+  </div>
+  <button class="reset-btn" onclick="resetAll()">↺ Reset</button>
+</header>
+
+<div class="prog-track"><div class="prog-fill" id="pf" style="width:0%"></div></div>
+
+<div class="steps">
+  <div class="stab active" id="st0"><span class="sn">1</span>Essential</div>
+  <div class="stab" id="st1"><span class="sn">2</span>Core Clinical</div>
+  <div class="stab" id="st2"><span class="sn">3</span>Indicative BM</div>
+  <div class="stab" id="st3"><span class="sn">4</span>Supportive</div>
+  <div class="stab" id="st4"><span class="sn">5</span>"Less Likely"</div>
+  <div class="stab" id="st5"><span class="sn">6</span>Verdict</div>
+</div>
+
+<!-- ══════════════ SCREEN 0: ESSENTIAL FEATURE ══════════════ -->
+<div class="screen active" id="s0">
+<div class="card">
+  <div class="ctitle" style="color:var(--rose);">Step 1 · Essential Feature — Dementia</div>
+  <div class="csub">Dementia is an absolute prerequisite for a DLB diagnosis. The diagnostic criteria cannot be applied without it. DLB should be diagnosed when dementia occurs <em>before or concurrently</em> with parkinsonism.</div>
+
+  <div class="lbox">
+    <strong>Essential requirement (Table 1):</strong> Dementia defined as a progressive cognitive decline of sufficient magnitude to interfere with normal social or occupational functions, or with usual daily activities.<br><br>
+    <span class="lo">Cognitive profile:</span> Disproportionate attentional, executive function, and visuoperceptual deficits relative to memory and naming are typical and often occur early. Prominent or persistent memory impairment may not occur in early stages but is usually evident with progression.<br><br>
+    <strong>DLB vs. PDD (1-year rule):</strong> If dementia occurs before or concurrently with parkinsonism → DLB. If dementia develops in the context of well-established Parkinson disease (typically >1 year after PD onset) → Parkinson disease dementia (PDD). The 1-year rule remains recommended for research, though generic terms like "Lewy body disease" are often appropriate clinically.
+  </div>
+
+  <div class="crit" id="dem-item">
+    <div class="crit-main">
+      <div class="crit-name">Progressive cognitive decline sufficient to interfere with social/occupational function or daily activities</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      The DLB cognitive profile is distinctive: attention, executive function, and visuospatial/perceptual deficits are disproportionate relative to memory and naming. Useful cognitive probes include: trail-making tasks, Stroop tests, phonemic fluency (attention/executive); figure copy, block design, line orientation, pareidolia tasks (visuoperceptual). Memory and object naming tend to be less affected early — in contrast to Alzheimer disease where amnestic deficits dominate from the outset.
+      <div class="cnote">
+        <strong>Important:</strong> If parkinsonism clearly precedes cognitive symptoms by &gt;1 year, consider PDD rather than DLB. In clinical practice, use the term most appropriate to the clinical situation — "Lewy body disease" is often helpful as a generic term. For research purposes, the 1-year rule continues to be recommended.
+      </div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="set('dem','yes')" id="dem-yes">✓ Dementia established</button>
+      <button class="abtn" onclick="set('dem','pdd')" id="dem-pdd">⚠ Dementia in established PD (&gt;1yr) → Consider PDD</button>
+      <button class="abtn" onclick="set('dem','no')"  id="dem-no" >✗ No dementia / Insufficient severity</button>
+    </div>
+  </div>
+
+  <div id="a0" class="alrt"></div>
+  <div class="nav-row"><div></div><button class="nbtn np" id="n0" onclick="go(1)" disabled>Next: Core Clinical Features →</button></div>
+</div>
+</div>
+
+<!-- ══════════════ SCREEN 1: CORE CLINICAL FEATURES ══════════════ -->
+<div class="screen" id="s1">
+<div class="card">
+  <div class="ctitle" style="color:var(--rose);">Step 2 · Core Clinical Features</div>
+  <div class="csub">Four core clinical features — the first three typically occur early and may persist throughout the course. Count how many are present. This determines the diagnostic pathway.</div>
+
+  <div class="lbox">
+    <strong>Core clinical features (Table 1):</strong><br>
+    <span class="lo">1.</span> Fluctuating cognition with pronounced variations in attention and alertness<br>
+    <span class="lo">2.</span> Recurrent visual hallucinations — typically well formed and detailed<br>
+    <span class="lo">3.</span> REM sleep behavior disorder — may precede cognitive decline<br>
+    <span class="lo">4.</span> One or more spontaneous cardinal features of parkinsonism (bradykinesia, rest tremor, or rigidity — only <em>one</em> required, not all three)<br><br>
+    <strong>Combination rules:</strong> <span class="lg">≥2 core features</span> → Probable DLB (without needing biomarkers). <span class="la">1 core feature + ≥1 indicative biomarker</span> → Probable DLB. <span class="la">1 core feature alone</span> → Possible DLB. Probable DLB should NOT be diagnosed on biomarkers alone.
+  </div>
+
+  <div class="crit" id="fluc-item">
+    <div class="crit-main">
+      <div class="crit-name">Fluctuating cognition with pronounced variations in attention and alertness</div>
+      <div class="wbadge wb-core">Core</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      Delirium-like fluctuations — waxing and waning episodes of behavioral inconsistency, incoherent speech, variable attention, or altered consciousness (staring, zoning out). Differentiated from AD fluctuations by: daytime drowsiness, lethargy, staring into space, episodes of disorganized speech. At least one validated measure of fluctuation should be documented (e.g., Clinician Assessment of Fluctuation scale, Dementia Cognitive Fluctuation Scale). Fluctuations best predict DLB when present early — they also occur in advanced stages of other dementias.
+      <div class="cnote">Direct informant questioning about fluctuations may not reliably discriminate DLB from AD. Structured questions about drowsiness, lethargy, staring, and disorganized speech have better discriminating value. Computer-based repeated attentional testing provides an independent method.</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="set('fluc','yes')" id="fluc-yes">✓ Present</button>
+      <button class="abtn" onclick="set('fluc','no')"  id="fluc-no" >✗ Absent</button>
+    </div>
+  </div>
+
+  <div class="crit" id="vh-item">
+    <div class="crit-main">
+      <div class="crit-name">Recurrent visual hallucinations — typically well formed and detailed</div>
+      <div class="wbadge wb-core">Core</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      Occur in up to 80% of DLB patients — a frequent clinical signpost. Typically well-formed, featuring people, children, or animals. Related phenomena include passage hallucinations (fleeting peripheral images of people/animals), sense of presence, and visual illusions. Patients are typically able to report these experiences. Patient responses vary in degree of insight and emotional reaction. Recurrence is characteristic — single isolated episodes carry less diagnostic weight.
+      <div class="cnote">Passage hallucinations (brief peripheral sensations of a figure passing) and sense of presence are common accompanying phenomena. These are distinct from the simple, non-formed visual misperceptions of pure visual impairment. Assessment scales (e.g., semi-structured interview by Mosimann et al.) are available for characterization and quantification.</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="set('vh','yes')" id="vh-yes">✓ Present</button>
+      <button class="abtn" onclick="set('vh','no')"  id="vh-no" >✗ Absent</button>
+    </div>
+  </div>
+
+  <div class="crit" id="rbd-item">
+    <div class="crit-main">
+      <div class="crit-name">REM sleep behavior disorder (RBD) — may precede cognitive decline</div>
+      <div class="wbadge wb-core">Core</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      RBD: parasomnia manifested by recurrent dream enactment behavior (movements mimicking dream content) with absence of normal REM sleep atonia. Particularly likely when dreams involve chasing/attacking themes, or if patient or bed partner has sustained injuries from limb movements. May begin many years before other DLB symptoms and may become less vigorous over time. Present in 76% of autopsy-confirmed DLB vs. 4% of non-DLB cases.
+      <div class="cnote">
+        <strong>Mimics to exclude:</strong> Confusional awakenings, severe obstructive sleep apnea, periodic limb movements. Screen using validated tools (Mayo Sleep Questionnaire, single-question RBD screen). If any doubt, refer to sleep clinic or request PSG. PSG confirmation of REM sleep without atonia is one of the indicative biomarkers — if PSG positive in a person with dementia + RBD history, ≥90% likelihood of synucleinopathy.
+      </div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="set('rbd','yes')" id="rbd-yes">✓ Present (clinical RBD)</button>
+      <button class="abtn" onclick="set('rbd','no')"  id="rbd-no" >✗ Absent</button>
+    </div>
+  </div>
+
+  <div class="crit" id="park-item">
+    <div class="crit-main">
+      <div class="crit-name">One or more spontaneous cardinal features of parkinsonism — bradykinesia, rest tremor, or rigidity (not due to antidopaminergic medications or stroke)</div>
+      <div class="wbadge wb-core">Core</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      Spontaneous parkinsonian features occur in over 85% of DLB eventually. Only one of the three cardinal features (bradykinesia, rest tremor, rigidity) is required — DLB patients' parkinsonism often falls short of the full PD definition of bradykinesia + rest tremor/rigidity. Carefully exclude parkinsonism due to antidopaminergic medications or stroke. In older patients, take care not to misinterpret comorbid signs (arthritis, poor exam compliance due to cognitive impairment).
+      <div class="cnote">If parkinsonism is clinically equivocal, a DAT uptake scan may be helpful. Note that parkinsonism as the only core clinical feature, appearing for the first time at a stage of severe dementia, makes DLB less likely (see Step 5). Parkinsonism in DLB is often less responsive to dopaminergic treatments than in PD.</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="set('park','yes')" id="park-yes">✓ Present (≥1 spontaneous cardinal feature)</button>
+      <button class="abtn" onclick="set('park','no')"  id="park-no" >✗ Absent</button>
+    </div>
+  </div>
+
+  <div class="tally">
+    <div class="chip cr"><span class="n" id="core-n">0</span>Core feature(s)</div>
+  </div>
+
+  <div id="a1" class="alrt"></div>
+  <div class="nav-row">
+    <button class="nbtn ns" onclick="go(0)">← Back</button>
+    <button class="nbtn np" onclick="go(2)">Next: Indicative Biomarkers →</button>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════ SCREEN 2: INDICATIVE BIOMARKERS ══════════════ -->
+<div class="screen" id="s2">
+<div class="card">
+  <div class="ctitle" style="color:var(--blue);">Step 3 · Indicative Biomarkers</div>
+  <div class="csub">Indicative biomarkers have high diagnostic specificity for DLB. One or more indicative biomarkers + ≥1 core clinical feature → Probable DLB. One or more indicative biomarkers alone (no core features) → Possible DLB.</div>
+
+  <div class="lbox">
+    <strong>Indicative biomarkers (Table 1):</strong><br>
+    <span class="lb">1.</span> Reduced DAT uptake in basal ganglia — SPECT or PET (sensitivity 78%, specificity 90% vs. AD)<br>
+    <span class="lb">2.</span> Abnormal (low uptake) ¹²³I-MIBG myocardial scintigraphy (sensitivity 69–77%, specificity 87–94% vs. AD)<br>
+    <span class="lb">3.</span> PSG confirmation of REM sleep without atonia — highly specific; if positive in patient with dementia + RBD history, ≥90% likelihood of synucleinopathy<br><br>
+    <strong>Note:</strong> Probable DLB should NOT be diagnosed on the basis of biomarkers alone — at least one core clinical feature must also be present.
+  </div>
+
+  <div class="crit" id="dat-item">
+    <div class="crit-main">
+      <div class="crit-name">Reduced DAT uptake in basal ganglia — ¹²³I-FP-CIT SPECT or PET</div>
+      <div class="wbadge wb-indic">Indicative</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      DAT imaging is well-established for DLB vs. AD: sensitivity 78%, specificity 90%. In DLB: minimal caudate uptake (period/full-stop appearance) vs. robust caudate and putamen uptake in AD and normal controls (comma appearance). If parkinsonism is the only core clinical feature, reduced DAT uptake warrants Probable DLB — provided that other disorders with cognitive impairment and reduced DAT uptake are excluded: PSP, MSA, corticobasal degeneration, frontotemporal dementia.
+      <div class="cnote">
+        <strong>Important caveat:</strong> Normal DAT uptake may occur in autopsy-confirmed DLB — either due to minimal brainstem involvement/limited nigral neuron loss, or balanced dopamine loss across the whole striatum (rather than predominantly in the putamen). A normal scan does not exclude DLB.
+      </div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="set('dat','pos')"  id="dat-pos" >✓ Reduced uptake (abnormal)</button>
+      <button class="abtn" onclick="set('dat','neg')"  id="dat-neg" >✗ Normal</button>
+      <button class="abtn" onclick="set('dat','nd')"   id="dat-nd"  >— Not performed</button>
+    </div>
+  </div>
+
+  <div class="crit" id="mibg-item">
+    <div class="crit-main">
+      <div class="crit-name">Abnormal (low uptake) ¹²³I-MIBG myocardial scintigraphy</div>
+      <div class="wbadge wb-indic">Indicative</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      MIBG quantifies postganglionic sympathetic cardiac innervation, reduced in Lewy body disease. Low heart-to-mediastinum (H/M) ratio. Sensitivity 69% (rising to 77% in milder cases, MMSE &gt;21), specificity 87% (rising to 94% in milder cases) vs. AD. Studies generally excluded patients with comorbidities/medications that cause abnormal MIBG images.
+      <div class="cnote">
+        <strong>Confounders causing reduced MIBG uptake:</strong> Ischemic heart disease, heart failure, diabetes mellitus, peripheral neuropathies, labetalol, reserpine, tricyclic antidepressants, over-the-counter sympathomimetics. Carefully assess for confounding causes before interpreting a low H/M ratio as indicative of DLB. In practice, MIBG has higher specificity than DAT-SPECT when confounders are properly excluded.
+      </div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="set('mibg','pos')" id="mibg-pos">✓ Abnormal (low H/M ratio)</button>
+      <button class="abtn" onclick="set('mibg','neg')" id="mibg-neg">✗ Normal</button>
+      <button class="abtn" onclick="set('mibg','nd')"  id="mibg-nd" >— Not performed / contraindicated</button>
+    </div>
+  </div>
+
+  <div class="crit" id="psg-item">
+    <div class="crit-main">
+      <div class="crit-name">PSG confirmation of REM sleep without atonia</div>
+      <div class="wbadge wb-indic">Indicative</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      PSG demonstration of REM sleep without atonia is a highly specific predictor of Lewy-related pathology. If PSG shows REM sleep without atonia in a person with dementia + history of RBD: ≥90% likelihood of a synucleinopathy — sufficient to justify Probable DLB even in the absence of any other core feature or biomarker. PSG is desirable whenever feasible. Conditions mimicking RBD (confusional awakenings, severe OSA, periodic limb movements) must be excluded.
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="set('psg','pos')" id="psg-pos">✓ REM sleep without atonia confirmed</button>
+      <button class="abtn" onclick="set('psg','neg')" id="psg-neg">✗ Normal PSG / RBD not confirmed</button>
+      <button class="abtn" onclick="set('psg','nd')"  id="psg-nd" >— Not performed</button>
+    </div>
+  </div>
+
+  <div class="tally">
+    <div class="chip cb"><span class="n" id="indic-n">0</span>Indicative biomarker(s)</div>
+  </div>
+
+  <div id="a2" class="alrt"></div>
+  <div class="nav-row">
+    <button class="nbtn ns" onclick="go(1)">← Back</button>
+    <button class="nbtn np" onclick="go(3)">Next: Supportive Features →</button>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════ SCREEN 3: SUPPORTIVE FEATURES ══════════════ -->
+<div class="screen" id="s3">
+<div class="card">
+  <div class="ctitle" style="color:var(--amber);">Step 4 · Supportive Clinical Features + Supportive Biomarkers</div>
+  <div class="csub">Supportive features lack diagnostic specificity but add evidence for DLB, particularly when persistent over time or when several occur in combination. Mark all that apply.</div>
+
+  <div class="slabel">Supportive Clinical Features <span class="pill pill-a">Commonly present, sometimes early — no standalone diagnostic weight</span></div>
+
+  <div class="two-col">
+    <div class="crit" id="antipsych-item">
+      <div class="crit-main"><div class="crit-name">Severe sensitivity to antipsychotic agents</div><div class="wbadge wb-supp" style="font-size:8px;">Supp</div></div>
+      <div class="brow"><button class="abtn" onclick="setSup('antipsych','yes')" id="antipsych-yes">✓ Yes</button><button class="abtn" onclick="setSup('antipsych','no')" id="antipsych-no">✗ No</button></div>
+    </div>
+    <div class="crit" id="postinstab-item">
+      <div class="crit-main"><div class="crit-name">Postural instability; repeated falls; syncope or transient unresponsiveness</div><div class="wbadge wb-supp" style="font-size:8px;">Supp</div></div>
+      <div class="brow"><button class="abtn" onclick="setSup('postinstab','yes')" id="postinstab-yes">✓ Yes</button><button class="abtn" onclick="setSup('postinstab','no')" id="postinstab-no">✗ No</button></div>
+    </div>
+    <div class="crit" id="autonomic-item">
+      <div class="crit-main"><div class="crit-name">Severe autonomic dysfunction — constipation, orthostatic hypotension, urinary incontinence</div><div class="wbadge wb-supp" style="font-size:8px;">Supp</div></div>
+      <div class="brow"><button class="abtn" onclick="setSup('autonomic','yes')" id="autonomic-yes">✓ Yes</button><button class="abtn" onclick="setSup('autonomic','no')" id="autonomic-no">✗ No</button></div>
+    </div>
+    <div class="crit" id="hypersomnia-item">
+      <div class="crit-main"><div class="crit-name">Hypersomnia — excessive daytime sleepiness [NEW in 2017]</div><div class="wbadge wb-supp" style="font-size:8px;">Supp</div></div>
+      <div class="brow"><button class="abtn" onclick="setSup('hypersomnia','yes')" id="hypersomnia-yes">✓ Yes</button><button class="abtn" onclick="setSup('hypersomnia','no')" id="hypersomnia-no">✗ No</button></div>
+    </div>
+    <div class="crit" id="hyposmia-item">
+      <div class="crit-main"><div class="crit-name">Hyposmia — reduced olfaction, occurs earlier in DLB than AD [NEW in 2017]</div><div class="wbadge wb-supp" style="font-size:8px;">Supp</div></div>
+      <div class="brow"><button class="abtn" onclick="setSup('hyposmia','yes')" id="hyposmia-yes">✓ Yes</button><button class="abtn" onclick="setSup('hyposmia','no')" id="hyposmia-no">✗ No</button></div>
+    </div>
+    <div class="crit" id="otherhall-item">
+      <div class="crit-main"><div class="crit-name">Hallucinations in other modalities — auditory, tactile, etc.</div><div class="wbadge wb-supp" style="font-size:8px;">Supp</div></div>
+      <div class="brow"><button class="abtn" onclick="setSup('otherhall','yes')" id="otherhall-yes">✓ Yes</button><button class="abtn" onclick="setSup('otherhall','no')" id="otherhall-no">✗ No</button></div>
+    </div>
+    <div class="crit" id="delusions-item">
+      <div class="crit-main"><div class="crit-name">Systematized delusions; apathy; anxiety; depression</div><div class="wbadge wb-supp" style="font-size:8px;">Supp</div></div>
+      <div class="brow"><button class="abtn" onclick="setSup('delusions','yes')" id="delusions-yes">✓ Yes</button><button class="abtn" onclick="setSup('delusions','no')" id="delusions-no">✗ No</button></div>
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:16px;">Supportive Biomarkers <span class="pill pill-a">Consistent with DLB — no standalone diagnostic specificity</span></div>
+
+  <div class="crit" id="mri-mtl-item">
+    <div class="crit-main">
+      <div class="crit-name">Relative preservation of medial temporal lobe (MTL) structures on CT/MRI</div>
+      <div class="wbadge wb-supp" style="font-size:8px;">Supp BM</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      AD shows greater MTL/hippocampal atrophy than DLB (hippocampal atrophy correlates strongly with tangle, not plaque or LB, pathology). Absent or minimal MTL atrophy is consistent with DLB but unusual in AD. Sensitivity 64%, specificity 68% (autopsy-confirmed multisite study). MTL atrophy in DLB may signal substantial additional AD copathology and predict a more rapid clinical course.
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setSup('mri_mtl','pres')" id="mri_mtl-pres">✓ MTL relatively preserved (supports DLB)</button>
+      <button class="abtn" onclick="setSup('mri_mtl','atr')"  id="mri_mtl-atr" >⚠ MTL atrophied (more consistent with AD)</button>
+      <button class="abtn" onclick="setSup('mri_mtl','nd')"   id="mri_mtl-nd"  >— Not done</button>
+    </div>
+  </div>
+
+  <div class="crit" id="fdgpet-item">
+    <div class="crit-main">
+      <div class="crit-name">Generalized low SPECT/PET perfusion/metabolism with reduced occipital activity ± cingulate island sign on FDG-PET</div>
+      <div class="wbadge wb-supp" style="font-size:8px;">Supp BM</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      FDG-PET occipital hypometabolism correlates with visual cortex neuropathology in DLB (sensitivity ~70%, specificity ~74% — slightly below indicative biomarker threshold). The cingulate island sign: relative preservation of posterior/midcingulate metabolism on FDG-PET, associated with less concurrent neurofibrillary pathology but no difference in Aβ load relative to AD. HMPAO-SPECT is less accurate (sensitivity 65%, specificity 64%).
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setSup('fdgpet','pos')" id="fdgpet-pos">✓ Occipital hypometabolism ± cingulate island sign</button>
+      <button class="abtn" onclick="setSup('fdgpet','neg')" id="fdgpet-neg">✗ Not present</button>
+      <button class="abtn" onclick="setSup('fdgpet','nd')"  id="fdgpet-nd" >— Not performed</button>
+    </div>
+  </div>
+
+  <div class="crit" id="eeg-item">
+    <div class="crit-main">
+      <div class="crit-name">Prominent posterior slow-wave EEG activity with periodic fluctuations in the pre-alpha/theta range</div>
+      <div class="wbadge wb-supp" style="font-size:8px;">Supp BM</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      Quantitative EEG: pre-alpha dominant frequency, either stable or intermixed with alpha/theta/delta activities in pseudoperiodic patterns — predictive value &gt;90% for DLB vs. AD when these specific posterior abnormalities are present. EEG patterns correlate positively with severity of clinically observed cognitive fluctuations and may be seen at MCI stage.
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setSup('eeg','pos')" id="eeg-pos">✓ Characteristic DLB pattern present</button>
+      <button class="abtn" onclick="setSup('eeg','neg')" id="eeg-neg">✗ Not present</button>
+      <button class="abtn" onclick="setSup('eeg','nd')"  id="eeg-nd" >— Not performed</button>
+    </div>
+  </div>
+
+  <div class="tally">
+    <div class="chip ca"><span class="n" id="supp-clin-n">0</span>Supportive clinical</div>
+    <div class="chip" id="supp-bm-chip"><span class="n" id="supp-bm-n">0</span>Supportive BM</div>
+  </div>
+
+  <div id="a3" class="alrt"></div>
+  <div class="nav-row">
+    <button class="nbtn ns" onclick="go(2)">← Back</button>
+    <button class="nbtn np" onclick="go(4)">Next: "Less Likely" Assessment →</button>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════ SCREEN 4: LESS LIKELY ══════════════ -->
+<div class="screen" id="s4">
+<div class="card">
+  <div class="ctitle" style="color:var(--blue);">Step 5 · "DLB Is Less Likely" Conditions</div>
+  <div class="csub">These conditions reduce diagnostic confidence for DLB. They do not automatically exclude DLB but make it less likely. They may indicate mixed or multiple pathologies contributing to the clinical picture.</div>
+
+  <div class="lbox">
+    <strong>DLB is less likely (Table 1):</strong><br>
+    <span class="la">a.</span> In the presence of any other physical illness or brain disorder — including cerebrovascular disease — sufficient to account in part or in total for the clinical picture. (These do not necessarily exclude DLB and may indicate mixed/multiple pathologies.)<br>
+    <span class="la">b.</span> If parkinsonian features are the only core clinical feature AND appear for the first time at a stage of severe dementia.<br><br>
+    These are not absolute exclusions — clinical judgment is required. Mixed pathologies (especially AD + DLB) are common: up to half of carefully diagnosed AD patients may have unsuspected Lewy-related pathology at autopsy.
+  </div>
+
+  <div class="crit" id="ll-illness-item">
+    <div class="crit-main">
+      <div class="crit-name">Other physical illness or brain disorder sufficient to account for the clinical picture (e.g., cerebrovascular disease, metabolic disorder, other structural cause)</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      Cerebrovascular disease is the most common alternative/contributor. Significant white matter changes, strategic infarcts, or other structural lesions on MRI should prompt consideration of whether they adequately explain the clinical syndrome. However, presence of cerebrovascular disease does not automatically exclude DLB — mixed vascular-DLB pathology exists. Metabolic disorders, toxic encephalopathies, or other treatable causes should be excluded first.
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="set('ll_illness','no')"  id="ll_illness-no" >✓ No such condition identified</button>
+      <button class="abtn" onclick="set('ll_illness','part')" id="ll_illness-part">⚠ Present but partial / mixed pathology likely</button>
+      <button class="abtn" onclick="set('ll_illness','yes')" id="ll_illness-yes">⚠ Present and largely accounts for symptoms</button>
+    </div>
+  </div>
+
+  <div class="crit" id="ll-park-item">
+    <div class="crit-main">
+      <div class="crit-name">Parkinsonism is the only core clinical feature AND it first appeared at a stage of severe dementia</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      Late-onset parkinsonism appearing only at a stage of severe dementia — when parkinsonism is the sole core feature — reduces diagnostic confidence for DLB. Parkinsonism emerging early (before or concurrently with dementia) carries much more diagnostic weight. This condition does not apply if multiple core features are present or if indicative biomarkers are positive.
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="set('ll_park','no')"  id="ll_park-no" >✓ Not applicable (other cores present, or parkinsonism not isolated/late)</button>
+      <button class="abtn" onclick="set('ll_park','yes')" id="ll_park-yes">⚠ Applies — parkinsonism only core, first at severe dementia stage</button>
+    </div>
+  </div>
+
+  <div id="a4" class="alrt"></div>
+  <div class="nav-row">
+    <button class="nbtn ns" onclick="go(3)">← Back</button>
+    <button class="nbtn np" onclick="go(5)">Generate Verdict →</button>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════ SCREEN 5: VERDICT ══════════════ -->
+<div class="screen" id="s5">
+  <div id="vout"></div>
+  <div id="sout"></div>
+  <div class="doc-header">
+    <button class="doc-tog" onclick="toggleDoc()">▼ Documentation Note</button>
+    <button class="copy-btn" id="copy-btn" onclick="copyDoc()">⎘ Copy</button>
+  </div>
+  <div class="doc-body" id="dn"></div>
+  <div class="nav-row">
+    <button class="nbtn ns" onclick="go(4)">← Back</button>
+    <button class="nbtn np" onclick="resetAll()">↺ New Evaluation</button>
+  </div>
+</div>
+
+</div><!-- /app -->
+<script>
+const S = {
+  dem: null,
+  // Core clinical (4)
+  fluc: null, vh: null, rbd: null, park: null,
+  // Indicative biomarkers (3)
+  dat: null, mibg: null, psg: null,
+  // Supportive clinical (7)
+  antipsych: null, postinstab: null, autonomic: null,
+  hypersomnia: null, hyposmia: null, otherhall: null, delusions: null,
+  // Supportive biomarkers (3)
+  mri_mtl: null, fdgpet: null, eeg: null,
+  // Less likely
+  ll_illness: null, ll_park: null
+};
+let cur = 0;
+
+const CORE_KEYS = ['fluc','vh','rbd','park'];
+const INDIC_KEYS = ['dat','mibg','psg'];
+const SUPP_CLIN_KEYS = ['antipsych','postinstab','autonomic','hypersomnia','hyposmia','otherhall','delusions'];
+const SUPP_BM_KEYS = ['mri_mtl','fdgpet','eeg'];
+
+function set(k, v) {
+  S[k] = v;
+  const item = document.getElementById(k+'-item');
+  if(item) item.className = 'crit';
+  ['yes','no','pos','neg','nd','pdd','part'].forEach(x=>{
+    const b=document.getElementById(k+'-'+x); if(b) b.classList.remove('ay','an','ar','ab','aa','aw');
+  });
+  const map={yes:'ay',no:'an',pos:'ab',neg:'an',nd:'aa',pdd:'aw',part:'aw'};
+  const btn=document.getElementById(k+'-'+v); if(btn) btn.classList.add(map[v]||'aa');
+  if(item){
+    if(['yes','pos','no_ll'].includes(v)||v==='no'&&['ll_illness','ll_park'].includes(k)) item.classList.add(v==='yes'||v==='pos'?'c-yes':'c-abs');
+    if(v==='yes' && ['fluc','vh','rbd','park'].includes(k)) item.className='crit c-pres';
+    if(v==='yes' && SUPP_CLIN_KEYS.includes(k)) item.className='crit c-part';
+    if(v==='pos' && INDIC_KEYS.includes(k)) item.className='crit c-blue';
+    if(v==='pos' && SUPP_BM_KEYS.includes(k)) item.className='crit c-part';
+    if(v==='pres' && k==='mri_mtl') item.className='crit c-part';
+    if(['no','neg','nd','atr'].includes(v)) item.className='crit c-abs';
+    if(['yes','part'].includes(v) && ['ll_illness','ll_park'].includes(k)) item.className='crit c-no';
+    if(v==='no' && ['ll_illness','ll_park'].includes(k)) item.className='crit c-yes';
+    if(v==='pdd') item.className='crit c-part';
+    if(v==='neg' && k==='dem') item.className='crit c-no';
+    if(v==='yes' && k==='dem') item.className='crit c-yes';
+  }
+  ui();
+}
+
+function setSup(k, v) {
+  S[k] = v;
+  const item = document.getElementById(k+'-item');
+  if(item) item.className = 'crit';
+  ['yes','no','pos','neg','nd','pres','atr'].forEach(x=>{
+    const b=document.getElementById(k+'-'+x); if(b) b.classList.remove('ay','an','ab','aa','aw');
+  });
+  const map={yes:'ay',no:'an',pos:'ab',neg:'an',nd:'aa',pres:'aw',atr:'an'};
+  const btn=document.getElementById(k+'-'+v); if(btn) btn.classList.add(map[v]||'aa');
+  if(item){
+    if(['yes','pos','pres'].includes(v)) item.className='crit c-part';
+    else if(['no','neg','nd','atr'].includes(v)) item.className='crit c-abs';
+  }
+  ui();
+}
+
+function coreCount() { return CORE_KEYS.filter(k=>S[k]==='yes').length; }
+function indicCount() { return INDIC_KEYS.filter(k=>S[k]==='pos').length; }
+function suppClinCount() { return SUPP_CLIN_KEYS.filter(k=>S[k]==='yes').length; }
+function suppBMCount() { return [S.mri_mtl==='pres', S.fdgpet==='pos', S.eeg==='pos'].filter(Boolean).length; }
+function lessLikely() { return (S.ll_illness==='yes')||(S.ll_park==='yes'); }
+
+function verdict() {
+  const dem = S.dem;
+  const cores = coreCount();
+  const indic = indicCount();
+
+  if(!dem || dem==='no') return {cls:'vno',t:'Essential Feature Not Met',d:'Dementia (progressive cognitive decline interfering with social or occupational function) is an essential prerequisite for DLB diagnosis. The criteria cannot be applied without it.'};
+  if(dem==='pdd') return {cls:'vless',t:'Consider Parkinson Disease Dementia (PDD)',d:'Dementia developing in the context of well-established Parkinson disease (typically >1 year after PD onset) should be diagnosed as PDD, not DLB. The 1-year rule is recommended for research settings. In clinical practice, terms such as "Lewy body disease" may be appropriate.'};
+
+  // Probable DLB pathways
+  if(cores >= 2) {
+    const ll = lessLikely();
+    if(ll) return {cls:'vposs',t:'Probable DLB — "Less Likely" Conditions Present',d:'Two or more core clinical features are present, meeting criteria for Probable DLB. However, a "less likely" condition is also present that may partially account for the clinical picture. DLB is still possible — consider mixed or multiple pathologies. Clinical judgment is required.'};
+    return {cls:'vprob',t:'Probable DLB',d:'Two or more core clinical features are present. Probable DLB may be diagnosed with or without the presence of indicative biomarkers. Current core features: '+CORE_KEYS.filter(k=>S[k]==='yes').map(k=>({fluc:'Fluctuating cognition',vh:'Visual hallucinations',rbd:'RBD',park:'Parkinsonism'}[k])).join(', ')+'.'};
+  }
+  if(cores === 1 && indic >= 1) {
+    const ll = lessLikely();
+    if(ll) return {cls:'vposs',t:'Probable DLB — "Less Likely" Conditions Present',d:'One core feature and ≥1 indicative biomarker are present (meeting Probable DLB criteria). However, a "less likely" condition is present. Clinical judgment is required regarding mixed pathology.'};
+    return {cls:'vprob',t:'Probable DLB',d:'One core clinical feature is present with ≥1 indicative biomarker — meeting criteria for Probable DLB. Core feature: '+CORE_KEYS.filter(k=>S[k]==='yes').map(k=>({fluc:'Fluctuating cognition',vh:'Visual hallucinations',rbd:'RBD',park:'Parkinsonism'}[k])).join(', ')+'. Indicative biomarker(s): '+INDIC_KEYS.filter(k=>S[k]==='pos').map(k=>({dat:'Reduced DAT uptake',mibg:'Abnormal MIBG',psg:'PSG-confirmed REM sleep without atonia'}[k])).join(', ')+'.'};
+  }
+  if(cores === 1 && indic === 0) {
+    return {cls:'vposs',t:'Possible DLB',d:'Only one core clinical feature is present with no indicative biomarker evidence. Feature: '+CORE_KEYS.filter(k=>S[k]==='yes').map(k=>({fluc:'Fluctuating cognition',vh:'Visual hallucinations',rbd:'RBD',park:'Parkinsonism'}[k])).join(', ')+'. Possible DLB may be diagnosed. Supportive features and biomarkers may strengthen clinical confidence but do not change the classification.'};
+  }
+  if(cores === 0 && indic >= 1) {
+    return {cls:'vposs',t:'Possible DLB',d:'One or more indicative biomarkers are present but no core clinical features. Possible DLB may be classified. Note: Probable DLB should NOT be diagnosed on the basis of biomarkers alone — at least one core clinical feature must also be present.'};
+  }
+  return {cls:'vno',t:'DLB Criteria Not Currently Met',d:'No core clinical features or indicative biomarkers are established at this time. DLB cannot be classified as Probable or Possible based on current findings. Continue clinical observation — supportive features may provide helpful evidence. Consider alternative diagnoses including Alzheimer disease, vascular dementia, or other neurodegenerative disorders.'};
+}
+
+function ui() {
+  const cores=coreCount(), indic=indicCount(), suppClin=suppClinCount(), suppBM=suppBMCount();
+
+  // Step 0
+  const a0=document.getElementById('a0'),n0=document.getElementById('n0');
+  if(S.dem==='yes'){sa(a0,'arose','✓ Dementia established. Proceed to core clinical features.');n0.disabled=false;}
+  else if(S.dem==='pdd'){sa(a0,'awn','⚠ Consider PDD diagnosis rather than DLB. The 1-year rule applies for research settings.');n0.disabled=false;}
+  else if(S.dem==='no'){sa(a0,'aerr','✕ Essential feature not met — DLB criteria cannot be applied without dementia.');n0.disabled=true;}
+  else{ha(a0);n0.disabled=true;}
+
+  // Core count chip
+  const cn=document.getElementById('core-n'); if(cn) cn.textContent=cores;
+  const cc=document.getElementById('core-n')?.closest('.chip');
+  if(cc){cc.className='chip';if(cores>=2)cc.classList.add('cg');else if(cores>=1)cc.classList.add('cr');}
+
+  // Step 1 alert
+  const a1=document.getElementById('a1');
+  if(cores>=2)sa(a1,'aok','✓ ≥2 core clinical features — Probable DLB criterion met (with or without indicative biomarkers). Proceed to complete the assessment.');
+  else if(cores===1)sa(a1,'arose','◈ 1 core feature present. Probable DLB requires ≥1 indicative biomarker. Possible DLB is classifiable now. Proceed to biomarkers.');
+  else if(CORE_KEYS.some(k=>S[k]!==null))sa(a1,'awn','⚠ No core clinical features established. DLB requires at least 1 core feature (with biomarkers) or ≥2 cores. Possible DLB may be supported by indicative biomarkers alone.');
+  else ha(a1);
+
+  // Indicative count chip
+  const in_=document.getElementById('indic-n'); if(in_) in_.textContent=indic;
+  const ic=document.getElementById('indic-n')?.closest('.chip'); if(ic){ic.className='chip';if(indic>=1)ic.classList.add('cb');}
+
+  // Step 2 alert
+  const a2=document.getElementById('a2');
+  if(cores>=2&&indic>=1)sa(a2,'aok','✓ ≥2 core features + ≥1 indicative biomarker — strong support for Probable DLB.');
+  else if(cores===1&&indic>=1)sa(a2,'aok','✓ 1 core feature + ≥1 indicative biomarker — Probable DLB criteria met.');
+  else if(cores===0&&indic>=1)sa(a2,'ainf','ⓘ Indicative biomarker(s) present without core features → Possible DLB. Probable DLB cannot be diagnosed on biomarkers alone.');
+  else if(INDIC_KEYS.some(k=>S[k]!==null))sa(a2,'awn','⚠ No indicative biomarkers positive. If only 1 core feature is present, only Possible DLB can be classified.');
+  else ha(a2);
+
+  // Supportive count chips
+  const sc=document.getElementById('supp-clin-n'); if(sc) sc.textContent=suppClin;
+  const sb=document.getElementById('supp-bm-n'); if(sb) sb.textContent=suppBM;
+  const sbch=document.getElementById('supp-bm-chip'); if(sbch){sbch.className='chip';if(suppBM>0)sbch.classList.add('ca');}
+
+  const a3=document.getElementById('a3');
+  const suppTotal=suppClin+suppBM;
+  if(suppTotal>0)sa(a3,'arose','◈ '+suppTotal+' supportive feature(s) identified. These add diagnostic confidence but do not change the Probable/Possible classification independently.');
+  else if([...SUPP_CLIN_KEYS,...SUPP_BM_KEYS].some(k=>S[k]!==null))ha(a3);
+  else ha(a3);
+
+  // Step 4 less likely
+  const a4=document.getElementById('a4');
+  if(S.ll_illness==='yes'||S.ll_park==='yes')sa(a4,'awn','⚠ "Less likely" condition(s) present. DLB classification may be downgraded. Clinical judgment required — mixed pathology possible.');
+  else if(S.ll_illness==='part')sa(a4,'awn','⚠ Partial alternative explanation present. Consider mixed pathology. DLB diagnosis may still be appropriate.');
+  else if(S.ll_illness==='no'&&S.ll_park==='no')sa(a4,'aok','✓ No "less likely" conditions identified.');
+  else ha(a4);
+}
+
+function sa(el,cls,msg){if(!el)return;el.className='alrt show '+cls;el.innerHTML=msg;}
+function ha(el){if(el)el.classList.remove('show');}
+
+function rv() {
+  const v=verdict();
+  const cores=coreCount(), indic=indicCount(), suppClin=suppClinCount(), suppBM=suppBMCount();
+
+  const coreNames={fluc:'Fluctuating cognition',vh:'Recurrent visual hallucinations',rbd:'REM sleep behavior disorder',park:'Parkinsonism (≥1 cardinal feature)'};
+  const indicNames={dat:'Reduced DAT uptake (DAT-SPECT/PET)',mibg:'Abnormal ¹²³I-MIBG myocardial scintigraphy',psg:'PSG-confirmed REM sleep without atonia'};
+  const suppClinNames={antipsych:'Severe antipsychotic sensitivity',postinstab:'Postural instability/falls/syncope/transient unresponsiveness',autonomic:'Severe autonomic dysfunction',hypersomnia:'Hypersomnia',hyposmia:'Hyposmia',otherhall:'Non-visual hallucinations',delusions:'Systematized delusions / apathy / anxiety / depression'};
+  const suppBMNames={mri_mtl:'Relative MTL preservation on MRI/CT',fdgpet:'Occipital hypometabolism / cingulate island sign (FDG-PET/SPECT)',eeg:'Posterior slow-wave EEG with pre-alpha/theta fluctuations'};
+
+  // Combination rules boxes
+  const probA = cores>=2;
+  const probB = cores===1 && indic>=1;
+  const possA = cores===1 && indic===0;
+  const possB = cores===0 && indic>=1;
+
+  let html=`<div class="vban ${v.cls}"><div class="vlbl">DLB Consortium 2017 · McKeith et al. · Neurology 2017;89:88–100</div><div class="vtitle">${v.t}</div><div class="vdesc">${v.d}</div></div>`;
+
+  // Combination rules visualization
+  html+=`<div class="combo-grid">`;
+  html+=`<div class="combo-card ${probA?'met':'unmet'}"><div class="combo-title">PROBABLE DLB — Rule A</div>≥2 core clinical features (with or without indicative biomarkers)<br><em>${probA?'✓ Met — '+cores+' core feature(s)':'✗ Not met — '+cores+'/2 core features'}</em></div>`;
+  html+=`<div class="combo-card ${probB?'met':'unmet'}"><div class="combo-title">PROBABLE DLB — Rule B</div>1 core clinical feature + ≥1 indicative biomarker<br><em>${probB?'✓ Met — 1 core + '+indic+' biomarker(s)':'✗ Not met'}</em></div>`;
+  html+=`<div class="combo-card ${possA?'met':'unmet'}"><div class="combo-title">POSSIBLE DLB — Rule A</div>1 core feature, no indicative biomarkers<br><em>${possA?'✓ Met':possB?'—':'✗ Not met'}</em></div>`;
+  html+=`<div class="combo-card ${possB?'met':'unmet'}"><div class="combo-title">POSSIBLE DLB — Rule B</div>≥1 indicative biomarker, no core features<br><em>${possB?'✓ Met':possA?'—':'✗ Not met'}</em></div>`;
+  html+=`</div>`;
+
+  // Summary
+  html+=`<div class="sum-grid">`;
+  html+=`<div class="sblock"><div class="sbtitle">Core Clinical Features</div>`;
+  CORE_KEYS.forEach(k=>{
+    const pr=S[k]==='yes';
+    html+=`<div class="srow"><div class="dot ${pr?'dro':'dgr'}"></div><div class="sname">${coreNames[k]}</div><div class="stag ${pr?'tro':'tgr'}">${pr?'PRESENT':'ABSENT'}</div></div>`;
+  });
+  html+=`<div class="srow" style="border-top:1px solid var(--border);"><div class="dot ${cores>=2?'dg':cores>=1?'dro':'dgr'}"></div><div class="sname" style="font-weight:600;">Total core features</div><div class="stag ${cores>=2?'tg':cores>=1?'tro':'tgr'}">${cores}/4</div></div>`;
+  html+=`</div>`;
+
+  html+=`<div class="sblock"><div class="sbtitle">Indicative Biomarkers</div>`;
+  INDIC_KEYS.forEach(k=>{
+    const pr=S[k]==='pos';
+    html+=`<div class="srow"><div class="dot ${pr?'db':'dgr'}"></div><div class="sname">${indicNames[k]}</div><div class="stag ${pr?'tb':'tgr'}">${S[k]==='pos'?'POSITIVE':S[k]==='neg'?'NEGATIVE':S[k]==='nd'?'NOT DONE':'—'}</div></div>`;
+  });
+  html+=`<div class="srow" style="border-top:1px solid var(--border);"><div class="dot ${indic>=1?'db':'dgr'}"></div><div class="sname" style="font-weight:600;">Total indicative BM</div><div class="stag ${indic>=1?'tb':'tgr'}">${indic}/3</div></div>`;
+  html+=`</div>`;
+  html+=`</div>`;
+
+  // Supportive features (below grid)
+  const suppClinPresent = SUPP_CLIN_KEYS.filter(k=>S[k]==='yes');
+  const suppBMPresent = SUPP_BM_KEYS.filter(k=>S[k]==='pos'||S[k]==='pres');
+  if(suppClinPresent.length>0||suppBMPresent.length>0){
+    html+=`<div class="sblock" style="margin-bottom:12px;"><div class="sbtitle">Supportive Features Present</div>`;
+    suppClinPresent.forEach(k=>{ html+=`<div class="srow"><div class="dot da"></div><div class="sname">${suppClinNames[k]}</div><div class="stag ta">CLINICAL</div></div>`; });
+    suppBMPresent.forEach(k=>{ html+=`<div class="srow"><div class="dot da"></div><div class="sname">${suppBMNames[k]}</div><div class="stag ta">BIOMARKER</div></div>`; });
+    html+=`</div>`;
+  }
+
+  document.getElementById('vout').innerHTML=html;
+
+  // Doc note
+  let note=`COGNITIVE NEUROLOGY / MEMORY CONSULTATION\nDLB Consortium 2017 Fourth Consensus Criteria\nMcKeith IG et al. Neurology. 2017;89:88–100. doi:10.1212/WNL.0000000000004058\nDate: ${new Date().toLocaleDateString()}\n\nESSENTIAL FEATURE\n  Dementia: ${S.dem==='yes'?'Present — criterion met':S.dem==='pdd'?'Present in established PD context — consider PDD':S.dem==='no'?'Absent — criteria not applicable':'Not assessed'}\n\nCORE CLINICAL FEATURES\n`;
+  CORE_KEYS.forEach(k=>{ note+=`  ${coreNames[k]}: ${S[k]==='yes'?'PRESENT':S[k]==='no'?'Absent':'Not assessed'}\n`; });
+  note+=`  Core feature count: ${cores}/4\n\nINDICATIVE BIOMARKERS\n`;
+  INDIC_KEYS.forEach(k=>{ note+=`  ${indicNames[k]}: ${S[k]==='pos'?'POSITIVE (abnormal)':S[k]==='neg'?'Negative (normal)':S[k]==='nd'?'Not performed':'Not assessed'}\n`; });
+  note+=`  Indicative biomarker count: ${indic}/3\n\nSUPPORTIVE CLINICAL FEATURES\n`;
+  SUPP_CLIN_KEYS.forEach(k=>{ if(S[k]!==null) note+=`  ${suppClinNames[k]}: ${S[k]==='yes'?'Present':'Absent'}\n`; });
+  note+=`  Supportive clinical features present: ${suppClin}\n\nSUPPORTIVE BIOMARKERS\n  MTL preservation on MRI/CT: ${S.mri_mtl==='pres'?'Relatively preserved (supports DLB)':S.mri_mtl==='atr'?'MTL atrophied (favors AD)':'Not assessed'}\n  FDG-PET/SPECT occipital hypometabolism: ${S.fdgpet==='pos'?'Present':S.fdgpet==='neg'?'Absent':S.fdgpet==='nd'?'Not performed':'Not assessed'}\n  EEG posterior slow-wave: ${S.eeg==='pos'?'Characteristic pattern present':S.eeg==='neg'?'Not present':S.eeg==='nd'?'Not performed':'Not assessed'}\n\n"LESS LIKELY" CONDITIONS\n  Other illness/disorder sufficient to explain symptoms: ${S.ll_illness==='no'?'None identified':S.ll_illness==='part'?'Present (partial — mixed pathology possible)':S.ll_illness==='yes'?'Present (largely accounts for symptoms)':'Not assessed'}\n  Parkinsonism only core feature, first at severe dementia stage: ${S.ll_park==='no'?'Not applicable':S.ll_park==='yes'?'Present (reduces DLB likelihood)':'Not assessed'}\n\nDLB CONSORTIUM 2017 CLASSIFICATION\n${v.t}\n${v.d}\n\nCombination rule applied:\n  Probable DLB Rule A (≥2 core features): ${probA?'MET':'Not met'}\n  Probable DLB Rule B (1 core + ≥1 indicative BM): ${probB?'MET':'Not met'}\n  Possible DLB Rule A (1 core, no indicative BM): ${possA?'MET':'Not met'}\n  Possible DLB Rule B (≥1 indicative BM, no core features): ${possB?'MET':'Not met'}\n\nKey 2017 updates (vs. 2005 criteria):\n  - RBD upgraded from "suggestive" to Core clinical feature\n  - MIBG scintigraphy upgraded to Indicative biomarker\n  - PSG-confirmed REM sleep without atonia added as Indicative biomarker\n  - DAT imaging retained as Indicative biomarker\n  - New Supportive features: hypersomnia, hyposmia\n  - Antipsychotic sensitivity downgraded to Supportive (reduced prescribing limits usefulness)\n  - Clinical features + biomarkers now categorized separately (not combined as "suggestive")\n  - Probable DLB should NOT be diagnosed on biomarkers alone\n\nClinical management notes:\n  - Avoid antipsychotics (SEVERE sensitivity risk — mortality); if required, consider low-dose quetiapine\n  - Cholinesterase inhibitors (rivastigmine, donepezil) supported by Class I evidence for cognition, global function, ADLs\n  - Levodopa may help parkinsonism — introduce at low doses, titrate slowly; risk of psychosis\n  - RBD: clonazepam (cautious bedtime use) or melatonin (possibly safer — less cognitive/gait risk)\n  - Antidopaminergic and anticholinergic medications can adversely affect cognition and behavior\n\nRef: McKeith IG, Boeve BF, Dickson DW, et al. Diagnosis and management of dementia with Lewy bodies: fourth consensus report of the DLB Consortium. Neurology. 2017;89:88–100.`;
+  document.getElementById('dn').textContent=note;
+}
+
+function go(n){
+  document.getElementById('s'+cur).classList.remove('active');
+  document.getElementById('s'+n).classList.add('active');
+  for(let i=0;i<6;i++){const d=document.getElementById('st'+i);d.classList.remove('active','done');if(i<n)d.classList.add('done');else if(i===n)d.classList.add('active');}
+  cur=n;
+  document.getElementById('pf').style.width=((n/5)*100)+'%';
+  if(n===5) rv();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function xp(btn){
+  const d=btn.closest('.crit').querySelector('.crit-detail');if(!d)return;
+  const o=d.classList.toggle('open');
+  btn.textContent=o?'close ▴':'details ▾';
+}
+
+function toggleDoc(){
+  const body=document.getElementById('dn'),btn=document.getElementById('copy-btn'),tog=document.querySelector('.doc-tog');
+  if(!body)return;
+  const open=body.classList.toggle('open');
+  if(tog)tog.textContent=open?'▲ Documentation Note':'▼ Documentation Note';
+  if(btn)btn.classList.toggle('visible',open);
+}
+
+function copyDoc(){
+  const body=document.getElementById('dn'),btn=document.getElementById('copy-btn');
+  if(!body)return;
+  const text=body.textContent||body.innerText;
+  navigator.clipboard.writeText(text).then(()=>{if(btn){btn.textContent='✓ Copied';btn.classList.add('copied');setTimeout(()=>{btn.textContent='⎘ Copy';btn.classList.remove('copied');},2000);}})
+  .catch(()=>{const ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);if(btn){btn.textContent='✓ Copied';btn.classList.add('copied');setTimeout(()=>{btn.textContent='⎘ Copy';btn.classList.remove('copied');},2000);}});
+}
+
+function resetAll(){
+  Object.keys(S).forEach(k=>S[k]=null);
+  document.querySelectorAll('.crit').forEach(el=>el.className='crit');
+  document.querySelectorAll('.abtn').forEach(b=>b.classList.remove('ay','an','ar','ab','aa','aw'));
+  document.querySelectorAll('.crit-detail').forEach(d=>d.classList.remove('open'));
+  document.querySelectorAll('.xbtn').forEach(b=>b.textContent='details ▾');
+  ['a0','a1','a2','a3','a4'].forEach(id=>{const el=document.getElementById(id);if(el)el.classList.remove('show');});
+  const dn=document.getElementById('dn');if(dn)dn.classList.remove('open');
+  const cb=document.getElementById('copy-btn');if(cb)cb.classList.remove('visible','copied');
+  const tog=document.querySelector('.doc-tog');if(tog)tog.textContent='▼ Documentation Note';
+  go(0);
+  document.getElementById('n0').disabled=true;
+}
+
+ui();
+</script>
+</body>
+</html>

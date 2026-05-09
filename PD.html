@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MDS-PD Criteria Navigator</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+  --bg:       #0d1117;
+  --card:     #161b22;
+  --card2:    #1c2330;
+  --border:   #3a4556;
+  --border2:  #4a5f7a;
+  --green:    #3fb950;
+  --green-bg: rgba(63,185,80,0.10);
+  --green-bd: rgba(63,185,80,0.35);
+  --red:      #f85149;
+  --red-bg:   rgba(248,81,73,0.10);
+  --red-bd:   rgba(248,81,73,0.35);
+  --amber:    #e3b341;
+  --amber-bg: rgba(227,179,65,0.10);
+  --amber-bd: rgba(227,179,65,0.35);
+  --blue:     #58a6ff;
+  --blue-bg:  rgba(88,166,255,0.10);
+  --blue-bd:  rgba(88,166,255,0.35);
+  --text:     #e6edf3;
+  --text2:    #aab4c0;
+  --text3:    #6e7f94;
+  --sans: 'Inter', system-ui, sans-serif;
+  --mono: 'IBM Plex Mono', monospace;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg); color: var(--text); font-family: var(--sans); font-size: 14px; line-height: 1.5; min-height: 100vh; }
+.app { max-width: 900px; margin: 0 auto; padding: 0 20px 80px; }
+
+/* HEADER */
+header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.h-title { font-size: 19px; font-weight: 700; }
+.h-title span { color: var(--amber); }
+.h-sub { font-family: var(--mono); font-size: 10px; color: var(--text3); margin-top: 3px; }
+.reset-btn { background: var(--card2); border: 1px solid var(--border); color: var(--text2); font-family: var(--mono); font-size: 11px; padding: 6px 14px; cursor: pointer; border-radius: 4px; transition: all 0.15s; white-space: nowrap; }
+.reset-btn:hover { border-color: var(--amber); color: var(--amber); }
+
+/* PROGRESS */
+.prog-track { height: 3px; background: var(--border); margin-bottom: 20px; border-radius: 2px; }
+.prog-fill { height: 100%; background: linear-gradient(90deg, var(--amber), #f0c060); border-radius: 2px; transition: width 0.4s ease; }
+
+/* STEP TABS */
+.steps { display: flex; border-bottom: 1px solid var(--border); margin-bottom: 20px; overflow-x: auto; }
+.stab { flex: 1; min-width: 76px; padding: 7px 4px 9px; text-align: center; font-family: var(--mono); font-size: 9px; color: var(--text3); border-bottom: 2px solid transparent; margin-bottom: -1px; transition: all 0.2s; line-height: 1.3; }
+.stab .sn { display: block; font-size: 14px; font-weight: 600; margin-bottom: 1px; }
+.stab.active { color: var(--amber); border-bottom-color: var(--amber); }
+.stab.done   { color: var(--green); border-bottom-color: var(--green); }
+
+/* CARD */
+.card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 22px; margin-bottom: 12px; }
+.ctitle { font-size: 12px; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; margin-bottom: 3px; }
+.csub { font-size: 12px; color: var(--text2); margin-bottom: 16px; line-height: 1.45; }
+
+/* SECTION LABEL */
+.slabel { display: flex; align-items: center; gap: 8px; font-family: var(--mono); font-size: 10px; font-weight: 500; color: var(--text2); letter-spacing: 0.07em; text-transform: uppercase; margin-bottom: 9px; padding-bottom: 6px; border-bottom: 1px solid var(--border); }
+.pill { font-size: 9px; padding: 1px 7px; border-radius: 20px; border: 1px solid; margin-left: auto; }
+.pill-r { border-color: var(--red);   color: var(--red);   background: var(--red-bg); }
+.pill-a { border-color: var(--amber); color: var(--amber); background: var(--amber-bg); }
+
+/* CRITERION ROW */
+.crit { border: 1px solid var(--border); border-radius: 6px; margin-bottom: 5px; overflow: hidden; transition: border-color 0.15s, background 0.15s; }
+.crit.c-yes  { border-color: var(--green-bd); background: var(--green-bg); }
+.crit.c-no   { border-color: var(--red-bd);   background: var(--red-bg); }
+.crit.c-pres { border-color: var(--amber-bd); background: var(--amber-bg); }
+.crit.c-abs  { border-color: var(--border2);  background: var(--card2); }
+
+.crit-main { display: flex; align-items: center; gap: 10px; padding: 10px 13px; }
+.crit-name { flex: 1; font-size: 13px; font-weight: 500; color: var(--text); line-height: 1.3; }
+.xbtn { background: none; border: 1px solid var(--border2); color: var(--text2); font-size: 11px; cursor: pointer; padding: 2px 8px; font-family: var(--mono); white-space: nowrap; transition: all 0.15s; flex-shrink: 0; border-radius: 3px; }
+.xbtn:hover { color: var(--blue); border-color: var(--blue); }
+
+.crit-detail { display: none; padding: 10px 13px 12px; font-size: 12px; color: var(--text); line-height: 1.65; border-top: 1px solid var(--border); }
+.crit-detail.open { display: block; }
+.cnote { margin-top: 8px; padding: 7px 10px; background: var(--card2); border-left: 3px solid var(--border2); font-family: var(--mono); font-size: 10px; color: var(--text2); line-height: 1.7; font-style: italic; border-radius: 0 3px 3px 0; }
+
+/* BUTTON ROW */
+.brow { display: flex; border-top: 1px solid var(--border); }
+.abtn { flex: 1; padding: 8px 6px; background: none; border: none; border-right: 1px solid var(--border); color: var(--text2); font-family: var(--mono); font-size: 11px; cursor: pointer; transition: all 0.12s; text-transform: uppercase; letter-spacing: 0.04em; font-weight: 500; }
+.abtn:last-child { border-right: none; }
+.abtn:hover { background: var(--card2); color: var(--text); }
+.abtn.ay { background: var(--green-bg); color: var(--green); font-weight: 700; }
+.abtn.an { background: var(--red-bg);   color: var(--red);   font-weight: 700; }
+.abtn.ap { background: var(--amber-bg); color: var(--amber); font-weight: 700; }
+.abtn.aa { background: var(--card2);    color: var(--text2); font-weight: 700; }
+
+/* TWO-COL */
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; }
+@media (max-width: 600px) { .two-col { grid-template-columns: 1fr; } }
+
+/* ALERT */
+.alrt { padding: 9px 13px; border-radius: 5px; font-size: 12px; line-height: 1.5; margin-top: 12px; border-left: 3px solid; display: none; }
+.alrt.show { display: block; }
+.aok   { border-color: var(--green); background: var(--green-bg); color: #7ee787; }
+.awn   { border-color: var(--amber); background: var(--amber-bg); color: var(--amber); }
+.aerr  { border-color: var(--red);   background: var(--red-bg);   color: #ff7b72; }
+.ainf  { border-color: var(--blue);  background: var(--blue-bg);  color: var(--blue); }
+
+/* LOGIC BOX */
+.lbox { background: var(--card2); border: 1px solid var(--border); border-radius: 5px; padding: 11px 15px; font-size: 12px; color: var(--text2); line-height: 1.7; margin-bottom: 16px; }
+.lbox strong { color: var(--text); }
+.lg { color: var(--green); font-weight: 600; }
+.la { color: var(--amber); font-weight: 600; }
+.lr { color: var(--red);   font-weight: 600; }
+
+/* TALLY */
+.tally { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+.chip { display: flex; align-items: center; gap: 5px; padding: 5px 12px; border-radius: 20px; font-family: var(--mono); font-size: 11px; border: 1px solid var(--border); background: var(--card2); color: var(--text2); }
+.chip .n { font-size: 15px; font-weight: 700; }
+.cg { border-color: var(--green-bd); background: var(--green-bg); color: var(--green); }
+.cr { border-color: var(--red-bd);   background: var(--red-bg);   color: var(--red); }
+.ca { border-color: var(--amber-bd); background: var(--amber-bg); color: var(--amber); }
+
+/* NAV */
+.nav-row { display: flex; justify-content: space-between; align-items: center; margin-top: 20px; gap: 10px; }
+.nbtn { padding: 9px 22px; border-radius: 5px; font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; border: 1px solid; cursor: pointer; font-weight: 500; transition: all 0.15s; }
+.np { background: var(--amber); border-color: var(--amber); color: #0d1117; }
+.np:hover { background: #f0c060; }
+.np:disabled { opacity: 0.3; cursor: not-allowed; }
+.ns { background: transparent; border-color: var(--border2); color: var(--text2); }
+.ns:hover { border-color: var(--text); color: var(--text); }
+
+/* SCREEN */
+.screen { display: none; }
+.screen.active { display: block; animation: fu 0.25s ease; }
+@keyframes fu { from { opacity:0; transform:translateY(5px); } to { opacity:1; transform:translateY(0); } }
+
+/* VERDICT */
+.vban { border-radius: 8px; padding: 22px 26px; margin-bottom: 16px; text-align: center; border: 2px solid; }
+.ve  { border-color: var(--green); background: var(--green-bg); }
+.vp  { border-color: var(--amber); background: var(--amber-bg); }
+.vi  { border-color: var(--blue);  background: var(--blue-bg); }
+.vn  { border-color: var(--red);   background: var(--red-bg); }
+.vlbl { font-family: var(--mono); font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase; opacity: 0.6; margin-bottom: 5px; }
+.vtitle { font-size: 24px; font-weight: 700; margin-bottom: 7px; letter-spacing: -0.01em; }
+.ve .vtitle { color: var(--green); }
+.vp .vtitle { color: var(--amber); }
+.vi .vtitle { color: var(--blue); }
+.vn .vtitle { color: var(--red); }
+.vdesc { font-size: 12px; color: var(--text2); line-height: 1.7; max-width: 560px; margin: 0 auto; }
+
+/* SUMMARY */
+.sum-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+@media (max-width: 580px) { .sum-grid { grid-template-columns: 1fr; } }
+.sblock { background: var(--card); border: 1px solid var(--border); border-radius: 6px; overflow: hidden; }
+.sbtitle { font-family: var(--mono); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; padding: 7px 11px; border-bottom: 1px solid var(--border); color: var(--text2); background: var(--card2); }
+.srow { display: flex; align-items: center; gap: 8px; padding: 6px 11px; border-bottom: 1px solid var(--border); font-size: 12px; }
+.srow:last-child { border-bottom: none; }
+.dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+.dg { background: var(--green); } .dr { background: var(--red); } .dgr{ background: var(--text3); }
+.sname { flex: 1; color: var(--text); }
+.stag { font-family: var(--mono); font-size: 9px; padding: 1px 7px; border-radius: 10px; border: 1px solid; }
+.tg { border-color: var(--green-bd); color: var(--green); }
+.tr { border-color: var(--red-bd);   color: var(--red); }
+.tgr{ border-color: var(--border2);  color: var(--text3); }
+
+/* DOC NOTE */
+.doc-header { display: flex; align-items: center; gap: 8px; margin-bottom: 5px; }
+.doc-tog { flex: 1; text-align: left; background: var(--card2); border: 1px solid var(--border2); border-radius: 5px; color: var(--text2); font-family: var(--mono); font-size: 11px; padding: 8px 13px; cursor: pointer; transition: all 0.15s; letter-spacing: 0.04em; }
+.doc-tog:hover { border-color: var(--amber); color: var(--amber); }
+.copy-btn { background: var(--card2); border: 1px solid var(--border2); border-radius: 5px; color: var(--text2); font-family: var(--mono); font-size: 11px; padding: 8px 14px; cursor: pointer; white-space: nowrap; transition: all 0.15s; display: none; }
+.copy-btn.visible { display: block; }
+.copy-btn:hover { border-color: var(--green); color: var(--green); }
+.copy-btn.copied { border-color: var(--green); color: var(--green); background: var(--green-bg); }
+.doc-body { display: none; background: var(--card2); border: 1px solid var(--border2); border-radius: 5px; padding: 13px 15px; font-family: var(--mono); font-size: 11px; color: var(--text2); line-height: 1.8; white-space: pre-wrap; margin-bottom: 12px; }
+.doc-body.open { display: block; }
+
+/* PROTOCOL */
+.ptog { width: 100%; text-align: left; background: var(--card2); border: 1px solid var(--border); border-radius: 4px; color: var(--text2); font-family: var(--mono); font-size: 10px; padding: 7px 11px; cursor: pointer; margin-bottom: 4px; transition: all 0.15s; }
+.ptog:hover { border-color: var(--blue); color: var(--blue); }
+.pbody { display: none; background: var(--card2); border: 1px solid var(--border); border-radius: 4px; padding: 11px 13px; font-family: var(--mono); font-size: 10px; color: var(--text2); line-height: 1.8; white-space: pre-wrap; margin-bottom: 8px; }
+.pbody.open { display: block; }
+</style>
+</head>
+<body>
+<div class="app">
+
+<header>
+  <div>
+    <div class="h-title">MDS-PD <span>Diagnostic Criteria</span></div>
+    <div class="h-sub">Postuma RB et al. · Movement Disorders 2015;30(12):1591–1601</div>
+  </div>
+  <button class="reset-btn" onclick="resetAll()">↺ Reset</button>
+</header>
+
+<div class="prog-track"><div class="prog-fill" id="pf" style="width:0%"></div></div>
+
+<div class="steps">
+  <div class="stab active" id="st0"><span class="sn">1</span>Parkinsonism</div>
+  <div class="stab" id="st1"><span class="sn">2</span>Exclusions</div>
+  <div class="stab" id="st2"><span class="sn">3</span>Red Flags</div>
+  <div class="stab" id="st3"><span class="sn">4</span>Supportive</div>
+  <div class="stab" id="st4"><span class="sn">5</span>Ancillary</div>
+  <div class="stab" id="st5"><span class="sn">6</span>Verdict</div>
+</div>
+
+<!-- ══════════════ SCREEN 0 ══════════════ -->
+<div class="screen active" id="s0">
+<div class="card">
+  <div class="ctitle" style="color:var(--amber);">Step 1 · Establish Parkinsonism</div>
+  <div class="csub">Prerequisite for applying MDS-PD criteria. Bradykinesia is mandatory; at least one additional cardinal feature required.</div>
+
+  <div class="slabel">A · Bradykinesia <span class="pill pill-r">MANDATORY</span></div>
+  <div class="crit" id="brady-item">
+    <div class="crit-main">
+      <div class="crit-name">Bradykinesia — slowness + decrement in amplitude or speed with repetition</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      Slowness of movement AND decrement in amplitude or speed (or progressive hesitations/halts) as movements are continued. Assess via: finger tapping (3.4), hand movements (3.5), pronation-supination (3.6), toe tapping (3.7), foot tapping (3.8). <strong>Limb bradykinesia must be documented</strong> — voice, face, or axial bradykinesia alone is insufficient for diagnosis.
+      <div class="cnote">In PD, a decline in speed or amplitude is seen as movements are continued — a feature sometimes not seen in alternate-etiology parkinsonism. No single UPDRS cutoff defines parkinsonism. Confounding factors (arthritis, weakness) do not automatically prevent diagnosis — clinical judgment determines whether findings are entirely attributable to confounding features.</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="set('brady','yes')" id="brady-yes">✓ Present</button>
+      <button class="abtn" onclick="set('brady','no')"  id="brady-no" >✗ Absent</button>
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:14px;">B · Additional Cardinal Feature <span class="pill pill-a">≥1 REQUIRED</span></div>
+  <div class="two-col">
+    <div class="crit" id="tremor-item">
+      <div class="crit-main">
+        <div class="crit-name">Rest Tremor · 4–6 Hz, suppressed by movement initiation</div>
+        <button class="xbtn" onclick="xp(this)">details ▾</button>
+      </div>
+      <div class="crit-detail">
+        Fully resting limb, suppressed during movement initiation (UPDRS 3.17, 3.18). Kinetic and postural tremors alone do not qualify. Re-emergent tremor after postural hold is acceptable but must also be present at rest. Chin or jaw tremor alone does not count.
+      </div>
+      <div class="brow">
+        <button class="abtn" onclick="set('tremor','yes')" id="tremor-yes">✓ Present</button>
+        <button class="abtn" onclick="set('tremor','no')"  id="tremor-no" >✗ Absent</button>
+      </div>
+    </div>
+    <div class="crit" id="rigidity-item">
+      <div class="crit-main">
+        <div class="crit-name">Rigidity — lead-pipe, velocity-independent resistance to passive movement</div>
+        <button class="xbtn" onclick="xp(this)">details ▾</button>
+      </div>
+      <div class="crit-detail">
+        Slow passive movement of major joints with patient relaxed. Distinct from spasticity or paratonia. <strong>Isolated cogwheeling without lead-pipe rigidity does not fulfill criteria.</strong> Froment maneuver can unmask subtle rigidity.
+      </div>
+      <div class="brow">
+        <button class="abtn" onclick="set('rigidity','yes')" id="rigidity-yes">✓ Present</button>
+        <button class="abtn" onclick="set('rigidity','no')"  id="rigidity-no" >✗ Absent</button>
+      </div>
+    </div>
+  </div>
+  <p style="font-size:11px;color:var(--text3);margin-top:9px;font-family:var(--mono);">ⓘ Postural instability is NOT part of the parkinsonism definition — its early presence suggests an alternative diagnosis.</p>
+
+  <div id="a0" class="alrt"></div>
+  <div class="nav-row"><div></div><button class="nbtn np" id="n0" onclick="go(1)" disabled>Next: Absolute Exclusions →</button></div>
+</div>
+</div>
+
+<!-- ══════════════ SCREEN 1 ══════════════ -->
+<div class="screen" id="s1">
+<div class="card">
+  <div class="ctitle" style="color:var(--red);">Step 2 · Absolute Exclusion Criteria</div>
+  <div class="csub">Any single exclusion present → PD cannot be diagnosed at any certainty level. Clinical judgment applies — an exclusion from an unrelated cause (e.g., cerebellar hemisphere stroke) may not apply.</div>
+
+  <div class="crit" id="exc1-item">
+    <div class="crit-main"><div class="crit-name">1 · Unequivocal cerebellar abnormalities (cerebellar gait, limb ataxia, cerebellar oculomotor signs)</div><button class="xbtn" onclick="xp(this)">details ▾</button></div>
+    <div class="crit-detail">Sustained gaze-evoked nystagmus, macro square-wave jerks, hypermetric saccades. Must be unequivocal. Unilateral signs attributable to a cerebellar hemisphere stroke do not apply.</div>
+    <div class="brow"><button class="abtn" onclick="set('exc1','present')" id="exc1-present">✕ Present</button><button class="abtn" onclick="set('exc1','absent')" id="exc1-absent">✓ Absent</button></div>
+  </div>
+
+  <div class="crit" id="exc2-item">
+    <div class="crit-main"><div class="crit-name">2 · Downward vertical supranuclear gaze palsy or selectively slowed downward vertical saccades</div><button class="xbtn" onclick="xp(this)">details ▾</button></div>
+    <div class="crit-detail">Pathognomonic for PSP-Richardson syndrome. Confirm supranuclear origin via intact VOR (doll's-eye maneuver). Selective slowing of downward saccades on quantitative testing also qualifies. Isolated upward gaze restriction is non-specific and does not qualify.</div>
+    <div class="brow"><button class="abtn" onclick="set('exc2','present')" id="exc2-present">✕ Present</button><button class="abtn" onclick="set('exc2','absent')" id="exc2-absent">✓ Absent</button></div>
+  </div>
+
+  <div class="crit" id="exc3-item">
+    <div class="crit-main"><div class="crit-name">3 · Probable bvFTD or primary progressive aphasia (within first 5 years of disease)</div><button class="xbtn" onclick="xp(this)">details ▾</button></div>
+    <div class="crit-detail">Per consensus criteria (Rascovsky et al. Brain 2011). Applies only to frontotemporal-type dementia — other dementias are NOT an exclusion. DLB is explicitly not an "alternative parkinsonian syndrome" per MDS criteria. Do not withhold diagnosis pending the 5-year mark if features are absent.</div>
+    <div class="brow"><button class="abtn" onclick="set('exc3','present')" id="exc3-present">✕ Present</button><button class="abtn" onclick="set('exc3','absent')" id="exc3-absent">✓ Absent</button></div>
+  </div>
+
+  <div class="crit" id="exc4-item">
+    <div class="crit-main"><div class="crit-name">4 · Parkinsonian features restricted to lower limbs for &gt;3 years</div><button class="xbtn" onclick="xp(this)">details ▾</button></div>
+    <div class="crit-detail">Suggests vascular parkinsonism or NPH. Upper limb involvement appearing within 3 years does NOT trigger this exclusion. Must be continuous and unequivocal lower-body restriction throughout.</div>
+    <div class="brow"><button class="abtn" onclick="set('exc4','present')" id="exc4-present">✕ Present</button><button class="abtn" onclick="set('exc4','absent')" id="exc4-absent">✓ Absent</button></div>
+  </div>
+
+  <div class="crit" id="exc5-item">
+    <div class="crit-main"><div class="crit-name">5 · Dopamine receptor blocker or depleting agent at dose/time-course consistent with drug-induced parkinsonism</div><button class="xbtn" onclick="xp(this)">details ▾</button></div>
+    <div class="crit-detail">Clinical judgment required. Low-dose highly-atypical neuroleptic (e.g., low-dose quetiapine for sleep) may not qualify. If parkinsonism clearly persists long after complete withdrawal, the blocker may have unmasked subclinical PD.</div>
+    <div class="brow"><button class="abtn" onclick="set('exc5','present')" id="exc5-present">✕ Present</button><button class="abtn" onclick="set('exc5','absent')" id="exc5-absent">✓ Absent</button></div>
+  </div>
+
+  <div class="crit" id="exc6-item">
+    <div class="crit-main"><div class="crit-name">6 · No observable response to high-dose levodopa despite at least moderate severity</div><button class="xbtn" onclick="xp(this)">details ▾</button></div>
+    <div class="crit-detail">Requires ≥600 mg/day levodopa — cannot apply if untreated or on &lt;600 mg. Patient must have at least moderate severity (UPDRS rigidity or bradykinesia &gt;2 on at least one measure). Absence of response confirmed by reliable patient/witness or objectively (≤3-point improvement on UPDRS-III). Tremor-predominant PD may respond less — evaluate rigidity/bradykinesia subscores.</div>
+    <div class="brow"><button class="abtn" onclick="set('exc6','present')" id="exc6-present">✕ Present</button><button class="abtn" onclick="set('exc6','absent')" id="exc6-absent">✓ Absent / N/A</button></div>
+  </div>
+
+  <div class="crit" id="exc7-item">
+    <div class="crit-main"><div class="crit-name">7 · Unequivocal cortical sensory loss, clear limb ideomotor apraxia, or progressive aphasia</div><button class="xbtn" onclick="xp(this)">details ▾</button></div>
+    <div class="crit-detail">Cortical sensory: graphesthesia, stereognosis with intact primary modalities. Clear limb ideomotor apraxia. Progressive aphasia. Must be unequivocal. Mild visuospatial difficulty or executive dysfunction in established PD does not qualify. Primary concern: CBS.</div>
+    <div class="brow"><button class="abtn" onclick="set('exc7','present')" id="exc7-present">✕ Present</button><button class="abtn" onclick="set('exc7','absent')" id="exc7-absent">✓ Absent</button></div>
+  </div>
+
+  <div class="crit" id="exc8-item">
+    <div class="crit-main"><div class="crit-name">8 · Normal functional neuroimaging of presynaptic dopaminergic system (if performed)</div><button class="xbtn" onclick="xp(this)">details ▾</button></div>
+    <div class="crit-detail"><strong>If not performed, this criterion does NOT apply.</strong> Definitively normal DaTscan or 18F-DOPA PET excludes PD. Equivocal reads do not trigger this exclusion.
+    <div class="cnote">Scope: DaTscan identifies nigrostriatal degeneration vs. non-parkinsonism mimics (ET, dystonic tremor) — it does NOT differentiate PD from other degenerative parkinsonisms (MSA, PSP, CBS). An abnormal DaTscan is therefore NOT a supportive criterion in Step 4.</div></div>
+    <div class="brow"><button class="abtn" onclick="set('exc8','present')" id="exc8-present">✕ Normal DAT</button><button class="abtn" onclick="set('exc8','absent')" id="exc8-absent">✓ Abnormal / Not done</button></div>
+  </div>
+
+  <div class="crit" id="exc9-item">
+    <div class="crit-main"><div class="crit-name">9 · Alternative condition plausibly causing parkinsonism, or expert believes alternative syndrome more likely than PD</div><button class="xbtn" onclick="xp(this)">details ▾</button></div>
+    <div class="crit-detail">Includes rare mimics (Wilson disease, HMSN, hypoparathyroidism) and common alternative parkinsonian syndromes (MSA, PSP, CBS). DLB is NOT an alternative syndrome under this criterion. Also captures the expert clinician's overall gestalt.</div>
+    <div class="brow"><button class="abtn" onclick="set('exc9','present')" id="exc9-present">✕ Present</button><button class="abtn" onclick="set('exc9','absent')" id="exc9-absent">✓ Absent</button></div>
+  </div>
+
+  <div id="a1" class="alrt"></div>
+  <div class="nav-row"><button class="nbtn ns" onclick="go(0)">← Back</button><button class="nbtn np" onclick="go(2)">Next: Red Flags →</button></div>
+</div>
+</div>
+
+<!-- ══════════════ SCREEN 2 ══════════════ -->
+<div class="screen" id="s2">
+<div class="card">
+  <div class="ctitle" style="color:var(--red);">Step 3 · Red Flags</div>
+  <div class="csub">Each red flag must be counterbalanced by a supportive criterion. More than 2 red flags → Probable PD cannot be diagnosed.</div>
+
+  <div class="lbox">
+    <strong>Diagnostic logic (Postuma 2015, Table 1):</strong><br>
+    <span class="lg">Clinically Established PD</span> — No red flags + ≥2 supportive<br>
+    <span class="la">Clinically Probable PD</span> — 1 RF → ≥1 supportive; 2 RF → ≥2 supportive; <span class="lr">max 2 red flags</span><br>
+    In all cases: number of supportive criteria ≥ number of red flags
+  </div>
+
+  <div class="crit" id="rf1-item"><div class="crit-main"><div class="crit-name">1 · Rapid progression to regular wheelchair use within 5 years of onset</div><button class="xbtn" onclick="xp(this)">details ▾</button></div>
+  <div class="crit-detail">Regular (not episodic) wheelchair use. Wheelchair use from unrelated cause (orthopedic injury, spinal cord injury) does not apply. PSP-RS and MSA-P are primary concerns.</div>
+  <div class="brow"><button class="abtn" onclick="set('rf1','present')" id="rf1-present">⚑ Present</button><button class="abtn" onclick="set('rf1','absent')" id="rf1-absent">✓ Absent</button></div></div>
+
+  <div class="crit" id="rf2-item"><div class="crit-main"><div class="crit-name">2 · Complete absence of motor progression over ≥5 years (unless treatment-related)</div><button class="xbtn" onclick="xp(this)">details ▾</button></div>
+  <div class="crit-detail">Must be based on direct observation — historical information alone is insufficient. Absence must be continuous over ≥5 years. Stability clearly attributable to adequate dopaminergic therapy does NOT trigger this red flag.</div>
+  <div class="brow"><button class="abtn" onclick="set('rf2','present')" id="rf2-present">⚑ Present</button><button class="abtn" onclick="set('rf2','absent')" id="rf2-absent">✓ Absent</button></div></div>
+
+  <div class="crit" id="rf3-item"><div class="crit-main"><div class="crit-name">3 · Early severe bulbar dysfunction within first 5 years (severe dysphonia/dysarthria or severe dysphagia requiring soft food/NGT/PEG)</div><button class="xbtn" onclick="xp(this)">details ▾</button></div>
+  <div class="crit-detail">UPDRS severity thresholds: dysarthria ≥4, dysphagia ≥3. Hypophonia and mild hyparthria are common in early PD and do NOT qualify. Targets frank bulbar failure suggesting MSA or PSP.</div>
+  <div class="brow"><button class="abtn" onclick="set('rf3','present')" id="rf3-present">⚑ Present</button><button class="abtn" onclick="set('rf3','absent')" id="rf3-absent">✓ Absent</button></div></div>
+
+  <div class="crit" id="rf4-item"><div class="crit-main"><div class="crit-name">4 · Inspiratory respiratory dysfunction — diurnal or nocturnal inspiratory stridor or frequent inspiratory sighs</div><button class="xbtn" onclick="xp(this)">details ▾</button></div>
+  <div class="crit-detail">Distinct from obstructive sleep apnea. Nocturnal vocal cord abductor palsy is characteristic of MSA. Frequent involuntary inspiratory sighs as a distinct respiratory pattern also qualifies.</div>
+  <div class="brow"><button class="abtn" onclick="set('rf4','present')" id="rf4-present">⚑ Present</button><button class="abtn" onclick="set('rf4','absent')" id="rf4-absent">✓ Absent</button></div></div>
+
+  <div class="crit" id="rf5-item"><div class="crit-main"><div class="crit-name">5 · Severe autonomic failure within first 5 years (orthostatic hypotension or severe urinary dysfunction)</div><button class="xbtn" onclick="xp(this)">details ▾</button></div>
+  <div class="crit-detail">(a) OH: ≥30 mmHg systolic or ≥15 mmHg diastolic within 3 min of standing, in the absence of dehydration, medication, or other plausible causes. (b) Severe urinary incontinence or retention within first 5 years — in men not from prostate disease, must be associated with erectile dysfunction. Excludes long-standing stress incontinence in women.
+  <div class="cnote">Mild autonomic dysfunction is common in PD and does not qualify. This criterion targets severe autonomic failure as seen particularly in MSA. If disease duration exceeds 5 years, features must have been documented within the first 5 years.</div></div>
+  <div class="brow"><button class="abtn" onclick="set('rf5','present')" id="rf5-present">⚑ Present</button><button class="abtn" onclick="set('rf5','absent')" id="rf5-absent">✓ Absent</button></div></div>
+
+  <div class="crit" id="rf6-item"><div class="crit-main"><div class="crit-name">6 · Recurrent falls (&gt;1/year) due to impaired balance within 3 years of onset</div><button class="xbtn" onclick="xp(this)">details ▾</button></div>
+  <div class="crit-detail">Falls attributable to balance impairment. Excludes falls from syncope/seizure or situations where normal-balance individuals would also fall. Clinical judgment required to determine whether balance impairment was the key factor.</div>
+  <div class="brow"><button class="abtn" onclick="set('rf6','present')" id="rf6-present">⚑ Present</button><button class="abtn" onclick="set('rf6','absent')" id="rf6-absent">✓ Absent</button></div></div>
+
+  <div class="crit" id="rf7-item"><div class="crit-main"><div class="crit-name">7 · Disproportionate anterocollis (dystonic) or hand/foot contractures within first 10 years</div><button class="xbtn" onclick="xp(this)">details ▾</button></div>
+  <div class="crit-detail">Dystonic in nature and disproportionate to disease stage. Distinguish from levodopa-induced off-state foot dystonia (consistent with PD). Severe camptocormia or Pisa syndrome appearing in the first decade and not attributable to levodopa therapy.</div>
+  <div class="brow"><button class="abtn" onclick="set('rf7','present')" id="rf7-present">⚑ Present</button><button class="abtn" onclick="set('rf7','absent')" id="rf7-absent">✓ Absent</button></div></div>
+
+  <div class="crit" id="rf8-item"><div class="crit-main"><div class="crit-name">8 · Absence of ANY common nonmotor PD features despite ≥5 years of disease</div><button class="xbtn" onclick="xp(this)">details ▾</button></div>
+  <div class="crit-detail">All of the following must be absent: sleep dysfunction (insomnia, EDS, RBD symptoms), autonomic dysfunction (constipation, daytime urinary urgency, symptomatic orthostasis), hyposmia, psychiatric dysfunction (depression, anxiety, hallucinations). Only apply after full 5 years of disease.</div>
+  <div class="brow"><button class="abtn" onclick="set('rf8','present')" id="rf8-present">⚑ Present</button><button class="abtn" onclick="set('rf8','absent')" id="rf8-absent">✓ Absent</button></div></div>
+
+  <div class="crit" id="rf9-item"><div class="crit-main"><div class="crit-name">9 · Unexplained pyramidal tract signs — pyramidal weakness or clear pathologic hyperreflexia</div><button class="xbtn" onclick="xp(this)">details ▾</button></div>
+  <div class="crit-detail">Excludes: mild reflex asymmetry in the more affected limb (common in PD) and isolated extensor plantar response (may reflect striatal toe or mild cervical myelopathy). Unequivocal clonus, Babinski, or pyramidal weakness qualifies.</div>
+  <div class="brow"><button class="abtn" onclick="set('rf9','present')" id="rf9-present">⚑ Present</button><button class="abtn" onclick="set('rf9','absent')" id="rf9-absent">✓ Absent</button></div></div>
+
+  <div class="crit" id="rf10-item"><div class="crit-main"><div class="crit-name">10 · Bilateral symmetric parkinsonism throughout the entire disease course</div><button class="xbtn" onclick="xp(this)">details ▾</button></div>
+  <div class="crit-detail">Patient or caregiver reports bilateral symptom onset with NO side predominance, AND no side predominance observed on objective examination. PD should demonstrate persistent asymmetry. Treatment-related improvement in asymmetry does not trigger this red flag.</div>
+  <div class="brow"><button class="abtn" onclick="set('rf10','present')" id="rf10-present">⚑ Present</button><button class="abtn" onclick="set('rf10','absent')" id="rf10-absent">✓ Absent</button></div></div>
+
+  <div class="tally" style="margin-top:12px;"><div class="chip cr"><span class="n" id="rfn">0</span>Red Flags</div></div>
+  <div id="a2" class="alrt"></div>
+  <div class="nav-row"><button class="nbtn ns" onclick="go(1)">← Back</button><button class="nbtn np" onclick="go(3)">Next: Supportive Criteria →</button></div>
+</div>
+</div>
+
+<!-- ══════════════ SCREEN 3 ══════════════ -->
+<div class="screen" id="s3">
+<div class="card">
+  <div class="ctitle" style="color:var(--green);">Step 4 · Supportive Criteria</div>
+  <div class="csub">4 criteria per MDS-PD criteria. Each met criterion increases diagnostic confidence and counterbalances one red flag.</div>
+
+  <div class="tally">
+    <div class="chip cg"><span class="n" id="supn">0</span>/ 4 Supportive</div>
+    <div class="chip cr"><span class="n" id="rfn2">0</span>/ 10 Red Flags</div>
+    <div class="chip" id="bal-chip"><span class="n" id="baln">—</span></div>
+  </div>
+
+  <div class="crit" id="sup1-item"><div class="crit-main"><div class="crit-name">1 · Clear and dramatic beneficial response to dopaminergic therapy</div><button class="xbtn" onclick="xp(this)">details ▾</button></div>
+  <div class="crit-detail">Patient returned to normal or near-normal function with initial treatment. If initial response not documented: (a) Marked improvement with dose increases or marked worsening with dose decreases — documented objectively (&gt;30% UPDRS-III improvement) or clearly by reliable patient/caregiver; OR (b) Unequivocal on/off fluctuations with predictable end-of-dose wearing off.
+  <div class="cnote">Some response is insufficient — must be unequivocal and of large amplitude. Modest response does not meet criteria. Predictable wearing off confirms true dopaminergic fluctuations (not day-to-day variability). Documentation can be retrospective.</div></div>
+  <div class="brow"><button class="abtn" onclick="set('sup1','present')" id="sup1-present">✦ Present</button><button class="abtn" onclick="set('sup1','absent')" id="sup1-absent">✗ Absent / Inadequate trial</button></div></div>
+
+  <div class="crit" id="sup2-item"><div class="crit-main"><div class="crit-name">2 · Levodopa-induced dyskinesia</div><button class="xbtn" onclick="xp(this)">details ▾</button></div>
+  <div class="crit-detail">Peak-dose choreiform or dystonic movements clearly related to dopaminergic drug timing. Biphasic (diphasic) dyskinesia also qualifies. Must be clearly drug-related and not attributable to another hyperkinetic disorder.</div>
+  <div class="brow"><button class="abtn" onclick="set('sup2','present')" id="sup2-present">✦ Present</button><button class="abtn" onclick="set('sup2','absent')" id="sup2-absent">✗ Absent</button></div></div>
+
+  <div class="crit" id="sup3-item"><div class="crit-main"><div class="crit-name">3 · Rest tremor of a limb, documented on clinical examination (past or current)</div><button class="xbtn" onclick="xp(this)">details ▾</button></div>
+  <div class="crit-detail">Must be documented on clinical examination — current exam or clearly recorded in a prior examination. Included because: (1) rest tremor is less common in atypical parkinsonism; (2) tremor-predominant PD may respond less to levodopa, making Criterion #1 harder to meet.</div>
+  <div class="brow"><button class="abtn" onclick="set('sup3','present')" id="sup3-present">✦ Present</button><button class="abtn" onclick="set('sup3','absent')" id="sup3-absent">✗ Absent / Not documented</button></div></div>
+
+  <div class="crit" id="sup4-item"><div class="crit-main"><div class="crit-name">4 · Ancillary test with &gt;80% specificity — olfactory loss (hyposmic/anosmic range) OR abnormal cardiac MIBG scintigraphy</div><button class="xbtn" onclick="xp(this)">details ▾</button></div>
+  <div class="crit-detail"><strong>Single supportive criterion</strong> — met by either or both: (a) Olfactory loss in anosmic or clearly hyposmic range, adjusted for age and sex on formal testing (UPSIT, Sniffin' Sticks); (b) MIBG scintigraphy with reduced late H/M ratio clearly documenting cardiac sympathetic denervation. Cannot be counted twice if both positive.
+  <div class="cnote">DaTscan does NOT qualify — it differentiates parkinsonism from non-parkinsonism mimics (ET, dystonic tremor), not PD from other degenerative parkinsonisms. An abnormal DaTscan should NOT be entered here. Only olfactory testing and MIBG meet the MDS threshold of &gt;80% specificity in ≥3 independent multicenter studies.</div></div>
+  <div class="brow"><button class="abtn" onclick="set('sup4','present')" id="sup4-present">✦ Present (either or both)</button><button class="abtn" onclick="set('sup4','absent')" id="sup4-absent">✗ Absent / Not done</button></div></div>
+
+  <div id="a3" class="alrt"></div>
+  <div class="nav-row"><button class="nbtn ns" onclick="go(2)">← Back</button><button class="nbtn np" onclick="go(4)">Next: Ancillary Reference →</button></div>
+</div>
+</div>
+
+<!-- ══════════════ SCREEN 4 ══════════════ -->
+<div class="screen" id="s4">
+<div class="card">
+  <div class="ctitle" style="color:var(--blue);">Step 5 · Ancillary Testing Reference</div>
+  <div class="csub">Criteria entries belong in Steps 2–4. This step provides protocol and interpretation references.</div>
+
+  <div class="lbox">
+    <strong>Key principles:</strong> MDS-PD criteria are applicable without ancillary testing. ·
+    <span style="color:var(--green);">Olfactory testing / MIBG</span> → Supportive Criterion #4 ·
+    <span style="color:var(--red);">Normal DaTscan</span> → Absolute Exclusion #8 ·
+    <span style="color:var(--amber);">Abnormal DaTscan</span> confirms nigrostriatal degeneration but does NOT differentiate PD from MSA/PSP/CBS
+  </div>
+
+  <button class="ptog" onclick="tp('pl')">▼ Protocol · Formal Acute Levodopa Challenge</button>
+  <div class="pbody" id="pl">Formal Acute Levodopa Challenge (objective documentation of Supportive Criterion #1):
+
+1. Withhold morning dopaminergic medications (≥12h for short-acting agents)
+2. Score MDS-UPDRS Part III — baseline "off" state (same examiner pre/post)
+3. Administer levodopa/carbidopa 250/25 mg; use 375/37.5 mg if weight >80 kg
+4. Pre-treat with domperidone 20 mg PO 30 min prior if levodopa-naive
+5. Rescore UPDRS-III at 45, 60, and 90 min post-dose
+6. % improvement = [(baseline − best post-dose) / baseline] × 100
+7. ≥30% objective improvement on UPDRS-III → Criterion #1 met
+   OR unequivocal on/off fluctuations with predictable wearing off → also meets Criterion #1
+
+Notes:
+- Tremor-predominant PD may show <30% improvement even in true PD
+  → Evaluate rigidity/bradykinesia subscores independently
+- A negative acute challenge does not exclude PD
+- Only a trial at ≥600 mg/day is required to apply Absolute Exclusion #6</div>
+
+  <button class="ptog" onclick="tp('pm')" style="margin-top:3px;">▼ Reference · MRI Findings in Atypical Parkinsonism</button>
+  <div class="pbody" id="pm">Structural MRI red flag signs (not part of MDS-PD criteria):
+
+MSA-P / MSA-C:
+  · Putaminal rim sign — T2/FLAIR hypointensity posterolateral putamen with hyperintense rim
+  · Hot cross bun sign — cruciform T2 hyperintensity in pons (MSA-C)
+  · Middle cerebellar peduncle and cerebellar atrophy
+
+PSP:
+  · Hummingbird/morning glory sign — midbrain atrophy on sagittal T1
+  · Midbrain-to-pons area ratio <0.52 (validated vs. PD)
+  · Superior cerebellar peduncle atrophy
+
+CBS:
+  · Asymmetric posterior frontal/parietal cortical atrophy (contralateral to more affected side)
+
+Vascular Parkinsonism:
+  · Bilateral periventricular/subcortical WMH (Fazekas ≥2)
+  · Lacunar infarcts in basal ganglia or internal capsule
+
+Emerging (not criteria-validated):
+  · Neuromelanin-sensitive MRI — reduced SNc signal
+  · Free water in posterior putamen (PD vs. atypical)</div>
+
+  <button class="ptog" onclick="tp('pmbg')" style="margin-top:3px;">▼ Reference · MIBG Scintigraphy Interpretation and Confounders</button>
+  <div class="pbody" id="pmbg">123I-MIBG Myocardial Scintigraphy:
+
+Interpretation:
+  · Late H/M ratio <1.7–2.2 in PD/DLB (varies by camera/protocol)
+  · Reduced uptake = cardiac sympathetic denervation → supports Lewy body pathology
+  · Specificity >80% for PD/DLB vs. MSA, PSP, vascular parkinsonism
+
+Medications that must be withheld before scan (reduce uptake — false positive):
+  · Labetalol, carvedilol · Tricyclic antidepressants · Opioids
+
+Other false positive causes:
+  · Diabetic autonomic neuropathy · Congestive heart failure / ischemic cardiomyopathy
+  · Amyloid cardiomyopathy
+
+False negatives (normal MIBG despite PD):
+  · Early disease — denervation may be incomplete
+  · LRRK2-PD — often preserves cardiac MIBG (variable Lewy body burden)
+
+Entry: Abnormal MIBG → mark Supportive Criterion #4 (Step 4) as Present
+Normal MIBG → does not exclude PD, but reduces Lewy body probability</div>
+
+  <div class="nav-row"><button class="nbtn ns" onclick="go(3)">← Back</button><button class="nbtn np" onclick="go(5)">Generate Verdict →</button></div>
+</div>
+</div>
+
+<!-- ══════════════ SCREEN 5 ══════════════ -->
+<div class="screen" id="s5">
+  <div id="vout"></div>
+  <div id="sout"></div>
+  <div class="doc-header">
+    <button class="doc-tog" onclick="toggleDoc()">▼ Documentation Note</button>
+    <button class="copy-btn" id="copy-btn" onclick="copyDoc()">⎘ Copy</button>
+  </div>
+  <div class="doc-body" id="dn"></div>
+  <div class="nav-row"><button class="nbtn ns" onclick="go(4)">← Back</button><button class="nbtn np" onclick="resetAll()">↺ New Evaluation</button></div>
+</div>
+
+</div>
+<script>
+const S={brady:null,tremor:null,rigidity:null,exc1:null,exc2:null,exc3:null,exc4:null,exc5:null,exc6:null,exc7:null,exc8:null,exc9:null,rf1:null,rf2:null,rf3:null,rf4:null,rf5:null,rf6:null,rf7:null,rf8:null,rf9:null,rf10:null,sup1:null,sup2:null,sup3:null,sup4:null};
+let cur=0;
+
+function set(k,v){
+  S[k]=v;
+  const item=document.getElementById(k+'-item');
+  if(item) item.className='crit';
+  ['yes','no','present','absent'].forEach(x=>{const b=document.getElementById(k+'-'+x);if(b)b.classList.remove('ay','an','ap','aa');});
+  if(v==='yes'){if(item)item.classList.add('c-yes');const b=document.getElementById(k+'-yes');if(b)b.classList.add('ay');}
+  if(v==='no'){if(item)item.classList.add('c-no');const b=document.getElementById(k+'-no');if(b)b.classList.add('an');}
+  if(v==='present'){if(item)item.classList.add('c-pres');const b=document.getElementById(k+'-present');if(b)b.classList.add('ap');}
+  if(v==='absent'){if(item)item.classList.add('c-abs');const b=document.getElementById(k+'-absent');if(b)b.classList.add('aa');}
+  ui();
+}
+
+function c(){
+  const rfK=['rf1','rf2','rf3','rf4','rf5','rf6','rf7','rf8','rf9','rf10'];
+  const supK=['sup1','sup2','sup3','sup4'];
+  const excK=['exc1','exc2','exc3','exc4','exc5','exc6','exc7','exc8','exc9'];
+  return{rf:rfK.filter(k=>S[k]==='present').length,sup:supK.filter(k=>S[k]==='present').length,exc:excK.filter(k=>S[k]==='present').length,pk:S.brady==='yes'&&(S.tremor==='yes'||S.rigidity==='yes')};
+}
+
+function ui(){
+  const x=c();
+  // step 0
+  const a0=document.getElementById('a0'),n0=document.getElementById('n0');
+  if(S.brady==='no'){sa(a0,'aerr','✕ Bradykinesia absent — parkinsonism not established. MDS-PD criteria cannot be applied.');n0.disabled=true;}
+  else if(S.brady==='yes'&&!x.pk&&(S.tremor!==null||S.rigidity!==null)){sa(a0,'awn','⚠ Bradykinesia confirmed, but no additional cardinal feature present.');n0.disabled=true;}
+  else if(x.pk){sa(a0,'aok','✓ Parkinsonism established — bradykinesia + '+(S.tremor==='yes'&&S.rigidity==='yes'?'tremor + rigidity':S.tremor==='yes'?'rest tremor':'rigidity')+'. Proceed to exclusion criteria.');n0.disabled=false;}
+  else{ha(a0);n0.disabled=true;}
+  // step 1
+  const a1=document.getElementById('a1');
+  if(x.exc>0)sa(a1,'aerr','✕ '+x.exc+' absolute exclusion(s) present — PD cannot be diagnosed. Consider MSA, PSP, CBS, DIP, or vascular parkinsonism.');
+  else if(['exc1','exc2','exc3','exc4','exc5','exc6','exc7','exc8','exc9'].every(k=>S[k]==='absent'))sa(a1,'aok','✓ No absolute exclusions. Proceed to red flags.');
+  else ha(a1);
+  // step 2
+  const rfe=document.getElementById('rfn');if(rfe)rfe.textContent=x.rf;
+  const rfe2=document.getElementById('rfn2');if(rfe2)rfe2.textContent=x.rf;
+  const a2=document.getElementById('a2');
+  if(x.rf>2)sa(a2,'aerr','✕ '+x.rf+' red flags — more than 2 precludes Clinically Probable PD per MDS criteria.');
+  else if(x.rf>0)sa(a2,'awn','⚑ '+x.rf+' red flag(s). Each must be counterbalanced by a supportive criterion in Step 4.');
+  else ha(a2);
+  // step 3
+  const se=document.getElementById('supn');if(se)se.textContent=x.sup;
+  const bc=document.getElementById('bal-chip'),bn=document.getElementById('baln');
+  if(bc&&bn){bc.className='chip';if(x.rf===0&&x.sup>=2){bn.textContent='Established';bc.classList.add('cg');}else if(x.rf>0&&x.rf<=2&&x.sup>=x.rf){bn.textContent='Probable';bc.classList.add('ca');}else if(x.rf>2){bn.textContent='>2 RF';bc.classList.add('cr');}else if(x.rf>0&&x.sup<x.rf){bn.textContent='Unbalanced';bc.classList.add('cr');}else bn.textContent='—';}
+  const a3=document.getElementById('a3');
+  if(x.rf===0&&x.sup>=2)sa(a3,'aok','✓ ≥2 supportive, 0 red flags — Clinically Established PD criteria can be met.');
+  else if(x.rf>0&&x.rf<=2&&x.sup>=x.rf)sa(a3,'awn','⑁ '+x.sup+' supportive / '+x.rf+' red flag(s) — Clinically Probable PD criteria can be met.');
+  else if(x.rf>2)sa(a3,'aerr','✕ >2 red flags — Probable PD cannot be diagnosed.');
+  else if(x.rf>0&&x.sup<x.rf)sa(a3,'aerr','⚠ Red flags ('+x.rf+') outweigh supportive criteria ('+x.sup+') — Probable PD criteria not met.');
+  else ha(a3);
+}
+
+function sa(el,cls,msg){if(!el)return;el.className='alrt show '+cls;el.innerHTML=msg;}
+function ha(el){if(el)el.classList.remove('show');}
+
+function verd(){
+  const x=c();
+  if(!x.pk)return{cls:'vn',t:'Parkinsonism Not Established',d:'Bradykinesia with decrement and at least one additional cardinal feature (rest tremor or rigidity) must be established before MDS-PD criteria can be applied.'};
+  if(x.exc>0)return{cls:'vn',t:'Absolute Exclusion(s) Present',d:'One or more absolute exclusion criteria are present. PD cannot be diagnosed at any certainty level. Reassess for MSA, PSP, CBS, drug-induced parkinsonism, or vascular parkinsonism.'};
+  if(x.rf===0&&x.sup>=2)return{cls:'ve',t:'Clinically Established PD',d:'No red flags and ≥2 supportive criteria satisfied. Highest diagnostic certainty — designed to achieve ≥90% specificity. Sensitivity is necessarily reduced. Continue monitoring for atypical features over time.'};
+  if(x.rf<=2&&x.rf>0&&x.sup>=x.rf)return{cls:'vp',t:'Clinically Probable PD',d:x.sup+' supportive criteria, '+x.rf+' red flag(s) — counterbalanced. Designed to achieve ≥80% specificity while identifying ≥80% of true PD cases. Annual reassessment recommended.'};
+  if(x.rf>2)return{cls:'vn',t:'>2 Red Flags — Probable PD Not Diagnosable',d:x.rf+' red flags present. More than 2 red flags preclude Clinically Probable PD per MDS criteria. Broaden differential — consider MSA, PSP, CBS, or vascular parkinsonism based on red flag pattern.'};
+  if(x.rf===0&&x.sup===1)return{cls:'vi',t:'Below Threshold — 1 Supportive Criterion Only',d:'Parkinsonism established, no exclusions, no red flags, but only 1 supportive criterion. Established PD requires ≥2. Pursue formal levodopa challenge, olfactory testing, and/or MIBG.'};
+  if(x.rf>0&&x.sup<x.rf)return{cls:'vi',t:'Red Flags Unbalanced — Criteria Not Met',d:x.rf+' red flag(s) and '+x.sup+' supportive criteria. Probable PD requires supportive ≥ red flags. Further workup required.'};
+  return{cls:'vi',t:'Insufficient Data for Classification',d:'Parkinsonism established and no exclusions present, but insufficient criteria have been assessed. Complete all steps.'};
+}
+
+function rv(){
+  const v=verd();const x=c();
+  const rfK=['rf1','rf2','rf3','rf4','rf5','rf6','rf7','rf8','rf9','rf10'];
+  const supK=['sup1','sup2','sup3','sup4'];
+  const excK=['exc1','exc2','exc3','exc4','exc5','exc6','exc7','exc8','exc9'];
+  const rN={rf1:'Rapid gait deterioration (wheelchair <5y)',rf2:'No motor progression ≥5y',rf3:'Early severe bulbar dysfunction <5y',rf4:'Inspiratory stridor/frequent sighs',rf5:'Severe autonomic failure <5y',rf6:'Recurrent falls <3y',rf7:'Anterocollis/contractures <10y',rf8:'Absent nonmotor features ≥5y',rf9:'Unexplained pyramidal signs',rf10:'Bilateral symmetric parkinsonism'};
+  const sN={sup1:'Dramatic dopaminergic response',sup2:'Levodopa-induced dyskinesia',sup3:'Rest tremor (clinician-documented)',sup4:'Olfactory loss OR abnormal MIBG'};
+  const eN={exc1:'Cerebellar abnormalities',exc2:'Downward supranuclear gaze palsy',exc3:'bvFTD/PPA within 5y',exc4:'Lower-limb parkinsonism >3y',exc5:'Dopaminergic blocker/depletor',exc6:'No levodopa response',exc7:'Cortical sensory loss/apraxia',exc8:'Normal dopaminergic neuroimaging',exc9:'Alternative condition established'};
+
+  let h=`<div class="vban ${v.cls}"><div class="vlbl">MDS-PD Classification · Postuma et al. 2015</div><div class="vtitle">${v.t}</div><div class="vdesc">${v.d}</div></div>`;
+  h+=`<div class="sum-grid">`;
+  const sa2=supK.filter(k=>S[k]!==null);
+  if(sa2.length>0){h+=`<div class="sblock"><div class="sbtitle">✦ Supportive Criteria</div>`;sa2.forEach(k=>{const p=S[k]==='present';h+=`<div class="srow"><div class="dot ${p?'dg':'dgr'}"></div><div class="sname">${sN[k]}</div><div class="stag ${p?'tg':'tgr'}">${p?'MET':'NOT MET'}</div></div>`;});h+=`</div>`;}
+  const ra=rfK.filter(k=>S[k]!==null);
+  if(ra.length>0){h+=`<div class="sblock"><div class="sbtitle">⚑ Red Flags</div>`;ra.forEach(k=>{const p=S[k]==='present';h+=`<div class="srow"><div class="dot ${p?'dr':'dgr'}"></div><div class="sname">${rN[k]}</div><div class="stag ${p?'tr':'tgr'}">${p?'PRESENT':'ABSENT'}</div></div>`;});h+=`</div>`;}
+  h+=`</div>`;
+  const ep=excK.filter(k=>S[k]==='present');
+  if(ep.length>0){h+=`<div class="sblock" style="margin-bottom:12px;"><div class="sbtitle" style="color:var(--red);">✕ Absolute Exclusions Present</div>`;ep.forEach(k=>{h+=`<div class="srow"><div class="dot dr"></div><div class="sname">${eN[k]}</div><div class="stag tr">EXCLUSION</div></div>`;});h+=`</div>`;}
+  document.getElementById('vout').innerHTML=h;
+
+  // Doc note
+  const sp=supK.filter(k=>S[k]==='present').map(k=>'  - '+sN[k]);
+  const rp=rfK.filter(k=>S[k]==='present').map(k=>'  - '+rN[k]);
+  let note=`MOVEMENT DISORDERS CONSULTATION\nMDS-PD Criteria Assessment · Postuma RB et al. Movement Disorders 2015;30(12):1591–1601\nDate: ${new Date().toLocaleDateString()}\n\nCORE MOTOR SYNDROME\n  Bradykinesia (with decrement): ${S.brady==='yes'?'Present':'Not established'}\n  Rest tremor (4-6 Hz): ${S.tremor==='yes'?'Present':S.tremor==='no'?'Absent':'Not assessed'}\n  Rigidity (lead-pipe): ${S.rigidity==='yes'?'Present':S.rigidity==='no'?'Absent':'Not assessed'}\n  Parkinsonism established: ${x.pk?'Yes':'No'}\n\nABSOLUTE EXCLUSIONS: ${ep.length>0?ep.length+' present':'None identified'}\n${ep.map(k=>'  [EXCLUSION] '+eN[k]).join('\n')}\n\nSUPPORTIVE CRITERIA: ${x.sup}/4 met\n${sp.length>0?sp.join('\n'):'  None met'}\n\nRED FLAGS: ${x.rf}/10 present\n${rp.length>0?rp.join('\n'):'  None identified'}\n\nMDS-PD CLASSIFICATION\n${v.t}\n${v.d}\n\nRef: Postuma RB, Berg D, Stern M, et al. MDS clinical diagnostic criteria for Parkinson's disease. Movement Disorders. 2015;30(12):1591–1601. DOI: 10.1002/mds.26424`;
+  document.getElementById('dn').textContent=note;
+}
+
+function go(n){
+  document.getElementById('s'+cur).classList.remove('active');
+  document.getElementById('s'+n).classList.add('active');
+  for(let i=0;i<6;i++){const d=document.getElementById('st'+i);d.classList.remove('active','done');if(i<n)d.classList.add('done');else if(i===n)d.classList.add('active');}
+  cur=n;
+  document.getElementById('pf').style.width=((n/5)*100)+'%';
+  if(n===5)rv();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function xp(btn){
+  const d=btn.closest('.crit').querySelector('.crit-detail');if(!d)return;
+  const o=d.classList.toggle('open');
+  btn.textContent=o?'close ▴':'details ▾';
+}
+
+function tp(id){const el=document.getElementById(id);if(el)el.classList.toggle('open');}
+
+function toggleDoc(){
+  const body=document.getElementById('dn');
+  const btn=document.getElementById('copy-btn');
+  const tog=document.querySelector('.doc-tog');
+  if(!body)return;
+  const open=body.classList.toggle('open');
+  tog.textContent=open?'▲ Documentation Note':'▼ Documentation Note';
+  if(btn) btn.classList.toggle('visible',open);
+}
+
+function copyDoc(){
+  const body=document.getElementById('dn');
+  const btn=document.getElementById('copy-btn');
+  if(!body)return;
+  const text=body.textContent||body.innerText;
+  navigator.clipboard.writeText(text).then(()=>{
+    if(btn){btn.textContent='✓ Copied';btn.classList.add('copied');setTimeout(()=>{btn.textContent='⎘ Copy';btn.classList.remove('copied');},2000);}
+  }).catch(()=>{
+    // fallback for older browsers
+    const ta=document.createElement('textarea');
+    ta.value=text;ta.style.position='fixed';ta.style.opacity='0';
+    document.body.appendChild(ta);ta.select();document.execCommand('copy');
+    document.body.removeChild(ta);
+    if(btn){btn.textContent='✓ Copied';btn.classList.add('copied');setTimeout(()=>{btn.textContent='⎘ Copy';btn.classList.remove('copied');},2000);}
+  });
+}
+
+function resetAll(){
+  Object.keys(S).forEach(k=>S[k]=null);
+  document.querySelectorAll('.crit').forEach(el=>el.className='crit');
+  document.querySelectorAll('.abtn').forEach(b=>b.classList.remove('ay','an','ap','aa'));
+  document.querySelectorAll('.crit-detail').forEach(d=>d.classList.remove('open'));
+  document.querySelectorAll('.xbtn').forEach(b=>b.textContent='details ▾');
+  ['a0','a1','a2','a3'].forEach(id=>{const el=document.getElementById(id);if(el)el.classList.remove('show');});
+  const dn=document.getElementById('dn');if(dn)dn.classList.remove('open');
+  const cb=document.getElementById('copy-btn');if(cb)cb.classList.remove('visible','copied');
+  const tog=document.querySelector('.doc-tog');if(tog)tog.textContent='▼ Documentation Note';
+  go(0);
+  document.getElementById('n0').disabled=true;
+}
+
+ui();
+</script>
+</body>
+</html>

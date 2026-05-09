@@ -1,0 +1,963 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ICHD-3 Headache Diagnosis</title>
+<style>
+  :root {
+    --bg: #0f1117;
+    --surface: #1a1d27;
+    --surface2: #222636;
+    --surface3: #2a2e42;
+    --border: rgba(255,255,255,0.08);
+    --border2: rgba(255,255,255,0.14);
+    --text: #e8eaf0;
+    --text2: #9499b0;
+    --text3: #6b7091;
+    --accent: #4f7fff;
+    --accent2: #3d6bef;
+    --green: #2ecc71;
+    --green-bg: rgba(46,204,113,0.12);
+    --green-border: rgba(46,204,113,0.3);
+    --red: #e74c3c;
+    --red-bg: rgba(231,76,60,0.12);
+    --red-border: rgba(231,76,60,0.3);
+    --amber: #f39c12;
+    --amber-bg: rgba(243,156,18,0.12);
+    --amber-border: rgba(243,156,18,0.3);
+    --purple: #9b59b6;
+    --purple-bg: rgba(155,89,182,0.12);
+    --purple-border: rgba(155,89,182,0.3);
+    --teal: #1abc9c;
+    --teal-bg: rgba(26,188,156,0.1);
+    --teal-border: rgba(26,188,156,0.3);
+    --blue-bg: rgba(79,127,255,0.1);
+    --blue-border: rgba(79,127,255,0.25);
+    --radius: 10px;
+    --radius-sm: 6px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); font-family: 'Segoe UI', system-ui, sans-serif; color: var(--text); min-height: 100vh; }
+  .header { background: var(--surface); border-bottom: 1px solid var(--border2); padding: 18px 24px 14px; position: sticky; top: 0; z-index: 10; }
+  .header-top { display: flex; align-items: center; gap: 12px; margin-bottom: 4px; }
+  .header-badge { background: var(--teal-bg); border: 1px solid var(--teal-border); color: var(--teal); font-size: 11px; font-weight: 600; letter-spacing: 0.06em; padding: 3px 8px; border-radius: 20px; text-transform: uppercase; }
+  .header h1 { font-size: 18px; font-weight: 600; color: var(--text); letter-spacing: -0.01em; }
+  .header-sub { font-size: 12px; color: var(--text3); margin-top: 2px; }
+  .progress-bar-wrap { background: var(--surface2); border-bottom: 1px solid var(--border); padding: 10px 24px; display: flex; align-items: center; gap: 12px; }
+  .progress-track { flex: 1; height: 4px; background: var(--surface3); border-radius: 2px; overflow: hidden; }
+  .progress-fill { height: 100%; background: linear-gradient(90deg, var(--teal), var(--accent)); border-radius: 2px; transition: width 0.4s ease; }
+  .progress-label { font-size: 11px; color: var(--text3); white-space: nowrap; }
+  .main { padding: 20px 24px; max-width: 780px; margin: 0 auto; }
+  .step-card { background: var(--surface); border: 1px solid var(--border2); border-radius: var(--radius); padding: 20px; margin-bottom: 14px; animation: fadeIn 0.22s ease; }
+  @keyframes fadeIn { from { opacity:0; transform: translateY(5px); } to { opacity:1; transform:none; } }
+  .step-label { font-size: 10px; font-weight: 600; letter-spacing: 0.09em; color: var(--teal); text-transform: uppercase; margin-bottom: 6px; }
+  .step-q { font-size: 15px; font-weight: 500; color: var(--text); line-height: 1.5; margin-bottom: 10px; }
+  .step-note { font-size: 12px; color: var(--text2); line-height: 1.55; padding: 8px 10px; background: var(--surface2); border-radius: var(--radius-sm); border-left: 2px solid var(--accent2); margin-bottom: 10px; }
+  .step-note.warn { border-left-color: var(--amber); }
+  .step-note.danger { border-left-color: var(--red); }
+  .opts { display: flex; flex-direction: column; gap: 8px; }
+  .opt { background: var(--surface2); border: 1px solid var(--border2); border-radius: var(--radius-sm); color: var(--text); font-size: 13px; padding: 10px 14px; text-align: left; cursor: pointer; transition: all 0.13s; display: flex; align-items: center; gap: 10px; line-height: 1.4; }
+  .opt:hover { background: var(--surface3); border-color: var(--accent); }
+  .opt.sel { background: var(--blue-bg); border-color: var(--accent); }
+  .radio-dot { width: 16px; height: 16px; min-width: 16px; border-radius: 50%; border: 1px solid var(--border2); background: var(--surface); display: flex; align-items: center; justify-content: center; }
+  .opt.sel .radio-dot { background: var(--accent); border-color: var(--accent); }
+  .radio-inner { width: 6px; height: 6px; border-radius: 50%; background: white; display: none; }
+  .opt.sel .radio-inner { display: block; }
+  .check-opts { display: flex; flex-direction: column; gap: 8px; margin-bottom: 10px; }
+  .copt { background: var(--surface2); border: 1px solid var(--border2); border-radius: var(--radius-sm); color: var(--text); font-size: 13px; padding: 10px 14px; text-align: left; cursor: pointer; transition: all 0.13s; display: flex; align-items: flex-start; gap: 10px; line-height: 1.4; }
+  .copt:hover { background: var(--surface3); }
+  .copt.chk { background: var(--blue-bg); border-color: var(--accent); }
+  .cbox { width: 16px; height: 16px; min-width: 16px; border-radius: 3px; border: 1px solid var(--border2); background: var(--surface); display: flex; align-items: center; justify-content: center; margin-top: 1px; font-size: 10px; color: white; }
+  .copt.chk .cbox { background: var(--accent); border-color: var(--accent); }
+  .action-row { display: flex; gap: 10px; margin-top: 14px; flex-wrap: wrap; align-items: center; }
+  .btn-p { background: var(--accent); border: none; border-radius: var(--radius-sm); color: white; font-size: 13px; font-weight: 500; padding: 9px 18px; cursor: pointer; transition: background 0.13s; }
+  .btn-p:hover { background: var(--accent2); }
+  .btn-p:disabled { opacity: 0.3; cursor: default; }
+  .btn-s { background: transparent; border: 1px solid var(--border2); border-radius: var(--radius-sm); color: var(--text2); font-size: 13px; padding: 9px 16px; cursor: pointer; transition: all 0.13s; }
+  .btn-s:hover { color: var(--text); background: var(--surface2); }
+  .min-sel-note { font-size: 11px; color: var(--text3); margin-top: 4px; font-style: italic; }
+  /* Results */
+  .result-card { border-radius: var(--radius); padding: 22px; margin-bottom: 14px; animation: fadeIn 0.3s ease; }
+  .r-green { background: var(--green-bg); border: 1px solid var(--green-border); }
+  .r-amber { background: var(--amber-bg); border: 1px solid var(--amber-border); }
+  .r-red { background: var(--red-bg); border: 1px solid var(--red-border); }
+  .r-purple { background: var(--purple-bg); border: 1px solid var(--purple-border); }
+  .r-teal { background: var(--teal-bg); border: 1px solid var(--teal-border); }
+  .r-blue { background: var(--blue-bg); border: 1px solid var(--blue-border); }
+  .r-title { font-size: 16px; font-weight: 600; margin-bottom: 8px; display: flex; align-items: center; gap: 9px; }
+  .r-green .r-title { color: var(--green); }
+  .r-amber .r-title { color: var(--amber); }
+  .r-red .r-title { color: var(--red); }
+  .r-purple .r-title { color: var(--purple); }
+  .r-teal .r-title { color: var(--teal); }
+  .r-blue .r-title { color: var(--accent); }
+  .r-icon { width: 22px; height: 22px; min-width: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; }
+  .r-green .r-icon { background: var(--green); color: #fff; }
+  .r-amber .r-icon { background: var(--amber); color: #fff; }
+  .r-red .r-icon { background: var(--red); color: #fff; }
+  .r-purple .r-icon { background: var(--purple); color: #fff; }
+  .r-teal .r-icon { background: var(--teal); color: #fff; }
+  .r-blue .r-icon { background: var(--accent); color: #fff; }
+  .r-ichd { font-size: 11px; font-weight: 600; letter-spacing: 0.06em; opacity: 0.7; margin-bottom: 6px; }
+  .r-body { font-size: 13px; color: var(--text2); line-height: 1.65; }
+  .r-body ul { margin: 8px 0 0 16px; }
+  .r-body li { margin-bottom: 5px; }
+  .r-body strong { color: var(--text); }
+  .r-criteria { background: var(--surface); border: 1px solid var(--border2); border-radius: var(--radius); padding: 16px 18px; margin-bottom: 14px; }
+  .r-criteria-title { font-size: 11px; font-weight: 600; letter-spacing: 0.07em; color: var(--text3); text-transform: uppercase; margin-bottom: 10px; }
+  .crit-row { font-size: 13px; padding: 5px 0; border-bottom: 1px solid var(--border); display: flex; gap: 8px; align-items: flex-start; }
+  .crit-row:last-child { border-bottom: none; }
+  .crit-key { color: var(--text2); flex: 0 0 130px; font-size: 12px; }
+  .crit-val { color: var(--text); flex: 1; line-height: 1.4; }
+  /* Breadcrumbs */
+  .bread { display: flex; gap: 5px; align-items: center; flex-wrap: wrap; margin-bottom: 14px; }
+  .bc { font-size: 11px; color: var(--text3); background: var(--surface2); border: 1px solid var(--border); border-radius: 4px; padding: 2px 7px; }
+  .bc.cur { color: var(--teal); border-color: var(--teal-border); background: var(--teal-bg); }
+  .bc-sep { color: var(--text3); font-size: 11px; }
+  /* Red flags banner */
+  .red-flag-banner { background: var(--red-bg); border: 1px solid var(--red-border); border-radius: var(--radius-sm); padding: 10px 14px; margin-bottom: 14px; font-size: 12px; color: #e07070; line-height: 1.5; }
+  .red-flag-banner strong { color: var(--red); }
+  @media (max-width:520px) { .main { padding: 12px; } .header { padding: 12px; } .crit-key { flex: 0 0 100px; } }
+  .doc-note-card { background:var(--surface); border:1px solid var(--border2); border-radius:var(--radius); margin-bottom:14px; overflow:hidden; }
+  .doc-note-header { display:flex; align-items:center; justify-content:space-between; padding:10px 14px; background:var(--surface2); border-bottom:1px solid var(--border2); }
+  .doc-note-label { font-size:11px; font-weight:600; letter-spacing:.07em; color:var(--text3); text-transform:uppercase; }
+  .copy-btn { background:var(--blue-bg); border:1px solid var(--blue-border); border-radius:var(--radius-sm); color:var(--accent); font-size:12px; font-weight:600; padding:5px 12px; cursor:pointer; transition:all .15s; white-space:nowrap; }
+  .copy-btn:hover { background:var(--accent); color:#fff; border-color:var(--accent); }
+  .doc-note-body { font-family:'Courier New',Courier,monospace; font-size:11.5px; color:var(--text2); line-height:1.65; padding:14px 16px; white-space:pre-wrap; word-break:break-word; margin:0; background:transparent; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-top"><div class="header-badge">Diagnostic Tool</div></div>
+  <h1>ICHD-3 Headache Classification</h1>
+  <div class="header-sub">International Classification of Headache Disorders, 3rd Edition &nbsp;·&nbsp; Stepwise diagnosis</div>
+</div>
+<div class="progress-bar-wrap">
+  <div class="progress-track"><div class="progress-fill" id="pFill" style="width:0%"></div></div>
+  <div class="progress-label" id="pLabel">Step 1</div>
+</div>
+<div class="main" id="main"></div>
+
+<script>
+// ═══════════════════════════════════════════════
+//  STATE
+// ═══════════════════════════════════════════════
+var S = { phase: 'red_flags', answers: {}, trail: [] };
+
+function advance(to) { S.trail.push(S.phase); S.phase = to; render(); }
+function back() { if(S.trail.length){ S.phase=S.trail.pop(); render(); } }
+function restart() { S={phase:'red_flags',answers:{},trail:[]}; render(); }
+
+// ═══════════════════════════════════════════════
+//  PROGRESS
+// ═══════════════════════════════════════════════
+var PHASE_ORDER = ['red_flags','onset','pattern','duration','location','quality','intensity','assoc','autonomic','aura','freq','chronicity','moa','result'];
+function pct() {
+  var i = PHASE_ORDER.indexOf(S.phase);
+  if(i<0) return 100;
+  return Math.round((i/(PHASE_ORDER.length-1))*100);
+}
+function updateProgress() {
+  document.getElementById('pFill').style.width = pct()+'%';
+  var i = PHASE_ORDER.indexOf(S.phase);
+  document.getElementById('pLabel').textContent = i<0 ? 'Complete' : 'Step '+(i+1)+' of '+(PHASE_ORDER.length-1);
+}
+
+// ═══════════════════════════════════════════════
+//  HELPERS
+// ═══════════════════════════════════════════════
+function bread(cur) {
+  if(!S.trail.length) return '';
+  var labels={red_flags:'Red flags',onset:'Onset',pattern:'Pattern',duration:'Duration',location:'Location',quality:'Quality',intensity:'Intensity',assoc:'Associated Sx',autonomic:'Autonomic',aura:'Aura',freq:'Frequency',chronicity:'Chronicity',moa:'Medication use',result:'Result'};
+  var h='<div class="bread">';
+  S.trail.slice(-4).forEach(function(p,i,arr){
+    h+='<span class="bc">'+(labels[p]||p)+'</span><span class="bc-sep">›</span>';
+  });
+  h+='<span class="bc cur">'+(labels[cur]||cur)+'</span></div>';
+  return h;
+}
+
+function backBtn() { return S.trail.length ? '<button class="btn-s" onclick="back()">Back</button>' : ''; }
+
+// ── Radio step ──────────────────────────────────
+function radioStep(label,q,note,noteClass,key,opts,onCont) {
+  var cur=S.answers[key];
+  var h='<div class="step-card">';
+  h+='<div class="step-label">'+label+'</div>';
+  h+='<div class="step-q">'+q+'</div>';
+  if(note) h+='<div class="step-note'+(noteClass?' '+noteClass:'')+'">'+note+'</div>';
+  h+='<div class="opts" id="ropts_'+key+'">';
+  opts.forEach(function(o,i){
+    var s=cur===o.val?' sel':'';
+    h+='<button class="opt'+s+'" onclick="pickR(\''+key+'\',\''+o.val+'\','+i+')">'
+      +'<div class="radio-dot"><div class="radio-inner"></div></div>'
+      +'<span>'+o.label+'</span></button>';
+  });
+  h+='</div>';
+  h+='<div class="action-row"><button class="btn-p" id="rgo_'+key+'" onclick="radioGo(\''+key+'\')" '+(cur?'':'disabled')+'>Continue</button>'+backBtn()+'</div>';
+  h+='</div>';
+  window._rcb=window._rcb||{}; window._rcb[key]=onCont;
+  return h;
+}
+window.pickR=function(k,v,i){
+  S.answers[k]=v;
+  var c=document.getElementById('ropts_'+k);
+  if(c){c.querySelectorAll('.opt').forEach(function(b){b.classList.remove('sel')});c.querySelectorAll('.opt')[i].classList.add('sel');}
+  var b=document.getElementById('rgo_'+k);if(b)b.removeAttribute('disabled');
+};
+window.radioGo=function(k){var v=S.answers[k];if(!v)return;var cb=(window._rcb||{})[k];if(cb)cb(v);};
+
+// ── Checkbox step ──────────────────────────────
+function checkStep(label,q,note,noteClass,key,opts,minSel,contLabel,onCont) {
+  var sel=S.answers[key]||[];
+  var h='<div class="step-card">';
+  h+='<div class="step-label">'+label+'</div>';
+  h+='<div class="step-q">'+q+'</div>';
+  if(note) h+='<div class="step-note'+(noteClass?' '+noteClass:'')+'">'+note+'</div>';
+  h+='<div class="check-opts">';
+  opts.forEach(function(o){
+    var c=sel.indexOf(o.val)>=0?' chk':'';
+    h+='<button class="copt'+c+'" onclick="togC(\''+key+'\',\''+o.val+'\')">'
+      +'<div class="cbox">'+(sel.indexOf(o.val)>=0?'&#10003;':'')+'</div>'
+      +'<span>'+o.label+'</span></button>';
+  });
+  h+='</div>';
+  if(minSel) h+='<div class="min-sel-note">Select all that apply</div>';
+  h+='<div class="action-row"><button class="btn-p" onclick="checkGo(\''+key+'\')">'+( contLabel||'Continue')+'</button>'+backBtn()+'</div>';
+  h+='</div>';
+  window._ccb=window._ccb||{}; window._ccb[key]=onCont;
+  return h;
+}
+window.togC=function(k,v){
+  if(!S.answers[k])S.answers[k]=[];
+  var arr=S.answers[k],i=arr.indexOf(v);
+  if(i>=0)arr.splice(i,1);else arr.push(v);
+  render();
+};
+window.checkGo=function(k){var cb=(window._ccb||{})[k];if(cb)cb(S.answers[k]||[]);};
+
+// ═══════════════════════════════════════════════
+//  RENDER ROUTER
+// ═══════════════════════════════════════════════
+function render() {
+  updateProgress();
+  var m=document.getElementById('main');
+  switch(S.phase){
+    case 'red_flags':    m.innerHTML=bread('red_flags')+renderRedFlags(); break;
+    case 'onset':        m.innerHTML=bread('onset')+renderOnset(); break;
+    case 'pattern':      m.innerHTML=bread('pattern')+renderPattern(); break;
+    case 'duration':     m.innerHTML=bread('duration')+renderDuration(); break;
+    case 'location':     m.innerHTML=bread('location')+renderLocation(); break;
+    case 'quality':      m.innerHTML=bread('quality')+renderQuality(); break;
+    case 'intensity':    m.innerHTML=bread('intensity')+renderIntensity(); break;
+    case 'assoc':        m.innerHTML=bread('assoc')+renderAssoc(); break;
+    case 'autonomic':    m.innerHTML=bread('autonomic')+renderAutonomic(); break;
+    case 'aura':         m.innerHTML=bread('aura')+renderAura(); break;
+    case 'freq':         m.innerHTML=bread('freq')+renderFreq(); break;
+    case 'chronicity':   m.innerHTML=bread('chronicity')+renderChronicity(); break;
+    case 'moa':          m.innerHTML=bread('moa')+renderMOA(); break;
+    case 'result':       renderResult(m); break;
+    default: m.innerHTML='<p>Unknown phase</p>';
+  }
+}
+
+// ═══════════════════════════════════════════════
+//  PHASES
+// ═══════════════════════════════════════════════
+
+// ── RED FLAGS ──────────────────────────────────
+function renderRedFlags() {
+  var sel=S.answers.red_flags||[];
+  var flags=[
+    {val:'thunderclap',label:'Thunderclap onset — maximal intensity reached within 1 minute ("worst headache of my life")'},
+    {val:'progressive',label:'New progressive headache worsening over days/weeks'},
+    {val:'fever',label:'Fever, neck stiffness, rash, or meningismus'},
+    {val:'neuro',label:'New focal neurological deficit, confusion, or altered consciousness'},
+    {val:'papilledema',label:'Papilledema or signs of raised intracranial pressure'},
+    {val:'age50',label:'New headache in patient >50 years (? GCA, mass lesion)'},
+    {val:'positional',label:'Headache clearly worse lying down or with Valsalva / cough / exertion (first occurrence)'},
+    {val:'hiv',label:'Immunocompromised or known HIV/cancer'},
+    {val:'postpartum',label:'Postpartum or pregnant'},
+    {val:'none',label:'None of the above — no red flags present'}
+  ];
+  var h=checkStep('Step 1 — Safety Screen','Are any of the following RED FLAG features present?',
+    'Screen for secondary causes requiring urgent investigation before proceeding to primary headache classification.','danger',
+    'red_flags',flags,false,'Continue',
+    function(sel){
+      S.answers.red_flags=sel;
+      var dangerous=sel.filter(function(v){return v!=='none';});
+      if(dangerous.length>0) advance('result');
+      else advance('onset');
+    });
+  return h;
+}
+
+// ── ONSET ──────────────────────────────────────
+function renderOnset() {
+  return radioStep('Step 2 — Onset','How quickly did this headache pattern begin?',null,null,'onset',[
+    {val:'sudden',label:'Sudden — reached maximum intensity in seconds to minutes'},
+    {val:'subacute',label:'Subacute — developed over minutes to hours'},
+    {val:'gradual',label:'Gradual — evolved over days to weeks'},
+    {val:'chronic_new',label:'Daily and unremitting from the start (new daily persistent headache pattern)'}
+  ],function(v){
+    S.answers.onset=v;
+    if(v==='sudden') advance('result'); // → Primary thunderclap / SAH workup
+    else if(v==='chronic_new') advance('result'); // → NDPH pathway
+    else advance('pattern');
+  });
+}
+
+// ── PATTERN ────────────────────────────────────
+function renderPattern() {
+  return radioStep('Step 3 — Headache Pattern','Which best describes the overall headache pattern?',null,null,'pattern',[
+    {val:'episodic',label:'Episodic — discrete attacks with complete freedom between episodes'},
+    {val:'chronic_cont',label:'Chronic / continuous — headache present most or all days (≥15 days/month for >3 months)'},
+    {val:'cluster_pattern',label:'Episodic in severe bouts lasting weeks, separated by months of remission'}
+  ],function(v){
+    S.answers.pattern=v;
+    advance('duration');
+  });
+}
+
+// ── DURATION ───────────────────────────────────
+function renderDuration() {
+  return radioStep('Step 4 — Attack Duration','How long does each individual headache episode last (untreated or unsuccessfully treated)?',
+    'If continuous, select the option that best describes typical exacerbations.','',
+    'duration',[
+      {val:'seconds',label:'Seconds — 1–30 seconds (stabbing, jabbing)'},
+      {val:'min1_5',label:'1–5 minutes (short neuralgiform bursts)'},
+      {val:'min5_30',label:'5–30 minutes'},
+      {val:'min15_180',label:'15–180 minutes (15 min – 3 hours)'},
+      {val:'hr4_72',label:'4–72 hours'},
+      {val:'days_cont',label:'Days or continuous'}
+    ],function(v){
+      S.answers.duration=v;
+      advance('location');
+    });
+}
+
+// ── LOCATION ───────────────────────────────────
+function renderLocation() {
+  return radioStep('Step 5 — Location','Where is the headache predominantly located?',null,null,'location',[
+    {val:'unilateral_orbital',label:'Unilateral orbital / periorbital / temporal (always same side or side-locked)'},
+    {val:'unilateral_any',label:'Unilateral — any location (can switch sides between attacks)'},
+    {val:'bilateral',label:'Bilateral — both sides, band-like or diffuse'},
+    {val:'vertex_occipital',label:'Vertex, occipital, or posterior head predominant'},
+    {val:'face_jaw',label:'Facial, jaw, or lower head / neck'},
+    {val:'coin_sized',label:'Small coin-sized fixed area of scalp'}
+  ],function(v){
+    S.answers.location=v;
+    advance('quality');
+  });
+}
+
+// ── QUALITY ────────────────────────────────────
+function renderQuality() {
+  return radioStep('Step 6 — Pain Quality','What is the predominant character of the pain?',null,null,'quality',[
+    {val:'pulsating',label:'Pulsating / throbbing / pounding'},
+    {val:'pressure',label:'Pressing / tightening / squeezing (non-pulsating, band-like)'},
+    {val:'stabbing',label:'Sharp, stabbing, or electric shock-like (jabbing)'},
+    {val:'burning',label:'Burning, shooting, or lancinating along a nerve distribution'},
+    {val:'severe_unilateral',label:'Severe boring / excruciating (periorbital, "red" headache)'},
+    {val:'mixed',label:'Mixed or variable quality'}
+  ],function(v){
+    S.answers.quality=v;
+    advance('intensity');
+  });
+}
+
+// ── INTENSITY ──────────────────────────────────
+function renderIntensity() {
+  return radioStep('Step 7 — Severity','What is the typical pain severity?',
+    'Rate the untreated headache at its typical peak.','',
+    'intensity',[
+      {val:'mild',label:'Mild — noticeable but does not limit activity'},
+      {val:'moderate',label:'Moderate — limits but does not prohibit activity'},
+      {val:'severe',label:'Severe — prohibits activity, bed rest required'},
+      {val:'very_severe',label:'Very severe / excruciating — incapacitating'}
+    ],function(v){
+      S.answers.intensity=v;
+      advance('assoc');
+    });
+}
+
+// ── ASSOCIATED SX ──────────────────────────────
+function renderAssoc() {
+  var sel=S.answers.assoc||[];
+  var h=checkStep('Step 8 — Associated Symptoms','Which associated symptoms occur during headache attacks?',
+    'Select all that apply. These features are key to distinguishing migraine from tension-type and other headache types.','',
+    'assoc',[
+      {val:'nausea',label:'Nausea and/or vomiting'},
+      {val:'photo',label:'Photophobia (sensitivity to light)'},
+      {val:'phono',label:'Phonophobia (sensitivity to sound)'},
+      {val:'aggravated_activity',label:'Aggravated by or causing avoidance of routine physical activity (walking, climbing stairs)'},
+      {val:'restless',label:'Restlessness or agitation during attack (cannot lie still)'},
+      {val:'none_assoc',label:'None of the above'}
+    ],false,'Continue',
+    function(sel){
+      S.answers.assoc=sel;
+      // Route: if orbital severe + restless → autonomic screen; otherwise check for aura
+      var hasTAC = S.answers.location==='unilateral_orbital' || S.answers.quality==='severe_unilateral';
+      if(hasTAC) advance('autonomic');
+      else advance('aura');
+    });
+  return h;
+}
+
+// ── AUTONOMIC ──────────────────────────────────
+function renderAutonomic() {
+  var sel=S.answers.autonomic||[];
+  var h=checkStep('Step 9 — Autonomic Features','Are any ipsilateral autonomic features present during headache?',
+    'Cranial autonomic symptoms ipsilateral to the pain are hallmarks of the trigeminal autonomic cephalalgias (cluster headache, paroxysmal hemicrania, SUNCT/SUNA, hemicrania continua).','',
+    'autonomic',[
+      {val:'conjunctival',label:'Conjunctival injection and/or lacrimation (red eye, tearing)'},
+      {val:'nasal',label:'Nasal congestion and/or rhinorrhoea'},
+      {val:'eyelid',label:'Eyelid oedema or ptosis'},
+      {val:'forehead',label:'Forehead/facial sweating or flushing'},
+      {val:'miosis',label:'Miosis (small pupil, Horner-like)'},
+      {val:'aural',label:'Aural fullness'},
+      {val:'none_auto',label:'None of the above'}
+    ],false,'Continue',
+    function(sel){
+      S.answers.autonomic=sel;
+      advance('aura');
+    });
+  return h;
+}
+
+// ── AURA ───────────────────────────────────────
+function renderAura() {
+  return radioStep('Step 10 — Aura','Does the patient experience any aura — reversible neurological symptoms preceding or accompanying the headache?',
+    'Typical aura: visual (scintillating scotoma, fortification spectra), sensory (spreading paresthesias), or speech/language symptoms. Each lasts 5–60 min and spreads gradually over ≥5 min.','',
+    'aura',[
+      {val:'visual',label:'Yes — visual aura (scintillating scotoma, flickering, zigzag lines, visual field loss)'},
+      {val:'sensory',label:'Yes — sensory aura (spreading tingling/numbness, typically face and arm)'},
+      {val:'speech',label:'Yes — speech/language aura (aphasia or dysarthria)'},
+      {val:'motor',label:'Yes — motor weakness (hemiplegia) with aura'},
+      {val:'brainstem',label:'Yes — brainstem aura (vertigo, diplopia, tinnitus, ataxia, decreased consciousness)'},
+      {val:'retinal',label:'Yes — monocular visual symptoms (retinal migraine)'},
+      {val:'no_aura',label:'No aura'}
+    ],function(v){
+      S.answers.aura=v;
+      advance('freq');
+    });
+}
+
+// ── FREQUENCY ──────────────────────────────────
+function renderFreq() {
+  return radioStep('Step 11 — Frequency','How often do headache attacks occur?',null,null,'freq',[
+    {val:'lt1_month',label:'Less than 1 day per month on average (<12 days/year)'},
+    {val:'1_14_month',label:'1–14 days per month (on average >3 months)'},
+    {val:'ge15_month',label:'≥15 days per month (>3 months)'},
+    {val:'daily_8',label:'1 to 8 per day (very frequent, short-lasting attacks)'},
+    {val:'every_other',label:'Every other day to 8 per day during cluster bouts'}
+  ],function(v){
+    S.answers.freq=v;
+    if(v==='ge15_month') advance('chronicity');
+    else advance('moa');
+  });
+}
+
+// ── CHRONICITY ─────────────────────────────────
+function renderChronicity() {
+  return radioStep('Step 12 — High-frequency headache','The patient has headache on ≥15 days/month. Which best describes the pattern?',
+    'Chronic migraine requires ≥15 days/month for >3 months, with ≥8 days/month meeting migraine criteria. Consider medication overuse in high-frequency headache.','warn',
+    'chronicity',[
+      {val:'migraine_days',label:'On ≥8 of those days, headache has migraine features (pulsating, nausea/vomiting, photo/phonophobia, moderate-severe) or responds to triptans/ergots'},
+      {val:'tension_days',label:'Mostly tension-type features on the majority of days (bilateral, pressing, no nausea)'},
+      {val:'continuous_unilat',label:'Continuous strictly unilateral headache (same side always), with autonomic features or indomethacin response'}
+    ],function(v){
+      S.answers.chronicity=v;
+      advance('moa');
+    });
+}
+
+// ── MEDICATION OVERUSE ─────────────────────────
+function renderMOA() {
+  return radioStep('Step 13 — Medication Use','Is the patient taking acute headache medications regularly?',
+    'Medication overuse headache (MOH) requires headache on ≥15 days/month plus regular intake of acute medications: triptans/ergotamine ≥10 days/month, or simple analgesics/NSAIDs ≥15 days/month (for ≥3 months).','warn',
+    'moa',[
+      {val:'triptan_overuse',label:'Triptans or ergotamine used on ≥10 days/month for >3 months'},
+      {val:'analgesic_overuse',label:'Simple analgesics or NSAIDs used on ≥15 days/month for >3 months'},
+      {val:'opioid_overuse',label:'Opioids or combination analgesics used on ≥10 days/month for >3 months'},
+      {val:'no_overuse',label:'No overuse — acute medications used within recommended limits'}
+    ],function(v){
+      S.answers.moa=v;
+      advance('result');
+    });
+}
+
+// ═══════════════════════════════════════════════
+//  RESULT ENGINE
+// ═══════════════════════════════════════════════
+function renderResult(m) {
+  var a=S.answers;
+  var html='';
+  document.getElementById('pFill').style.width='100%';
+  document.getElementById('pLabel').textContent='Diagnosis';
+
+  // ── 1. RED FLAGS → SECONDARY WORKUP ────────
+  var rf=a.red_flags||[];
+  var danger=rf.filter(function(v){return v!=='none';});
+  if(danger.length>0){
+    html+='<div class="result-card r-red">';
+    html+='<div class="r-ichd">ICHD-3 Part 2 / Secondary Headache — Urgent Workup Required</div>';
+    html+='<div class="r-title"><div class="r-icon">!</div>Red Flag Features Present — Secondary Headache Must Be Excluded</div>';
+    html+='<div class="r-body"><strong>Identified red flags:</strong><ul>';
+    var rfLabels={thunderclap:'Thunderclap onset → SAH until proven otherwise — CT head stat, LP if CT negative',progressive:'Progressive headache → mass lesion, IIH, subdural — neuroimaging required',fever:'Fever/meningismus → meningitis/encephalitis — LP urgently if no contraindication',neuro:'New focal neurological deficit → stroke, mass, CVST — neuroimaging stat',papilledema:'Papilledema → raised ICP — neuroimaging, fundoscopy',age50:'New headache age >50 → GCA, mass — ESR/CRP, neuroimaging',positional:'Positional/Valsalva headache → Chiari, ICP changes, colloid cyst — MRI brain',hiv:'Immunocompromised → opportunistic infection, CNS lymphoma — MRI + LP',postpartum:'Postpartum → CVST, posterior reversible encephalopathy — MRI/MRV'};
+    danger.forEach(function(v){ html+='<li>'+( rfLabels[v]||v)+'</li>'; });
+    html+='</ul><br><strong>Do not apply primary headache criteria until secondary causes are excluded.</strong></div></div>';
+    html+=docNoteCard();
+    setDx('Secondary Headache — Red Flags Present','ICHD-3 Part 2','Red flag features identified. Secondary causes must be excluded before applying primary headache criteria.',[]);
+    html+=docNoteCard();
+    html+='<button class="btn-s" onclick="restart()" style="margin-top:8px">Restart Assessment</button>';
+    m.innerHTML=html; return;
+  }
+
+  // ── 2. SUDDEN ONSET → THUNDERCLAP ──────────
+  if(a.onset==='sudden'){
+    html+=resultCard('r-red','!','Primary Thunderclap Headache (ICHD-3: 4.4) — Diagnosis of Exclusion','ICHD-3 4.4',
+      'Thunderclap onset headache must first exclude subarachnoid haemorrhage (CT + LP), RCVS (MRA), CVST, and hypertensive emergency.',
+      [{k:'Onset',v:'Maximal intensity within 60 seconds'},
+       {k:'Exclusion',v:'CT head → LP (xanthochromia) → MRA/MRV if both negative'},
+       {k:'Recurrence',v:'Multiple thunderclap episodes — consider RCVS (6.7.3)'},
+       {k:'Note',v:'Primary thunderclap headache is a diagnosis only after all secondary causes excluded'}]
+    );
+    html+=docNoteCard();
+    html+='<button class="btn-s" onclick="restart()" style="margin-top:8px">Restart Assessment</button>';
+    m.innerHTML=html; return;
+  }
+
+  // ── 3. CHRONIC_NEW ONSET → NDPH ────────────
+  if(a.onset==='chronic_new'){
+    html+=resultCard('r-purple','Dx','New Daily Persistent Headache (ICHD-3: 4.10)','ICHD-3 4.10',
+      'Headache that is daily and unremitting from onset (or within 3 days of onset), in a patient who can clearly recall the onset.',
+      [{k:'Onset',v:'Daily and unremitting from day 1 (or within 3 days)'},
+       {k:'Duration',v:'Persistent for >3 months'},
+       {k:'Quality',v:'May have migraine or tension-type features — does not exclude NDPH'},
+       {k:'Exclusion',v:'Exclude secondary causes (IIH, IIH, CVST, meningitis) with MRI + LP'},
+       {k:'Prognosis',v:'Often refractory; both self-limiting and persistent subtypes exist'}]
+    );
+    html+=docNoteCard();
+    html+='<button class="btn-s" onclick="restart()" style="margin-top:8px">Restart Assessment</button>';
+    m.innerHTML=html; return;
+  }
+
+  var dur=a.duration;
+  var loc=a.location;
+  var qual=a.quality;
+  var inten=a.intensity;
+  var assoc=a.assoc||[];
+  var auto=a.autonomic||[];
+  var aur=a.aura;
+  var freq=a.freq;
+  var chron=a.chronicity;
+  var moa=a.moa;
+  var hasAuto=auto.filter(function(v){return v!=='none_auto';}).length>0;
+  var hasNausea=assoc.indexOf('nausea')>=0;
+  var hasPhoto=assoc.indexOf('photo')>=0;
+  var hasPhono=assoc.indexOf('phono')>=0;
+  var hasAggravated=assoc.indexOf('aggravated_activity')>=0;
+  var isRestless=assoc.indexOf('restless')>=0;
+  var isUnilateralOrbital=loc==='unilateral_orbital';
+
+  // ── 4. MEDICATION OVERUSE ───────────────────
+  if(moa!=='no_overuse' && (freq==='ge15_month')){
+    html+=resultCard('r-amber','MOH','Medication Overuse Headache (ICHD-3: 8.2)','ICHD-3 8.2',
+      'Headache on ≥15 days/month, developing or worsening during medication overuse, in a patient with a pre-existing primary headache. The underlying primary headache diagnosis should also be coded.',
+      [{k:'Criteria',v:'Headache ≥15 days/month + regular overuse for >3 months'},
+       {k:'Triptan/ergot',v:'Overuse = ≥10 days/month'},
+       {k:'Analgesics/NSAIDs',v:'Overuse = ≥15 days/month'},
+       {k:'Opioids/combos',v:'Overuse = ≥10 days/month'},
+       {k:'Management',v:'Medication withdrawal (may worsen initially); identify and treat underlying primary headache'},
+       {k:'Also code',v:'Underlying primary headache (migraine, TTH) should be diagnosed separately'}]
+    );
+    // Still determine underlying primary below
+    html+='<div style="font-size:12px;color:var(--text3);margin:4px 0 14px;">Underlying primary headache diagnosis also shown below:</div>';
+  }
+
+  // ── 5. VERY SHORT DURATION — NEURALGIAS / STABBING ──
+  if(dur==='seconds'){
+    if(qual==='stabbing'&&!hasAuto){
+      html+=resultCard('r-teal','Dx','Primary Stabbing Headache (ICHD-3: 4.7)','ICHD-3 4.7',
+        'Transient, strictly localized stabs of pain in the head lasting 1–10 seconds, occurring spontaneously.',
+        [{k:'Duration',v:'1–10 seconds (single stabs or series)'},
+         {k:'Location',v:'Variable, often temporal or parietal; may move between attacks'},
+         {k:'Frequency',v:'Irregular, from daily to rare'},
+         {k:'Note',v:'Exclude structural lesion if persistent at same fixed location'}]
+      );
+    } else if(qual==='burning'||loc==='face_jaw'){
+      html+=resultCard('r-amber','Dx','Trigeminal Neuralgia (ICHD-3: 13.1.1)','ICHD-3 13.1.1',
+        'Recurrent unilateral brief electric shock-like pains, abrupt in onset and termination, in the distribution of one or more divisions of the trigeminal nerve.',
+        [{k:'Duration',v:'A fraction of a second to 2 minutes'},
+         {k:'Quality',v:'Electric shock-like, shooting, stabbing, or sharp — severe intensity'},
+         {k:'Location',v:'V2 and/or V3 most common; V1 less often'},
+         {k:'Trigger',v:'Often triggered by innocuous stimuli — chewing, talking, brushing teeth'},
+         {k:'Subtypes',v:'Classical (NVC on MRI), Secondary (MS, mass), Idiopathic'},
+         {k:'Workup',v:'MRI brain/trigeminal cistern to classify; MS screen if bilateral or young'}]
+      );
+    } else {
+      html+=resultCard('r-teal','Dx','Short-Duration Primary Headache — Consider Primary Stabbing or Neuralgia','ICHD-3 4.7 / 13.x',
+        'Very brief headaches (seconds) should be classified as stabbing headache or a cranial neuralgia based on quality, location, and triggers.',
+        [{k:'Duration',v:'Seconds'},
+         {k:'Next step',v:'Assess for trigeminal distribution, triggers, and associated neurological symptoms'}]
+      );
+    }
+    html+=docNoteCard();
+    html+='<button class="btn-s" onclick="restart()" style="margin-top:8px">Restart Assessment</button>';
+    m.innerHTML=html; return;
+  }
+
+  // ── 6. TAC BRANCH ──────────────────────────
+  // Short duration + orbital + severe + autonomic → TAC family
+  if((dur==='min15_180'||dur==='min5_30'||dur==='min1_5') && isUnilateralOrbital && (inten==='severe'||inten==='very_severe')){
+    
+    // SUNCT / SUNA: 1–600 sec, conjunctival injection required
+    if(dur==='min1_5'){
+      var hasSUNCT=auto.indexOf('conjunctival')>=0;
+      if(hasSUNCT){
+        html+=resultCard('r-amber','Dx','SUNCT (ICHD-3: 3.3.1)','ICHD-3 3.3.1',
+          'Short-lasting unilateral neuralgiform headache attacks with conjunctival injection and tearing.',
+          [{k:'Duration',v:'1–600 seconds (usually 5–240 sec)'},
+           {k:'Frequency',v:'≥1/day; often multiple per hour (up to 200/day)'},
+           {k:'Location',v:'Unilateral orbital/periorbital'},
+           {k:'Key features',v:'Conjunctival injection AND lacrimation mandatory; other autonomic features may coexist'},
+           {k:'Episodic/Chronic',v:'Episodic = remissions ≥1 month; Chronic = no remission >1 month for ≥1 year'},
+           {k:'Workup',v:'MRI brain/pituitary — secondary SUNCT (e.g. posterior fossa lesion) must be excluded'}]
+        );
+      } else {
+        html+=resultCard('r-amber','Dx','SUNA (ICHD-3: 3.3.2)','ICHD-3 3.3.2',
+          'Short-lasting unilateral neuralgiform headache attacks with cranial autonomic symptoms (but not necessarily conjunctival injection AND tearing together).',
+          [{k:'Duration',v:'1–600 seconds'},
+           {k:'Autonomic',v:'One or more ipsilateral cranial autonomic features (not necessarily conj. injection + tearing together)'},
+           {k:'Workup',v:'MRI brain/pituitary to exclude secondary cause'}]
+        );
+      }
+      html+='<button class="btn-s" onclick="restart()" style="margin-top:8px">Restart Assessment</button>';
+      m.innerHTML=html; return;
+    }
+
+    // Paroxysmal hemicrania: 2–30 min, strict indomethacin response
+    if(dur==='min5_30'){
+      html+=resultCard('r-amber','Dx','Paroxysmal Hemicrania (ICHD-3: 3.2)','ICHD-3 3.2',
+        'Attacks identical to cluster headache but shorter (2–30 min) and more frequent, with an absolute response to indomethacin.',
+        [{k:'Duration',v:'2–30 minutes per attack'},
+         {k:'Frequency',v:'>5/day for more than half the time'},
+         {k:'Location',v:'Unilateral orbital, supraorbital, or temporal'},
+         {k:'Autonomic',v:'≥1 ipsilateral autonomic feature, or restlessness'},
+         {k:'Key diagnostic test',v:'Absolute response to indomethacin (≥150 mg/day) — required for diagnosis'},
+         {k:'Episodic/Chronic',v:'Episodic = remissions ≥1 month; Chronic = no remission >1 month for ≥1 year'},
+         {k:'Note',v:'Indomethacin trial is both diagnostic and therapeutic'}]
+      );
+      html+='<button class="btn-s" onclick="restart()" style="margin-top:8px">Restart Assessment</button>';
+      m.innerHTML=html; return;
+    }
+
+    // Cluster headache: 15–180 min
+    if(dur==='min15_180'){
+      var clusterPeriods=S.answers.pattern==='cluster_pattern'||freq==='every_other';
+      html+=resultCard('r-red','Dx','Cluster Headache (ICHD-3: 3.1)','ICHD-3 3.1',
+        'Severe to very severe unilateral orbital, supraorbital, and/or temporal pain with ipsilateral autonomic features or restlessness.',
+        [{k:'Duration',v:'15–180 minutes (untreated)'},
+         {k:'Frequency',v:'Every other day to 8 per day during cluster period'},
+         {k:'Autonomic',v:'≥1 ipsilateral feature (lacrimation, rhinorrhoea, ptosis, miosis, eyelid oedema, sweating) OR restlessness'},
+         {k:'Episodic',v:'≥2 cluster periods (7 days–1 year) separated by ≥3 month remissions'},
+         {k:'Chronic',v:'No remission >3 months for ≥1 year'},
+         {k:'Workup',v:'MRI brain to exclude secondary cluster (pituitary, posterior fossa lesion)'},
+         {k:'Acute Rx',v:'Oxygen 100% 12–15 L/min × 15–20 min; subcutaneous sumatriptan 6 mg'},
+         {k:'Prevention',v:'Verapamil first-line; suboccipital steroid injection for bridge therapy'}]
+      );
+      html+='<button class="btn-s" onclick="restart()" style="margin-top:8px">Restart Assessment</button>';
+      m.innerHTML=html; return;
+    }
+  }
+
+  // ── 7. HEMICRANIA CONTINUA ─────────────────
+  if(chron==='continuous_unilat'||(dur==='days_cont'&&loc==='unilateral_orbital'&&hasAuto)){
+    html+=resultCard('r-amber','Dx','Hemicrania Continua (ICHD-3: 3.4)','ICHD-3 3.4',
+      'Strictly unilateral continuous headache for >3 months with exacerbations, ipsilateral autonomic features or restlessness, and absolute indomethacin response.',
+      [{k:'Pattern',v:'Continuous, strictly unilateral; exacerbations of moderate–severe intensity'},
+       {k:'Duration',v:'>3 months'},
+       {k:'Autonomic',v:'≥1 ipsilateral autonomic feature and/or restlessness during exacerbations'},
+       {k:'Diagnostic test',v:'Absolute response to indomethacin — required for ICHD-3 diagnosis (criterion D)'},
+       {k:'Indomethacin dose',v:'Start 25 mg TID; titrate to 75–225 mg/day'},
+       {k:'Note',v:'If indomethacin partially effective, consider HC spectrum; MRI to exclude structural cause'}]
+    );
+    html+=docNoteCard();
+    html+='<button class="btn-s" onclick="restart()" style="margin-top:8px">Restart Assessment</button>';
+    m.innerHTML=html; return;
+  }
+
+  // ── 8. CHRONIC HIGH-FREQ: tension vs migraine ──
+  if(freq==='ge15_month'){
+    if(chron==='migraine_days'){
+      html+=resultCard('r-green','Dx','Chronic Migraine (ICHD-3: 1.3)','ICHD-3 1.3',
+        'Headache ≥15 days/month for >3 months, with ≥8 days/month meeting migraine criteria, in a patient with a prior history of episodic migraine.',
+        [{k:'Frequency',v:'≥15 headache days/month for >3 months'},
+         {k:'Migraine days',v:'≥8 days/month with migraine features or triptan/ergot response'},
+         {k:'Prior history',v:'Patient must have had ≥5 prior episodic migraine attacks (criteria B–D of 1.1 or 1.2)'},
+         {k:'Exclude MOH',v:'Code separately if medication overuse criteria also met (8.2)'},
+         {k:'Prevention',v:'Topiramate, valproate, amitriptyline, propranolol, or CGRP monoclonal antibodies'},
+         {k:'Note',v:'Many chronic migraine patients have coexisting MOH — both diagnoses should be coded'}]
+      );
+    } else if(chron==='tension_days'){
+      html+=resultCard('r-teal','Dx','Chronic Tension-Type Headache (ICHD-3: 2.3)','ICHD-3 2.3',
+        'Headache ≥15 days/month for >3 months, evolving from episodic TTH, with typical TTH features.',
+        [{k:'Frequency',v:'≥15 days/month, >3 months (≥180 days/year)'},
+         {k:'Duration',v:'Hours to days, or unremitting'},
+         {k:'Features',v:'≥2 of: bilateral, pressing/tightening, mild-moderate, not aggravated by activity'},
+         {k:'Must lack',v:'No moderate/severe nausea or vomiting; no more than 1 of photo/phono/mild nausea'},
+         {k:'Note',v:'Pericranial tenderness is common — subclassify accordingly'}]
+      );
+    }
+    html+=docNoteCard();
+    html+='<button class="btn-s" onclick="restart()" style="margin-top:8px">Restart Assessment</button>';
+    m.innerHTML=html; return;
+  }
+
+  // ── 9. MIGRAINE WITH AURA ──────────────────
+  if(aur&&aur!=='no_aura'){
+    var aurType='';
+    var aurLabel='';
+    if(aur==='motor'){ aurType='1.2.3'; aurLabel='Hemiplegic Migraine'; }
+    else if(aur==='brainstem'){ aurType='1.2.2'; aurLabel='Migraine with Brainstem Aura'; }
+    else if(aur==='retinal'){ aurType='1.2.4'; aurLabel='Retinal Migraine'; }
+    else { aurType='1.2.1'; aurLabel='Migraine with Typical Aura'; }
+
+    html+=resultCard('r-green','Dx',aurLabel+' (ICHD-3: '+aurType+')','ICHD-3 '+aurType,
+      'Migraine with aura requires ≥2 attacks with fully reversible aura symptoms meeting the timing and spread characteristics, with headache accompanying or following within 60 minutes.',
+      [{k:'Aura type',v: aur==='motor'?'Motor weakness (fully reversible) plus visual/sensory/speech':
+                         aur==='brainstem'?'≥2 brainstem symptoms (vertigo, diplopia, dysarthria, ataxia, tinnitus, ↓LOC — no motor/retinal)':
+                         aur==='retinal'?'Monocular visual symptoms (positive or negative) — workup to exclude retinal artery pathology':
+                         'Visual and/or sensory and/or speech/language symptoms (no motor or brainstem)'},
+       {k:'Aura duration',v:'5–60 minutes per symptom; spreads gradually over ≥5 min'},
+       {k:'Headache',v:'Accompanies or follows aura within 60 minutes (or aura without headache in 1.2.1.2)'},
+       {k:'Frequency',v:'≥2 attacks required for diagnosis'},
+       {k:'Workup note',v: aur==='motor'?'Hemiplegic migraine: MRI + genetic testing (CACNA1A, ATP1A2, SCN1A) if familial':
+                           aur==='brainstem'?'MRI posterior fossa to exclude structural cause':
+                           aur==='retinal'?'Ophthalmology referral; FFA, OCT; exclude retinal artery occlusion':
+                           'MRI if atypical features; no routine imaging required for typical visual/sensory aura'}]
+    );
+    html+=docNoteCard();
+    html+='<button class="btn-s" onclick="restart()" style="margin-top:8px">Restart Assessment</button>';
+    m.innerHTML=html; return;
+  }
+
+  // ── 10. MIGRAINE WITHOUT AURA ─────────────
+  // Criteria: ≥5 attacks, 4–72h, ≥2 of [unilateral, pulsating, mod-severe, aggravated], ≥1 of [nausea/vomit, photo+phono]
+  var migraineCharCount=0;
+  if(loc==='unilateral_any'||loc==='unilateral_orbital') migraineCharCount++;
+  if(qual==='pulsating') migraineCharCount++;
+  if(inten==='moderate'||inten==='severe'||inten==='very_severe') migraineCharCount++;
+  if(hasAggravated) migraineCharCount++;
+
+  var migraineAssocOk=(hasNausea)||(hasPhoto&&hasPhono);
+  var migraineDurOk=(dur==='hr4_72');
+
+  if(migraineCharCount>=2 && migraineAssocOk && migraineDurOk){
+    var freqLabel='';
+    if(freq==='lt1_month') freqLabel='Infrequent (<12 days/year)';
+    else if(freq==='1_14_month') freqLabel='Episodic (1–14 days/month)';
+    else freqLabel='High frequency';
+    html+=resultCard('r-green','Dx','Migraine without Aura (ICHD-3: 1.1)','ICHD-3 1.1',
+      'Recurrent disabling headache disorder with at least 2 of 4 characteristic features and associated nausea/vomiting or photo+phonophobia.',
+      [{k:'Frequency required',v:'≥5 lifetime attacks meeting criteria'},
+       {k:'Duration',v:'4–72 hours (untreated or unsuccessfully treated)'},
+       {k:'Characteristics met',v:migraineCharCount+'/4 — '+[
+           (loc==='unilateral_any'||loc==='unilateral_orbital')?'unilateral':'',
+           qual==='pulsating'?'pulsating':'',
+           (inten==='moderate'||inten==='severe'||inten==='very_severe')?'mod–severe':'',
+           hasAggravated?'aggravated by activity':''
+         ].filter(Boolean).join(', ')},
+       {k:'Associated Sx',v:hasNausea?'Nausea/vomiting':'Photophobia + Phonophobia'},
+       {k:'Current frequency',v:freqLabel},
+       {k:'Acute Rx',v:'NSAIDs, triptans (5-HT1B/1D agonists), CGRP receptor antagonists (gepants), ditans'},
+       {k:'Prevention',v:'Consider if ≥4 disabling headache days/month: topiramate, valproate, propranolol, amitriptyline, CGRP mAbs'}]
+    );
+    html+=docNoteCard();
+    html+='<button class="btn-s" onclick="restart()" style="margin-top:8px">Restart Assessment</button>';
+    m.innerHTML=html; return;
+  }
+
+  // ── 11. TENSION-TYPE HEADACHE ─────────────
+  // ≥2 of: bilateral, pressing, mild-mod, not aggravated; no nausea/vomit; ≤1 of photo/phono
+  var tthCount=0;
+  if(loc==='bilateral') tthCount++;
+  if(qual==='pressure') tthCount++;
+  if(inten==='mild'||inten==='moderate') tthCount++;
+  if(!hasAggravated) tthCount++;
+  var tthAssocOk=!hasNausea&&!(hasPhoto&&hasPhono);
+
+  if(tthCount>=2&&tthAssocOk){
+    var tthFreqLabel='',tthCode='';
+    if(freq==='lt1_month'){ tthFreqLabel='Infrequent episodic'; tthCode='2.1'; }
+    else if(freq==='1_14_month'){ tthFreqLabel='Frequent episodic'; tthCode='2.2'; }
+    else { tthFreqLabel='Chronic'; tthCode='2.3'; }
+    html+=resultCard('r-teal','Dx',tthFreqLabel+' Tension-Type Headache (ICHD-3: '+tthCode+')','ICHD-3 '+tthCode,
+      'Bilateral, pressing or tightening headache of mild to moderate intensity, not aggravated by activity, without nausea/vomiting and with no more than one of photophobia or phonophobia.',
+      [{k:'Frequency',v: freq==='lt1_month'?'<1 day/month (<12 days/year)': freq==='1_14_month'?'1–14 days/month for >3 months':'≥15 days/month for >3 months'},
+       {k:'Duration',v: tthCode==='2.3'?'Hours to days or unremitting':'30 min – 7 days'},
+       {k:'Features met',v:tthCount+'/4 — '+[loc==='bilateral'?'bilateral':'',qual==='pressure'?'pressing/tightening':'',(inten==='mild'||inten==='moderate')?'mild–moderate':'',!hasAggravated?'not aggravated':''].filter(Boolean).join(', ')},
+       {k:'Must lack',v:'No nausea/vomiting; ≤1 of photophobia or phonophobia'},
+       {k:'Subtype',v:'With or without pericranial tenderness (EMG/palpation)'},
+       {k:'Rx',v: tthCode==='2.3'?'Amitriptyline (best evidence for prevention); NSAIDs for acute':'Simple analgesics (aspirin, paracetamol, NSAIDs) — limit to avoid MOH'}]
+    );
+    html+=docNoteCard();
+    html+='<button class="btn-s" onclick="restart()" style="margin-top:8px">Restart Assessment</button>';
+    m.innerHTML=html; return;
+  }
+
+  // ── 12. HYPNIC HEADACHE ───────────────────
+  if(S.answers.pattern==='episodic' && dur==='hr4_72' && !hasNausea && !hasAuto){
+    // Can't determine without asking sleep question, but flag if appropriate
+  }
+
+  // ── 13. PROBABLE / UNCLASSIFIED ───────────
+  html+=resultCard('r-amber','?','Probable or Unclassified Headache','ICHD-3 1.5 / 2.4 / 14',
+    'The features entered do not clearly fulfill criteria for a single primary headache diagnosis. Consider probable migraine (1.5) or probable TTH (2.4) if one criterion is missing, or refer for specialist headache assessment.',
+    [{k:'Migraine criteria met',v:migraineCharCount+'/4 features, duration: '+(migraineDurOk?'✓':'✗')+', associated Sx: '+(migraineAssocOk?'✓':'✗')},
+     {k:'TTH criteria met',v:tthCount+'/4 features, assoc criteria: '+(tthAssocOk?'✓':'✗')},
+     {k:'Next steps',v:'Complete headache diary (frequency, duration, features, triggers, medication use); specialist assessment'},
+     {k:'Consider',v:'Secondary headache excluded? Cervicogenic (11.2.1), sleep apnoea (10.1.4), IIH (7.1.1), idiopathic facial pain (13.12)'}]
+  );
+  html+=docNoteCard();
+  html+='<button class="btn-s" onclick="restart()" style="margin-top:8px">Restart Assessment</button>';
+  m.innerHTML=html;
+}
+
+// ── Result card builder ────────────────────────
+function resultCard(cls,icon,title,ichd,summary,criteria){
+  // Store for documentation note
+  setDx(title,ichd,summary,criteria);
+  var h='<div class="result-card '+cls+'">';
+  h+='<div class="r-ichd">'+ichd+'</div>';
+  h+='<div class="r-title"><div class="r-icon">'+icon+'</div>'+title+'</div>';
+  h+='<div class="r-body">'+summary+'</div></div>';
+  if(criteria&&criteria.length){
+    h+='<div class="r-criteria"><div class="r-criteria-title">Diagnostic Criteria Summary</div>';
+    criteria.forEach(function(c){
+      h+='<div class="crit-row"><div class="crit-key">'+c.k+'</div><div class="crit-val">'+c.v+'</div></div>';
+    });
+    h+='</div>';
+  }
+  return h;
+}
+
+window.back=back;
+window.restart=restart;
+
+// ── Documentation note ─────────────────────────
+// Store current diagnosis for note generation
+var _currentDx = { title:'', ichd:'', summary:'', criteria:[] };
+
+function setDx(title,ichd,summary,criteria){
+  _currentDx = { title:title, ichd:ichd, summary:summary, criteria:criteria||[] };
+}
+
+function buildDocNote(){
+  var a=S.answers;
+  var today=new Date();
+  var ds=today.toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+  var lines=[];
+  lines.push('HEADACHE CONSULTATION — ICHD-3 CLASSIFICATION');
+  lines.push('Date: '+ds);
+  lines.push('Reference: International Classification of Headache Disorders, 3rd Edition (ICHD-3)');
+  lines.push('');
+  lines.push('DIAGNOSIS');
+  lines.push(_currentDx.title);
+  lines.push('ICHD-3 Code: '+_currentDx.ichd);
+  lines.push('');
+  lines.push('CLINICAL SUMMARY');
+  lines.push(_currentDx.summary);
+  lines.push('');
+  lines.push('CLINICAL FEATURES DOCUMENTED');
+  // Onset
+  var onsetMap={sudden:'Sudden (thunderclap — maximal within 60 seconds)',subacute:'Subacute (minutes to hours)',gradual:'Gradual (days to weeks)',chronic_new:'Daily and unremitting from onset (NDPH pattern)'};
+  if(a.onset) lines.push('  Onset: '+(onsetMap[a.onset]||a.onset));
+  // Pattern
+  var patMap={episodic:'Episodic (discrete attacks, pain-free between episodes)',chronic_cont:'Chronic/continuous (>=15 days/month)',cluster_pattern:'Cluster-period pattern (bouts separated by remissions)'};
+  if(a.pattern) lines.push('  Pattern: '+(patMap[a.pattern]||a.pattern));
+  // Duration
+  var durMap={seconds:'Seconds (1-30 seconds per attack)',min1_5:'1-5 minutes per attack',min5_30:'5-30 minutes per attack',min15_180:'15 minutes - 3 hours per attack',hr4_72:'4-72 hours per attack',days_cont:'Days or continuous'};
+  if(a.duration) lines.push('  Attack duration: '+(durMap[a.duration]||a.duration));
+  // Location
+  var locMap={unilateral_orbital:'Unilateral orbital/periorbital/temporal (side-locked)',unilateral_any:'Unilateral (may switch sides between attacks)',bilateral:'Bilateral (band-like or diffuse)',vertex_occipital:'Vertex, occipital, or posterior cranial',face_jaw:'Facial, jaw, lower head, or neck',coin_sized:'Coin-sized fixed scalp area'};
+  if(a.location) lines.push('  Location: '+(locMap[a.location]||a.location));
+  // Quality
+  var qualMap={pulsating:'Pulsating/throbbing',pressure:'Pressing/tightening (non-pulsating)',stabbing:'Sharp/stabbing/electric shock-like',burning:'Burning/lancinating',severe_boring:'Severe boring/excruciating (periorbital)',mixed:'Mixed or variable'};
+  if(a.quality) lines.push('  Quality: '+(qualMap[a.quality]||a.quality));
+  // Intensity
+  var intMap={mild:'Mild (does not limit activity)',moderate:'Moderate (limits but does not prohibit activity)',severe:'Severe (prohibits activity)',very_severe:'Very severe/excruciating (incapacitating)'};
+  if(a.intensity) lines.push('  Severity: '+(intMap[a.intensity]||a.intensity));
+  // Associated symptoms
+  var assoc=a.assoc||[];
+  if(assoc.length>0&&assoc.indexOf('none')<0){
+    var assocLabels={nausea:'Nausea/vomiting',photo:'Photophobia',phono:'Phonophobia',aggravated:'Aggravated by routine physical activity',restless:'Restlessness/agitation during attack'};
+    var assocStr=assoc.filter(function(v){return v!=='none';}).map(function(v){return assocLabels[v]||v;}).join(', ');
+    lines.push('  Associated symptoms: '+assocStr);
+  }
+  // Autonomic
+  var auto=a.autonomic||[];
+  if(auto.length>0&&auto.indexOf('none')<0){
+    var autoLabels={conjunctival:'Conjunctival injection/lacrimation',nasal:'Nasal congestion/rhinorrhoea',eyelid:'Eyelid oedema/ptosis',forehead:'Forehead/facial sweating',miosis:'Miosis (Horner-like)',aural:'Aural fullness'};
+    var autoStr=auto.filter(function(v){return v!=='none';}).map(function(v){return autoLabels[v]||v;}).join(', ');
+    lines.push('  Ipsilateral autonomic features: '+autoStr);
+  }
+  // Aura
+  var aurMap={visual:'Visual aura (scintillating scotoma/fortification spectra/visual field defect)',sensory:'Sensory aura (spreading paresthesias/numbness)',speech:'Speech/language aura (aphasia/dysarthria)',motor:'Motor aura (hemiplegic — fully reversible)',brainstem:'Brainstem aura (vertigo, diplopia, dysarthria, ataxia)',retinal:'Retinal/monocular visual symptoms',no:'No aura'};
+  if(a.aura) lines.push('  Aura: '+(aurMap[a.aura]||a.aura));
+  // Frequency
+  var freqMap={lt1:'<1 day/month (<12 days/year)',1_14:'1-14 days/month',ge15:'>=15 days/month',daily8:'1-8 attacks/day',cluster_freq:'Every other day to 8/day during cluster periods'};
+  if(a.freq) lines.push('  Attack frequency: '+(freqMap[a.freq]||a.freq));
+  // MOA
+  var moaMap={triptan:'Triptan/ergotamine overuse (>=10 days/month for >3 months)',analgesic:'Analgesic/NSAID overuse (>=15 days/month for >3 months)',opioid:'Opioid/combination overuse (>=10 days/month for >3 months)',no:'No medication overuse'};
+  if(a.moa) lines.push('  Acute medication use: '+(moaMap[a.moa]||a.moa));
+  lines.push('');
+  // ICHD-3 criteria
+  if(_currentDx.criteria&&_currentDx.criteria.length){
+    lines.push('ICHD-3 DIAGNOSTIC CRITERIA MET');
+    _currentDx.criteria.forEach(function(c){ lines.push('  '+c.k+': '+c.v); });
+    lines.push('');
+  }
+  lines.push('CLASSIFICATION BASIS');
+  lines.push('Diagnosis assigned per ICHD-3 criteria using structured stepwise evaluation.');
+  lines.push('Ref: Headache Classification Committee of the International Headache Society (IHS). The International Classification of Headache Disorders, 3rd edition. Cephalalgia. 2018;38(1):1-211.');
+  return lines.join('\n');
+}
+
+function docNoteCard(){
+  return '<div class="doc-note-card" id="docNoteCard">'
+    +'<div class="doc-note-header">'
+    +'<span class="doc-note-label">&#128203; Clinical Documentation Note</span>'
+    +'<button class="copy-btn" onclick="copyDocNote()" id="copyBtn">&#128203; Copy to Clipboard</button>'
+    +'</div>'
+    +'<pre class="doc-note-body" id="docNoteBody">'+buildDocNote()+'</pre>'
+    +'</div>';
+}
+
+window.copyDocNote=function(){
+  var txt=document.getElementById('docNoteBody').textContent;
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(txt).then(function(){
+      var b=document.getElementById('copyBtn');
+      var orig=b.innerHTML; b.innerHTML='&#10003; Copied!'; b.style.background='var(--green)';
+      setTimeout(function(){b.innerHTML=orig;b.style.background='';},2000);
+    });
+  } else {
+    var ta=document.createElement('textarea');
+    ta.value=txt; ta.style.position='fixed'; ta.style.opacity='0';
+    document.body.appendChild(ta); ta.select();
+    try{document.execCommand('copy');}catch(e){}
+    document.body.removeChild(ta);
+    var b=document.getElementById('copyBtn');
+    var orig=b.innerHTML; b.innerHTML='&#10003; Copied!'; b.style.background='var(--green)';
+    setTimeout(function(){b.innerHTML=orig;b.style.background='';},2000);
+  }
+};
+
+render();
+</script>
+</body>
+</html>

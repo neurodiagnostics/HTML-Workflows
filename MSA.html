@@ -1,0 +1,986 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MDS-MSA Criteria · Diagnostic Navigator</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+  --bg:        #0d1117;
+  --card:      #161b22;
+  --card2:     #1c2330;
+  --border:    #3a4556;
+  --border2:   #4a5f7a;
+  --green:     #3fb950;
+  --green-bg:  rgba(63,185,80,0.10);
+  --green-bd:  rgba(63,185,80,0.35);
+  --red:       #f85149;
+  --red-bg:    rgba(248,81,73,0.10);
+  --red-bd:    rgba(248,81,73,0.35);
+  --amber:     #e3b341;
+  --amber-bg:  rgba(227,179,65,0.10);
+  --amber-bd:  rgba(227,179,65,0.35);
+  --blue:      #58a6ff;
+  --blue-bg:   rgba(88,166,255,0.10);
+  --blue-bd:   rgba(88,166,255,0.35);
+  --cyan:      #39c5cf;
+  --cyan-bg:   rgba(57,197,207,0.10);
+  --cyan-bd:   rgba(57,197,207,0.35);
+  --text:      #e6edf3;
+  --text2:     #aab4c0;
+  --text3:     #6e7f94;
+  --sans:  'Inter', system-ui, sans-serif;
+  --mono:  'IBM Plex Mono', monospace;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg); color: var(--text); font-family: var(--sans); font-size: 14px; line-height: 1.5; min-height: 100vh; }
+.app { max-width: 960px; margin: 0 auto; padding: 0 20px 80px; }
+
+/* HEADER */
+header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+.h-title { font-size: 19px; font-weight: 700; }
+.h-title span { color: var(--cyan); }
+.h-sub { font-family: var(--mono); font-size: 10px; color: var(--text3); margin-top: 3px; line-height: 1.5; }
+.reset-btn { background: var(--card2); border: 1px solid var(--border); color: var(--text2); font-family: var(--mono); font-size: 11px; padding: 6px 14px; cursor: pointer; border-radius: 4px; transition: all 0.15s; white-space: nowrap; }
+.reset-btn:hover { border-color: var(--cyan); color: var(--cyan); }
+
+/* PROGRESS */
+.prog-track { height: 3px; background: var(--border); margin-bottom: 20px; border-radius: 2px; }
+.prog-fill { height: 100%; background: linear-gradient(90deg, var(--cyan), #80e8f0); border-radius: 2px; transition: width 0.4s ease; box-shadow: 0 0 6px rgba(57,197,207,0.4); }
+
+/* STEP TABS */
+.steps { display: flex; border-bottom: 1px solid var(--border); margin-bottom: 20px; overflow-x: auto; }
+.stab { flex: 1; min-width: 68px; padding: 7px 4px 9px; text-align: center; font-family: var(--mono); font-size: 9px; color: var(--text3); border-bottom: 2px solid transparent; margin-bottom: -1px; transition: all 0.2s; line-height: 1.3; }
+.stab .sn { display: block; font-size: 13px; font-weight: 600; margin-bottom: 1px; }
+.stab.active { color: var(--cyan); border-bottom-color: var(--cyan); }
+.stab.done   { color: var(--green); border-bottom-color: var(--green); }
+
+/* SUBTYPE SELECTOR */
+.subtype-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 0; }
+@media (max-width: 540px) { .subtype-row { grid-template-columns: 1fr; } }
+.subtype-btn { padding: 14px; border: 2px solid var(--border); border-radius: 7px; background: var(--card2); cursor: pointer; transition: all 0.2s; text-align: left; }
+.subtype-btn:hover { border-color: var(--border2); }
+.subtype-btn.sel-p { border-color: var(--cyan-bd); background: var(--cyan-bg); }
+.subtype-btn.sel-c { border-color: var(--amber-bd); background: var(--amber-bg); }
+.sb-label { font-family: var(--mono); font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text3); margin-bottom: 3px; }
+.sb-title { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 3px; }
+.sb-desc { font-size: 11px; color: var(--text2); line-height: 1.45; }
+.subtype-btn.sel-p .sb-title { color: var(--cyan); }
+.subtype-btn.sel-c .sb-title { color: var(--amber); }
+
+/* CARD */
+.card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 22px; margin-bottom: 12px; }
+.ctitle { font-size: 12px; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; margin-bottom: 3px; }
+.csub { font-size: 12px; color: var(--text2); margin-bottom: 16px; line-height: 1.5; }
+
+/* SECTION LABEL */
+.slabel { display: flex; align-items: center; gap: 8px; font-family: var(--mono); font-size: 10px; font-weight: 500; color: var(--text2); letter-spacing: 0.07em; text-transform: uppercase; margin-bottom: 9px; padding-bottom: 6px; border-bottom: 1px solid var(--border); }
+.pill { font-size: 9px; padding: 1px 7px; border-radius: 20px; border: 1px solid; margin-left: auto; }
+.pill-r { border-color: var(--red);   color: var(--red);   background: var(--red-bg); }
+.pill-a { border-color: var(--amber); color: var(--amber); background: var(--amber-bg); }
+.pill-c { border-color: var(--cyan);  color: var(--cyan);  background: var(--cyan-bg); }
+.pill-g { border-color: var(--green); color: var(--green); background: var(--green-bg); }
+
+/* CRITERION ROW */
+.crit { border: 1px solid var(--border); border-radius: 6px; margin-bottom: 5px; overflow: hidden; transition: border-color 0.15s, background 0.15s; }
+.crit.c-yes  { border-color: var(--green-bd); background: var(--green-bg); }
+.crit.c-no   { border-color: var(--red-bd);   background: var(--red-bg); }
+.crit.c-pres { border-color: var(--cyan-bd);  background: var(--cyan-bg); }
+.crit.c-abs  { border-color: var(--border2);  background: var(--card2); }
+.crit.c-part { border-color: var(--amber-bd); background: var(--amber-bg); }
+
+.crit-main { display: flex; align-items: center; gap: 10px; padding: 10px 13px; }
+.crit-name { flex: 1; font-size: 13px; font-weight: 500; color: var(--text); line-height: 1.3; }
+.xbtn { background: none; border: 1px solid var(--border); color: var(--text3); font-size: 11px; cursor: pointer; padding: 2px 8px; font-family: var(--mono); white-space: nowrap; transition: all 0.15s; flex-shrink: 0; border-radius: 3px; }
+.xbtn:hover { color: var(--blue); border-color: var(--blue); }
+
+.crit-detail { display: none; padding: 10px 13px 12px; font-size: 12px; color: var(--text); line-height: 1.65; border-top: 1px solid var(--border); }
+.crit-detail.open { display: block; }
+.cnote { margin-top: 8px; padding: 8px 11px; background: var(--card2); border-left: 3px solid var(--border2); font-family: var(--mono); font-size: 10px; color: var(--text2); line-height: 1.75; border-radius: 0 3px 3px 0; }
+.cnote strong { color: var(--text); }
+
+/* BUTTON ROW */
+.brow { display: flex; border-top: 1px solid var(--border); }
+.abtn { flex: 1; padding: 8px 6px; background: none; border: none; border-right: 1px solid var(--border); color: var(--text2); font-family: var(--mono); font-size: 11px; cursor: pointer; transition: all 0.12s; text-transform: uppercase; letter-spacing: 0.04em; font-weight: 500; }
+.abtn:last-child { border-right: none; }
+.abtn:hover { background: var(--card2); color: var(--text); }
+.abtn.ay  { background: var(--green-bg); color: var(--green); font-weight: 700; }
+.abtn.an  { background: var(--red-bg);   color: var(--red);   font-weight: 700; }
+.abtn.ac  { background: var(--cyan-bg);  color: var(--cyan);  font-weight: 700; }
+.abtn.aa  { background: var(--card2);    color: var(--text2); font-weight: 700; }
+.abtn.aw  { background: var(--amber-bg); color: var(--amber); font-weight: 700; }
+
+/* TWO-COL */
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; }
+@media (max-width: 600px) { .two-col { grid-template-columns: 1fr; } }
+
+/* ALERT */
+.alrt { padding: 9px 13px; border-radius: 5px; font-size: 12px; line-height: 1.55; margin-top: 12px; border-left: 3px solid; display: none; }
+.alrt.show { display: block; }
+.aok   { border-color: var(--green); background: var(--green-bg); color: #7ee787; }
+.awn   { border-color: var(--amber); background: var(--amber-bg); color: var(--amber); }
+.aerr  { border-color: var(--red);   background: var(--red-bg);   color: #ff7b72; }
+.ainf  { border-color: var(--blue);  background: var(--blue-bg);  color: var(--blue); }
+.acyan { border-color: var(--cyan);  background: var(--cyan-bg);  color: var(--cyan); }
+
+/* LOGIC BOX */
+.lbox { background: var(--card2); border: 1px solid var(--border); border-radius: 5px; padding: 12px 15px; font-size: 12px; color: var(--text2); line-height: 1.75; margin-bottom: 14px; }
+.lbox strong { color: var(--text); }
+.lc { color: var(--cyan);  font-weight: 600; }
+.la { color: var(--amber); font-weight: 600; }
+.lg { color: var(--green); font-weight: 600; }
+.lr { color: var(--red);   font-weight: 600; }
+.lb { color: var(--blue);  font-weight: 600; }
+
+/* TALLY */
+.tally { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+.chip { display: flex; align-items: center; gap: 5px; padding: 5px 11px; border-radius: 20px; font-family: var(--mono); font-size: 11px; border: 1px solid var(--border); background: var(--card2); color: var(--text2); }
+.chip .n { font-size: 14px; font-weight: 700; }
+.cc { border-color: var(--cyan-bd);  background: var(--cyan-bg);  color: var(--cyan); }
+.cg { border-color: var(--green-bd); background: var(--green-bg); color: var(--green); }
+.cr { border-color: var(--red-bd);   background: var(--red-bg);   color: var(--red); }
+.ca { border-color: var(--amber-bd); background: var(--amber-bg); color: var(--amber); }
+
+/* NAV */
+.nav-row { display: flex; justify-content: space-between; align-items: center; margin-top: 20px; gap: 10px; }
+.nbtn { padding: 9px 22px; border-radius: 5px; font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; border: 1px solid; cursor: pointer; font-weight: 500; transition: all 0.15s; }
+.np { background: var(--cyan); border-color: var(--cyan); color: #0d1117; font-weight: 700; }
+.np:hover { background: #80e8f0; border-color: #80e8f0; }
+.np:disabled { opacity: 0.3; cursor: not-allowed; }
+.ns { background: transparent; border-color: var(--border2); color: var(--text2); }
+.ns:hover { border-color: var(--text); color: var(--text); }
+
+/* SCREEN */
+.screen { display: none; }
+.screen.active { display: block; animation: fu 0.25s ease; }
+@keyframes fu { from { opacity:0; transform:translateY(5px); } to { opacity:1; transform:translateY(0); } }
+
+/* VERDICT */
+.vban { border-radius: 8px; padding: 22px 26px; margin-bottom: 16px; border: 2px solid; }
+.vban-head { text-align: center; margin-bottom: 12px; }
+.vest  { border-color: var(--green); background: var(--green-bg); }
+.vprob { border-color: var(--cyan);  background: var(--cyan-bg); }
+.vprod { border-color: var(--amber); background: var(--amber-bg); }
+.vno   { border-color: var(--red);   background: var(--red-bg); }
+.vlbl { font-family: var(--mono); font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase; opacity: 0.6; margin-bottom: 5px; }
+.vtitle { font-size: 22px; font-weight: 700; margin-bottom: 6px; letter-spacing: -0.01em; }
+.vest  .vtitle { color: var(--green); }
+.vprob .vtitle { color: var(--cyan); }
+.vprod .vtitle { color: var(--amber); }
+.vno   .vtitle { color: var(--red); }
+.vphen { font-family: var(--mono); font-size: 11px; padding: 2px 10px; border-radius: 20px; border: 1px solid; display: inline-block; margin-bottom: 7px; }
+.vdesc { font-size: 12px; color: var(--text2); line-height: 1.7; max-width: 600px; margin: 0 auto; }
+
+/* SUMMARY */
+.sum-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+@media (max-width: 580px) { .sum-grid { grid-template-columns: 1fr; } }
+.sblock { background: var(--card); border: 1px solid var(--border); border-radius: 6px; overflow: hidden; }
+.sbtitle { font-family: var(--mono); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; padding: 7px 11px; border-bottom: 1px solid var(--border); color: var(--text2); background: var(--card2); }
+.srow { display: flex; align-items: flex-start; gap: 8px; padding: 6px 11px; border-bottom: 1px solid var(--border); font-size: 12px; }
+.srow:last-child { border-bottom: none; }
+.dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; margin-top: 4px; }
+.dg  { background: var(--green); } .dr  { background: var(--red); }
+.dc  { background: var(--cyan); }  .da  { background: var(--amber); } .dgr { background: var(--text3); }
+.sname { flex: 1; color: var(--text); line-height: 1.4; }
+.stag { font-family: var(--mono); font-size: 9px; padding: 1px 7px; border-radius: 10px; border: 1px solid; white-space: nowrap; }
+.tg { border-color: var(--green-bd); color: var(--green); }
+.tr { border-color: var(--red-bd);   color: var(--red); }
+.tc { border-color: var(--cyan-bd);  color: var(--cyan); }
+.ta { border-color: var(--amber-bd); color: var(--amber); }
+.tgr{ border-color: var(--border2);  color: var(--text3); }
+
+/* DOC NOTE */
+.doc-header { display: flex; align-items: center; gap: 8px; margin-bottom: 5px; }
+.doc-tog { flex: 1; text-align: left; background: var(--card2); border: 1px solid var(--border2); border-radius: 5px; color: var(--text2); font-family: var(--mono); font-size: 11px; padding: 8px 13px; cursor: pointer; transition: all 0.15s; letter-spacing: 0.04em; }
+.doc-tog:hover { border-color: var(--cyan); color: var(--cyan); }
+.copy-btn { background: var(--card2); border: 1px solid var(--border2); border-radius: 5px; color: var(--text2); font-family: var(--mono); font-size: 11px; padding: 8px 14px; cursor: pointer; white-space: nowrap; transition: all 0.15s; display: none; }
+.copy-btn.visible { display: block; }
+.copy-btn:hover { border-color: var(--green); color: var(--green); }
+.copy-btn.copied { border-color: var(--green); color: var(--green); background: var(--green-bg); }
+.doc-body { display: none; background: var(--card2); border: 1px solid var(--border2); border-radius: 5px; padding: 13px 15px; font-family: var(--mono); font-size: 11px; color: var(--text2); line-height: 1.85; white-space: pre-wrap; margin-bottom: 12px; }
+.doc-body.open { display: block; }
+</style>
+</head>
+<body>
+<div class="app">
+
+<header>
+  <div>
+    <div class="h-title">MDS-MSA <span>Diagnostic Criteria</span></div>
+    <div class="h-sub">Wenning GK et al. · Movement Disorders 2022;37(6):1131–1148 · doi:10.1002/mds.29005<br>MDS Multiple System Atrophy Criteria Revision Task Force</div>
+  </div>
+  <button class="reset-btn" onclick="resetAll()">↺ Reset</button>
+</header>
+
+<div class="prog-track"><div class="prog-fill" id="pf" style="width:0%"></div></div>
+
+<div class="steps">
+  <div class="stab active" id="st0"><span class="sn">1</span>Essential</div>
+  <div class="stab" id="st1"><span class="sn">2</span>Subtype</div>
+  <div class="stab" id="st2"><span class="sn">3</span>Autonomic</div>
+  <div class="stab" id="st3"><span class="sn">4</span>Motor</div>
+  <div class="stab" id="st4"><span class="sn">5</span>Supportive</div>
+  <div class="stab" id="st5"><span class="sn">6</span>MRI</div>
+  <div class="stab" id="st6"><span class="sn">7</span>Exclusions</div>
+  <div class="stab" id="st7"><span class="sn">8</span>Verdict</div>
+</div>
+
+<!-- ══════ SCREEN 0: ESSENTIAL FEATURES ══════ -->
+<div class="screen active" id="s0">
+<div class="card">
+  <div class="ctitle" style="color:var(--cyan);">Step 1 · Essential Features</div>
+  <div class="csub">Prerequisites for a clinical MSA diagnosis at all certainty levels. All three must be present.</div>
+
+  <div class="lbox">
+    <strong>Essential features (all clinical categories):</strong> Sporadic, progressive, adult-onset (&gt;30 years) disease.<br>
+    The MDS-MSA criteria define four certainty levels: <span class="lc">Clinically Established MSA</span> (maximum specificity), <span class="lc">Clinically Probable MSA</span> (balanced sensitivity/specificity), <span class="la">Possible Prodromal MSA</span> (research category, limited specificity), and Neuropathologically Established MSA (autopsy gold standard).
+  </div>
+
+  <div class="crit" id="onset-item">
+    <div class="crit-main">
+      <div class="crit-name">Symptom onset after age 30 years</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      No postmortem-proven MSA cases with onset in the third decade or earlier exist. Age &gt;30 is therefore a hard prerequisite. Disease onset is defined as the first subjective complaint of symptoms related to MSA.
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="set('onset','yes')" id="onset-yes">✓ Onset after age 30</button>
+      <button class="abtn" onclick="set('onset','no')"  id="onset-no" >✗ Onset age ≤30</button>
+    </div>
+  </div>
+
+  <div class="crit" id="family-item">
+    <div class="crit-main">
+      <div class="crit-name">Negative family history (no first-degree relative with same condition)</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      MSA is a sporadic disease. A positive family history should prompt consideration of genetic causes of ataxia or parkinsonism — particularly SCA (SCA1, SCA2, SCA3, SCA6, SCA7, SCA12, SCA17), FRDA, FXTAS, CANVAS, and other genetic MSA look-alikes. Genetic screening is recommended for patients with cerebellar features.
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="set('family','yes')" id="family-yes">✓ No family history</button>
+      <button class="abtn" onclick="set('family','no')"  id="family-no" >✗ Positive family history</button>
+    </div>
+  </div>
+
+  <div class="crit" id="progress-item">
+    <div class="crit-main">
+      <div class="crit-name">Progressive disease course</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      The course must be clearly progressive — not static, episodic, or fluctuating. A progressive course is defined from the first symptom of MSA onset. Sudden onset, stepwise worsening, or very rapid deterioration should prompt consideration of alternative diagnoses (vascular, autoimmune, prion).
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="set('progress','yes')" id="progress-yes">✓ Progressive course</button>
+      <button class="abtn" onclick="set('progress','no')"  id="progress-no" >✗ Not clearly progressive</button>
+    </div>
+  </div>
+
+  <div id="a0" class="alrt"></div>
+  <div class="nav-row"><div></div><button class="nbtn np" id="n0" onclick="go(1)" disabled>Next: Motor Subtype →</button></div>
+</div>
+</div>
+
+<!-- ══════ SCREEN 1: SUBTYPE ══════ -->
+<div class="screen" id="s1">
+<div class="card">
+  <div class="ctitle" style="color:var(--cyan);">Step 2 · Motor Subtype</div>
+  <div class="csub">MSA is classified by predominant motor syndrome. This determines which MRI markers apply for Clinically Established MSA.</div>
+
+  <div class="subtype-row" style="margin-bottom:16px;">
+    <button class="subtype-btn" id="btn-msap" onclick="selectSubtype('p')">
+      <div class="sb-label">Motor subtype</div>
+      <div class="sb-title">MSA-P</div>
+      <div class="sb-desc">Parkinsonian type — predominant akinetic-rigid syndrome. Most common subtype in Western populations.</div>
+    </button>
+    <button class="subtype-btn" id="btn-msac" onclick="selectSubtype('c')">
+      <div class="sb-label">Motor subtype</div>
+      <div class="sb-title">MSA-C</div>
+      <div class="sb-desc">Cerebellar type — predominant cerebellar ataxia syndrome. More common in Japanese populations.</div>
+    </button>
+  </div>
+
+  <div class="lbox">
+    <strong>Subtype determines:</strong><br>
+    <span class="lc">MRI markers for Clinically Established MSA:</span> Different atrophy patterns apply for MSA-P vs. MSA-C (Step 6)<br>
+    The core features of autonomic failure, parkinsonism, and cerebellar syndrome apply to both subtypes, but parkinsonism in MSA-P must be poorly L-dopa responsive for Established criteria, and cerebellar syndrome requires ≥2 features for Established (≥1 for Probable).
+  </div>
+
+  <div id="a1" class="alrt"></div>
+  <div class="nav-row">
+    <button class="nbtn ns" onclick="go(0)">← Back</button>
+    <button class="nbtn np" id="n1" onclick="go(2)" disabled>Next: Autonomic Features →</button>
+  </div>
+</div>
+</div>
+
+<!-- ══════ SCREEN 2: AUTONOMIC ══════ -->
+<div class="screen" id="s2">
+<div class="card">
+  <div class="ctitle" style="color:var(--cyan);">Step 3 · Core Autonomic Features</div>
+  <div class="csub">Autonomic dysfunction is required for Clinically Established MSA. For Probable MSA, it is one of three core features of which ≥2 are needed. Note the different thresholds between categories.</div>
+
+  <div class="lbox">
+    <strong>Autonomic dysfunction core feature — at least one of:</strong><br>
+    <span class="lc">For Established:</span> Voiding difficulties with PVR ≥100 mL, OR urinary urge incontinence, OR nOH ≥20/10 mmHg <strong>within 3 minutes</strong><br>
+    <span class="lc">For Probable:</span> Voiding difficulties with PVR of <strong>any volume</strong>, OR urinary urge incontinence, OR nOH ≥20/10 mmHg <strong>within 10 minutes</strong><br>
+    Autonomic dysfunction is <strong>not required</strong> for Probable MSA — it is only one of three possible core features (≥2 needed).
+  </div>
+
+  <div class="crit" id="pvr-item">
+    <div class="crit-main">
+      <div class="crit-name">Unexplained voiding difficulties with elevated post-void residual (PVR)</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      Voiding difficulties with urine retained in the bladder after a voluntary void, measured by bladder ultrasound, urodynamics, or in-out catheterization. Bladder outflow obstruction (prostate enlargement in men) must be excluded. PVR ≥100 mL qualifies for Established criteria. Any PVR volume qualifies for Probable criteria.
+      <div class="cnote"><strong>Specificity data:</strong> PVR ≥100 mL is the most specific sign of bladder dysfunction in MSA vs. PD (sensitivity 34%, specificity 95%). PVR in MSA increases progressively — from ~71 mL in year 1 to ~129 mL in year 2 from onset. Not useful to distinguish MSA from PSP.</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="set('pvr','high')"  id="pvr-high" >✓ PVR ≥100 mL (Established threshold)</button>
+      <button class="abtn" onclick="set('pvr','any')"   id="pvr-any"  >✓ PVR any volume (Probable threshold)</button>
+      <button class="abtn" onclick="set('pvr','absent')" id="pvr-absent">✗ Absent / Normal</button>
+    </div>
+  </div>
+
+  <div class="crit" id="uui-item">
+    <div class="crit-main">
+      <div class="crit-name">Unexplained urinary urge incontinence</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      Complaint of involuntary urine leakage associated with urgency, in the absence of urinary tract infections. Non-neurogenic causes (previous pelvic surgery, pelvic floor prolapse) should be excluded. Qualifies for both Established and Probable criteria. Less specific than PVR (sensitivity 48%, specificity 34% vs. PD).
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="set('uui','yes')" id="uui-yes">✓ Present</button>
+      <button class="abtn" onclick="set('uui','no')"  id="uui-no" >✗ Absent</button>
+    </div>
+  </div>
+
+  <div class="crit" id="noh-item">
+    <div class="crit-main">
+      <div class="crit-name">Neurogenic orthostatic hypotension (nOH) — ≥20 mmHg systolic BP drop (with blunted HR response)</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      ≥20 mmHg systolic BP drop usually accompanied by ≥10 mmHg diastolic BP drop and ΔHR/ΔSBP ratio &lt;0.5 bpm/mmHg. Neurogenic cause confirmed by blunted HR rise. Oscillometric measurements. Secondary causes (diabetic autonomic neuropathy) and medications impairing HR response (beta-blockers) must be excluded.<br><br>
+      <strong>Timing distinction:</strong> Within 3 minutes for Established MSA criteria. Within 10 minutes for Probable MSA (delayed nOH is more sensitive, captures earlier disease). An isolated SBP drop without DBP drop is accepted (isolated DBP drop is non-specific).
+      <div class="cnote">Sensitivity for nOH within 3 min: MSA-P vs. PD 20–61%; MSA-C vs. SAOA 32–56%. Including 10-min window increases sensitivity. Continuous non-invasive BP/HR monitoring may be used where available. Gold standard for neurogenic cause: prolonged BP recovery time on Valsalva maneuver.</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="set('noh','3min')"   id="noh-3min"  >✓ Within 3 min (Established)</button>
+      <button class="abtn" onclick="set('noh','10min')"  id="noh-10min" >✓ 3–10 min only (Probable)</button>
+      <button class="abtn" onclick="set('noh','absent')" id="noh-absent">✗ Absent</button>
+    </div>
+  </div>
+
+  <div class="tally" style="margin-top:14px;" id="auto-tally">
+    <div class="chip cc" id="auto-chip"><span class="n" id="auto-n">—</span>Autonomic</div>
+  </div>
+
+  <div id="a2" class="alrt"></div>
+  <div class="nav-row">
+    <button class="nbtn ns" onclick="go(1)">← Back</button>
+    <button class="nbtn np" onclick="go(3)">Next: Motor Features →</button>
+  </div>
+</div>
+</div>
+
+<!-- ══════ SCREEN 3: MOTOR ══════ -->
+<div class="screen" id="s3">
+<div class="card">
+  <div class="ctitle" style="color:var(--cyan);">Step 4 · Core Motor Features</div>
+  <div class="csub">Parkinsonism and/or cerebellar syndrome. Note different thresholds between Established and Probable categories.</div>
+
+  <div class="lbox">
+    <strong>Motor core features — different thresholds apply:</strong><br>
+    <span class="lc">Parkinsonism:</span> Bradykinesia + rigidity or tremor. For Established: must be <strong>poorly L-dopa responsive</strong> (&lt;30% UPDRS-III improvement on ≤1,000 mg). For Probable: any levodopa response qualifies.<br>
+    <span class="lc">Cerebellar syndrome:</span> For Established: ≥<strong>2</strong> of gait ataxia, limb ataxia, cerebellar dysarthria, oculomotor features. For Probable: ≥<strong>1</strong> of these features.<br>
+    Oculomotor features = sustained nystagmus (gaze-evoked horizontal or downbeat) OR saccadic hypermetria.
+  </div>
+
+  <div class="slabel">Parkinsonism</div>
+  <div class="crit" id="pk-item">
+    <div class="crit-main">
+      <div class="crit-name">Parkinsonism — bradykinesia + rigidity or tremor (excluding intentional tremor in cerebellar syndrome)</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      Assessed by a movement disorder specialist per MDS-UPDRS III. Bradykinesia = slowness with decrement in amplitude/speed as movements are continued. Rigidity = velocity-independent resistance to passive movement. Tremor = rhythmic or arrhythmic involuntary movement in arms or legs (intentional tremor in a cerebellar syndrome does NOT count). A beneficial levodopa response occurs in 42.5–56.7% of MSA-P and 12.9–25% of MSA-C.
+      <div class="cnote">Acute levodopa challenge test cannot reliably assist in early MSA diagnosis — a negative test result should not discourage initiation of chronic levodopa treatment. Poor levodopa responsiveness is defined as &lt;30% UPDRS-III improvement on ≤1,000 mg/day if tolerated, for at least 1 month.</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="set('pk','poor')" id="pk-poor">✓ Present — Poorly L-dopa responsive (Established)</button>
+      <button class="abtn" onclick="set('pk','any')"  id="pk-any" >✓ Present — Any L-dopa response (Probable)</button>
+      <button class="abtn" onclick="set('pk','no')"   id="pk-no"  >✗ Absent</button>
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:14px;" id="cb-label">Cerebellar Syndrome</div>
+  <div class="crit" id="cb-item">
+    <div class="crit-main">
+      <div class="crit-name">Cerebellar syndrome — gait ataxia, limb ataxia, cerebellar dysarthria, or oculomotor dysfunction</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      <strong>For Clinically Established MSA:</strong> ≥2 of the following: gait ataxia, limb ataxia, cerebellar dysarthria, oculomotor dysfunction (sustained gaze-evoked horizontal or downbeat nystagmus, or saccadic hypermetria).<br><br>
+      <strong>For Clinically Probable MSA:</strong> ≥1 of these features is sufficient.<br><br>
+      <strong>For Possible Prodromal MSA:</strong> Subtle cerebellar signs — at least one of impaired tandem gait, gait ataxia, limb ataxia, cerebellar dysarthria, or oculomotor features — judged as subtle by a movement disorder specialist.
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="set('cb','2plus')"  id="cb-2plus" >✓ ≥2 features (Established)</button>
+      <button class="abtn" onclick="set('cb','1')"      id="cb-1"     >✓ 1 feature (Probable)</button>
+      <button class="abtn" onclick="set('cb','subtle')" id="cb-subtle">✓ Subtle signs (Prodromal)</button>
+      <button class="abtn" onclick="set('cb','no')"     id="cb-no"    >✗ Absent</button>
+    </div>
+  </div>
+
+  <div class="tally" style="margin-top:14px;">
+    <div class="chip" id="motor-chip"><span class="n" id="motor-n">—</span>Motor Core</div>
+  </div>
+
+  <div id="a3" class="alrt"></div>
+  <div class="nav-row">
+    <button class="nbtn ns" onclick="go(2)">← Back</button>
+    <button class="nbtn np" onclick="go(4)">Next: Supportive Features →</button>
+  </div>
+</div>
+</div>
+
+<!-- ══════ SCREEN 4: SUPPORTIVE ══════ -->
+<div class="screen" id="s4">
+<div class="card">
+  <div class="ctitle" style="color:var(--green);">Step 5 · Supportive Clinical Features</div>
+  <div class="csub">Established MSA requires ≥2 supportive features. Probable MSA requires ≥1 (excluding erectile dysfunction as an isolated supportive feature). Mark all that apply.</div>
+
+  <div class="lbox">
+    <strong>Supportive features and MSA "red flags" are synonymous.</strong> Accumulation over a lifetime increases postmortem MSA accuracy. Note: within 3 years from disease onset, supportive features do not differentiate MSA from MSA look-alikes (PD, DLB, PSP) — their significance increases with the clinical constellation.
+  </div>
+
+  <div class="slabel">Supportive Motor Features</div>
+  <div class="two-col">
+    <div class="crit" id="sm1-item">
+      <div class="crit-main"><div class="crit-name">Rapid progression — needs help with chores or greater disability within 3 years of motor onset</div><button class="xbtn" onclick="xp(this)">details ▾</button></div>
+      <div class="crit-detail">Assessed by history. Rate of progression rapid compared to what a movement disorder specialist would anticipate for Parkinson's disease. Median latency to falls: MSA 24 months vs. PD 118 months.</div>
+      <div class="brow"><button class="abtn" onclick="setSup('sm1','yes')" id="sm1-yes">✓ Present</button><button class="abtn" onclick="setSup('sm1','no')" id="sm1-no">✗ Absent</button></div>
+    </div>
+    <div class="crit" id="sm2-item">
+      <div class="crit-main"><div class="crit-name">Moderate to severe postural instability within 3 years of motor onset</div><button class="xbtn" onclick="xp(this)">details ▾</button></div>
+      <div class="crit-detail">Deficient postural response: ≥3 steps backwards OR tendency to fall if not caught on pull-test within 3 years of motor onset. Specificity vs. PD: 88.7%. Specificity if within first year of motor onset: 94%.</div>
+      <div class="brow"><button class="abtn" onclick="setSup('sm2','yes')" id="sm2-yes">✓ Present</button><button class="abtn" onclick="setSup('sm2','no')" id="sm2-no">✗ Absent</button></div>
+    </div>
+    <div class="crit" id="sm3-item">
+      <div class="crit-main"><div class="crit-name">Craniocervical dystonia induced or exacerbated by L-dopa in absence of limb dyskinesia</div><button class="xbtn" onclick="xp(this)">details ▾</button></div>
+      <div class="crit-detail">Involuntary dystonic movements of the face (orofacial dystonia) induced or exacerbated by L-dopa in the absence or presence of very mild limb dyskinesia. High specificity for MSA vs. PD and LBD.</div>
+      <div class="brow"><button class="abtn" onclick="setSup('sm3','yes')" id="sm3-yes">✓ Present</button><button class="abtn" onclick="setSup('sm3','no')" id="sm3-no">✗ Absent</button></div>
+    </div>
+    <div class="crit" id="sm4-item">
+      <div class="crit-main"><div class="crit-name">Severe speech impairment within 3 years of motor onset</div><button class="xbtn" onclick="xp(this)">details ▾</button></div>
+      <div class="crit-detail">Slow, slurred, or dysphonic speech severe enough to require occasional repetition of statements during interview, within 3 years of motor onset.</div>
+      <div class="brow"><button class="abtn" onclick="setSup('sm4','yes')" id="sm4-yes">✓ Present</button><button class="abtn" onclick="setSup('sm4','no')" id="sm4-no">✗ Absent</button></div>
+    </div>
+    <div class="crit" id="sm5-item">
+      <div class="crit-main"><div class="crit-name">Severe dysphagia within 3 years of motor onset</div></div>
+      <div class="brow"><button class="abtn" onclick="setSup('sm5','yes')" id="sm5-yes">✓ Present</button><button class="abtn" onclick="setSup('sm5','no')" id="sm5-no">✗ Absent</button></div>
+    </div>
+    <div class="crit" id="sm6-item">
+      <div class="crit-main"><div class="crit-name">Unexplained Babinski sign</div><button class="xbtn" onclick="xp(this)">details ▾</button></div>
+      <div class="crit-detail">Other causes (mass lesions, vascular, demyelinating, metabolic, cervical myelopathy, infections) must be excluded. An unexplained extensor plantar response in this context supports MSA.</div>
+      <div class="brow"><button class="abtn" onclick="setSup('sm6','yes')" id="sm6-yes">✓ Present</button><button class="abtn" onclick="setSup('sm6','no')" id="sm6-no">✗ Absent</button></div>
+    </div>
+    <div class="crit" id="sm7-item">
+      <div class="crit-main"><div class="crit-name">Jerky myoclonic postural or kinetic tremor</div><button class="xbtn" onclick="xp(this)">details ▾</button></div>
+      <div class="crit-detail">Irregular small-amplitude postural or kinetic tremor of the hands or fingers with stimulus-sensitive myoclonus. Polyminimyoclonus — distinct from the classic pill-rolling rest tremor of PD, which is infrequent in MSA.</div>
+      <div class="brow"><button class="abtn" onclick="setSup('sm7','yes')" id="sm7-yes">✓ Present</button><button class="abtn" onclick="setSup('sm7','no')" id="sm7-no">✗ Absent</button></div>
+    </div>
+    <div class="crit" id="sm8-item">
+      <div class="crit-main"><div class="crit-name">Postural deformities (anterocollis, laterocollis, camptocormia, Pisa syndrome, contractures of hands or feet)</div><button class="xbtn" onclick="xp(this)">details ▾</button></div>
+      <div class="crit-detail">At least one of: disproportionate anterocollis or laterocollis, camptocormia (severe anterior flexion of spine), Pisa syndrome (severe lateral flexion), or contractures of hands or feet. Excludes Dupuytren's or contracture due to other known causes including corticobasal syndrome.</div>
+      <div class="brow"><button class="abtn" onclick="setSup('sm8','yes')" id="sm8-yes">✓ Present</button><button class="abtn" onclick="setSup('sm8','no')" id="sm8-no">✗ Absent</button></div>
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:14px;">Supportive Non-Motor Features</div>
+  <div class="two-col">
+    <div class="crit" id="sn1-item">
+      <div class="crit-main"><div class="crit-name">Stridor — high-pitched inspiratory breathing sound (during sleep or awake)</div><button class="xbtn" onclick="xp(this)">details ▾</button></div>
+      <div class="crit-detail">High-pitched inspiratory sound during sleep or while awake. Laryngoscopy may be considered to exclude mechanical lesions or functional vocal cord abnormalities. Stridor is distinctive of both MSA subtypes vs. their mimics — considered a supportive non-motor feature of high specificity.</div>
+      <div class="brow"><button class="abtn" onclick="setSup('sn1','yes')" id="sn1-yes">✓ Present</button><button class="abtn" onclick="setSup('sn1','no')" id="sn1-no">✗ Absent</button></div>
+    </div>
+    <div class="crit" id="sn2-item">
+      <div class="crit-main"><div class="crit-name">Inspiratory sighs — involuntary deep inspiratory sighs or gasps</div></div>
+      <div class="brow"><button class="abtn" onclick="setSup('sn2','yes')" id="sn2-yes">✓ Present</button><button class="abtn" onclick="setSup('sn2','no')" id="sn2-no">✗ Absent</button></div>
+    </div>
+    <div class="crit" id="sn3-item">
+      <div class="crit-main"><div class="crit-name">Cold discolored hands and feet — newly developed coldness and colour change (purple/blue) with blanching</div></div>
+      <div class="brow"><button class="abtn" onclick="setSup('sn3','yes')" id="sn3-yes">✓ Present</button><button class="abtn" onclick="setSup('sn3','no')" id="sn3-no">✗ Absent</button></div>
+    </div>
+    <div class="crit" id="sn4-item">
+      <div class="crit-main"><div class="crit-name">Erectile dysfunction — age &lt;60 years for Probable MSA; any age for Established</div><button class="xbtn" onclick="xp(this)">details ▾</button></div>
+      <div class="crit-detail">Persistent inability to achieve or maintain erection. For Clinically Established MSA: any age, but must be associated with ≥1 more supportive clinical feature (not isolated). For Clinically Probable MSA: only counts if manifesting before age 60 AND associated with another supportive feature. Not valid as an isolated supportive feature for Probable MSA.</div>
+      <div class="brow"><button class="abtn" onclick="setSup('sn4','yes')" id="sn4-yes">✓ Present (with other supportive feature)</button><button class="abtn" onclick="setSup('sn4','no')" id="sn4-no">✗ Absent</button></div>
+    </div>
+    <div class="crit" id="sn5-item">
+      <div class="crit-main"><div class="crit-name">Pathologic laughter or crying — emotional incontinence</div></div>
+      <div class="brow"><button class="abtn" onclick="setSup('sn5','yes')" id="sn5-yes">✓ Present</button><button class="abtn" onclick="setSup('sn5','no')" id="sn5-no">✗ Absent</button></div>
+    </div>
+  </div>
+
+  <div class="tally" style="margin-top:14px;">
+    <div class="chip" id="sup-chip"><span class="n" id="sup-n">0</span>Supportive Feature(s)</div>
+  </div>
+
+  <div id="a4" class="alrt"></div>
+  <div class="nav-row">
+    <button class="nbtn ns" onclick="go(3)">← Back</button>
+    <button class="nbtn np" onclick="go(5)">Next: MRI Markers →</button>
+  </div>
+</div>
+</div>
+
+<!-- ══════ SCREEN 5: MRI MARKERS ══════ -->
+<div class="screen" id="s5">
+<div class="card">
+  <div class="ctitle" style="color:var(--cyan);">Step 6 · Brain MRI Markers</div>
+  <div class="csub">Required for Clinically Established MSA only. Not required for Probable. Each affected brain region (atrophy or increased diffusivity) counts as one MRI marker. At least one is needed for Established MSA.</div>
+
+  <div class="lbox" id="mri-lbox">
+    <strong>MRI markers are subtype-specific.</strong> Select subtype in Step 2. Analysis (structural MRI 1.5T or 3.0T) is based on visual inspection by a neuroradiologist explicitly advised by a movement disorder specialist. Diffusion MRI analysis is based on quantitative assessments. The putaminal rim sign is <span class="lr">omitted</span> from MDS MSA criteria (common in healthy subjects at 3T; limited differential diagnostic potential vs. PSP).
+  </div>
+
+  <div id="mri-msap" style="display:none;">
+    <div class="slabel">MRI Markers for MSA-P (at least one required for Established)</div>
+    <div class="two-col">
+      <div class="crit" id="mri-p1-item"><div class="crit-main"><div class="crit-name">Putamen atrophy (+ signal decrease on iron-sensitive sequences)</div></div><div class="brow"><button class="abtn" onclick="setMRI('p1','yes')" id="mri-p1-yes">✓ Present</button><button class="abtn" onclick="setMRI('p1','no')" id="mri-p1-no">✗ Absent</button></div></div>
+      <div class="crit" id="mri-p2-item"><div class="crit-main"><div class="crit-name">Middle cerebellar peduncle (MCP) atrophy</div><button class="xbtn" onclick="xp(this)">details ▾</button></div><div class="crit-detail">MCP atrophy on T2-weighted images. MCP-sign (hyperintensity in the MCP) may accompany atrophy. Increased diffusivity of MCP combined with normal superior cerebellar peduncle diffusivity is useful for separating MSA from PSP (sensitivity 91%, specificity 84%).</div><div class="brow"><button class="abtn" onclick="setMRI('p2','yes')" id="mri-p2-yes">✓ Present</button><button class="abtn" onclick="setMRI('p2','no')" id="mri-p2-no">✗ Absent</button></div></div>
+      <div class="crit" id="mri-p3-item"><div class="crit-main"><div class="crit-name">Pons atrophy</div></div><div class="brow"><button class="abtn" onclick="setMRI('p3','yes')" id="mri-p3-yes">✓ Present</button><button class="abtn" onclick="setMRI('p3','no')" id="mri-p3-no">✗ Absent</button></div></div>
+      <div class="crit" id="mri-p4-item"><div class="crit-main"><div class="crit-name">Cerebellar atrophy</div></div><div class="brow"><button class="abtn" onclick="setMRI('p4','yes')" id="mri-p4-yes">✓ Present</button><button class="abtn" onclick="setMRI('p4','no')" id="mri-p4-no">✗ Absent</button></div></div>
+      <div class="crit" id="mri-p5-item"><div class="crit-main"><div class="crit-name">"Hot cross bun" sign — cruciform T2 hyperintensity in pons</div><button class="xbtn" onclick="xp(this)">details ▾</button></div><div class="crit-detail">Cruciform hyperintensity in the pons on T2 images. May also be seen in non-degenerative parkinsonism and SCA2/3 — not pathognomonic, but characteristic in the MSA clinical context.</div><div class="brow"><button class="abtn" onclick="setMRI('p5','yes')" id="mri-p5-yes">✓ Present</button><button class="abtn" onclick="setMRI('p5','no')" id="mri-p5-no">✗ Absent</button></div></div>
+      <div class="crit" id="mri-p6-item"><div class="crit-main"><div class="crit-name">Increased diffusivity of putamen</div><button class="xbtn" onclick="xp(this)">details ▾</button></div><div class="crit-detail">Diffuse hyperintensity in posterior putamen on diffusion imaging. Sensitivity 90%, specificity 93% for MSA vs. PD. May be visible early — one case showed putaminal diffusivity changes 6 months after levodopa-responsive parkinsonism onset, 24 months before probable MSA diagnosis.</div><div class="brow"><button class="abtn" onclick="setMRI('p6','yes')" id="mri-p6-yes">✓ Present</button><button class="abtn" onclick="setMRI('p6','no')" id="mri-p6-no">✗ Absent</button></div></div>
+      <div class="crit" id="mri-p7-item"><div class="crit-main"><div class="crit-name">Increased diffusivity of middle cerebellar peduncle (MCP)</div></div><div class="brow"><button class="abtn" onclick="setMRI('p7','yes')" id="mri-p7-yes">✓ Present</button><button class="abtn" onclick="setMRI('p7','no')" id="mri-p7-no">✗ Absent</button></div></div>
+    </div>
+  </div>
+
+  <div id="mri-msac" style="display:none;">
+    <div class="slabel">MRI Markers for MSA-C (at least one required for Established)</div>
+    <div class="two-col">
+      <div class="crit" id="mri-c1-item"><div class="crit-main"><div class="crit-name">Putamen atrophy (+ signal decrease on iron-sensitive sequences)</div></div><div class="brow"><button class="abtn" onclick="setMRI('c1','yes')" id="mri-c1-yes">✓ Present</button><button class="abtn" onclick="setMRI('c1','no')" id="mri-c1-no">✗ Absent</button></div></div>
+      <div class="crit" id="mri-c2-item"><div class="crit-main"><div class="crit-name">Infratentorial atrophy — pons AND middle cerebellar peduncle</div><button class="xbtn" onclick="xp(this)">details ▾</button></div><div class="crit-detail">Atrophy of infratentorial structures including pons and middle cerebellar peduncle. Note: isolated cerebellar atrophy alone does NOT support Clinically Established MSA-C due to overlaps with sporadic and genetic disorders (paraneoplastic ataxia, genetic ataxia). Must include pontine or MCP involvement.</div><div class="brow"><button class="abtn" onclick="setMRI('c2','yes')" id="mri-c2-yes">✓ Present</button><button class="abtn" onclick="setMRI('c2','no')" id="mri-c2-no">✗ Absent</button></div></div>
+      <div class="crit" id="mri-c3-item"><div class="crit-main"><div class="crit-name">"Hot cross bun" sign</div></div><div class="brow"><button class="abtn" onclick="setMRI('c3','yes')" id="mri-c3-yes">✓ Present</button><button class="abtn" onclick="setMRI('c3','no')" id="mri-c3-no">✗ Absent</button></div></div>
+      <div class="crit" id="mri-c4-item"><div class="crit-main"><div class="crit-name">Increased diffusivity of putamen</div></div><div class="brow"><button class="abtn" onclick="setMRI('c4','yes')" id="mri-c4-yes">✓ Present</button><button class="abtn" onclick="setMRI('c4','no')" id="mri-c4-no">✗ Absent</button></div></div>
+    </div>
+    <p style="font-size:11px;color:var(--text3);font-family:var(--mono);margin-top:8px;line-height:1.5;">ⓘ Increased diffusivity of MCP alone (without putaminal changes) and isolated cerebellar atrophy do NOT support Established MSA-C diagnosis due to overlap with sporadic/genetic cerebellar disorders.</p>
+  </div>
+
+  <div id="mri-none-msg" style="display:none;">
+    <div class="alrt show ainf">ⓘ Brain MRI markers are <strong>not required</strong> for Clinically Probable MSA. If clinical features of Established MSA are met but MRI markers are absent, classify as Clinically Probable MSA. Biomarkers should not substitute for absent MRI in Established category.</div>
+  </div>
+
+  <div class="tally" style="margin-top:14px;">
+    <div class="chip" id="mri-chip"><span class="n" id="mri-n">—</span>MRI Marker(s)</div>
+  </div>
+
+  <div id="a5" class="alrt"></div>
+  <div class="nav-row">
+    <button class="nbtn ns" onclick="go(4)">← Back</button>
+    <button class="nbtn np" onclick="go(6)">Next: Exclusion Criteria →</button>
+  </div>
+</div>
+</div>
+
+<!-- ══════ SCREEN 6: EXCLUSIONS ══════ -->
+<div class="screen" id="s6">
+<div class="card">
+  <div class="ctitle" style="color:var(--red);">Step 7 · Exclusion Criteria</div>
+  <div class="csub">All exclusion criteria must be absent for any MSA diagnosis. Note: some features (anosmia, levodopa responsiveness) may occasionally manifest in MSA, but are excluded to secure diagnostic specificity.</div>
+
+  <div class="two-col">
+    <div class="crit" id="exc1-item">
+      <div class="crit-main"><div class="crit-name">Substantial and persistent beneficial response to dopaminergic medications</div><button class="xbtn" onclick="xp(this)">details ▾</button></div>
+      <div class="crit-detail">As judged by a movement disorder specialist. A robust, sustained levodopa response maintained over time excludes MSA in Established and Probable categories. Note: this exclusion does not apply to Possible Prodromal MSA (patients may have subtle parkinsonian signs not yet requiring dopaminergic treatment). Initial partial levodopa response occurs in ~43–57% of MSA-P and 13–25% of MSA-C.</div>
+      <div class="brow"><button class="abtn" onclick="set('exc1','absent')" id="exc1-absent">✓ Absent</button><button class="abtn" onclick="set('exc1','present')" id="exc1-present">✕ Present — Excludes MSA</button></div>
+    </div>
+    <div class="crit" id="exc2-item">
+      <div class="crit-main"><div class="crit-name">Unexplained anosmia on olfactory testing</div><button class="xbtn" onclick="xp(this)">details ▾</button></div>
+      <div class="crit-detail">Anosmia not explained by allergic rhinitis, smoking, nasal structural lesions, or nasal surgery. Hyposmia is common in Parkinson's disease and Lewy body disorders (>90% of PD) but atypical in MSA. Anosmia points strongly toward Lewy body pathology. For Possible Prodromal MSA: anosmia is an exclusion criterion specifically to exclude Lewy body disease as the phenoconversion target.</div>
+      <div class="brow"><button class="abtn" onclick="set('exc2','absent')" id="exc2-absent">✓ Absent</button><button class="abtn" onclick="set('exc2','present')" id="exc2-present">✕ Present — Excludes MSA</button></div>
+    </div>
+    <div class="crit" id="exc3-item">
+      <div class="crit-main"><div class="crit-name">Fluctuating cognition with pronounced variation in attention and alertness and early decline in visuoperceptual abilities (suggestive of DLB)</div></div>
+      <div class="brow"><button class="abtn" onclick="set('exc3','absent')" id="exc3-absent">✓ Absent</button><button class="abtn" onclick="set('exc3','present')" id="exc3-present">✕ Present — Excludes MSA</button></div>
+    </div>
+    <div class="crit" id="exc4-item">
+      <div class="crit-main"><div class="crit-name">Recurrent visual hallucinations not induced by drugs within 3 years of disease onset</div></div>
+      <div class="brow"><button class="abtn" onclick="set('exc4','absent')" id="exc4-absent">✓ Absent</button><button class="abtn" onclick="set('exc4','present')" id="exc4-present">✕ Present — Excludes MSA</button></div>
+    </div>
+    <div class="crit" id="exc5-item">
+      <div class="crit-main"><div class="crit-name">Dementia (per DSM-V) within 3 years of disease onset</div><button class="xbtn" onclick="xp(this)">details ▾</button></div>
+      <div class="crit-detail">Early dementia (within 3 years of onset) is atypical for MSA and suggests Lewy body disease (DLB), PSP, or other causes. Mild cognitive impairment can occur in MSA but frank dementia this early is an exclusion criterion.</div>
+      <div class="brow"><button class="abtn" onclick="set('exc5','absent')" id="exc5-absent">✓ Absent</button><button class="abtn" onclick="set('exc5','present')" id="exc5-present">✕ Present — Excludes MSA</button></div>
+    </div>
+    <div class="crit" id="exc6-item">
+      <div class="crit-main"><div class="crit-name">Downgaze supranuclear palsy or slowing of vertical saccades</div><button class="xbtn" onclick="xp(this)">details ▾</button></div>
+      <div class="crit-detail">Downgaze supranuclear gaze palsy or selective slowing of vertical saccades is pathognomonic for PSP-Richardson syndrome and excludes MSA. Confirm supranuclear origin by intact VOR (doll's-eye maneuver). Sustained downbeat nystagmus within MSA does not qualify — it is a cerebellar oculomotor feature.</div>
+      <div class="brow"><button class="abtn" onclick="set('exc6','absent')" id="exc6-absent">✓ Absent</button><button class="abtn" onclick="set('exc6','present')" id="exc6-present">✕ Present — Excludes MSA</button></div>
+    </div>
+    <div class="crit" id="exc7-item">
+      <div class="crit-main"><div class="crit-name">Brain MRI findings suggestive of an alternative diagnosis (PSP, MS, vascular parkinsonism, symptomatic cerebellar disease)</div></div>
+      <div class="brow"><button class="abtn" onclick="set('exc7','absent')" id="exc7-absent">✓ Absent</button><button class="abtn" onclick="set('exc7','present')" id="exc7-present">✕ Present — Excludes MSA</button></div>
+    </div>
+    <div class="crit" id="exc8-item">
+      <div class="crit-main"><div class="crit-name">Documentation of an alternative condition (MSA look-alike including genetic or symptomatic ataxia/parkinsonism) known to produce autonomic failure, ataxia, or parkinsonism</div><button class="xbtn" onclick="xp(this)">details ▾</button></div>
+      <div class="crit-detail">MSA look-alikes include: SCA1, SCA2, SCA3, SCA6, SCA7, SCA12, SCA17, FRDA, FXTAS, CANVAS (for cerebellar features). Also: genetic or symptomatic parkinsonism plausibly causing the clinical syndrome. Genetic screening for common SCAs is recommended, particularly in patients with cerebellar features.</div>
+      <div class="brow"><button class="abtn" onclick="set('exc8','absent')" id="exc8-absent">✓ No alternative condition</button><button class="abtn" onclick="set('exc8','present')" id="exc8-present">✕ Alternative identified — Excludes MSA</button></div>
+    </div>
+  </div>
+
+  <div id="a6" class="alrt"></div>
+  <div class="nav-row">
+    <button class="nbtn ns" onclick="go(5)">← Back</button>
+    <button class="nbtn np" onclick="go(7)">Generate Verdict →</button>
+  </div>
+</div>
+</div>
+
+<!-- ══════ SCREEN 7: VERDICT ══════ -->
+<div class="screen" id="s7">
+  <div id="vout"></div>
+  <div id="sout"></div>
+  <div class="doc-header">
+    <button class="doc-tog" onclick="toggleDoc()">▼ Documentation Note</button>
+    <button class="copy-btn" id="copy-btn" onclick="copyDoc()">⎘ Copy</button>
+  </div>
+  <div class="doc-body" id="dn"></div>
+  <div class="nav-row">
+    <button class="nbtn ns" onclick="go(6)">← Back</button>
+    <button class="nbtn np" onclick="resetAll()">↺ New Evaluation</button>
+  </div>
+</div>
+
+</div><!-- /app -->
+<script>
+const S = {
+  onset:null, family:null, progress:null,
+  subtype:null,
+  pvr:null, uui:null, noh:null,
+  pk:null, cb:null,
+  sm1:null,sm2:null,sm3:null,sm4:null,sm5:null,sm6:null,sm7:null,sm8:null,
+  sn1:null,sn2:null,sn3:null,sn4:null,sn5:null,
+  mri_p1:null,mri_p2:null,mri_p3:null,mri_p4:null,mri_p5:null,mri_p6:null,mri_p7:null,
+  mri_c1:null,mri_c2:null,mri_c3:null,mri_c4:null,
+  exc1:null,exc2:null,exc3:null,exc4:null,exc5:null,exc6:null,exc7:null,exc8:null
+};
+let cur = 0;
+
+const EXC_KEYS = ['exc1','exc2','exc3','exc4','exc5','exc6','exc7','exc8'];
+const SUP_MOTOR = ['sm1','sm2','sm3','sm4','sm5','sm6','sm7','sm8'];
+const SUP_NONMOTOR = ['sn1','sn2','sn3','sn4','sn5'];
+
+function set(k, v) {
+  S[k] = v;
+  const item = document.getElementById(k+'-item');
+  if(item) item.className = 'crit';
+  ['yes','no','absent','present','high','any','3min','10min','poor','any','2plus','1','subtle'].forEach(x=>{
+    const b=document.getElementById(k+'-'+x); if(b) b.classList.remove('ay','an','ac','aa','aw');
+  });
+  const map={yes:'ay',no:'an',absent:'ay',present:'an',high:'ay',any:'ac','3min':'ay','10min':'ac',poor:'ay',poor_any:'ac','2plus':'ay','1':'ac',subtle:'aw'};
+  const cls=map[v]||'aa';
+  const btn=document.getElementById(k+'-'+v); if(btn) btn.classList.add(cls);
+  if(item){
+    if(['yes','absent','high','3min','poor','2plus'].includes(v)) item.classList.add('c-yes');
+    else if(['no','present'].includes(v)) item.classList.add('c-no');
+    else if(['any','10min','1'].includes(v)) item.classList.add('c-pres');
+    else if(['subtle'].includes(v)) item.classList.add('c-part');
+  }
+  ui();
+}
+
+function setSup(k,v){
+  S[k]=v;
+  const item=document.getElementById(k+'-item');
+  if(item){item.className='crit';if(v==='yes')item.classList.add('c-yes');else if(v==='no')item.classList.add('c-abs');}
+  ['yes','no'].forEach(x=>{const b=document.getElementById(k+'-'+x);if(b)b.classList.remove('ay','aa');});
+  const btn=document.getElementById(k+'-'+v); if(btn) btn.classList.add(v==='yes'?'ay':'aa');
+  ui();
+}
+
+function setMRI(k,v){
+  S['mri_'+k]=v;
+  const item=document.getElementById('mri-'+k+'-item');
+  if(item){item.className='crit';if(v==='yes')item.classList.add('c-yes');else if(v==='no')item.classList.add('c-abs');}
+  ['yes','no'].forEach(x=>{const b=document.getElementById('mri-'+k+'-'+x);if(b)b.classList.remove('ay','aa');});
+  const btn=document.getElementById('mri-'+k+'-'+v); if(btn) btn.classList.add(v==='yes'?'ay':'aa');
+  ui();
+}
+
+function selectSubtype(t){
+  S.subtype=t;
+  document.getElementById('btn-msap').className='subtype-btn'+(t==='p'?' sel-p':'');
+  document.getElementById('btn-msac').className='subtype-btn'+(t==='c'?' sel-c':'');
+  document.getElementById('mri-msap').style.display=t==='p'?'block':'none';
+  document.getElementById('mri-msac').style.display=t==='c'?'block':'none';
+  document.getElementById('mri-none-msg').style.display='none';
+  sa(document.getElementById('a1'),'acyan','✓ Motor subtype: MSA-'+(t==='p'?'P (Parkinsonian type)':'C (Cerebellar type)')+'. MRI markers for this subtype will be shown in Step 6.');
+  document.getElementById('n1').disabled=false;
+  ui();
+}
+
+// COUNTS
+function autoLevel(){
+  if(S.pvr==='high'||S.uui==='yes'||S.noh==='3min') return 'established';
+  if(S.pvr==='any'||S.uui==='yes'||S.noh==='10min'||S.noh==='3min') return 'probable';
+  return 'none';
+}
+function pkLevel(){ if(S.pk==='poor') return 'established'; if(S.pk==='any') return 'probable'; return 'none'; }
+function cbLevel(){ if(S.cb==='2plus') return 'established'; if(S.cb==='1') return 'probable'; if(S.cb==='subtle') return 'prodromal'; return 'none'; }
+
+function coreCounts(){
+  const auto = autoLevel(); const pk = pkLevel(); const cb = cbLevel();
+  const estAuto = auto==='established';
+  const probAuto = auto==='probable'||auto==='established';
+  const estPK = pk==='established'; const probPK = pk==='probable'||pk==='established';
+  const estCB = cb==='established'; const probCB = cb==='probable'||cb==='established';
+  const probCBonly = cb==='probable';
+  return { estAuto, probAuto, estPK, probPK, estCB, probCB, probCBonly };
+}
+
+function supCount(){
+  return [...SUP_MOTOR,...SUP_NONMOTOR].filter(k=>S[k]==='yes').length;
+}
+
+function mriCount(){
+  if(!S.subtype) return 0;
+  const keys = S.subtype==='p'
+    ? ['mri_p1','mri_p2','mri_p3','mri_p4','mri_p5','mri_p6','mri_p7']
+    : ['mri_c1','mri_c2','mri_c3','mri_c4'];
+  return keys.filter(k=>S[k]==='yes').length;
+}
+
+function anyExclusion(){ return EXC_KEYS.some(k=>S[k]==='present'); }
+
+function essentialMet(){ return S.onset==='yes'&&S.family==='yes'&&S.progress==='yes'; }
+
+function ui(){
+  // Step 0
+  const a0=document.getElementById('a0'),n0=document.getElementById('n0');
+  if(essentialMet()){sa(a0,'aok','✓ All essential features satisfied. Proceed to motor subtype.'); n0.disabled=false;}
+  else if([S.onset,S.family,S.progress].some(v=>v==='no')){sa(a0,'aerr','✕ Essential features not met — MSA criteria cannot be applied.'); n0.disabled=true;}
+  else{ha(a0); n0.disabled=true;}
+
+  // Step 2 autonomic
+  const alv=autoLevel();
+  const a2=document.getElementById('a2'); const an=document.getElementById('auto-n');
+  if(an) an.textContent = alv==='established'?'Est.':alv==='probable'?'Prob.':'None';
+  const ac=document.getElementById('auto-chip');
+  if(ac){ ac.className='chip'; if(alv==='established') ac.classList.add('cg'); else if(alv==='probable') ac.classList.add('cc'); else ac.classList.add('cr'); }
+  if(alv==='established') sa(a2,'aok','✓ Autonomic dysfunction meets Clinically Established threshold.');
+  else if(alv==='probable') sa(a2,'acyan','◈ Autonomic dysfunction meets Clinically Probable threshold (delayed nOH or lower PVR threshold).');
+  else if([S.pvr,S.uui,S.noh].some(v=>v!==null)) sa(a2,'aerr','⚠ No qualifying autonomic dysfunction identified.');
+  else ha(a2);
+
+  // Step 3 motor
+  const plv=pkLevel(); const clv=cbLevel();
+  const mn=document.getElementById('motor-n'); const mc=document.getElementById('motor-chip');
+  const motorStr=[];
+  if(plv==='established') motorStr.push('PK:Est');
+  else if(plv==='probable') motorStr.push('PK:Prob');
+  if(clv==='established') motorStr.push('CB:Est');
+  else if(clv==='probable') motorStr.push('CB:Prob');
+  else if(clv==='prodromal') motorStr.push('CB:Prod');
+  if(mn) mn.textContent = motorStr.length>0?motorStr.join(' / '):'None';
+  if(mc){ mc.className='chip'; if(plv==='established'||clv==='established') mc.classList.add('cg'); else if(plv==='probable'||clv==='probable') mc.classList.add('cc'); else if(clv==='prodromal') mc.classList.add('ca'); }
+  const a3=document.getElementById('a3');
+  if(S.pk||S.cb){
+    if((plv!=='none'||clv!=='none')) sa(a3,'acyan','◈ Motor features identified. Core feature count being tracked across domains.');
+    else sa(a3,'aerr','⚠ No qualifying motor features currently identified.');
+  } else ha(a3);
+
+  // Step 4 supportive
+  const sc=supCount();
+  const sn=document.getElementById('sup-n'); if(sn) sn.textContent=sc;
+  const sch=document.getElementById('sup-chip');
+  if(sch){ sch.className='chip'; if(sc>=2) sch.classList.add('cg'); else if(sc>=1) sch.classList.add('cc'); }
+  const a4=document.getElementById('a4');
+  if(sc>=2) sa(a4,'aok','✓ ≥2 supportive features — meets threshold for Clinically Established MSA.');
+  else if(sc===1) sa(a4,'acyan','◈ 1 supportive feature — meets Clinically Probable MSA threshold (≥1 required, excluding isolated erectile dysfunction).');
+  else if([...SUP_MOTOR,...SUP_NONMOTOR].some(k=>S[k]!==null)) sa(a4,'aerr','⚠ No supportive features identified.');
+  else ha(a4);
+
+  // Step 5 MRI
+  const mri=mriCount();
+  const mrn=document.getElementById('mri-n'); if(mrn) mrn.textContent=mri>0?mri+' marker(s)':'None';
+  const mch=document.getElementById('mri-chip');
+  if(mch){ mch.className='chip'; if(mri>=1) mch.classList.add('cg'); }
+  const a5=document.getElementById('a5');
+  if(mri>=1) sa(a5,'aok','✓ ≥1 MRI marker present — satisfies MRI requirement for Clinically Established MSA.');
+  else if(S.subtype&&[...['mri_p1','mri_p2','mri_p3','mri_p4','mri_p5','mri_p6','mri_p7'],...['mri_c1','mri_c2','mri_c3','mri_c4']].some(k=>S[k]==='no')) sa(a5,'awn','⚠ No qualifying MRI markers. If clinical criteria for Established MSA are met, classify as Clinically Probable MSA.');
+  else ha(a5);
+
+  // Step 6 exclusions
+  const a6=document.getElementById('a6');
+  if(anyExclusion()) sa(a6,'aerr','✕ Exclusion criterion present — MSA diagnosis cannot be made. Reassess the differential diagnosis.');
+  else if(EXC_KEYS.every(k=>S[k]==='absent')) sa(a6,'aok','✓ No exclusion criteria triggered.');
+  else ha(a6);
+}
+
+function sa(el,cls,msg){ if(!el)return; el.className='alrt show '+cls; el.innerHTML=msg; }
+function ha(el){ if(el) el.classList.remove('show'); }
+
+// VERDICT ENGINE
+function verdict(){
+  if(!essentialMet()) return {cls:'vno',t:'Essential Features Not Met',phen:'',d:'Sporadic onset after age 30, negative family history, and progressive course are all required before MDS-MSA criteria can be applied.'};
+  if(!S.subtype) return {cls:'vno',t:'Motor Subtype Not Selected',phen:'',d:'Select MSA-P or MSA-C in Step 2 to continue.'};
+  if(anyExclusion()) return {cls:'vno',t:'Exclusion Criterion Present',phen:'',d:'One or more exclusion criteria are present. MSA cannot be diagnosed at any certainty level. Reassess the differential diagnosis — consider Parkinson\'s disease with autonomic failure, Lewy body disease, PSP, genetic ataxia, or other MSA look-alikes.'};
+
+  const c=coreCounts(); const sc=supCount(); const mri=mriCount(); const sub=S.subtype==='p'?'MSA-P':'MSA-C';
+
+  // CLINICALLY ESTABLISHED: autonomic (est) + parkinsonism(est) or cerebellar(est) + ≥2 supportive + ≥1 MRI
+  const estMotor = c.estPK || c.estCB;
+  if(c.estAuto && estMotor && sc>=2 && mri>=1)
+    return {cls:'vest',t:'Clinically Established MSA',phen:sub,d:'All criteria satisfied. Autonomic dysfunction (Established threshold), '+(c.estPK?'poorly L-dopa-responsive parkinsonism':'')+( c.estPK&&c.estCB?' and ':'')+(c.estCB?'cerebellar syndrome (≥2 features)':'')+', ≥2 supportive features, and ≥1 MRI marker. Maximum specificity category. Designed for patient-level diagnostic certainty and therapeutic trials.'};
+  // Clinical established met but no MRI → downgrade to Probable
+  if(c.estAuto && estMotor && sc>=2 && mri===0)
+    return {cls:'vprob',t:'Clinically Probable MSA (Established clinical criteria met; MRI marker absent)',phen:sub,d:'Clinical criteria for Established MSA are met but no qualifying MRI marker is present. Per MDS criteria: classify as Clinically Probable MSA. Biomarkers should not substitute for absent MRI in the Established category. Repeat or dedicated MRI is recommended.'};
+  // Clinical established met but insufficient supportive → probable
+  if(c.estAuto && estMotor && sc===1)
+    return {cls:'vprob',t:'Clinically Probable MSA (Established core features; only 1 supportive feature)',phen:sub,d:'Core features meet Established thresholds, but only 1 supportive feature is present (≥2 required for Established). Criteria for Clinically Probable MSA are met. Longitudinal follow-up to accumulate supportive features is recommended.'};
+
+  // CLINICALLY PROBABLE: ≥2 core features from {autonomic(prob), parkinsonism(any), cerebellar(≥1)} + ≥1 supportive
+  const probCores = (c.probAuto?1:0) + (c.probPK?1:0) + (c.probCB?1:0);
+  if(probCores>=2 && sc>=1)
+    return {cls:'vprob',t:'Clinically Probable MSA',phen:sub,d:probCores+' core feature(s) identified (autonomic, parkinsonian, and/or cerebellar) and ≥1 supportive feature. Balanced sensitivity and specificity. Brain MRI markers are not required but, if present, support the diagnosis. MRI-positive patients meeting Probable criteria remain Probable (not upgraded to Established).'};
+  // Probable cores met but no supportive
+  if(probCores>=2 && sc===0 && [...SUP_MOTOR,...SUP_NONMOTOR].some(k=>S[k]!==null))
+    return {cls:'vprob',t:'Clinically Probable MSA — Supportive Feature Needed',phen:sub,d:probCores+' core features identified but no supportive clinical features yet documented. One supportive feature is required for Clinically Probable MSA (excluding isolated erectile dysfunction). Assess all supportive motor and non-motor features.'};
+
+  // POSSIBLE PRODROMAL MSA: PSG-proven RBD or autonomic failure, + subtle motor signs, + no exclusion
+  // (Note: levodopa responsiveness exclusion does not apply at this level)
+  // We flag this pathway if cerebellar "subtle" or parkinsonian features are present with autonomic dysfunction
+  if(c.probAuto && S.cb==='subtle' && !anyExclusion())
+    return {cls:'vprod',t:'Possible Prodromal MSA (Research Category)',phen:sub,d:'Autonomic dysfunction and subtle motor features present in a sporadic progressive adult-onset disease with no exclusion criteria. This is a research category with limited specificity requiring future prospective validation. Excludes patients with anosmia (Lewy body more likely) or abnormal MIBG scintigraphy. Not for routine clinical diagnosis — intended for observational research studies.'};
+
+  return {cls:'vno',t:'MDS-MSA Criteria Not Met',phen:'',d:'Essential features and exclusions satisfied, but current clinical findings do not meet thresholds for any MSA diagnostic category. Probable MSA requires ≥2 core features and ≥1 supportive feature. Established MSA additionally requires ≥2 supportive features and ≥1 MRI marker. Continue observation — MSA features typically accumulate with disease progression.'};
+}
+
+function rv(){
+  const v=verdict(); const sc=supCount(); const mri=mriCount(); const sub=S.subtype?'MSA-'+(S.subtype==='p'?'P':'C'):'';
+
+  const supMotorNames={sm1:'Rapid progression (<3y motor onset)',sm2:'Moderate-severe postural instability (<3y motor)',sm3:'Craniocervical dystonia (L-dopa, no limb dyskinesia)',sm4:'Severe speech impairment (<3y motor)',sm5:'Severe dysphagia (<3y motor)',sm6:'Unexplained Babinski sign',sm7:'Jerky myoclonic postural/kinetic tremor',sm8:'Postural deformities'};
+  const supNMNames={sn1:'Stridor',sn2:'Inspiratory sighs',sn3:'Cold discolored hands and feet',sn4:'Erectile dysfunction',sn5:'Pathologic laughter or crying'};
+  const mriPNames={mri_p1:'Putamen atrophy (+iron-sensitive signal decrease)',mri_p2:'MCP atrophy',mri_p3:'Pons atrophy',mri_p4:'Cerebellar atrophy',mri_p5:'Hot cross bun sign',mri_p6:'Increased putamen diffusivity',mri_p7:'Increased MCP diffusivity'};
+  const mriCNames={mri_c1:'Putamen atrophy (+iron-sensitive signal decrease)',mri_c2:'Infratentorial atrophy (pons + MCP)',mri_c3:'Hot cross bun sign',mri_c4:'Increased putamen diffusivity'};
+
+  let html=`<div class="vban ${v.cls}"><div class="vban-head"><div class="vlbl">MDS-MSA Criteria · Wenning et al. 2022</div><div class="vtitle">${v.t}</div>${v.phen?'<span class="vphen" style="border-color:currentColor;">'+(v.cls==='vest'?'<span style="color:var(--green)">':'<span style="color:var(--cyan)">')+v.phen+'</span></span>':''}<div class="vdesc">${v.d}</div></div></div>`;
+
+  html+=`<div class="sum-grid">`;
+  html+=`<div class="sblock"><div class="sbtitle">Core Features</div>`;
+  [['Autonomic dysfunction',autoLevel()],['Parkinsonism',pkLevel()],['Cerebellar syndrome',cbLevel()]].forEach(([name,lv])=>{
+    const dc=lv==='established'?'dg':lv==='probable'?'dc':lv==='prodromal'?'da':'dgr';
+    const tc=lv==='established'?'tg':lv==='probable'?'tc':lv==='prodromal'?'ta':'tgr';
+    html+=`<div class="srow"><div class="dot ${dc}"></div><div class="sname">${name}</div><div class="stag ${tc}">${lv==='none'?'ABSENT':lv.toUpperCase()}</div></div>`;
+  });
+  html+=`<div class="srow"><div class="dot ${mri>=1?'dg':'dgr'}"></div><div class="sname">MRI markers (${sub||'—'})</div><div class="stag ${mri>=1?'tg':'tgr'}">${mri} marker(s)</div></div>`;
+  html+=`<div class="srow"><div class="dot ${sc>=2?'dg':sc>=1?'dc':'dgr'}"></div><div class="sname">Supportive features</div><div class="stag ${sc>=2?'tg':sc>=1?'tc':'tgr'}">${sc} feature(s)</div></div>`;
+  html+=`</div>`;
+
+  html+=`<div class="sblock"><div class="sbtitle">Supportive Features Present</div>`;
+  const supPresent=[...Object.entries(supMotorNames),...Object.entries(supNMNames)].filter(([k])=>S[k]==='yes');
+  if(supPresent.length>0) supPresent.forEach(([k,nm])=>{ html+=`<div class="srow"><div class="dot dg"></div><div class="sname">${nm}</div><div class="stag tg">PRESENT</div></div>`; });
+  else html+=`<div class="srow"><div class="dot dgr"></div><div class="sname" style="color:var(--text3);">None identified</div></div>`;
+  html+=`</div>`;
+  html+=`</div>`;
+
+  document.getElementById('vout').innerHTML=html;
+  buildDoc(v, sub, sc, mri, supMotorNames, supNMNames, mriPNames, mriCNames);
+}
+
+function buildDoc(v, sub, sc, mri, supMotorNames, supNMNames, mriPNames, mriCNames){
+  const supPresent=[...Object.entries(supMotorNames),...Object.entries(supNMNames)].filter(([k])=>S[k]==='yes').map(([,nm])=>nm);
+  const mriKeys=S.subtype==='p'?Object.keys(mriPNames):Object.keys(mriCNames);
+  const mriNames=S.subtype==='p'?mriPNames:mriCNames;
+  const mriPresent=mriKeys.filter(k=>S['mri_'+k.replace('mri_','')]!==undefined?S['mri_'+k]==='yes':S[k]==='yes').map(k=>mriNames[k]||k);
+  const excPresent=EXC_KEYS.filter(k=>S[k]==='present');
+  const excNames={exc1:'Substantial L-dopa response',exc2:'Unexplained anosmia',exc3:'Fluctuating cognition/visuoperceptual decline',exc4:'Recurrent drug-free visual hallucinations <3y',exc5:'Dementia (DSM-V) within 3 years',exc6:'Downgaze supranuclear palsy / slow vertical saccades',exc7:'MRI suggestive of alternative diagnosis',exc8:'Alternative condition documented'};
+
+  let note=`MOVEMENT DISORDERS CONSULTATION\nMDS Criteria for Multiple System Atrophy\nWenning GK et al. Movement Disorders. 2022;37(6):1131–1148. doi:10.1002/mds.29005\nDate: ${new Date().toLocaleDateString()}\n\nESSENTIAL FEATURES\n  Onset after age 30: ${S.onset==='yes'?'Yes':'No'}\n  Negative family history: ${S.family==='yes'?'Yes':'No'}\n  Progressive course: ${S.progress==='yes'?'Yes':'No'}\n  Essential features satisfied: ${essentialMet()?'YES':'NO'}\n\nMOTOR SUBTYPE: ${sub||'Not selected'}\n\nCORE CLINICAL FEATURES\n  Autonomic dysfunction:\n`;
+  note+=`    Post-void residual: ${S.pvr==='high'?'≥100 mL (Established threshold)':S.pvr==='any'?'Any volume (Probable threshold)':'Absent/normal'}\n`;
+  note+=`    Urinary urge incontinence: ${S.uui==='yes'?'Present':'Absent'}\n`;
+  note+=`    Neurogenic OH: ${S.noh==='3min'?'Within 3 min (Established threshold)':S.noh==='10min'?'3–10 min (Probable threshold)':'Absent'}\n`;
+  note+=`    Autonomic level: ${autoLevel().toUpperCase()}\n`;
+  note+=`  Parkinsonism: ${S.pk==='poor'?'Present — poorly L-dopa responsive (Established)':S.pk==='any'?'Present — any L-dopa response (Probable)':'Absent'}\n`;
+  note+=`  Cerebellar syndrome: ${S.cb==='2plus'?'≥2 features (Established)':S.cb==='1'?'1 feature (Probable)':S.cb==='subtle'?'Subtle signs (Prodromal)':'Absent'}\n\n`;
+  note+=`SUPPORTIVE FEATURES (${sc} present)\n${supPresent.length>0?supPresent.map(n=>'  - '+n).join('\n'):'  None identified'}\n\n`;
+  note+=`BRAIN MRI MARKERS (${mri} present — ${sub||'subtype not selected'})\n`;
+  // Just list positive MRI findings from state
+  const mriStatePresent=[];
+  if(S.subtype==='p'){
+    Object.entries(mriPNames).forEach(([k,nm])=>{ if(S['mri_'+k]==='yes') mriStatePresent.push(nm); });
+  } else if(S.subtype==='c'){
+    Object.entries(mriCNames).forEach(([k,nm])=>{ if(S['mri_'+k]==='yes') mriStatePresent.push(nm); });
+  }
+  note+=mriStatePresent.length>0?mriStatePresent.map(n=>'  - '+n).join('\n'):'  None present / not assessed';
+  note+=`\n\nEXCLUSION CRITERIA\n  ${excPresent.length>0?excPresent.map(k=>'PRESENT: '+excNames[k]).join('\n  '):'No exclusion criteria triggered'}\n\n`;
+  note+=`MDS-MSA DIAGNOSTIC CLASSIFICATION\n${v.t}${sub?' — '+sub:''}\n${v.d}\n\n`;
+  note+=`Diagnostic category definitions:\n  Clinically Established MSA: Maximum specificity, acceptable sensitivity. Requires autonomic core feature (Established threshold) + poor L-dopa parkinsonism or cerebellar syndrome (≥2 features) + ≥2 supportive features + ≥1 MRI marker + no exclusions.\n  Clinically Probable MSA: Balanced sensitivity/specificity. Requires ≥2 core features from {autonomic, parkinsonism (any L-dopa response), cerebellar syndrome (≥1 feature)} + ≥1 supportive feature (excl. isolated ED) + no exclusions. MRI not required.\n  Possible Prodromal MSA: Research category, limited specificity. Requires PSG-proven RBD or autonomic failure (entry criterion) + subtle motor signs + no exclusions (including anosmia/abnormal MIBG).\n\nRef: Wenning GK, Stankovic I, Vignatelli L, et al. The Movement Disorder Society Criteria for the Diagnosis of Multiple System Atrophy. Movement Disorders. 2022;37(6):1131–1148.`;
+  document.getElementById('dn').textContent=note;
+}
+
+function go(n){
+  document.getElementById('s'+cur).classList.remove('active');
+  document.getElementById('s'+n).classList.add('active');
+  for(let i=0;i<8;i++){const d=document.getElementById('st'+i);d.classList.remove('active','done');if(i<n)d.classList.add('done');else if(i===n)d.classList.add('active');}
+  cur=n;
+  document.getElementById('pf').style.width=((n/7)*100)+'%';
+  if(n===7) rv();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function xp(btn){
+  const d=btn.closest('.crit').querySelector('.crit-detail');if(!d)return;
+  const o=d.classList.toggle('open');
+  btn.textContent=o?'close ▴':'details ▾';
+}
+
+function toggleDoc(){
+  const body=document.getElementById('dn'),btn=document.getElementById('copy-btn'),tog=document.querySelector('.doc-tog');
+  if(!body)return;
+  const open=body.classList.toggle('open');
+  if(tog)tog.textContent=open?'▲ Documentation Note':'▼ Documentation Note';
+  if(btn)btn.classList.toggle('visible',open);
+}
+
+function copyDoc(){
+  const body=document.getElementById('dn'),btn=document.getElementById('copy-btn');
+  if(!body)return;
+  const text=body.textContent||body.innerText;
+  navigator.clipboard.writeText(text).then(()=>{if(btn){btn.textContent='✓ Copied';btn.classList.add('copied');setTimeout(()=>{btn.textContent='⎘ Copy';btn.classList.remove('copied');},2000);}})
+  .catch(()=>{const ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);if(btn){btn.textContent='✓ Copied';btn.classList.add('copied');setTimeout(()=>{btn.textContent='⎘ Copy';btn.classList.remove('copied');},2000);}});
+}
+
+function resetAll(){
+  Object.keys(S).forEach(k=>S[k]=null);
+  document.querySelectorAll('.crit').forEach(el=>el.className='crit');
+  document.querySelectorAll('.abtn').forEach(b=>b.classList.remove('ay','an','ac','aa','aw'));
+  document.querySelectorAll('.subtype-btn').forEach(b=>b.className='subtype-btn');
+  document.querySelectorAll('.crit-detail').forEach(d=>d.classList.remove('open'));
+  document.querySelectorAll('.xbtn').forEach(b=>b.textContent='details ▾');
+  ['a0','a1','a2','a3','a4','a5','a6'].forEach(id=>{const el=document.getElementById(id);if(el)el.classList.remove('show');});
+  document.getElementById('mri-msap').style.display='none';
+  document.getElementById('mri-msac').style.display='none';
+  const dn=document.getElementById('dn');if(dn)dn.classList.remove('open');
+  const cb=document.getElementById('copy-btn');if(cb)cb.classList.remove('visible','copied');
+  const tog=document.querySelector('.doc-tog');if(tog)tog.textContent='▼ Documentation Note';
+  go(0);
+  document.getElementById('n0').disabled=true;
+  document.getElementById('n1').disabled=true;
+}
+
+ui();
+</script>
+</body>
+</html>

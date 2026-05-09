@@ -1,0 +1,1012 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MDS-PSP Criteria · Diagnostic Navigator</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+  --bg:        #0d1117;
+  --card:      #161b22;
+  --card2:     #1c2330;
+  --border:    #3a4556;
+  --border2:   #4a5f7a;
+  --green:     #3fb950;
+  --green-bg:  rgba(63,185,80,0.10);
+  --green-bd:  rgba(63,185,80,0.35);
+  --red:       #f85149;
+  --red-bg:    rgba(248,81,73,0.10);
+  --red-bd:    rgba(248,81,73,0.35);
+  --amber:     #e3b341;
+  --amber-bg:  rgba(227,179,65,0.10);
+  --amber-bd:  rgba(227,179,65,0.35);
+  --blue:      #58a6ff;
+  --blue-bg:   rgba(88,166,255,0.10);
+  --blue-bd:   rgba(88,166,255,0.35);
+  --orange:    #f0883e;
+  --orange-bg: rgba(240,136,62,0.10);
+  --orange-bd: rgba(240,136,62,0.35);
+  --text:      #e6edf3;
+  --text2:     #aab4c0;
+  --text3:     #6e7f94;
+  --sans:  'Inter', system-ui, sans-serif;
+  --mono:  'IBM Plex Mono', monospace;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg); color: var(--text); font-family: var(--sans); font-size: 14px; line-height: 1.5; min-height: 100vh; }
+.app { max-width: 960px; margin: 0 auto; padding: 0 20px 80px; }
+
+/* HEADER */
+header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+.h-title { font-size: 19px; font-weight: 700; }
+.h-title span { color: var(--orange); }
+.h-sub { font-family: var(--mono); font-size: 10px; color: var(--text3); margin-top: 3px; line-height: 1.5; }
+.reset-btn { background: var(--card2); border: 1px solid var(--border); color: var(--text2); font-family: var(--mono); font-size: 11px; padding: 6px 14px; cursor: pointer; border-radius: 4px; transition: all 0.15s; white-space: nowrap; }
+.reset-btn:hover { border-color: var(--orange); color: var(--orange); }
+
+/* PROGRESS */
+.prog-track { height: 3px; background: var(--border); margin-bottom: 20px; border-radius: 2px; }
+.prog-fill { height: 100%; background: linear-gradient(90deg, var(--orange), #ffa060); border-radius: 2px; transition: width 0.4s ease; box-shadow: 0 0 6px rgba(240,136,62,0.4); }
+
+/* STEP TABS */
+.steps { display: flex; border-bottom: 1px solid var(--border); margin-bottom: 20px; overflow-x: auto; }
+.stab { flex: 1; min-width: 68px; padding: 7px 4px 9px; text-align: center; font-family: var(--mono); font-size: 9px; color: var(--text3); border-bottom: 2px solid transparent; margin-bottom: -1px; transition: all 0.2s; line-height: 1.3; }
+.stab .sn { display: block; font-size: 13px; font-weight: 600; margin-bottom: 1px; }
+.stab.active { color: var(--orange); border-bottom-color: var(--orange); }
+.stab.done   { color: var(--green);  border-bottom-color: var(--green); }
+
+/* CARD */
+.card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 22px; margin-bottom: 12px; }
+.ctitle { font-size: 12px; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; margin-bottom: 3px; }
+.csub { font-size: 12px; color: var(--text2); margin-bottom: 16px; line-height: 1.5; }
+
+/* SECTION LABEL */
+.slabel { display: flex; align-items: center; gap: 8px; font-family: var(--mono); font-size: 10px; font-weight: 500; color: var(--text2); letter-spacing: 0.07em; text-transform: uppercase; margin-bottom: 9px; padding-bottom: 6px; border-bottom: 1px solid var(--border); }
+.pill { font-size: 9px; padding: 1px 7px; border-radius: 20px; border: 1px solid; margin-left: auto; }
+.pill-r { border-color: var(--red);    color: var(--red);    background: var(--red-bg); }
+.pill-a { border-color: var(--amber);  color: var(--amber);  background: var(--amber-bg); }
+.pill-o { border-color: var(--orange); color: var(--orange); background: var(--orange-bg); }
+.pill-g { border-color: var(--green);  color: var(--green);  background: var(--green-bg); }
+
+/* CRITERION ROW */
+.crit { border: 1px solid var(--border); border-radius: 6px; margin-bottom: 5px; overflow: hidden; transition: border-color 0.15s, background 0.15s; }
+.crit.c-yes  { border-color: var(--green-bd);  background: var(--green-bg); }
+.crit.c-no   { border-color: var(--red-bd);    background: var(--red-bg); }
+.crit.c-pres { border-color: var(--orange-bd); background: var(--orange-bg); }
+.crit.c-abs  { border-color: var(--border2);   background: var(--card2); }
+.crit.c-excl { border-color: var(--red-bd);    background: var(--red-bg); }
+
+.crit-main { display: flex; align-items: center; gap: 10px; padding: 10px 13px; }
+.crit-name { flex: 1; font-size: 13px; font-weight: 500; color: var(--text); line-height: 1.3; }
+.crit-level { font-family: var(--mono); font-size: 9px; padding: 2px 6px; border-radius: 3px; border: 1px solid; flex-shrink: 0; }
+.lv1 { border-color: var(--green-bd);  color: var(--green);  background: var(--green-bg); }
+.lv2 { border-color: var(--amber-bd);  color: var(--amber);  background: var(--amber-bg); }
+.lv3 { border-color: var(--blue-bd);   color: var(--blue);   background: var(--blue-bg); }
+.xbtn { background: none; border: 1px solid var(--border); color: var(--text3); font-size: 11px; cursor: pointer; padding: 2px 8px; font-family: var(--mono); white-space: nowrap; transition: all 0.15s; flex-shrink: 0; border-radius: 3px; }
+.xbtn:hover { color: var(--blue); border-color: var(--blue); }
+
+.crit-detail { display: none; padding: 10px 13px 12px; font-size: 12px; color: var(--text); line-height: 1.65; border-top: 1px solid var(--border); }
+.crit-detail.open { display: block; }
+.cnote { margin-top: 8px; padding: 8px 11px; background: var(--card2); border-left: 3px solid var(--border2); font-family: var(--mono); font-size: 10px; color: var(--text2); line-height: 1.75; border-radius: 0 3px 3px 0; }
+.cnote strong { color: var(--text); }
+
+/* BUTTON ROW */
+.brow { display: flex; border-top: 1px solid var(--border); }
+.abtn { flex: 1; padding: 8px 6px; background: none; border: none; border-right: 1px solid var(--border); color: var(--text2); font-family: var(--mono); font-size: 11px; cursor: pointer; transition: all 0.12s; text-transform: uppercase; letter-spacing: 0.04em; font-weight: 500; }
+.abtn:last-child { border-right: none; }
+.abtn:hover { background: var(--card2); color: var(--text); }
+.abtn.ay  { background: var(--green-bg);  color: var(--green);  font-weight: 700; }
+.abtn.an  { background: var(--red-bg);    color: var(--red);    font-weight: 700; }
+.abtn.ao  { background: var(--orange-bg); color: var(--orange); font-weight: 700; }
+.abtn.aa  { background: var(--card2);     color: var(--text2);  font-weight: 700; }
+
+/* DOMAIN GRID */
+.domain-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+@media (max-width: 640px) { .domain-grid { grid-template-columns: 1fr; } }
+
+.domain-card { background: var(--card2); border: 1px solid var(--border); border-radius: 6px; overflow: hidden; }
+.domain-header { padding: 10px 13px 8px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 8px; }
+.domain-icon { font-size: 14px; }
+.domain-name { font-size: 12px; font-weight: 700; color: var(--text); }
+.domain-code { font-family: var(--mono); font-size: 9px; color: var(--text3); margin-left: auto; }
+.domain-body { padding: 8px 0 0; }
+
+/* TWO-COL */
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; }
+@media (max-width: 600px) { .two-col { grid-template-columns: 1fr; } }
+
+/* ALERT */
+.alrt { padding: 9px 13px; border-radius: 5px; font-size: 12px; line-height: 1.55; margin-top: 12px; border-left: 3px solid; display: none; }
+.alrt.show { display: block; }
+.aok  { border-color: var(--green);  background: var(--green-bg);  color: #7ee787; }
+.awn  { border-color: var(--amber);  background: var(--amber-bg);  color: var(--amber); }
+.aerr { border-color: var(--red);    background: var(--red-bg);    color: #ff7b72; }
+.ainf { border-color: var(--blue);   background: var(--blue-bg);   color: var(--blue); }
+.aora { border-color: var(--orange); background: var(--orange-bg); color: var(--orange); }
+
+/* LOGIC BOX */
+.lbox { background: var(--card2); border: 1px solid var(--border); border-radius: 5px; padding: 12px 15px; font-size: 12px; color: var(--text2); line-height: 1.75; margin-bottom: 14px; }
+.lbox strong { color: var(--text); }
+.lo { color: var(--orange); font-weight: 600; }
+.lg { color: var(--green);  font-weight: 600; }
+.la { color: var(--amber);  font-weight: 600; }
+.lr { color: var(--red);    font-weight: 600; }
+.lb { color: var(--blue);   font-weight: 600; }
+
+/* TALLY */
+.tally { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+.chip { display: flex; align-items: center; gap: 5px; padding: 5px 11px; border-radius: 20px; font-family: var(--mono); font-size: 11px; border: 1px solid var(--border); background: var(--card2); color: var(--text2); }
+.chip .n { font-size: 14px; font-weight: 700; }
+.co { border-color: var(--orange-bd); background: var(--orange-bg); color: var(--orange); }
+.cg { border-color: var(--green-bd);  background: var(--green-bg);  color: var(--green); }
+.cr { border-color: var(--red-bd);    background: var(--red-bg);    color: var(--red); }
+
+/* SUPPORT ITEMS */
+.support-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+@media (max-width: 600px) { .support-grid { grid-template-columns: 1fr; } }
+.sup-item { border: 1px solid var(--border); border-radius: 5px; overflow: hidden; }
+.sup-item.s-yes  { border-color: var(--green-bd);  background: var(--green-bg); }
+.sup-item.s-no   { border-color: var(--border2);   background: var(--card2); }
+.sup-body { padding: 8px 10px; font-size: 12px; color: var(--text); line-height: 1.3; }
+.sup-label { font-family: var(--mono); font-size: 9px; color: var(--text3); margin-bottom: 2px; }
+.sup-brow { display: flex; border-top: 1px solid var(--border); }
+.sup-btn { flex: 1; padding: 6px 4px; background: none; border: none; border-right: 1px solid var(--border); color: var(--text3); font-family: var(--mono); font-size: 10px; cursor: pointer; transition: all 0.12s; text-transform: uppercase; }
+.sup-btn:last-child { border-right: none; }
+.sup-btn:hover { background: var(--card2); color: var(--text); }
+.sup-btn.sy { background: var(--green-bg); color: var(--green); font-weight: 700; }
+.sup-btn.sn { background: var(--card2);    color: var(--text2); font-weight: 700; }
+
+/* NAV */
+.nav-row { display: flex; justify-content: space-between; align-items: center; margin-top: 20px; gap: 10px; }
+.nbtn { padding: 9px 22px; border-radius: 5px; font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; border: 1px solid; cursor: pointer; font-weight: 500; transition: all 0.15s; }
+.np { background: var(--orange); border-color: var(--orange); color: #0d1117; font-weight: 700; }
+.np:hover { background: #ffa060; border-color: #ffa060; }
+.np:disabled { opacity: 0.3; cursor: not-allowed; }
+.ns { background: transparent; border-color: var(--border2); color: var(--text2); }
+.ns:hover { border-color: var(--text); color: var(--text); }
+
+/* SCREEN */
+.screen { display: none; }
+.screen.active { display: block; animation: fu 0.25s ease; }
+@keyframes fu { from { opacity:0; transform:translateY(5px); } to { opacity:1; transform:translateY(0); } }
+
+/* VERDICT */
+.vban { border-radius: 8px; padding: 22px 26px; margin-bottom: 16px; border: 2px solid; }
+.vban-head { text-align: center; margin-bottom: 16px; }
+.vprob { border-color: var(--green);  background: var(--green-bg); }
+.vposs { border-color: var(--amber);  background: var(--amber-bg); }
+.vsug  { border-color: var(--blue);   background: var(--blue-bg); }
+.vno   { border-color: var(--red);    background: var(--red-bg); }
+.vlbl { font-family: var(--mono); font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase; opacity: 0.6; margin-bottom: 5px; }
+.vtitle { font-size: 22px; font-weight: 700; margin-bottom: 5px; letter-spacing: -0.01em; }
+.vprob .vtitle { color: var(--green); }
+.vposs .vtitle { color: var(--amber); }
+.vsug  .vtitle { color: var(--blue); }
+.vno   .vtitle { color: var(--red); }
+.vphen { font-family: var(--mono); font-size: 11px; padding: 3px 10px; border-radius: 20px; border: 1px solid; display: inline-block; margin-bottom: 8px; }
+.vdesc { font-size: 12px; color: var(--text2); line-height: 1.7; max-width: 600px; margin: 0 auto; }
+
+/* SUMMARY */
+.sum-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+@media (max-width: 580px) { .sum-grid { grid-template-columns: 1fr; } }
+.sblock { background: var(--card); border: 1px solid var(--border); border-radius: 6px; overflow: hidden; }
+.sbtitle { font-family: var(--mono); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; padding: 7px 11px; border-bottom: 1px solid var(--border); color: var(--text2); background: var(--card2); }
+.srow { display: flex; align-items: flex-start; gap: 8px; padding: 6px 11px; border-bottom: 1px solid var(--border); font-size: 12px; }
+.srow:last-child { border-bottom: none; }
+.dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; margin-top: 4px; }
+.dg  { background: var(--green); }
+.dr  { background: var(--red); }
+.do  { background: var(--orange); }
+.da  { background: var(--amber); }
+.db  { background: var(--blue); }
+.dgr { background: var(--text3); }
+.sname { flex: 1; color: var(--text); line-height: 1.4; }
+.stag { font-family: var(--mono); font-size: 9px; padding: 1px 7px; border-radius: 10px; border: 1px solid; white-space: nowrap; }
+.tg  { border-color: var(--green-bd); color: var(--green); }
+.tr  { border-color: var(--red-bd);   color: var(--red); }
+.to  { border-color: var(--orange-bd);color: var(--orange); }
+.tgr { border-color: var(--border2);  color: var(--text3); }
+
+/* DOC NOTE */
+.doc-header { display: flex; align-items: center; gap: 8px; margin-bottom: 5px; }
+.doc-tog { flex: 1; text-align: left; background: var(--card2); border: 1px solid var(--border2); border-radius: 5px; color: var(--text2); font-family: var(--mono); font-size: 11px; padding: 8px 13px; cursor: pointer; transition: all 0.15s; letter-spacing: 0.04em; }
+.doc-tog:hover { border-color: var(--orange); color: var(--orange); }
+.copy-btn { background: var(--card2); border: 1px solid var(--border2); border-radius: 5px; color: var(--text2); font-family: var(--mono); font-size: 11px; padding: 8px 14px; cursor: pointer; white-space: nowrap; transition: all 0.15s; display: none; }
+.copy-btn.visible { display: block; }
+.copy-btn:hover { border-color: var(--green); color: var(--green); }
+.copy-btn.copied { border-color: var(--green); color: var(--green); background: var(--green-bg); }
+.doc-body { display: none; background: var(--card2); border: 1px solid var(--border2); border-radius: 5px; padding: 13px 15px; font-family: var(--mono); font-size: 11px; color: var(--text2); line-height: 1.85; white-space: pre-wrap; margin-bottom: 12px; }
+.doc-body.open { display: block; }
+</style>
+</head>
+<body>
+<div class="app">
+
+<header>
+  <div>
+    <div class="h-title">MDS-PSP <span>Diagnostic Criteria</span></div>
+    <div class="h-sub">Höglinger GU et al. · Movement Disorders 2017;32(6):853–864 · doi:10.1002/mds.26987<br>Movement Disorder Society–endorsed PSP Study Group</div>
+  </div>
+  <button class="reset-btn" onclick="resetAll()">↺ Reset</button>
+</header>
+
+<div class="prog-track"><div class="prog-fill" id="pf" style="width:0%"></div></div>
+
+<div class="steps">
+  <div class="stab active" id="st0"><span class="sn">1</span>Basic / B1</div>
+  <div class="stab" id="st1"><span class="sn">2</span>Excl. / B2–B3</div>
+  <div class="stab" id="st2"><span class="sn">3</span>O Domain</div>
+  <div class="stab" id="st3"><span class="sn">4</span>P Domain</div>
+  <div class="stab" id="st4"><span class="sn">5</span>A Domain</div>
+  <div class="stab" id="st5"><span class="sn">6</span>C Domain</div>
+  <div class="stab" id="st6"><span class="sn">7</span>Supportive</div>
+  <div class="stab" id="st7"><span class="sn">8</span>Verdict</div>
+</div>
+
+<!-- ══ SCREEN 0: BASIC FEATURES B1 ══ -->
+<div class="screen active" id="s0">
+<div class="card">
+  <div class="ctitle" style="color:var(--orange);">Step 1 · Basic Features — Mandatory Inclusion (B1)</div>
+  <div class="csub">All three B1 criteria must be present before the MDS-PSP criteria can be applied to any phenotype at any stage.</div>
+
+  <div class="lbox">
+    <strong>B1 Mandatory Inclusion (Table 1):</strong> Sporadic occurrence · Age ≥40 at onset · Gradual progression<br>
+    <span class="lo">Any new onset neurological, cognitive, or behavioral deficit that subsequently progresses</span> — in the absence of another identifiable cause — counts as a PSP-related symptom. MAPT rare variants may lead to inherited phenocopies; MAPT carriers may have earlier onset.
+  </div>
+
+  <div class="crit" id="sporadic-item">
+    <div class="crit-main">
+      <div class="crit-name">B1-1 · Sporadic occurrence</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      PSP is classified as a sporadic disease. MAPT rare variants (mutations) may lead to inherited phenocopies with a Mendelian trait pattern — in that case, the case is classified as inherited, not sporadic. MAPT sequencing may be considered in cases where higher certainty is warranted or where a Mendelian inheritance pattern is suspected. LRRK2 and Parkin rare variants have been observed in autopsy-confirmed PSP, but their causal relationship is unclear.
+      <div class="cnote">A patient with a first- or second-degree relative with a PSP-like syndrome and Mendelian inheritance should undergo genetic counseling. Absence of a known family history does not guarantee sporadic occurrence in small families.</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="set('sporadic','yes')" id="sporadic-yes">✓ Sporadic (no known Mendelian inheritance)</button>
+      <button class="abtn" onclick="set('sporadic','no')"  id="sporadic-no" >✗ Known hereditary / Mendelian</button>
+    </div>
+  </div>
+
+  <div class="crit" id="age-item">
+    <div class="crit-main">
+      <div class="crit-name">B1-2 · Age ≥40 years at onset of first PSP-related symptom</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      No autopsy-confirmed PSP case has been demonstrated to manifest before age 40. PSP look-alikes — particularly Niemann-Pick disease type C — may present earlier. If age at onset is &lt;40, the B3 context-dependent exclusion for young-onset disease applies (Wilson's, NPC, hypoparathyroidism, neuroacanthocytosis, neurosyphilis). MAPT rare variant carriers may have earlier onset — this is an exception to the sporadic age rule.
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="set('age40','yes')" id="age40-yes">✓ Onset age ≥40</button>
+      <button class="abtn" onclick="set('age40','no')"  id="age40-no" >✗ Onset age &lt;40</button>
+    </div>
+  </div>
+
+  <div class="crit" id="prog-item">
+    <div class="crit-main">
+      <div class="crit-name">B1-3 · Gradual progression of PSP-related symptoms</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      The disease course must be one of gradual progression, not sudden onset, stepwise deterioration, or rapid decline (which would suggest vascular, autoimmune, metabolic, or prion etiology). PSP-related symptoms include any new neurological, cognitive, or behavioral deficit that progresses during the clinical course in the absence of another identifiable cause. This broad definition reflects the wide spectrum of PSP presentations.
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="set('gradual','yes')" id="gradual-yes">✓ Gradual, progressive course</button>
+      <button class="abtn" onclick="set('gradual','no')"  id="gradual-no" >✗ Sudden / stepwise / rapidly progressive</button>
+    </div>
+  </div>
+
+  <div id="a0" class="alrt"></div>
+  <div class="nav-row"><div></div><button class="nbtn np" id="n0" onclick="go(1)" disabled>Next: Exclusion Criteria →</button></div>
+</div>
+</div>
+
+<!-- ══ SCREEN 1: EXCLUSIONS B2 + B3 ══ -->
+<div class="screen" id="s1">
+<div class="card">
+  <div class="ctitle" style="color:var(--red);">Step 2 · Exclusion Criteria (B2 Mandatory + B3 Context-Dependent)</div>
+  <div class="csub">B2 exclusions apply to every patient. B3 exclusions only apply when suggestive clinical features are present — do not apply B3 if the features are absent.</div>
+
+  <div class="slabel">B2 · Mandatory Exclusion Criteria — Clinical <span class="pill pill-r">APPLY TO ALL</span></div>
+
+  <div class="two-col">
+    <div class="crit" id="b2mem-item">
+      <div class="crit-main"><div class="crit-name">B2-C1 · Predominant unexplained episodic memory impairment (suggestive of AD)</div><button class="xbtn" onclick="xp(this)">details ▾</button></div>
+      <div class="crit-detail">Predominant amnestic presentation — inability to recall recent events, rapid forgetting, with preserved procedural and frontal functions — suggestive of hippocampal/medial temporal pathology as in Alzheimer's disease. Executive dysfunction alone in PSP does not qualify. Must be otherwise unexplained.</div>
+      <div class="brow"><button class="abtn" onclick="set('b2mem','absent')" id="b2mem-absent">✓ Absent</button><button class="abtn" onclick="set('b2mem','present')" id="b2mem-present">✕ Present — Excludes PSP</button></div>
+    </div>
+    <div class="crit" id="b2auto-item">
+      <div class="crit-main"><div class="crit-name">B2-C2 · Predominant unexplained autonomic failure (suggestive of MSA or Lewy body disease)</div><button class="xbtn" onclick="xp(this)">details ▾</button></div>
+      <div class="crit-detail">Orthostatic hypotension (≥30 mmHg systolic or ≥15 mmHg diastolic after 3 minutes standing), urinary incontinence/retention, or other severe autonomic dysfunction disproportionate to the parkinsonian syndrome and otherwise unexplained. Mild autonomic features can occur in PSP.</div>
+      <div class="brow"><button class="abtn" onclick="set('b2auto','absent')" id="b2auto-absent">✓ Absent</button><button class="abtn" onclick="set('b2auto','present')" id="b2auto-present">✕ Present — Excludes PSP</button></div>
+    </div>
+    <div class="crit" id="b2hall-item">
+      <div class="crit-main"><div class="crit-name">B2-C3 · Predominant unexplained visual hallucinations or fluctuating alertness (suggestive of DLB)</div><button class="xbtn" onclick="xp(this)">details ▾</button></div>
+      <div class="crit-detail">Recurrent well-formed visual hallucinations or pronounced fluctuations in cognition/alertness suggesting Lewy body pathology. Ocular motor dysfunction-related misperceptions in PSP do not qualify. Must be otherwise unexplained.</div>
+      <div class="brow"><button class="abtn" onclick="set('b2hall','absent')" id="b2hall-absent">✓ Absent</button><button class="abtn" onclick="set('b2hall','present')" id="b2hall-present">✕ Present — Excludes PSP</button></div>
+    </div>
+    <div class="crit" id="b2mnd-item">
+      <div class="crit-main"><div class="crit-name">B2-C4 · Predominant unexplained multisegmental upper and lower motor neuron signs (suggestive of MND)</div><button class="xbtn" onclick="xp(this)">details ▾</button></div>
+      <div class="crit-detail">Combined UMN and LMN signs in multiple body regions suggesting motor neuron disease. Note: Pure upper motor neuron signs are NOT an exclusion criterion — they can occur in PSP (e.g., PSP-PLS variant). Multisegmental MND pattern involving both UMN and LMN is the exclusion.</div>
+      <div class="brow"><button class="abtn" onclick="set('b2mnd','absent')" id="b2mnd-absent">✓ Absent</button><button class="abtn" onclick="set('b2mnd','present')" id="b2mnd-present">✕ Present — Excludes PSP</button></div>
+    </div>
+    <div class="crit" id="b2vasc-item">
+      <div class="crit-main"><div class="crit-name">B2-C5 · Sudden onset or stepwise / rapid progression with corresponding imaging or laboratory findings (suggestive of vascular, autoimmune, metabolic, or prion etiology)</div><button class="xbtn" onclick="xp(this)">details ▾</button></div>
+      <div class="crit-detail">Sudden onset, clear stepwise worsening with corresponding MRI lesions (infarcts, signal changes), or very rapid progression with corresponding biomarker findings. Must be in conjunction with supporting imaging or laboratory evidence — not clinical features alone.</div>
+      <div class="brow"><button class="abtn" onclick="set('b2vasc','absent')" id="b2vasc-absent">✓ Absent</button><button class="abtn" onclick="set('b2vasc','present')" id="b2vasc-present">✕ Present — Excludes PSP</button></div>
+    </div>
+    <div class="crit" id="b2enc-item">
+      <div class="crit-main"><div class="crit-name">B2-C6 · History of encephalitis</div><button class="xbtn" onclick="xp(this)">details ▾</button></div>
+      <div class="crit-detail">A clear documented history of encephalitis — viral, bacterial, autoimmune — that could have produced the current neurological syndrome. Post-encephalitic parkinsonism can mimic PSP.</div>
+      <div class="brow"><button class="abtn" onclick="set('b2enc','absent')" id="b2enc-absent">✓ Absent</button><button class="abtn" onclick="set('b2enc','present')" id="b2enc-present">✕ Present — Excludes PSP</button></div>
+    </div>
+    <div class="crit" id="b2atax-item">
+      <div class="crit-main"><div class="crit-name">B2-C7 · Prominent appendicular ataxia</div><button class="xbtn" onclick="xp(this)">details ▾</button></div>
+      <div class="crit-detail">Prominent limb ataxia (not gait imbalance from postural instability) suggesting cerebellar pathology. PSP-C (cerebellar variant) is not included in MDS-PSP criteria due to insufficient clinicopathological evidence. Mild cerebellar signs are not an exclusion.</div>
+      <div class="brow"><button class="abtn" onclick="set('b2atax','absent')" id="b2atax-absent">✓ Absent</button><button class="abtn" onclick="set('b2atax','present')" id="b2atax-present">✕ Present — Excludes PSP</button></div>
+    </div>
+    <div class="crit" id="b2pi-item">
+      <div class="crit-main"><div class="crit-name">B2-C8 · Identifiable cause of postural instability (primary sensory deficit, vestibular, severe spasticity, or LMN syndrome)</div><button class="xbtn" onclick="xp(this)">details ▾</button></div>
+      <div class="crit-detail">If postural instability is fully explained by an identifiable cause (e.g., severe peripheral neuropathy causing sensory ataxia, Menière's disease, severe cervical myelopathy with spasticity), the postural instability criterion cannot be attributed to PSP.</div>
+      <div class="brow"><button class="abtn" onclick="set('b2pi','absent')" id="b2pi-absent">✓ No identifiable cause</button><button class="abtn" onclick="set('b2pi','present')" id="b2pi-present">✕ Identifiable cause present</button></div>
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:16px;">B2 · Mandatory Exclusion Criteria — Imaging <span class="pill pill-r">APPLY TO ALL</span></div>
+  <div class="two-col">
+    <div class="crit" id="b2leuko-item">
+      <div class="crit-main"><div class="crit-name">B2-I1 · Severe leukoencephalopathy on cerebral imaging</div></div>
+      <div class="brow"><button class="abtn" onclick="set('b2leuko','absent')" id="b2leuko-absent">✓ Absent</button><button class="abtn" onclick="set('b2leuko','present')" id="b2leuko-present">✕ Present — Excludes PSP</button></div>
+    </div>
+    <div class="crit" id="b2struct-item">
+      <div class="crit-main"><div class="crit-name">B2-I2 · Relevant structural abnormality (NPH, obstructive hydrocephalus, basal ganglia / brainstem infarctions, hemorrhages, tumors, malformations)</div></div>
+      <div class="brow"><button class="abtn" onclick="set('b2struct','absent')" id="b2struct-absent">✓ Absent</button><button class="abtn" onclick="set('b2struct','present')" id="b2struct-present">✕ Present — Excludes PSP</button></div>
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:16px;">B3 · Context-Dependent Exclusions <span class="pill pill-a">APPLY ONLY IF CLINICALLY INDICATED</span></div>
+  <div style="font-size:12px; color:var(--text2); margin-bottom:10px; line-height:1.5;">Only assess these if the corresponding clinical features are present. If not applicable, mark N/A.</div>
+
+  <div class="crit" id="b3overall-item">
+    <div class="crit-main">
+      <div class="crit-name">B3 overall assessment — Any context-dependent exclusion criteria triggered?</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      B3 exclusions to apply when clinically indicated:<br><br>
+      <strong>Imaging:</strong> In sudden/stepwise onset — exclude stroke, CADASIL, severe CAA (DWI/FLAIR/T2*). In very rapid progression — exclude prion disease (DWI cortical/subcortical hyperintensities).<br><br>
+      <strong>Laboratory:</strong> In PSP-CBS — exclude primary AD pathology (CSF tau/phospho-tau/Aβ42 or amyloid PET). In age &lt;45 — exclude Wilson's, NPC, hypoparathyroidism, neuroacanthocytosis, neurosyphilis. In rapid progression — exclude prion disease (14-3-3, NSE, total tau &gt;1,200 pg/mL, RT-QuIC) and paraneoplastic encephalitis (anti-Ma1/Ma2). In Whipple's features — PCR in CSF.<br><br>
+      <strong>Genetics:</strong> Known rare variants excluding PSP include: C9orf72, GRN, FUS, TARDBP, VCP, CHMP2B (non-MAPT FTD); SYNJ1, GBA (PD); APP, PSEN1, PSEN2 (AD); NPC1/2; ATP13A2; DCTN1; POLG; ATN1; PRNP; HTT; ATXN1/2/3/7/17.
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="set('b3','clear')"    id="b3-clear"   >✓ None triggered / Not applicable</button>
+      <button class="abtn" onclick="set('b3','excluded')" id="b3-excluded">✓ Triggered and excluded by investigation</button>
+      <button class="abtn" onclick="set('b3','present')"  id="b3-present" >✕ B3 exclusion confirmed — Excludes PSP</button>
+    </div>
+  </div>
+
+  <div id="a1" class="alrt"></div>
+  <div class="nav-row">
+    <button class="nbtn ns" onclick="go(0)">← Back</button>
+    <button class="nbtn np" id="n1" onclick="go(2)" disabled>Next: Ocular Motor Domain →</button>
+  </div>
+</div>
+</div>
+
+<!-- ══ SCREEN 2: O DOMAIN ══ -->
+<div class="screen" id="s2">
+<div class="card">
+  <div class="ctitle" style="color:var(--orange);">Step 3 · Domain O — Ocular Motor Dysfunction</div>
+  <div class="csub">Mark the highest certainty level present. Levels with lower numbers contribute higher diagnostic certainty. Only the highest level present in each domain is used in the diagnostic combination logic.</div>
+
+  <div class="lbox">
+    <strong>Ocular Motor Domain levels:</strong><br>
+    <span class="lg">O1 (Level 1 — Highest):</span> Vertical supranuclear gaze palsy<br>
+    <span class="la">O2 (Level 2):</span> Slow velocity of vertical saccades<br>
+    <span class="lb">O3 (Level 3 — Lowest):</span> Frequent macro square wave jerks OR eyelid opening apraxia
+  </div>
+
+  <div class="crit" id="O1-item">
+    <div class="crit-main">
+      <div class="crit-name">O1 · Vertical supranuclear gaze palsy</div>
+      <div class="crit-level lv1">Level 1</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      Clear limitation of the range of voluntary gaze in the vertical more than horizontal plane, affecting both up- and downgaze (more than expected for age), which is overcome by activation with the vestibulo-ocular reflex (doll's-eye maneuver). At later stages, VOR may be lost or the maneuver prevented by nuchal rigidity.
+      <div class="cnote">Downgaze palsy is more specific for PSP than upgaze palsy, which is common with aging. The VOR preservation distinguishes supranuclear from nuclear or infranuclear gaze palsies. Incomplete downgaze restriction with VOR override still qualifies if clearly beyond age-expected limitation.</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setDomain('O','O1')" id="O-O1">✓ Present — O1</button>
+      <button class="abtn" onclick="setDomain('O','none')" id="O-none-1" style="display:none;"></button>
+    </div>
+  </div>
+
+  <div class="crit" id="O2-item">
+    <div class="crit-main">
+      <div class="crit-name">O2 · Slow velocity of vertical saccades</div>
+      <div class="crit-level lv2">Level 2</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      Decreased velocity (and amplitude) of vertical greater than horizontal saccadic eye movements. May be established by quantitative infrared oculography or bedside testing. Gaze assessed by command ("Look at the flicking finger"), not pursuit. Target must be &gt;20° from primary gaze. Saccades must be slow enough for the examiner to see the eye movement (rotation), not just initial and final positions. Delay in saccade initiation is NOT slowing. Supported by slowed or absent fast components of vertical optokinetic nystagmus.
+      <div class="cnote">Bedside assessment: Ask patient to make rapid refixations between two targets (examiner's finger and thumb) held &gt;20° apart vertically. Normal saccades are too fast to see movement. In PSP, the examiner can track the eye rotating between targets. Compare vertical vs. horizontal — vertical should be disproportionately affected.</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setDomain('O','O2')" id="O-O2">✓ Present — O2</button>
+      <button class="abtn" onclick="setDomain('O','none')" id="O-none-2" style="display:none;"></button>
+    </div>
+  </div>
+
+  <div class="crit" id="O3-item">
+    <div class="crit-main">
+      <div class="crit-name">O3 · Frequent macro square wave jerks OR eyelid opening apraxia</div>
+      <div class="crit-level lv3">Level 3</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      <strong>Macro square wave jerks:</strong> Rapid involuntary saccadic intrusions during fixation, displacing the eye horizontally from primary position and returning it after 200–300 ms. Most SWJ are &lt;1° and rare in health, but up to 3–4° and frequent (&gt;10/min) in PSP.<br><br>
+      <strong>"Eyelid opening apraxia":</strong> Inability to voluntarily initiate eyelid opening after a period of lid closure, in the absence of involuntary forced lid closure (blepharospasm). Often attributed to pretarsal orbicularis activation (pretarsal blepharospasm) rather than true apraxia.
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setDomain('O','O3')" id="O-O3">✓ Present — O3</button>
+      <button class="abtn" onclick="setDomain('O','none')" id="O-none-3" style="display:none;"></button>
+    </div>
+  </div>
+
+  <div class="crit" id="O0-item">
+    <div class="crit-main"><div class="crit-name">No ocular motor features from this domain</div></div>
+    <div class="brow"><button class="abtn" onclick="setDomain('O','none')" id="O-none">✗ None present / applicable</button></div>
+  </div>
+
+  <div id="a2" class="alrt"></div>
+  <div class="nav-row">
+    <button class="nbtn ns" onclick="go(1)">← Back</button>
+    <button class="nbtn np" onclick="go(3)">Next: Postural Instability Domain →</button>
+  </div>
+</div>
+</div>
+
+<!-- ══ SCREEN 3: P DOMAIN ══ -->
+<div class="screen" id="s3">
+<div class="card">
+  <div class="ctitle" style="color:var(--orange);">Step 4 · Domain P — Postural Instability</div>
+  <div class="csub">All postural instability features require onset within 3 years of first PSP-related symptom. Mark the highest certainty level present.</div>
+
+  <div class="lbox">
+    <strong>Postural Instability Domain levels:</strong><br>
+    <span class="lg">P1 (Level 1):</span> Repeated unprovoked falls within 3 years<br>
+    <span class="la">P2 (Level 2):</span> Tendency to fall on pull-test within 3 years<br>
+    <span class="lb">P3 (Level 3):</span> More than two steps backward on pull-test (but unaided recovery) within 3 years
+  </div>
+
+  <div class="crit" id="P1-item">
+    <div class="crit-main">
+      <div class="crit-name">P1 · Repeated unprovoked falls within 3 years of PSP-related symptom onset</div>
+      <div class="crit-level lv1">Level 1</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      Spontaneous loss of balance while standing, OR history of more than one unprovoked fall, within 3 years after onset of PSP-related features. Falls must be attributable to postural instability, not other causes (e.g., syncope, seizure, orthopedic). This is the most diagnostically powerful postural instability criterion — early spontaneous falls are the hallmark of PSP-Richardson's syndrome.
+    </div>
+    <div class="brow"><button class="abtn" onclick="setDomain('P','P1')" id="P-P1">✓ Present — P1</button></div>
+  </div>
+
+  <div class="crit" id="P2-item">
+    <div class="crit-main">
+      <div class="crit-name">P2 · Tendency to fall on the pull-test within 3 years</div>
+      <div class="crit-level lv2">Level 2</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      Tendency to fall backward on the pull-test if not caught by examiner, within 3 years. Test: examiner stands behind patient (standing erect, eyes open, feet comfortably apart and parallel) and delivers a quick, forceful backward pull on the shoulders (per MDS-UPDRS item 3.12). Falling if not caught = P2. More than two steps back but self-recovery = P3.
+    </div>
+    <div class="brow"><button class="abtn" onclick="setDomain('P','P2')" id="P-P2">✓ Present — P2</button></div>
+  </div>
+
+  <div class="crit" id="P3-item">
+    <div class="crit-main">
+      <div class="crit-name">P3 · More than 2 steps backward but unaided recovery on pull-test within 3 years</div>
+      <div class="crit-level lv3">Level 3</div>
+    </div>
+    <div class="brow"><button class="abtn" onclick="setDomain('P','P3')" id="P-P3">✓ Present — P3</button></div>
+  </div>
+
+  <div class="crit" id="P0-item">
+    <div class="crit-main"><div class="crit-name">No postural instability features from this domain</div></div>
+    <div class="brow"><button class="abtn" onclick="setDomain('P','none')" id="P-none">✗ None present / applicable</button></div>
+  </div>
+
+  <div id="a3" class="alrt"></div>
+  <div class="nav-row">
+    <button class="nbtn ns" onclick="go(2)">← Back</button>
+    <button class="nbtn np" onclick="go(4)">Next: Akinesia Domain →</button>
+  </div>
+</div>
+</div>
+
+<!-- ══ SCREEN 4: A DOMAIN ══ -->
+<div class="screen" id="s4">
+<div class="card">
+  <div class="ctitle" style="color:var(--orange);">Step 5 · Domain A — Akinesia</div>
+  <div class="csub">Mark the highest certainty level present. A1 and A2 require 3-year onset criterion. Mark only one level.</div>
+
+  <div class="lbox">
+    <strong>Akinesia Domain levels:</strong><br>
+    <span class="lg">A1 (Level 1):</span> Progressive gait freezing within 3 years (not levodopa responsive)<br>
+    <span class="la">A2 (Level 2):</span> Akinetic-rigid parkinsonism, predominantly axial, levodopa resistant<br>
+    <span class="lb">A3 (Level 3):</span> Parkinsonism with tremor and/or asymmetric and/or levodopa responsive
+  </div>
+
+  <div class="crit" id="A1-item">
+    <div class="crit-main">
+      <div class="crit-name">A1 · Progressive gait freezing within 3 years (not levodopa responsive)</div>
+      <div class="crit-level lv1">Level 1</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      Sudden and transient motor blocks or start hesitation that are the predominant feature within 3 years of symptom onset, progressive, and not responsive to levodopa. In early disease, akinesia may be present but limb rigidity, tremor, and dementia are absent or mild. This pattern defines PSP-PGF (progressive gait freezing) phenotype.
+    </div>
+    <div class="brow"><button class="abtn" onclick="setDomain('A','A1')" id="A-A1">✓ Present — A1</button></div>
+  </div>
+
+  <div class="crit" id="A2-item">
+    <div class="crit-main">
+      <div class="crit-name">A2 · Parkinsonism: akinetic-rigid, predominantly axial, levodopa resistant</div>
+      <div class="crit-level lv2">Level 2</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      Bradykinesia and rigidity with axial predominance (neck, trunk, proximal limbs more than distal), and levodopa resistance. Levodopa resistance defined as &lt;30% improvement on MDS-UPDRS motor scale — assessed with ≥1,000 mg/day (if tolerated) for ≥1 month, OR after a formal challenge dose of ≥200 mg.
+      <div class="cnote"><strong>Clinical Clue CC1 (Levodopa resistance):</strong> &lt;30% improvement on MDS-UPDRS-III. Must receive ≥1,000 mg/day for ≥1 month, or assessed after ≥200 mg acute challenge. Patients never trialed on adequate levodopa cannot be classified as levodopa resistant.</div>
+    </div>
+    <div class="brow"><button class="abtn" onclick="setDomain('A','A2')" id="A-A2">✓ Present — A2</button></div>
+  </div>
+
+  <div class="crit" id="A3-item">
+    <div class="crit-main">
+      <div class="crit-name">A3 · Parkinsonism with tremor and/or asymmetric predominance and/or levodopa responsive</div>
+      <div class="crit-level lv3">Level 3</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      Bradykinesia with rigidity and/or tremor, and/or limb-predominant asymmetry, and/or levodopa responsiveness (≥30% improvement on MDS-UPDRS-III). This more PD-like presentation carries lowest certainty for PSP but still contributes when combined with other domain features. Represents the PSP-P (parkinsonism) phenotype.
+    </div>
+    <div class="brow"><button class="abtn" onclick="setDomain('A','A3')" id="A-A3">✓ Present — A3</button></div>
+  </div>
+
+  <div class="crit" id="A0-item">
+    <div class="crit-main"><div class="crit-name">No akinesia features from this domain</div></div>
+    <div class="brow"><button class="abtn" onclick="setDomain('A','none')" id="A-none">✗ None present / applicable</button></div>
+  </div>
+
+  <div id="a4" class="alrt"></div>
+  <div class="nav-row">
+    <button class="nbtn ns" onclick="go(3)">← Back</button>
+    <button class="nbtn np" onclick="go(5)">Next: Cognitive Domain →</button>
+  </div>
+</div>
+</div>
+
+<!-- ══ SCREEN 5: C DOMAIN ══ -->
+<div class="screen" id="s5">
+<div class="card">
+  <div class="ctitle" style="color:var(--orange);">Step 6 · Domain C — Cognitive Dysfunction</div>
+  <div class="csub">Mark the highest certainty level present. Features must be persistent (not transient). C2 requires ≥3 of the listed sub-features.</div>
+
+  <div class="lbox">
+    <strong>Cognitive Domain levels:</strong><br>
+    <span class="lg">C1 (Level 1):</span> Speech/language disorder — nfaPPA or progressive apraxia of speech<br>
+    <span class="la">C2 (Level 2):</span> Frontal cognitive/behavioral presentation (≥3 of: apathy, bradyphrenia, dysexecutive syndrome, reduced phonemic verbal fluency, impulsivity/disinhibition/perseveration)<br>
+    <span class="lb">C3 (Level 3):</span> Corticobasal syndrome (CBS) — ≥1 cortical sign + ≥1 movement disorder sign
+  </div>
+
+  <div class="crit" id="C1-item">
+    <div class="crit-main">
+      <div class="crit-name">C1 · Speech/language disorder — nonfluent/agrammatic PPA or progressive apraxia of speech</div>
+      <div class="crit-level lv1">Level 1</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      Must be persistent (not transient). At least one of:<br>
+      <strong>nfaPPA:</strong> Loss of grammar and/or telegraphic speech or writing.<br>
+      <strong>Progressive AOS:</strong> Effortful, halting speech with inconsistent speech sound errors and distortions, or slow syllabically segmented prosodic speech patterns — with spared single-word comprehension, object knowledge, and word retrieval during sentence repetition.
+      <div class="cnote">PSP-SL (speech/language) phenotype — one of the more common variant presentations. AOS alone can predate other PSP features by years. Hypophonia and dysarthria without AOS features do not qualify for C1; they may contribute as Clinical Clue CC2 (hypokinetic, spastic dysarthria).</div>
+    </div>
+    <div class="brow"><button class="abtn" onclick="setDomain('C','C1')" id="C-C1">✓ Present — C1</button></div>
+  </div>
+
+  <div class="crit" id="C2-item">
+    <div class="crit-main">
+      <div class="crit-name">C2 · Frontal cognitive/behavioral presentation (≥3 persistent features)</div>
+      <div class="crit-level lv2">Level 2</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      At least 3 of the following (persistent, not transient):<br>
+      1. <strong>Apathy</strong> — reduced interest, initiative, and spontaneous activity (apparent to informant/patient)<br>
+      2. <strong>Bradyphrenia</strong> — slowed thinking (apparent to informant/patient)<br>
+      3. <strong>Dysexecutive syndrome</strong> — e.g., reverse digit span, Trails B, Stroop test, Luria sequence (≥1.5 SD below age/education-adjusted norms)<br>
+      4. <strong>Reduced phonemic verbal fluency</strong> — e.g., D, F, A, or S words per minute (≥1.5 SD below norms)<br>
+      5. <strong>Impulsivity, disinhibition, or perseveration</strong> — e.g., socially inappropriate behaviors, overstuffing mouth, motor recklessness, applause sign, palilalia, echolalia
+    </div>
+    <div class="brow"><button class="abtn" onclick="setDomain('C','C2')" id="C-C2">✓ Present — C2 (≥3 features)</button></div>
+  </div>
+
+  <div class="crit" id="C3-item">
+    <div class="crit-main">
+      <div class="crit-name">C3 · Corticobasal syndrome — ≥1 cortical sign + ≥1 movement disorder sign</div>
+      <div class="crit-level lv3">Level 3</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      Requires at least one from each group (may be asymmetric or symmetric):<br>
+      <strong>Cortical signs:</strong> (a) Orobuccal or limb apraxia; (b) Cortical sensory deficit (astereognosis, graphesthesia); (c) Alien limb phenomena (more than simple levitation)<br>
+      <strong>Movement disorder signs:</strong> (a) Limb rigidity; (b) Limb akinesia; (c) Limb myoclonus
+      <div class="cnote">PSP-CBS is one of the variant phenotypes. The CBS clinical syndrome has multiple possible underlying pathologies (PSP, CBD, AD, TDP-43, etc.). PSP-CBS and PSP-SL together define the category of "probable 4R-tauopathy" when the B3 context-dependent exclusion for AD is applied.</div>
+    </div>
+    <div class="brow"><button class="abtn" onclick="setDomain('C','C3')" id="C-C3">✓ Present — C3</button></div>
+  </div>
+
+  <div class="crit" id="C0-item">
+    <div class="crit-main"><div class="crit-name">No cognitive features from this domain</div></div>
+    <div class="brow"><button class="abtn" onclick="setDomain('C','none')" id="C-none">✗ None present / applicable</button></div>
+  </div>
+
+  <div id="a5" class="alrt"></div>
+  <div class="nav-row">
+    <button class="nbtn ns" onclick="go(4)">← Back</button>
+    <button class="nbtn np" onclick="go(6)">Next: Supportive Features →</button>
+  </div>
+</div>
+</div>
+
+<!-- ══ SCREEN 6: SUPPORTIVE FEATURES ══ -->
+<div class="screen" id="s6">
+<div class="card">
+  <div class="ctitle" style="color:var(--green);">Step 7 · Supportive Features</div>
+  <div class="csub">Supportive features have positive predictive value insufficient to qualify as diagnostic criteria, but sufficient to increase diagnostic confidence. Imaging findings can upgrade to "imaging-supported" diagnosis.</div>
+
+  <div class="slabel">Clinical Clues (CC1–CC4)</div>
+  <div class="support-grid">
+    <div class="sup-item" id="cc1-item">
+      <div class="sup-body"><div class="sup-label">CC1</div>Levodopa resistance (&lt;30% UPDRS-III improvement on ≥1,000 mg/day ≥1 month or ≥200 mg challenge)</div>
+      <div class="sup-brow"><button class="sup-btn" onclick="setSup('cc1','yes')" id="cc1-yes">✓ Yes</button><button class="sup-btn" onclick="setSup('cc1','no')" id="cc1-no">✗ No</button></div>
+    </div>
+    <div class="sup-item" id="cc2-item">
+      <div class="sup-body"><div class="sup-label">CC2</div>Hypokinetic, spastic dysarthria — slow, low volume and pitch, harsh voice</div>
+      <div class="sup-brow"><button class="sup-btn" onclick="setSup('cc2','yes')" id="cc2-yes">✓ Yes</button><button class="sup-btn" onclick="setSup('cc2','no')" id="cc2-no">✗ No</button></div>
+    </div>
+    <div class="sup-item" id="cc3-item">
+      <div class="sup-body"><div class="sup-label">CC3</div>Dysphagia — unexplained, severe enough to require dietary adaptations</div>
+      <div class="sup-brow"><button class="sup-btn" onclick="setSup('cc3','yes')" id="cc3-yes">✓ Yes</button><button class="sup-btn" onclick="setSup('cc3','no')" id="cc3-no">✗ No</button></div>
+    </div>
+    <div class="sup-item" id="cc4-item">
+      <div class="sup-body"><div class="sup-label">CC4</div>Photophobia — intolerance to visual perception of light (adaptive dysfunction)</div>
+      <div class="sup-brow"><button class="sup-btn" onclick="setSup('cc4','yes')" id="cc4-yes">✓ Yes</button><button class="sup-btn" onclick="setSup('cc4','no')" id="cc4-no">✗ No</button></div>
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:14px;">Imaging Findings (IF1–IF2) <span class="pill pill-g">Qualifies for "imaging-supported" label</span></div>
+  <div class="two-col" style="margin-bottom:6px;">
+    <div class="sup-item" id="if1-item">
+      <div class="sup-body"><div class="sup-label">IF1</div>Predominant midbrain atrophy or hypometabolism (relative to pons) — MRI or [18F]FDG-PET. Hummingbird sign / morning glory sign on sagittal MRI.</div>
+      <div class="sup-brow"><button class="sup-btn" onclick="setSup('if1','yes')" id="if1-yes">✓ Present</button><button class="sup-btn" onclick="setSup('if1','no')" id="if1-no">✗ Absent / Not done</button></div>
+    </div>
+    <div class="sup-item" id="if2-item">
+      <div class="sup-body"><div class="sup-label">IF2</div>Postsynaptic striatal dopaminergic degeneration — [123I]IBZM-SPECT or [18F]-DMFP-PET</div>
+      <div class="sup-brow"><button class="sup-btn" onclick="setSup('if2','yes')" id="if2-yes">✓ Present</button><button class="sup-btn" onclick="setSup('if2','no')" id="if2-no">✗ Absent / Not done</button></div>
+    </div>
+  </div>
+
+  <div id="a6" class="alrt"></div>
+  <div class="nav-row">
+    <button class="nbtn ns" onclick="go(5)">← Back</button>
+    <button class="nbtn np" onclick="go(7)">Generate Verdict →</button>
+  </div>
+</div>
+</div>
+
+<!-- ══ SCREEN 7: VERDICT ══ -->
+<div class="screen" id="s7">
+  <div id="vout"></div>
+  <div id="sout"></div>
+  <div class="doc-header">
+    <button class="doc-tog" onclick="toggleDoc()">▼ Documentation Note</button>
+    <button class="copy-btn" id="copy-btn" onclick="copyDoc()">⎘ Copy</button>
+  </div>
+  <div class="doc-body" id="dn"></div>
+  <div class="nav-row">
+    <button class="nbtn ns" onclick="go(6)">← Back</button>
+    <button class="nbtn np" onclick="resetAll()">↺ New Evaluation</button>
+  </div>
+</div>
+
+</div><!-- /app -->
+<script>
+// STATE
+const S = {
+  sporadic:null, age40:null, gradual:null,
+  b2mem:null,b2auto:null,b2hall:null,b2mnd:null,b2vasc:null,b2enc:null,b2atax:null,b2pi:null,
+  b2leuko:null,b2struct:null,
+  b3:null,
+  O:null, P:null, A:null, C:null,
+  cc1:null,cc2:null,cc3:null,cc4:null,
+  if1:null,if2:null
+};
+let cur = 0;
+
+const B2_KEYS = ['b2mem','b2auto','b2hall','b2mnd','b2vasc','b2enc','b2atax','b2pi','b2leuko','b2struct'];
+
+function set(k, v) {
+  S[k] = v;
+  const item = document.getElementById(k+'-item');
+  if (item) item.className = 'crit';
+  ['yes','no','absent','present','clear','excluded'].forEach(x=>{
+    const b=document.getElementById(k+'-'+x); if(b) b.classList.remove('ay','an','ao','aa');
+  });
+  const map={yes:'ay',no:'an',absent:'ay',present:'an',clear:'ay',excluded:'ay'};
+  const btn=document.getElementById(k+'-'+v); if(btn) btn.classList.add(map[v]||'aa');
+  if(item){
+    if(['yes','absent','clear','excluded'].includes(v)) item.classList.add('c-yes');
+    else if(['no','present'].includes(v)) item.classList.add('c-no');
+  }
+  ui();
+}
+
+function setDomain(domain, level) {
+  S[domain] = level;
+  // Clear all buttons
+  ['O1','O2','O3','P1','P2','P3','A1','A2','A3','C1','C2','C3','none'].forEach(l=>{
+    const b=document.getElementById(domain+'-'+l); if(b) b.classList.remove('ao','ay','aa','an');
+  });
+  // Highlight selected
+  const b=document.getElementById(domain+'-'+level);
+  if(b) b.classList.add(level==='none'?'aa':'ao');
+  // Update criterion item borders
+  ['O1','O2','O3','P1','P2','P3','A1','A2','A3','C1','C2','C3'].forEach(l=>{
+    const item=document.getElementById(l+'-item');
+    if(!item) return;
+    item.className='crit';
+    if(S[domain]===l) item.classList.add('c-pres');
+  });
+  ui();
+}
+
+function setSup(k, v) {
+  S[k] = v;
+  const item = document.getElementById(k+'-item');
+  ['yes','no'].forEach(x=>{const b=document.getElementById(k+'-'+x);if(b)b.classList.remove('sy','sn');});
+  const b=document.getElementById(k+'-'+v); if(b) b.classList.add(v==='yes'?'sy':'sn');
+  if(item) { item.className='sup-item'; item.classList.add(v==='yes'?'s-yes':'s-no'); }
+  ui();
+}
+
+function anyB2Exclusion() { return B2_KEYS.some(k=>S[k]==='present') || S.b3==='present'; }
+function b1Met() { return S.sporadic==='yes' && S.age40==='yes' && S.gradual==='yes'; }
+function imagingSupported() { return S.if1==='yes' || S.if2==='yes'; }
+
+// DIAGNOSTIC LOGIC from Table 5
+function computeVerdict() {
+  const O=S.O, P=S.P, A=S.A, C=S.C;
+  const hasO12 = O==='O1'||O==='O2';
+  const hasO123 = hasO12||O==='O3';
+  const hasP12 = P==='P1'||P==='P2';
+  const hasP123 = hasP12||P==='P3';
+  const cc = ['cc1','cc2','cc3','cc4'].some(k=>S[k]==='yes');
+
+  // PROBABLE PSP combinations (Table 5)
+  // prob.PSP-RS: (O1 or O2) + (P1 or P2)
+  if(hasO12 && hasP12) return {cert:'probable', phen:'PSP-RS', abbr:'prob. PSP-RS', desc:'Richardson\'s syndrome — highest specificity combination. Vertical supranuclear gaze palsy or slow vertical saccades combined with early postural instability.'};
+  // prob.PSP-PGF: (O1 or O2) + A1
+  if(hasO12 && A==='A1') return {cert:'probable', phen:'PSP-PGF', abbr:'prob. PSP-PGF', desc:'Progressive gait freezing with ocular motor dysfunction. High specificity for PSP.'};
+  // prob.PSP-P: (O1 or O2) + (A2 or A3)
+  if(hasO12 && (A==='A2'||A==='A3')) return {cert:'probable', phen:'PSP-P', abbr:'prob. PSP-P', desc:'PSP with predominant parkinsonism. Ocular motor dysfunction with axial parkinsonism — distinguishes from idiopathic PD.'};
+  // prob.PSP-F: (O1 or O2) + C2
+  if(hasO12 && C==='C2') return {cert:'probable', phen:'PSP-F', abbr:'prob. PSP-F', desc:'PSP with predominant frontal presentation. Ocular motor dysfunction with frontal cognitive/behavioral syndrome.'};
+
+  // POSSIBLE PSP combinations (Table 5)
+  // poss.PSP-OM: O1 alone
+  if(O==='O1' && P==='none' && A==='none' && C==='none') return {cert:'possible', phen:'PSP-OM', abbr:'poss. PSP-OM', desc:'Predominant ocular motor dysfunction — vertical supranuclear gaze palsy alone. Increased sensitivity for early PSP.'};
+  if(O==='O1') return {cert:'possible', phen:'PSP-OM', abbr:'poss. PSP-OM', desc:'Vertical supranuclear gaze palsy present. Full probable criteria not yet met — monitor for emergence of additional domain features.'};
+  // poss.PSP-RS: O2 + P3
+  if(O==='O2' && P==='P3') return {cert:'possible', phen:'PSP-RS', abbr:'poss. PSP-RS', desc:'Slow vertical saccades with postural instability (P3 level). Possible Richardson\'s syndrome.'};
+  // poss.PSP-PGF: A1 alone
+  if(A==='A1') return {cert:'possible', phen:'PSP-PGF', abbr:'poss. PSP-PGF', desc:'Progressive gait freezing without ocular motor dysfunction. Possible PSP-PGF — very high PPV for PSP when present.'};
+  // poss.PSP-SL: (O1 or O2) + C1
+  if(hasO12 && C==='C1') return {cert:'possible', phen:'PSP-SL', abbr:'poss. PSP-SL', desc:'Speech/language disorder with ocular motor dysfunction. Probable 4R-tauopathy (PSP or CBD). Apply B3 CBS exclusion.'};
+  // poss.PSP-CBS: (O1 or O2) + C3
+  if(hasO12 && C==='C3') return {cert:'possible', phen:'PSP-CBS', abbr:'poss. PSP-CBS', desc:'Corticobasal syndrome with ocular motor dysfunction. Probable 4R-tauopathy (PSP or CBD). Apply B3 AD exclusion.'};
+
+  // SUGGESTIVE OF PSP combinations (Table 5)
+  // s.o. PSP-OM: O2 or O3 alone
+  if((O==='O2'||O==='O3') && P==='none' && (A==='none'||A==='A2'||A==='A3') && C==='none') return {cert:'suggestive', phen:'PSP-OM', abbr:'s.o. PSP-OM', desc:'Slow vertical saccades or macro square wave jerks/eyelid opening apraxia. Early/subtle evidence for PSP — warrants close follow-up.'};
+  // s.o. PSP-PI: P1 or P2 alone
+  if((P==='P1'||P==='P2') && O==='none' && A==='none' && C==='none') return {cert:'suggestive', phen:'PSP-PI', abbr:'s.o. PSP-PI', desc:'Predominant postural instability without ocular motor dysfunction. Suggestive of PSP-PI variant.'};
+  // s.o. PSP-RS: O3 + (P2 or P3)
+  if(O==='O3' && (P==='P2'||P==='P3')) return {cert:'suggestive', phen:'PSP-RS', abbr:'s.o. PSP-RS', desc:'O3 (macro SWJ/eyelid opening apraxia) with postural instability. Early/subtle Richardson\'s syndrome features.'};
+  // s.o. PSP-P: (A2 or A3) + one of (O3, P1, P2, C1, C2, CC)
+  if((A==='A2'||A==='A3') && (O==='O3'||P==='P1'||P==='P2'||C==='C1'||C==='C2'||cc)) return {cert:'suggestive', phen:'PSP-P', abbr:'s.o. PSP-P', desc:'Parkinsonism with supporting feature from another domain or clinical clue. Suggestive of PSP-P variant.'};
+  // s.o. PSP-SL: C1 alone
+  if(C==='C1') return {cert:'suggestive', phen:'PSP-SL', abbr:'s.o. PSP-SL', desc:'Speech/language disorder (nfaPPA or progressive AOS) without ocular motor dysfunction. Suggestive of PSP-SL.'};
+  // s.o. PSP-F: C2 + (O3 or P3)
+  if(C==='C2' && (O==='O3'||P==='P3')) return {cert:'suggestive', phen:'PSP-F', abbr:'s.o. PSP-F', desc:'Frontal cognitive/behavioral presentation with low-certainty ocular motor or postural features. Suggestive of PSP-F.'};
+  // s.o. PSP-CBS: C3 alone
+  if(C==='C3') return {cert:'suggestive', phen:'PSP-CBS', abbr:'s.o. PSP-CBS', desc:'Corticobasal syndrome without ocular motor dysfunction. Suggestive of PSP-CBS — probable 4R-tauopathy when AD excluded.'};
+
+  return null;
+}
+
+function ui() {
+  // Step 0 B1
+  const a0=document.getElementById('a0'),n0=document.getElementById('n0');
+  if(b1Met()){sa(a0,'aok','✓ All B1 mandatory inclusion criteria met. Proceed to exclusion assessment.'); n0.disabled=false;}
+  else if([S.sporadic,S.age40,S.gradual].some(v=>v==='no')){sa(a0,'aerr','✕ B1 criteria not met — MDS-PSP criteria cannot be applied.'); n0.disabled=true;}
+  else{ha(a0); n0.disabled=true;}
+
+  // Step 1 B2/B3
+  const a1=document.getElementById('a1'),n1=document.getElementById('n1');
+  if(anyB2Exclusion()){sa(a1,'aerr','✕ Exclusion criterion met — PSP diagnosis cannot be made. Reassess the differential diagnosis.'); n1.disabled=true;}
+  else if(B2_KEYS.every(k=>S[k]==='absent')&&S.b3!==null&&S.b3!=='present'){sa(a1,'aok','✓ No exclusion criteria triggered. Proceed to core feature assessment.'); n1.disabled=false;}
+  else if([...B2_KEYS,'b3'].some(k=>S[k]!==null)&&!anyB2Exclusion()){sa(a1,'aok','✓ No exclusion criteria triggered. Proceed to core feature assessment.'); n1.disabled=false;}
+  else{ha(a1); n1.disabled=true;}
+
+  // Domain alerts
+  const domains=[['O','a2','Ocular motor'],['P','a3','Postural instability'],['A','a4','Akinesia'],['C','a5','Cognitive']];
+  domains.forEach(([d,aid,name])=>{
+    const a=document.getElementById(aid);
+    if(S[d]!==null && S[d]!=='none') sa(a,'aora',`◈ ${name}: ${S[d]} selected — Level ${S[d].slice(1)} feature present.`);
+    else if(S[d]==='none') sa(a,'ainf',`ⓘ No ${name.toLowerCase()} features selected.`);
+    else ha(a);
+  });
+
+  // Step 6 supportive
+  const a6=document.getElementById('a6');
+  const ccCount=['cc1','cc2','cc3','cc4'].filter(k=>S[k]==='yes').length;
+  const ifCount=['if1','if2'].filter(k=>S[k]==='yes').length;
+  if(ccCount>0||ifCount>0) sa(a6,'aok',`✓ ${ccCount} clinical clue(s), ${ifCount} imaging finding(s) identified.`+(ifCount>0?' Imaging findings qualify for "imaging-supported" designation.':''));
+  else ha(a6);
+}
+
+function sa(el,cls,msg){ if(!el)return; el.className='alrt show '+cls; el.innerHTML=msg; }
+function ha(el){ if(el) el.classList.remove('show'); }
+
+function rv() {
+  if(!b1Met()||anyB2Exclusion()){ buildNoVerdict(); return; }
+  const v=computeVerdict();
+  if(!v){ buildNoVerdict(); return; }
+  const imgSup=imagingSupported();
+  const clsCert={probable:'vprob',possible:'vposs',suggestive:'vsug'};
+  const certColor={probable:'var(--green)',possible:'var(--amber)',suggestive:'var(--blue)'};
+  const certLabel={probable:'Probable PSP','possible':'Possible PSP',suggestive:'Suggestive of PSP'};
+
+  let html=`<div class="vban ${clsCert[v.cert]}">
+    <div class="vban-head">
+      <div class="vlbl">MDS-PSP Criteria · Höglinger et al. 2017</div>
+      <div class="vtitle">${certLabel[v.cert]}</div>
+      <div>
+        <span class="vphen" style="border-color:${certColor[v.cert]};color:${certColor[v.cert]};">${v.abbr}</span>
+        ${imgSup?'<span class="vphen" style="border-color:var(--green);color:var(--green);margin-left:5px;">+ Imaging Supported</span>':''}
+      </div>
+      <div class="vdesc">${v.desc}</div>
+    </div>
+  </div>`;
+
+  // Summary grid
+  const domNames={O:'Ocular Motor',P:'Postural Instability',A:'Akinesia',C:'Cognitive'};
+  const featureLabels={
+    O1:'O1 — Vertical supranuclear gaze palsy',O2:'O2 — Slow vertical saccades',O3:'O3 — Macro SWJ / eyelid opening apraxia',
+    P1:'P1 — Repeated unprovoked falls (<3y)',P2:'P2 — Fall tendency on pull-test (<3y)',P3:'P3 — >2 steps back on pull-test (<3y)',
+    A1:'A1 — Progressive gait freezing (<3y)',A2:'A2 — Axial akinetic-rigid, levodopa resistant',A3:'A3 — Parkinsonism with tremor/asymmetry/L-dopa response',
+    C1:'C1 — nfaPPA / progressive AOS',C2:'C2 — Frontal cognitive/behavioral (≥3 features)',C3:'C3 — Corticobasal syndrome'
+  };
+  const ccLabels={cc1:'Levodopa resistance (<30% UPDRS-III)',cc2:'Hypokinetic, spastic dysarthria',cc3:'Dysphagia (diet adaptation required)',cc4:'Photophobia'};
+  const ifLabels={if1:'Predominant midbrain atrophy/hypometabolism (IF1)',if2:'Postsynaptic striatal dopaminergic degeneration (IF2)'};
+
+  html+=`<div class="sum-grid">`;
+  html+=`<div class="sblock"><div class="sbtitle">Core Domain Features</div>`;
+  ['O','P','A','C'].forEach(d=>{
+    const val=S[d]; if(!val) return;
+    const present=val!=='none';
+    html+=`<div class="srow"><div class="dot ${present?'do':'dgr'}"></div><div class="sname">${present?(featureLabels[val]||val):'No '+domNames[d]+' features'}</div><div class="stag ${present?'to':'tgr'}">${present?val:'NONE'}</div></div>`;
+  });
+  html+=`</div>`;
+
+  html+=`<div class="sblock"><div class="sbtitle">Supportive Features</div>`;
+  ['cc1','cc2','cc3','cc4'].forEach(k=>{
+    if(S[k]==='yes') html+=`<div class="srow"><div class="dot dg"></div><div class="sname">${ccLabels[k]}</div><div class="stag tg">PRESENT</div></div>`;
+  });
+  ['if1','if2'].forEach(k=>{
+    if(S[k]==='yes') html+=`<div class="srow"><div class="dot dg"></div><div class="sname">${ifLabels[k]}</div><div class="stag tg">PRESENT</div></div>`;
+  });
+  const anySupp=['cc1','cc2','cc3','cc4','if1','if2'].some(k=>S[k]==='yes');
+  if(!anySupp) html+=`<div class="srow"><div class="dot dgr"></div><div class="sname" style="color:var(--text3);">No supportive features identified</div></div>`;
+  html+=`</div>`;
+  html+=`</div>`;
+
+  document.getElementById('vout').innerHTML=html;
+  buildDocNote(v, imgSup);
+}
+
+function buildNoVerdict(){
+  let title='', desc='', cls='vno';
+  if(!b1Met()) { title='B1 Criteria Not Met'; desc='All three mandatory inclusion criteria (sporadic, age ≥40, gradual progression) must be satisfied before the MDS-PSP criteria can be applied.'; }
+  else if(anyB2Exclusion()) { title='Absolute Exclusion Present'; desc='One or more B2 mandatory exclusion criteria (or a confirmed B3 context-dependent exclusion) are present. PSP cannot be diagnosed — reassess the full differential including MSA, DLB, CBD, bvFTD, vascular parkinsonism, or other etiologies.'; }
+  else { title='Criteria Not Met for Any PSP Category'; desc='Basic features are satisfied and no exclusions triggered, but the current combination of core features does not fulfill criteria for Probable, Possible, or Suggestive PSP. Reassess domain features, consider further clinical observation, and repeat assessment as the disease evolves.'; }
+  document.getElementById('vout').innerHTML=`<div class="vban vno"><div class="vban-head"><div class="vlbl">MDS-PSP Criteria · Höglinger et al. 2017</div><div class="vtitle">${title}</div><div class="vdesc">${desc}</div></div></div>`;
+  buildDocNote(null, false, title, desc);
+}
+
+function buildDocNote(v, imgSup, noTitle, noDesc){
+  const featureLabels={O1:'O1 — Vertical supranuclear gaze palsy (Level 1)',O2:'O2 — Slow vertical saccades (Level 2)',O3:'O3 — Macro SWJ / eyelid opening apraxia (Level 3)',P1:'P1 — Repeated unprovoked falls within 3 years (Level 1)',P2:'P2 — Fall tendency on pull-test within 3 years (Level 2)',P3:'P3 — >2 steps back on pull-test within 3 years (Level 3)',A1:'A1 — Progressive gait freezing within 3 years (Level 1)',A2:'A2 — Axial akinetic-rigid, levodopa resistant (Level 2)',A3:'A3 — Parkinsonism with tremor/asymmetry/levodopa response (Level 3)',C1:'C1 — nfaPPA or progressive AOS (Level 1)',C2:'C2 — Frontal cognitive/behavioral presentation ≥3 features (Level 2)',C3:'C3 — Corticobasal syndrome (Level 3)'};
+  const certLabel={probable:'Probable PSP',possible:'Possible PSP',suggestive:'Suggestive of PSP'};
+  let note=`MOVEMENT DISORDERS CONSULTATION\nMDS Clinical Diagnostic Criteria for Progressive Supranuclear Palsy\nHöglinger GU et al. Movement Disorders. 2017;32(6):853–864. doi:10.1002/mds.26987\nDate: ${new Date().toLocaleDateString()}\n\nBASIC FEATURES (B1)\n  Sporadic occurrence: ${S.sporadic==='yes'?'Yes':'No'}\n  Age ≥40 at onset: ${S.age40==='yes'?'Yes':'No'}\n  Gradual progression: ${S.gradual==='yes'?'Yes':'No'}\n  B1 satisfied: ${b1Met()?'YES':'NO'}\n\nEXCLUSION CRITERIA\n  B2 mandatory exclusions: ${B2_KEYS.some(k=>S[k]==='present')?'ONE OR MORE PRESENT — PSP EXCLUDED':'None triggered'}\n  B3 context-dependent exclusions: ${S.b3==='present'?'CONFIRMED — PSP EXCLUDED':S.b3==='excluded'?'Triggered and excluded by investigation':S.b3==='clear'?'None applicable / triggered':'Not assessed'}\n\nCORE DOMAIN FEATURES\n  Ocular Motor (O): ${S.O&&S.O!=='none'?featureLabels[S.O]||S.O:'None'}\n  Postural Instability (P): ${S.P&&S.P!=='none'?featureLabels[S.P]||S.P:'None'}\n  Akinesia (A): ${S.A&&S.A!=='none'?featureLabels[S.A]||S.A:'None'}\n  Cognitive (C): ${S.C&&S.C!=='none'?featureLabels[S.C]||S.C:'None'}\n\nSUPPORTIVE FEATURES\n  Clinical clues:\n`;
+  const ccLabels={cc1:'CC1 — Levodopa resistance (<30% UPDRS-III)',cc2:'CC2 — Hypokinetic, spastic dysarthria',cc3:'CC3 — Dysphagia (diet adaptation required)',cc4:'CC4 — Photophobia'};
+  ['cc1','cc2','cc3','cc4'].forEach(k=>{ note+=`    ${ccLabels[k]}: ${S[k]==='yes'?'Present':'Absent/not assessed'}\n`; });
+  note+=`  Imaging findings:\n    IF1 (midbrain atrophy/hypometabolism): ${S.if1==='yes'?'Present':'Absent/not done'}\n    IF2 (postsynaptic striatal dopaminergic degeneration): ${S.if2==='yes'?'Present':'Absent/not done'}\n  Imaging-supported: ${imgSup?'YES':'No'}\n\nMDS-PSP CLASSIFICATION\n`;
+  if(v){
+    note+=`${certLabel[v.cert]} — ${v.abbr}${imgSup?' (Imaging-Supported)':''}\n${v.desc}\n\nCertainty level definitions:\n  Probable PSP: Highly specific (but not very sensitive) — suitable for therapeutic and biological studies\n  Possible PSP: More sensitive (but less specific) — suitable for epidemiological studies and clinical care\n  Suggestive of PSP: Early/subtle — suitable for early identification and longitudinal observational studies\n`;
+  } else {
+    note+=`${noTitle||'Not classified'}\n${noDesc||''}\n`;
+  }
+  note+=`\nNotes on PSP phenotypes (Table 5, Höglinger et al. 2017):\n  PSP-RS: Richardson's syndrome — classic presentation, highest specificity\n  PSP-OM: Predominant ocular motor dysfunction\n  PSP-PI: Predominant postural instability\n  PSP-P: Predominant parkinsonism (mimics idiopathic PD)\n  PSP-F: Predominant frontal presentation\n  PSP-PGF: Predominant progressive gait freezing\n  PSP-CBS: Predominant corticobasal syndrome (probable 4R-tauopathy)\n  PSP-SL: Predominant speech/language disorder (probable 4R-tauopathy)\n\nRef: Höglinger GU, Respondek G, Stamelou M, et al. Clinical diagnosis of progressive supranuclear palsy: The Movement Disorder Society criteria. Movement Disorders. 2017;32(6):853–864.`;
+  document.getElementById('dn').textContent=note;
+}
+
+function go(n){
+  document.getElementById('s'+cur).classList.remove('active');
+  document.getElementById('s'+n).classList.add('active');
+  for(let i=0;i<8;i++){const d=document.getElementById('st'+i);d.classList.remove('active','done');if(i<n)d.classList.add('done');else if(i===n)d.classList.add('active');}
+  cur=n;
+  document.getElementById('pf').style.width=((n/7)*100)+'%';
+  if(n===7) rv();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function xp(btn){
+  const d=btn.closest('.crit').querySelector('.crit-detail');if(!d)return;
+  const o=d.classList.toggle('open');
+  btn.textContent=o?'close ▴':'details ▾';
+}
+
+function toggleDoc(){
+  const body=document.getElementById('dn'),btn=document.getElementById('copy-btn'),tog=document.querySelector('.doc-tog');
+  if(!body)return;
+  const open=body.classList.toggle('open');
+  if(tog)tog.textContent=open?'▲ Documentation Note':'▼ Documentation Note';
+  if(btn)btn.classList.toggle('visible',open);
+}
+
+function copyDoc(){
+  const body=document.getElementById('dn'),btn=document.getElementById('copy-btn');
+  if(!body)return;
+  const text=body.textContent||body.innerText;
+  navigator.clipboard.writeText(text).then(()=>{if(btn){btn.textContent='✓ Copied';btn.classList.add('copied');setTimeout(()=>{btn.textContent='⎘ Copy';btn.classList.remove('copied');},2000);}})
+  .catch(()=>{const ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);if(btn){btn.textContent='✓ Copied';btn.classList.add('copied');setTimeout(()=>{btn.textContent='⎘ Copy';btn.classList.remove('copied');},2000);}});
+}
+
+function resetAll(){
+  Object.keys(S).forEach(k=>S[k]=null);
+  document.querySelectorAll('.crit').forEach(el=>el.className='crit');
+  document.querySelectorAll('.abtn').forEach(b=>b.classList.remove('ay','an','ao','aa'));
+  document.querySelectorAll('.sup-item').forEach(el=>{el.className='sup-item';});
+  document.querySelectorAll('.sup-btn').forEach(b=>b.classList.remove('sy','sn'));
+  document.querySelectorAll('.crit-detail').forEach(d=>d.classList.remove('open'));
+  document.querySelectorAll('.xbtn').forEach(b=>b.textContent='details ▾');
+  ['a0','a1','a2','a3','a4','a5','a6'].forEach(id=>{const el=document.getElementById(id);if(el)el.classList.remove('show');});
+  const dn=document.getElementById('dn');if(dn)dn.classList.remove('open');
+  const cb=document.getElementById('copy-btn');if(cb)cb.classList.remove('visible','copied');
+  const tog=document.querySelector('.doc-tog');if(tog)tog.textContent='▼ Documentation Note';
+  go(0);
+  document.getElementById('n0').disabled=true;
+  document.getElementById('n1').disabled=true;
+}
+
+ui();
+</script>
+</body>
+</html>

@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Boston Criteria v2.0 · CAA Navigator</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+  --bg:        #0d1117;
+  --card:      #161b22;
+  --card2:     #1c2330;
+  --border:    #3a4556;
+  --border2:   #4a5f7a;
+  --green:     #3fb950;
+  --green-bg:  rgba(63,185,80,0.10);
+  --green-bd:  rgba(63,185,80,0.35);
+  --red:       #f85149;
+  --red-bg:    rgba(248,81,73,0.10);
+  --red-bd:    rgba(248,81,73,0.35);
+  --amber:     #e3b341;
+  --amber-bg:  rgba(227,179,65,0.10);
+  --amber-bd:  rgba(227,179,65,0.35);
+  --blue:      #58a6ff;
+  --blue-bg:   rgba(88,166,255,0.10);
+  --blue-bd:   rgba(88,166,255,0.35);
+  --purple:    #bc8cff;
+  --purple-bg: rgba(188,140,255,0.10);
+  --purple-bd: rgba(188,140,255,0.35);
+  --text:      #e6edf3;
+  --text2:     #aab4c0;
+  --text3:     #6e7f94;
+  --sans:  'Inter', system-ui, sans-serif;
+  --mono:  'IBM Plex Mono', monospace;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg); color: var(--text); font-family: var(--sans); font-size: 14px; line-height: 1.5; min-height: 100vh; }
+.app { max-width: 900px; margin: 0 auto; padding: 0 20px 80px; }
+
+/* HEADER */
+header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+.h-title { font-size: 19px; font-weight: 700; }
+.h-title span { color: var(--purple); }
+.h-sub { font-family: var(--mono); font-size: 10px; color: var(--text3); margin-top: 3px; }
+.reset-btn { background: var(--card2); border: 1px solid var(--border); color: var(--text2); font-family: var(--mono); font-size: 11px; padding: 6px 14px; cursor: pointer; border-radius: 4px; transition: all 0.15s; white-space: nowrap; }
+.reset-btn:hover { border-color: var(--purple); color: var(--purple); }
+
+/* PROGRESS */
+.prog-track { height: 3px; background: var(--border); margin-bottom: 20px; border-radius: 2px; }
+.prog-fill { height: 100%; background: linear-gradient(90deg, var(--purple), #d4aaff); border-radius: 2px; transition: width 0.4s ease; box-shadow: 0 0 6px rgba(188,140,255,0.4); }
+
+/* STEP TABS */
+.steps { display: flex; border-bottom: 1px solid var(--border); margin-bottom: 20px; overflow-x: auto; }
+.stab { flex: 1; min-width: 76px; padding: 7px 4px 9px; text-align: center; font-family: var(--mono); font-size: 9px; color: var(--text3); border-bottom: 2px solid transparent; margin-bottom: -1px; transition: all 0.2s; line-height: 1.3; }
+.stab .sn { display: block; font-size: 14px; font-weight: 600; margin-bottom: 1px; }
+.stab.active { color: var(--purple); border-bottom-color: var(--purple); }
+.stab.done   { color: var(--green);  border-bottom-color: var(--green); }
+
+/* CARD */
+.card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 22px; margin-bottom: 12px; }
+.ctitle { font-size: 12px; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; margin-bottom: 3px; }
+.csub { font-size: 12px; color: var(--text2); margin-bottom: 16px; line-height: 1.45; }
+
+/* SECTION LABEL */
+.slabel { display: flex; align-items: center; gap: 8px; font-family: var(--mono); font-size: 10px; font-weight: 500; color: var(--text2); letter-spacing: 0.07em; text-transform: uppercase; margin-bottom: 9px; padding-bottom: 6px; border-bottom: 1px solid var(--border); }
+.pill { font-size: 9px; padding: 1px 7px; border-radius: 20px; border: 1px solid; margin-left: auto; }
+.pill-r { border-color: var(--red);    color: var(--red);    background: var(--red-bg); }
+.pill-a { border-color: var(--amber);  color: var(--amber);  background: var(--amber-bg); }
+.pill-p { border-color: var(--purple); color: var(--purple); background: var(--purple-bg); }
+.pill-g { border-color: var(--green);  color: var(--green);  background: var(--green-bg); }
+
+/* CRITERION ROW */
+.crit { border: 1px solid var(--border); border-radius: 6px; margin-bottom: 5px; overflow: hidden; transition: border-color 0.15s, background 0.15s; }
+.crit.c-yes  { border-color: var(--green-bd);  background: var(--green-bg); }
+.crit.c-no   { border-color: var(--red-bd);    background: var(--red-bg); }
+.crit.c-pres { border-color: var(--purple-bd); background: var(--purple-bg); }
+.crit.c-abs  { border-color: var(--border2);   background: var(--card2); }
+
+.crit-main { display: flex; align-items: center; gap: 10px; padding: 10px 13px; }
+.crit-name { flex: 1; font-size: 13px; font-weight: 500; color: var(--text); line-height: 1.3; }
+.xbtn { background: none; border: 1px solid var(--border); color: var(--text3); font-size: 11px; cursor: pointer; padding: 2px 8px; font-family: var(--mono); white-space: nowrap; transition: all 0.15s; flex-shrink: 0; border-radius: 3px; }
+.xbtn:hover { color: var(--blue); border-color: var(--blue); }
+
+.crit-detail { display: none; padding: 10px 13px 12px; font-size: 12px; color: var(--text); line-height: 1.65; border-top: 1px solid var(--border); }
+.crit-detail.open { display: block; }
+.cnote { margin-top: 8px; padding: 7px 10px; background: var(--card2); border-left: 3px solid var(--border2); font-family: var(--mono); font-size: 10px; color: var(--text2); line-height: 1.7; font-style: italic; border-radius: 0 3px 3px 0; }
+
+/* BUTTON ROW */
+.brow { display: flex; border-top: 1px solid var(--border); }
+.abtn { flex: 1; padding: 8px 6px; background: none; border: none; border-right: 1px solid var(--border); color: var(--text2); font-family: var(--mono); font-size: 11px; cursor: pointer; transition: all 0.12s; text-transform: uppercase; letter-spacing: 0.04em; font-weight: 500; }
+.abtn:last-child { border-right: none; }
+.abtn:hover { background: var(--card2); color: var(--text); }
+.abtn.ay  { background: var(--green-bg);  color: var(--green);  font-weight: 700; }
+.abtn.an  { background: var(--red-bg);    color: var(--red);    font-weight: 700; }
+.abtn.ap  { background: var(--purple-bg); color: var(--purple); font-weight: 700; }
+.abtn.aa  { background: var(--card2);     color: var(--text2);  font-weight: 700; }
+
+/* TWO-COL */
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; }
+@media (max-width: 600px) { .two-col { grid-template-columns: 1fr; } }
+
+/* ALERT */
+.alrt { padding: 9px 13px; border-radius: 5px; font-size: 12px; line-height: 1.5; margin-top: 12px; border-left: 3px solid; display: none; }
+.alrt.show { display: block; }
+.aok  { border-color: var(--green);  background: var(--green-bg);  color: #7ee787; }
+.awn  { border-color: var(--amber);  background: var(--amber-bg);  color: var(--amber); }
+.aerr { border-color: var(--red);    background: var(--red-bg);    color: #ff7b72; }
+.ainf { border-color: var(--blue);   background: var(--blue-bg);   color: var(--blue); }
+.apurp{ border-color: var(--purple); background: var(--purple-bg); color: var(--purple); }
+
+/* LOGIC BOX */
+.lbox { background: var(--card2); border: 1px solid var(--border); border-radius: 5px; padding: 11px 15px; font-size: 12px; color: var(--text2); line-height: 1.7; margin-bottom: 16px; }
+.lbox strong { color: var(--text); }
+.lg { color: var(--green);  font-weight: 600; }
+.la { color: var(--amber);  font-weight: 600; }
+.lr { color: var(--red);    font-weight: 600; }
+.lp { color: var(--purple); font-weight: 600; }
+
+/* TALLY */
+.tally { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+.chip { display: flex; align-items: center; gap: 5px; padding: 5px 12px; border-radius: 20px; font-family: var(--mono); font-size: 11px; border: 1px solid var(--border); background: var(--card2); color: var(--text2); }
+.chip .n { font-size: 15px; font-weight: 700; }
+.cg { border-color: var(--green-bd);  background: var(--green-bg);  color: var(--green); }
+.cr { border-color: var(--red-bd);    background: var(--red-bg);    color: var(--red); }
+.ca { border-color: var(--amber-bd);  background: var(--amber-bg);  color: var(--amber); }
+.cp { border-color: var(--purple-bd); background: var(--purple-bg); color: var(--purple); }
+
+/* NAV */
+.nav-row { display: flex; justify-content: space-between; align-items: center; margin-top: 20px; gap: 10px; }
+.nbtn { padding: 9px 22px; border-radius: 5px; font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; border: 1px solid; cursor: pointer; font-weight: 500; transition: all 0.15s; }
+.np { background: var(--purple); border-color: var(--purple); color: #0d1117; font-weight: 700; }
+.np:hover { background: #d4aaff; border-color: #d4aaff; }
+.np:disabled { opacity: 0.3; cursor: not-allowed; }
+.ns { background: transparent; border-color: var(--border2); color: var(--text2); }
+.ns:hover { border-color: var(--text); color: var(--text); }
+
+/* SCREEN */
+.screen { display: none; }
+.screen.active { display: block; animation: fu 0.25s ease; }
+@keyframes fu { from { opacity:0; transform:translateY(5px); } to { opacity:1; transform:translateY(0); } }
+
+/* VERDICT */
+.vban { border-radius: 8px; padding: 22px 26px; margin-bottom: 16px; text-align: center; border: 2px solid; }
+.ve   { border-color: var(--green);  background: var(--green-bg); }
+.vp   { border-color: var(--purple); background: var(--purple-bg); }
+.va   { border-color: var(--amber);  background: var(--amber-bg); }
+.vn   { border-color: var(--red);    background: var(--red-bg); }
+.vlbl { font-family: var(--mono); font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase; opacity: 0.6; margin-bottom: 5px; }
+.vtitle { font-size: 24px; font-weight: 700; margin-bottom: 7px; letter-spacing: -0.01em; }
+.ve .vtitle  { color: var(--green); }
+.vp .vtitle  { color: var(--purple); }
+.va .vtitle  { color: var(--amber); }
+.vn .vtitle  { color: var(--red); }
+.vdesc { font-size: 12px; color: var(--text2); line-height: 1.7; max-width: 580px; margin: 0 auto; }
+
+/* SUMMARY */
+.sum-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+@media (max-width: 580px) { .sum-grid { grid-template-columns: 1fr; } }
+.sblock { background: var(--card); border: 1px solid var(--border); border-radius: 6px; overflow: hidden; }
+.sbtitle { font-family: var(--mono); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; padding: 7px 11px; border-bottom: 1px solid var(--border); color: var(--text2); background: var(--card2); }
+.srow { display: flex; align-items: flex-start; gap: 8px; padding: 6px 11px; border-bottom: 1px solid var(--border); font-size: 12px; }
+.srow:last-child { border-bottom: none; }
+.dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; margin-top: 4px; }
+.dg  { background: var(--green); }
+.dr  { background: var(--red); }
+.dp  { background: var(--purple); }
+.dgr { background: var(--text3); }
+.sname { flex: 1; color: var(--text); }
+.stag { font-family: var(--mono); font-size: 9px; padding: 1px 7px; border-radius: 10px; border: 1px solid; white-space: nowrap; }
+.tg  { border-color: var(--green-bd);  color: var(--green); }
+.tr  { border-color: var(--red-bd);    color: var(--red); }
+.tp  { border-color: var(--purple-bd); color: var(--purple); }
+.tgr { border-color: var(--border2);   color: var(--text3); }
+
+/* DOC NOTE */
+.doc-header { display: flex; align-items: center; gap: 8px; margin-bottom: 5px; }
+.doc-tog { flex: 1; text-align: left; background: var(--card2); border: 1px solid var(--border2); border-radius: 5px; color: var(--text2); font-family: var(--mono); font-size: 11px; padding: 8px 13px; cursor: pointer; transition: all 0.15s; letter-spacing: 0.04em; }
+.doc-tog:hover { border-color: var(--purple); color: var(--purple); }
+.copy-btn { background: var(--card2); border: 1px solid var(--border2); border-radius: 5px; color: var(--text2); font-family: var(--mono); font-size: 11px; padding: 8px 14px; cursor: pointer; white-space: nowrap; transition: all 0.15s; display: none; }
+.copy-btn.visible { display: block; }
+.copy-btn:hover { border-color: var(--green); color: var(--green); }
+.copy-btn.copied { border-color: var(--green); color: var(--green); background: var(--green-bg); }
+.doc-body { display: none; background: var(--card2); border: 1px solid var(--border2); border-radius: 5px; padding: 13px 15px; font-family: var(--mono); font-size: 11px; color: var(--text2); line-height: 1.85; white-space: pre-wrap; margin-bottom: 12px; }
+.doc-body.open { display: block; }
+
+/* INFO BOX */
+.ibox { background: var(--card2); border: 1px solid var(--border); border-radius: 5px; padding: 11px 15px; font-size: 12px; color: var(--text2); line-height: 1.7; margin-top: 10px; }
+.ibox strong { color: var(--text); }
+</style>
+</head>
+<body>
+<div class="app">
+
+<header>
+  <div>
+    <div class="h-title">Boston Criteria <span>v2.0</span></div>
+    <div class="h-sub">Charidimou A et al. · Lancet Neurol 2022;21(8):714–725 · doi:10.1016/S1474-4422(22)00208-3</div>
+  </div>
+  <button class="reset-btn" onclick="resetAll()">↺ Reset</button>
+</header>
+
+<div class="prog-track"><div class="prog-fill" id="pf" style="width:0%"></div></div>
+
+<div class="steps">
+  <div class="stab active" id="st0"><span class="sn">1</span>Clinical</div>
+  <div class="stab" id="st1"><span class="sn">2</span>Exclusions</div>
+  <div class="stab" id="st2"><span class="sn">3</span>Hemorrhagic</div>
+  <div class="stab" id="st3"><span class="sn">4</span>White Matter</div>
+  <div class="stab" id="st4"><span class="sn">5</span>Verdict</div>
+</div>
+
+<!-- ══ SCREEN 0: CLINICAL PRESENTATION ══ -->
+<div class="screen active" id="s0">
+<div class="card">
+  <div class="ctitle" style="color:var(--purple);">Step 1 · Clinical Presentation Criteria</div>
+  <div class="csub">Both age and at least one qualifying clinical feature must be present before applying imaging criteria.</div>
+
+  <div class="slabel">A · Age <span class="pill pill-r">MANDATORY</span></div>
+  <div class="crit" id="age-item">
+    <div class="crit-main">
+      <div class="crit-name">Age ≥50 years</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      The Boston criteria v2.0 apply only to patients aged 50 or older. This threshold reflects the age-related increase in sporadic CAA prevalence. CAA in younger patients is atypical and should prompt consideration of hereditary CAA (Dutch, Flemish, Arctic, Iowa, Italian, Piedmont mutations) or other amyloidopathies.
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="set('age','yes')" id="age-yes">✓ ≥50 years</button>
+      <button class="abtn" onclick="set('age','no')"  id="age-no" >✗ &lt;50 years</button>
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:14px;">B · Clinical Presentation <span class="pill pill-a">≥1 REQUIRED</span></div>
+  <p style="font-size:12px; color:var(--text2); margin-bottom:10px; line-height:1.5;">Mark all that are present. At least one must apply.</p>
+
+  <div class="two-col">
+    <div class="crit" id="ich-item">
+      <div class="crit-main">
+        <div class="crit-name">Spontaneous intracerebral hemorrhage</div>
+        <button class="xbtn" onclick="xp(this)">details ▾</button>
+      </div>
+      <div class="crit-detail">
+        Spontaneous (non-traumatic) ICH, typically lobar (cortical or subcortical). Lobar distribution strongly favors CAA; deep (basal ganglia, thalamus, brainstem) or cerebellar hemorrhage alone is not supportive. The hemorrhage must not be attributable to another structural or systemic cause.
+      </div>
+      <div class="brow">
+        <button class="abtn" onclick="set('ich','present')" id="ich-present">✓ Present</button>
+        <button class="abtn" onclick="set('ich','absent')"  id="ich-absent" >✗ Absent</button>
+      </div>
+    </div>
+
+    <div class="crit" id="csah-item">
+      <div class="crit-main">
+        <div class="crit-name">Convexity subarachnoid hemorrhage (cSAH)</div>
+        <button class="xbtn" onclick="xp(this)">details ▾</button>
+      </div>
+      <div class="crit-detail">
+        Non-aneurysmal subarachnoid blood restricted to cortical sulci of the convexities, sparing the basal cisterns. On MRI: FLAIR or SWI sulcal signal. Must be distinguished from traumatic or aneurysmal SAH. Often presents as transient focal neurological episodes (TFNEs) in CAA.
+      </div>
+      <div class="brow">
+        <button class="abtn" onclick="set('csah','present')" id="csah-present">✓ Present</button>
+        <button class="abtn" onclick="set('csah','absent')"  id="csah-absent" >✗ Absent</button>
+      </div>
+    </div>
+
+    <div class="crit" id="tfne-item">
+      <div class="crit-main">
+        <div class="crit-name">Transient focal neurological episodes (TFNEs)</div>
+        <button class="xbtn" onclick="xp(this)">details ▾</button>
+      </div>
+      <div class="crit-detail">
+        Recurrent, stereotyped, brief (&lt;30 min) episodes of positive (spreading) or negative focal neurological symptoms — classically a spreading paresthesia, tingling, or visual phenomenon — often referred to as "cortical spreading depression" events. Associated with cortical superficial siderosis in CAA. Distinguish from TIA (typically negative, abrupt onset) and seizure.
+        <div class="cnote">TFNEs in the setting of cortical superficial siderosis are highly specific for CAA. Each episode typically spreads over minutes, unlike the abrupt onset of TIA.</div>
+      </div>
+      <div class="brow">
+        <button class="abtn" onclick="set('tfne','present')" id="tfne-present">✓ Present</button>
+        <button class="abtn" onclick="set('tfne','absent')"  id="tfne-absent" >✗ Absent</button>
+      </div>
+    </div>
+
+    <div class="crit" id="cog-item">
+      <div class="crit-main">
+        <div class="crit-name">Cognitive impairment or dementia</div>
+        <button class="xbtn" onclick="xp(this)">details ▾</button>
+      </div>
+      <div class="crit-detail">
+        Cognitive decline attributable to CAA-related mechanisms — white matter disease, microinfarcts, microbleeds, superficial siderosis, or macroscopic hemorrhage. CAA-related dementia may be disproportionately posterior (visuospatial, executive). This presentation is used to capture the non-hemorrhagic cognitive CAA phenotype.
+        <div class="cnote">When cognitive impairment is the sole presentation, the white matter features (Step 4) become especially important for diagnosis. A positive CSF or PET amyloid biomarker can support diagnosis but is not currently incorporated into the v2.0 criteria framework.</div>
+      </div>
+      <div class="brow">
+        <button class="abtn" onclick="set('cog','present')" id="cog-present">✓ Present</button>
+        <button class="abtn" onclick="set('cog','absent')"  id="cog-absent" >✗ Absent</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="a0" class="alrt"></div>
+  <div class="nav-row">
+    <div></div>
+    <button class="nbtn np" id="n0" onclick="go(1)" disabled>Next: Exclusions →</button>
+  </div>
+</div>
+</div>
+
+<!-- ══ SCREEN 1: EXCLUSIONS ══ -->
+<div class="screen" id="s1">
+<div class="card">
+  <div class="ctitle" style="color:var(--red);">Step 2 · Exclusion Criteria</div>
+  <div class="csub">Both conditions must be satisfied for the Boston criteria to apply. These are non-negotiable structural prerequisites.</div>
+
+  <div class="slabel">Deep hemorrhagic lesions <span class="pill pill-r">MUST BE ABSENT</span></div>
+  <div class="crit" id="deep-item">
+    <div class="crit-main">
+      <div class="crit-name">Absence of deep hemorrhagic lesions on T2*-GRE or SWI</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      Deep hemorrhagic lesions include: deep ICH (basal ganglia, thalamus, internal capsule, brainstem), deep cerebral microbleeds (not lobar or cortical), or deep superficial siderosis. <strong>Any single deep hemorrhagic lesion excludes CAA under the Boston criteria framework</strong> — it points toward hypertensive small vessel disease.
+      <div class="cnote">Mixed microbleeds (both lobar AND deep) also exclude CAA per the criteria, as the presence of any deep hemorrhagic lesion applies the exclusion. Cerebellar hemorrhagic lesions are a special case — they are classified as neither lobar nor deep and do NOT trigger this exclusion. If only cerebellar lesions are present, the exclusion is not applied.</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="set('deep','absent')"  id="deep-absent" >✓ No deep lesions — criteria can proceed</button>
+      <button class="abtn" onclick="set('deep','present')" id="deep-present">✕ Deep lesions present — CAA excluded</button>
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:14px;">Alternative cause exclusion <span class="pill pill-r">REQUIRED</span></div>
+  <div class="crit" id="cause-item">
+    <div class="crit-main">
+      <div class="crit-name">No other cause of hemorrhagic lesions identified on clinical history, imaging, and workup</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      Hemorrhagic lesions must not be better explained by an alternative cause. Causes to exclude based on clinical context:
+      <div class="cnote">Anticoagulation-related hemorrhage, arteriovenous malformation (AVM), cavernoma, dural arteriovenous fistula, CNS vasculitis, moyamoya disease, cerebral venous thrombosis, coagulopathy, thrombocytopenia, infective endocarditis, or metastatic disease. Workup should include: blood pressure history (longstanding hypertension favors hypertensive SVD), coagulation studies, vessel imaging (CTA/MRA), and gadolinium-enhanced MRI to exclude structural lesions. Not all workup is mandatory in every case — clinical judgment guides the extent of investigation.</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="set('cause','excluded')"     id="cause-excluded"    >✓ No alternative cause identified</button>
+      <button class="abtn" onclick="set('cause','not_excluded')" id="cause-not_excluded">⚠ Alternative cause not yet excluded</button>
+    </div>
+  </div>
+
+  <div id="a1" class="alrt"></div>
+  <div class="nav-row">
+    <button class="nbtn ns" onclick="go(0)">← Back</button>
+    <button class="nbtn np" id="n1" onclick="go(2)" disabled>Next: Hemorrhagic Markers →</button>
+  </div>
+</div>
+</div>
+
+<!-- ══ SCREEN 2: HEMORRHAGIC MARKERS ══ -->
+<div class="screen" id="s2">
+<div class="card">
+  <div class="ctitle" style="color:var(--red);">Step 3 · Hemorrhagic Markers</div>
+  <div class="csub">Strictly lobar or superficial hemorrhagic lesions only. Assessed on T2*-GRE or SWI — SWI is preferred for superior sensitivity.</div>
+
+  <div class="lbox">
+    <strong>Diagnostic logic:</strong> Each marker below counts as <span class="lp">one hemorrhagic lesion</span>. 
+    <span class="lg">Probable CAA</span> requires ≥2 strictly lobar/superficial hemorrhagic lesions (alone), OR 1 hemorrhagic lesion + 1 white matter feature (Step 4). 
+    <span class="la">Possible CAA</span> requires 1 hemorrhagic lesion alone, OR 1 white matter feature alone (Step 4).
+    Mark all that are present on current or prior imaging.
+  </div>
+
+  <!-- H1 -->
+  <div class="crit" id="h1-item">
+    <div class="crit-main">
+      <div class="crit-name">Lobar intracerebral hemorrhage (cortical-subcortical)</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      Hemorrhage centered in the lobar (cortical or immediately subcortical) region — frontal, temporal, parietal, or occipital. Must be strictly lobar — not extending into or originating from deep structures (basal ganglia, thalamus, internal capsule). Prior lobar ICH documented on any imaging modality counts. Hemosiderin cavity on SWI from a prior lobar ICH qualifies as a lobar hemorrhagic lesion.
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="set('h1','present')" id="h1-present">✓ Present</button>
+      <button class="abtn" onclick="set('h1','absent')"  id="h1-absent" >✗ Absent</button>
+    </div>
+  </div>
+
+  <!-- H2 -->
+  <div class="crit" id="h2-item">
+    <div class="crit-main">
+      <div class="crit-name">Lobar cerebral microbleeds — cortical or juxtacortical (≥1)</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      Small (2–10 mm) rounded hypointense foci on T2*-GRE or SWI in the cortex or immediately adjacent subcortical white matter. Must be strictly lobar — not in basal ganglia, thalamus, internal capsule, brainstem, or cerebellum. Even a single strictly lobar microbleed qualifies as one hemorrhagic lesion. SWI significantly outperforms T2*-GRE for microbleed detection.
+      <div class="cnote">Strictly lobar microbleed burden correlates with CAA severity and ICH recurrence risk. Mixed microbleed patterns (lobar + deep) trigger the exclusion criterion and should be assessed in Step 2.</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="set('h2','present')" id="h2-present">✓ Present (≥1 lobar CMB)</button>
+      <button class="abtn" onclick="set('h2','absent')"  id="h2-absent" >✗ Absent</button>
+    </div>
+  </div>
+
+  <!-- H3 -->
+  <div class="crit" id="h3-item">
+    <div class="crit-main">
+      <div class="crit-name">Cortical superficial siderosis (cSS)</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      Linear hypointensity along the cortical surface on T2*-GRE or SWI, following sulcal contours — represents hemosiderin deposition from prior cortical or leptomeningeal hemorrhage. Distinguished from deep superficial siderosis (infratentorial, spinal) and from remote cortical contusion (traumatic). SWI has superior sensitivity. Focal cSS (1–3 sulci) vs. disseminated cSS (≥4 sulci) — both qualify as one hemorrhagic lesion; disseminated cSS has higher specificity.
+      <div class="cnote">Cortical superficial siderosis is closely associated with TFNEs in CAA and may represent the MRI correlate of cortical micro-hemorrhages or leptomeningeal vessel rupture. It was first incorporated in Boston criteria v1.5 (2010).</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="set('h3','present')" id="h3-present">✓ Present</button>
+      <button class="abtn" onclick="set('h3','absent')"  id="h3-absent" >✗ Absent</button>
+    </div>
+  </div>
+
+  <!-- H4 -->
+  <div class="crit" id="h4-item">
+    <div class="crit-main">
+      <div class="crit-name">Convexity subarachnoid hemorrhage (cSAH) on MRI</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      Acute blood in cortical sulci restricted to the brain convexities — seen as sulcal FLAIR hyperintensity or SWI hypointensity. If the clinical presentation already includes cSAH (Step 1), this MRI finding confirms it as a hemorrhagic lesion. Subacute or chronic convexity SAH may be visible as sulcal hemosiderin on SWI. Distinguishing from aneurysmal SAH (basal cisterns, thick hemorrhage) is critical.
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="set('h4','present')" id="h4-present">✓ Present on MRI</button>
+      <button class="abtn" onclick="set('h4','absent')"  id="h4-absent" >✗ Absent</button>
+    </div>
+  </div>
+
+  <div class="tally" style="margin-top:14px;">
+    <div class="chip cp"><span class="n" id="hn">0</span>Hemorrhagic Lesion(s)</div>
+  </div>
+
+  <div id="a2" class="alrt"></div>
+  <div class="nav-row">
+    <button class="nbtn ns" onclick="go(1)">← Back</button>
+    <button class="nbtn np" onclick="go(3)">Next: White Matter Features →</button>
+  </div>
+</div>
+</div>
+
+<!-- ══ SCREEN 3: WHITE MATTER FEATURES ══ -->
+<div class="screen" id="s3">
+<div class="card">
+  <div class="ctitle" style="color:var(--amber);">Step 4 · White Matter Features</div>
+  <div class="csub">New in v2.0. Each feature counts as one white matter marker. Assessed on T2-weighted or FLAIR sequences.</div>
+
+  <div class="lbox">
+    <strong>Key v2.0 addition:</strong> White matter features were incorporated to improve sensitivity, particularly in patients without macroscopic hemorrhage. A single white matter feature can substitute for a hemorrhagic lesion to reach <span class="lg">Probable CAA</span> (1 hemorrhagic lesion + 1 WM feature), or alone can establish <span class="la">Possible CAA</span>. These features reflect CAA-related microangiopathy of penetrating cortical arterioles.
+  </div>
+
+  <!-- WM1 -->
+  <div class="crit" id="wm1-item">
+    <div class="crit-main">
+      <div class="crit-name">Severe perivascular spaces in the centrum semiovale — &gt;20 visible in one hemisphere on T2</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      Perivascular spaces (PVS) in the centrum semiovale follow penetrating cortical arterioles into the white matter. In CAA, they are dilated by CAA-related angiopathy and reflect subcortical amyloid deposition. Assessed on axial T2-weighted MRI using the validated CS-PVS rating scale — severe = &gt;20 visible PVS in one hemisphere on the slice with the largest number.
+      <div class="cnote">Centro-semiovale PVS pattern (upper white matter, following cortical vessels) is distinct from basal ganglia PVS (which follow lenticulostriate vessels, more associated with hypertensive SVD). Severe CS-PVS has specificity ~85% and sensitivity ~40% for CAA. Must be assessed on high-quality T2 sequences — not T2*-GRE or SWI.</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="set('wm1','present')" id="wm1-present">✓ Severe CS-PVS (&gt;20 in one hemisphere)</button>
+      <button class="abtn" onclick="set('wm1','absent')"  id="wm1-absent" >✗ Absent / Not severe</button>
+    </div>
+  </div>
+
+  <!-- WM2 -->
+  <div class="crit" id="wm2-item">
+    <div class="crit-main">
+      <div class="crit-name">White matter hyperintensities in a multispot pattern — &gt;10 small juxtacortical/subcortical round or ovoid lesions on FLAIR</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      Multispot WMH pattern: small (&lt;10 mm), round or ovoid, juxtacortical or subcortical FLAIR hyperintensities — more than 10 throughout the brain. This pattern reflects CAA-related white matter injury from cortical microinfarcts and amyloid-laden small vessel occlusion. Distinct from the confluent periventricular WMH typical of hypertensive SVD or age-related changes.
+      <div class="cnote">The multispot pattern is spatially associated with cortical microinfarcts and is pathologically correlated with amyloid angiopathy of superficial cortical vessels. It requires careful differentiation from MS lesions (juxtacortical, ovoid, periventricular) — though in the appropriate clinical context (age ≥50, no MS history), this distinction is usually straightforward. The juxtacortical/subcortical location is key — not deep periventricular.</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="set('wm2','present')" id="wm2-present">✓ Multispot pattern (&gt;10 lesions)</button>
+      <button class="abtn" onclick="set('wm2','absent')"  id="wm2-absent" >✗ Absent / Not meeting threshold</button>
+    </div>
+  </div>
+
+  <div class="tally" style="margin-top:14px;">
+    <div class="chip ca"><span class="n" id="wmn">0</span>White Matter Feature(s)</div>
+    <div class="chip cp"><span class="n" id="hn2">0</span>Hemorrhagic Lesion(s)</div>
+    <div class="chip" id="bal-chip"><span class="n" id="baln">—</span></div>
+  </div>
+
+  <div id="a3" class="alrt"></div>
+  <div class="nav-row">
+    <button class="nbtn ns" onclick="go(2)">← Back</button>
+    <button class="nbtn np" onclick="go(4)">Generate Verdict →</button>
+  </div>
+</div>
+</div>
+
+<!-- ══ SCREEN 4: VERDICT ══ -->
+<div class="screen" id="s4">
+  <div id="vout"></div>
+  <div id="sout"></div>
+  <div class="doc-header">
+    <button class="doc-tog" onclick="toggleDoc()">▼ Documentation Note</button>
+    <button class="copy-btn" id="copy-btn" onclick="copyDoc()">⎘ Copy</button>
+  </div>
+  <div class="doc-body" id="dn"></div>
+  <div class="nav-row">
+    <button class="nbtn ns" onclick="go(3)">← Back</button>
+    <button class="nbtn np" onclick="resetAll()">↺ New Evaluation</button>
+  </div>
+</div>
+
+</div><!-- /app -->
+
+<script>
+const S = {
+  age:null, ich:null, csah:null, tfne:null, cog:null,
+  deep:null, cause:null,
+  h1:null, h2:null, h3:null, h4:null,
+  wm1:null, wm2:null
+};
+let cur = 0;
+
+function set(k,v) {
+  S[k] = v;
+  const item = document.getElementById(k+'-item');
+  if (item) item.className = 'crit';
+  ['yes','no','present','absent','excluded','not_excluded'].forEach(x => {
+    const b = document.getElementById(k+'-'+x); if(b) b.classList.remove('ay','an','ap','aa');
+  });
+  const map = { yes:'ay', no:'an', present:'ap', absent:'aa', excluded:'ay', not_excluded:'an' };
+  const cls = map[v];
+  const btn = document.getElementById(k+'-'+v);
+  if (btn && cls) btn.classList.add(cls);
+  if (item) {
+    if (v==='yes'||v==='present'||v==='excluded') item.classList.add(v==='present'?'c-pres':'c-yes');
+    else if (v==='no'||v==='not_excluded') item.classList.add('c-no');
+    else if (v==='absent') item.classList.add('c-abs');
+  }
+  ui();
+}
+
+function counts() {
+  const hKeys = ['h1','h2','h3','h4'];
+  const wmKeys = ['wm1','wm2'];
+  const clinKeys = ['ich','csah','tfne','cog'];
+  return {
+    h:  hKeys.filter(k=>S[k]==='present').length,
+    wm: wmKeys.filter(k=>S[k]==='present').length,
+    clin: clinKeys.filter(k=>S[k]==='present').length,
+    ageOk: S.age === 'yes',
+    deepOk: S.deep === 'absent',
+    causeOk: S.cause === 'excluded',
+    deepPresent: S.deep === 'present',
+    causeOutstanding: S.cause === 'not_excluded'
+  };
+}
+
+function ui() {
+  const c = counts();
+
+  // Step 0
+  const a0 = document.getElementById('a0'), n0 = document.getElementById('n0');
+  if (S.age === 'no') {
+    sa(a0,'aerr','✕ Age <50 — Boston Criteria v2.0 cannot be applied. Consider hereditary CAA or alternative diagnosis.');
+    n0.disabled = true;
+  } else if (c.ageOk && c.clin === 0 && ['ich','csah','tfne','cog'].some(k=>S[k]!==null)) {
+    sa(a0,'awn','⚠ Age criterion met, but no qualifying clinical presentation identified. At least one clinical feature is required.');
+    n0.disabled = true;
+  } else if (c.ageOk && c.clin >= 1) {
+    sa(a0,'aok','✓ Clinical presentation criteria satisfied. Proceed to exclusions.');
+    n0.disabled = false;
+  } else { ha(a0); n0.disabled = true; }
+
+  // Step 1
+  const a1 = document.getElementById('a1'), n1 = document.getElementById('n1');
+  if (c.deepPresent) {
+    sa(a1,'aerr','✕ Deep hemorrhagic lesion(s) present — CAA diagnosis cannot be made under Boston Criteria v2.0. This pattern is consistent with hypertensive small vessel disease rather than CAA.');
+    n1.disabled = true;
+  } else if (c.causeOutstanding) {
+    sa(a1,'awn','⚠ Alternative cause workup incomplete. Complete vascular imaging (CTA/MRA), coagulation studies, and enhanced MRI before applying the criteria.');
+    n1.disabled = false;
+  } else if (c.deepOk && c.causeOk) {
+    sa(a1,'aok','✓ No exclusion criteria triggered. Proceed to hemorrhagic marker assessment.');
+    n1.disabled = false;
+  } else { ha(a1); n1.disabled = true; }
+
+  // Step 2 hemorrhagic count
+  const hn = document.getElementById('hn'); if(hn) hn.textContent = c.h;
+  const hn2 = document.getElementById('hn2'); if(hn2) hn2.textContent = c.h;
+  const a2 = document.getElementById('a2');
+  if (c.h >= 2) sa(a2,'aok','✓ ≥2 hemorrhagic lesions — Probable CAA criteria met on hemorrhagic markers alone (if no exclusions).');
+  else if (c.h === 1) sa(a2,'apurp','◈ 1 hemorrhagic lesion — Possible CAA; or Probable CAA if ≥1 white matter feature is present (Step 4).');
+  else ha(a2);
+
+  // Step 3 live tally
+  const wn = document.getElementById('wmn'); if(wn) wn.textContent = c.wm;
+  const bc = document.getElementById('bal-chip'), bn = document.getElementById('baln');
+  if (bc && bn) {
+    bc.className = 'chip';
+    if (c.h >= 2) { bn.textContent = 'Probable'; bc.classList.add('cg'); }
+    else if ((c.h >= 1 && c.wm >= 1)) { bn.textContent = 'Probable'; bc.classList.add('cg'); }
+    else if (c.h === 1 || c.wm >= 1) { bn.textContent = 'Possible'; bc.classList.add('ca'); }
+    else { bn.textContent = '—'; }
+  }
+  const a3 = document.getElementById('a3');
+  if (c.h >= 2) sa(a3,'aok','✓ ≥2 hemorrhagic lesions — meets Probable CAA on hemorrhagic markers alone.');
+  else if (c.h >= 1 && c.wm >= 1) sa(a3,'aok','✓ 1 hemorrhagic lesion + 1 white matter feature — meets Probable CAA.');
+  else if (c.h === 1 && c.wm === 0) sa(a3,'apurp','◈ 1 hemorrhagic lesion, 0 white matter features — Possible CAA. A white matter feature would upgrade to Probable.');
+  else if (c.h === 0 && c.wm >= 1) sa(a3,'apurp','◈ 1 white matter feature only — Possible CAA. A hemorrhagic lesion would upgrade to Probable.');
+  else ha(a3);
+}
+
+function sa(el,cls,msg){ if(!el) return; el.className='alrt show '+cls; el.innerHTML=msg; }
+function ha(el){ if(el) el.classList.remove('show'); }
+
+// VERDICT ENGINE
+function verdict() {
+  const c = counts();
+  if (!c.ageOk) return { cls:'vn', t:'Age Criterion Not Met', d:'Boston Criteria v2.0 require age ≥50 years. The criteria cannot be applied in younger patients — consider hereditary CAA or alternative diagnoses.' };
+  if (c.clin === 0) return { cls:'vn', t:'Clinical Presentation Criteria Not Met', d:'At least one qualifying clinical feature (spontaneous ICH, cSAH, TFNEs, or cognitive impairment/dementia) must be present.' };
+  if (c.deepPresent) return { cls:'vn', t:'Excluded — Deep Hemorrhagic Lesions Present', d:'The presence of deep hemorrhagic lesions (deep ICH, deep microbleeds, or deep superficial siderosis) excludes CAA under the Boston Criteria v2.0 framework. This pattern is more consistent with hypertensive small vessel disease.' };
+  if (c.h >= 2 && c.causeOk && c.deepOk) return { cls:'ve', t:'Probable CAA', d:'Clinical presentation criteria met, exclusions satisfied, and ≥2 strictly lobar/superficial hemorrhagic lesions present. Sens 75%, Spec 96% for neuropathologically confirmed CAA (Charidimou et al. Lancet Neurol 2022).' };
+  if (c.h >= 1 && c.wm >= 1 && c.causeOk && c.deepOk) return { cls:'ve', t:'Probable CAA', d:'Clinical presentation criteria met, exclusions satisfied, with 1 hemorrhagic lesion and ≥1 white matter feature. This v2.0 combination pathway achieves equivalent diagnostic confidence to ≥2 hemorrhagic lesions.' };
+  if ((c.h === 1 || c.wm >= 1) && c.deepOk && c.causeOk) return { cls:'va', t:'Possible CAA', d:'Clinical criteria and exclusions satisfied, but only one class of supporting evidence present (1 hemorrhagic lesion OR 1 white matter feature, not both). Diagnosis remains possible — pursue additional imaging to establish the second criterion.' };
+  if ((c.h === 1 || c.wm >= 1) && c.deepOk && c.causeOutstanding) return { cls:'va', t:'Possible CAA — Exclusion Workup Incomplete', d:'Imaging features support Possible CAA, but alternative causes have not been fully excluded. Complete vascular imaging and coagulation workup before confirming this classification.' };
+  if (c.h === 0 && c.wm === 0 && c.deepOk) return { cls:'vn', t:'Criteria Not Met — Insufficient Imaging Evidence', d:'Clinical criteria and exclusions are satisfied, but no supporting hemorrhagic markers or white matter features are present. MRI on appropriate blood-sensitive sequences (SWI preferred over T2*-GRE) and T2/FLAIR is required. Repeat or dedicated MRI may reveal additional markers.' };
+  return { cls:'vn', t:'Insufficient Data for Classification', d:'Complete all steps to generate a classification. Ensure SWI/T2*-GRE and T2/FLAIR sequences are available for assessment.' };
+}
+
+// RENDER VERDICT
+function rv() {
+  const v = verdict();
+  const c = counts();
+  const hKeys = ['h1','h2','h3','h4'];
+  const wmKeys = ['wm1','wm2'];
+  const hNames = { h1:'Lobar ICH (cortical-subcortical)', h2:'Lobar cerebral microbleeds (cortical/juxtacortical)', h3:'Cortical superficial siderosis', h4:'Convexity subarachnoid hemorrhage on MRI' };
+  const wmNames = { wm1:'Severe CS perivascular spaces (>20 in one hemisphere)', wm2:'Multispot WMH pattern (>10 juxtacortical/subcortical lesions)' };
+  const clinNames = { ich:'Spontaneous ICH', csah:'Convexity SAH', tfne:'TFNEs', cog:'Cognitive impairment / dementia' };
+
+  let html = `<div class="vban ${v.cls}">
+    <div class="vlbl">Boston Criteria v2.0 · CAA Classification · Charidimou et al. Lancet Neurol 2022</div>
+    <div class="vtitle">${v.t}</div>
+    <div class="vdesc">${v.d}</div>
+  </div>`;
+
+  html += `<div class="sum-grid">`;
+  // Hemorrhagic markers
+  const hAssessed = hKeys.filter(k=>S[k]!==null);
+  if (hAssessed.length > 0) {
+    html += `<div class="sblock"><div class="sbtitle">⬛ Hemorrhagic Markers (${c.h} present)</div>`;
+    hAssessed.forEach(k => {
+      const p = S[k]==='present';
+      html += `<div class="srow"><div class="dot ${p?'dp':'dgr'}"></div><div class="sname">${hNames[k]}</div><div class="stag ${p?'tp':'tgr'}">${p?'PRESENT':'ABSENT'}</div></div>`;
+    });
+    html += `</div>`;
+  }
+  // White matter features
+  const wmAssessed = wmKeys.filter(k=>S[k]!==null);
+  html += `<div class="sblock"><div class="sbtitle">◻ White Matter Features (${c.wm} present)</div>`;
+  wmAssessed.forEach(k => {
+    const p = S[k]==='present';
+    html += `<div class="srow"><div class="dot ${p?'dp':'dgr'}"></div><div class="sname">${wmNames[k]}</div><div class="stag ${p?'tp':'tgr'}">${p?'PRESENT':'ABSENT'}</div></div>`;
+  });
+  if (wmAssessed.length === 0) html += `<div class="srow"><div class="dot dgr"></div><div class="sname" style="color:var(--text3);">Not assessed</div></div>`;
+  html += `</div>`;
+  html += `</div>`;
+
+  // Clinical + exclusions summary
+  html += `<div class="sblock" style="margin-bottom:12px;"><div class="sbtitle">Clinical &amp; Exclusions</div>`;
+  const clinAssessed = ['ich','csah','tfne','cog'].filter(k=>S[k]!==null);
+  clinAssessed.forEach(k => {
+    const p = S[k]==='present';
+    html += `<div class="srow"><div class="dot ${p?'dg':'dgr'}"></div><div class="sname">${clinNames[k]}</div><div class="stag ${p?'tg':'tgr'}">${p?'PRESENT':'ABSENT'}</div></div>`;
+  });
+  html += `<div class="srow"><div class="dot ${c.deepOk?'dg':'dr'}"></div><div class="sname">Deep hemorrhagic lesions</div><div class="stag ${c.deepOk?'tg':'tr'}">${c.deepPresent?'PRESENT — EXCLUDED':c.deepOk?'ABSENT':'NOT ASSESSED'}</div></div>`;
+  html += `<div class="srow"><div class="dot ${c.causeOk?'dg':'dr'}"></div><div class="sname">Alternative cause excluded</div><div class="stag ${c.causeOk?'tg':c.causeOutstanding?'tr':'tgr'}">${c.causeOk?'YES':c.causeOutstanding?'INCOMPLETE':'NOT ASSESSED'}</div></div>`;
+  html += `</div>`;
+
+  document.getElementById('vout').innerHTML = html;
+
+  // Documentation note
+  const clinPresent = ['ich','csah','tfne','cog'].filter(k=>S[k]==='present').map(k=>clinNames[k]);
+  const hPresent = hKeys.filter(k=>S[k]==='present').map(k=>hNames[k]);
+  const wmPresent = wmKeys.filter(k=>S[k]==='present').map(k=>wmNames[k]);
+
+  let note = `VASCULAR NEUROLOGY / STROKE CONSULTATION\nBoston Criteria v2.0 Assessment for Cerebral Amyloid Angiopathy (CAA)\nCharidimou A et al. Lancet Neurol. 2022;21(8):714–725. doi:10.1016/S1474-4422(22)00208-3\nDate: ${new Date().toLocaleDateString()}\n\n`;
+  note += `CLINICAL PRESENTATION CRITERIA\n  Age ≥50 years: ${S.age==='yes'?'Yes':'No'}\n`;
+  note += `  Clinical features present: ${clinPresent.length>0?clinPresent.join(', '):'None identified'}\n\n`;
+  note += `EXCLUSION CRITERIA\n  Deep hemorrhagic lesions on T2*/SWI: ${c.deepPresent?'PRESENT — EXCLUDES CAA':c.deepOk?'Absent':'Not assessed'}\n`;
+  note += `  Alternative cause excluded: ${c.causeOk?'Yes — no alternative cause identified':c.causeOutstanding?'Incomplete — workup outstanding':'Not assessed'}\n\n`;
+  note += `HEMORRHAGIC MARKERS (${c.h}/4 present)\n`;
+  if (hPresent.length > 0) hPresent.forEach(n => { note += `  - ${n}\n`; });
+  else note += `  None present / assessed\n`;
+  note += `\nWHITE MATTER FEATURES — v2.0 (${c.wm}/2 present)\n`;
+  if (wmPresent.length > 0) wmPresent.forEach(n => { note += `  - ${n}\n`; });
+  else note += `  None present / assessed\n`;
+  note += `\nBOSTON CRITERIA v2.0 CLASSIFICATION\n${v.t}\n${v.d}\n\n`;
+  note += `Diagnostic performance of Boston Criteria v2.0 (Charidimou et al. 2022 multicenter validation):\n  Probable CAA sensitivity: 74.5%, specificity: 95.5% (vs. neuropathologic gold standard)\n  Improvement over v1.5: +18 percentage points sensitivity, specificity maintained\n\nImaging sequences used / recommended:\n  Hemorrhagic markers: SWI (preferred) or T2*-GRE\n  White matter features: T2-weighted (CS-PVS), FLAIR (multispot WMH)\n  Gadolinium-enhanced MRI if structural cause considered\n\nRef: Charidimou A, Boulouis G, Frosch MP, et al. The Boston criteria version 2.0 for cerebral amyloid angiopathy: a multicentre, retrospective, MRI-neuropathology diagnostic accuracy study. Lancet Neurol. 2022;21(8):714–725.`;
+  document.getElementById('dn').textContent = note;
+}
+
+function go(n) {
+  document.getElementById('s'+cur).classList.remove('active');
+  document.getElementById('s'+n).classList.add('active');
+  for(let i=0;i<5;i++){
+    const d=document.getElementById('st'+i);
+    d.classList.remove('active','done');
+    if(i<n) d.classList.add('done');
+    else if(i===n) d.classList.add('active');
+  }
+  cur = n;
+  document.getElementById('pf').style.width = ((n/4)*100)+'%';
+  if(n===4) rv();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function xp(btn) {
+  const d = btn.closest('.crit').querySelector('.crit-detail'); if(!d) return;
+  const o = d.classList.toggle('open');
+  btn.textContent = o ? 'close ▴' : 'details ▾';
+}
+
+function toggleDoc() {
+  const body = document.getElementById('dn');
+  const btn  = document.getElementById('copy-btn');
+  const tog  = document.querySelector('.doc-tog');
+  if(!body) return;
+  const open = body.classList.toggle('open');
+  if(tog) tog.textContent = open ? '▲ Documentation Note' : '▼ Documentation Note';
+  if(btn) btn.classList.toggle('visible', open);
+}
+
+function copyDoc() {
+  const body = document.getElementById('dn');
+  const btn  = document.getElementById('copy-btn');
+  if(!body) return;
+  const text = body.textContent || body.innerText;
+  navigator.clipboard.writeText(text).then(() => {
+    if(btn){ btn.textContent='✓ Copied'; btn.classList.add('copied'); setTimeout(()=>{ btn.textContent='⎘ Copy'; btn.classList.remove('copied'); },2000); }
+  }).catch(() => {
+    const ta=document.createElement('textarea'); ta.value=text; ta.style.position='fixed'; ta.style.opacity='0';
+    document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
+    if(btn){ btn.textContent='✓ Copied'; btn.classList.add('copied'); setTimeout(()=>{ btn.textContent='⎘ Copy'; btn.classList.remove('copied'); },2000); }
+  });
+}
+
+function resetAll() {
+  Object.keys(S).forEach(k=>S[k]=null);
+  document.querySelectorAll('.crit').forEach(el=>el.className='crit');
+  document.querySelectorAll('.abtn').forEach(b=>b.classList.remove('ay','an','ap','aa'));
+  document.querySelectorAll('.crit-detail').forEach(d=>d.classList.remove('open'));
+  document.querySelectorAll('.xbtn').forEach(b=>b.textContent='details ▾');
+  ['a0','a1','a2','a3'].forEach(id=>{const el=document.getElementById(id);if(el)el.classList.remove('show');});
+  const dn=document.getElementById('dn'); if(dn) dn.classList.remove('open');
+  const cb=document.getElementById('copy-btn'); if(cb) cb.classList.remove('visible','copied');
+  const tog=document.querySelector('.doc-tog'); if(tog) tog.textContent='▼ Documentation Note';
+  go(0);
+  document.getElementById('n0').disabled=true;
+}
+
+ui();
+</script>
+</body>
+</html>

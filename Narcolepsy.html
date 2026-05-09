@@ -1,0 +1,947 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Narcolepsy Criteria · ICSD-3-TR</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+  --bg:        #0d1117;
+  --card:      #161b22;
+  --card2:     #1c2330;
+  --border:    #3a4556;
+  --border2:   #4a5f7a;
+  --green:     #3fb950;
+  --green-bg:  rgba(63,185,80,0.10);
+  --green-bd:  rgba(63,185,80,0.35);
+  --red:       #f85149;
+  --red-bg:    rgba(248,81,73,0.10);
+  --red-bd:    rgba(248,81,73,0.35);
+  --amber:     #e3b341;
+  --amber-bg:  rgba(227,179,65,0.10);
+  --amber-bd:  rgba(227,179,65,0.35);
+  --blue:      #58a6ff;
+  --blue-bg:   rgba(88,166,255,0.10);
+  --blue-bd:   rgba(88,166,255,0.35);
+  --indigo:    #a78bfa;
+  --indigo-bg: rgba(167,139,250,0.10);
+  --indigo-bd: rgba(167,139,250,0.35);
+  --text:      #e6edf3;
+  --text2:     #aab4c0;
+  --text3:     #6e7f94;
+  --sans:  'Inter', system-ui, sans-serif;
+  --mono:  'IBM Plex Mono', monospace;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg); color: var(--text); font-family: var(--sans); font-size: 14px; line-height: 1.5; min-height: 100vh; }
+.app { max-width: 900px; margin: 0 auto; padding: 0 20px 80px; }
+
+/* HEADER */
+header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+.h-title { font-size: 19px; font-weight: 700; }
+.h-title span { color: var(--indigo); }
+.h-sub { font-family: var(--mono); font-size: 10px; color: var(--text3); margin-top: 3px; line-height: 1.5; }
+.reset-btn { background: var(--card2); border: 1px solid var(--border); color: var(--text2); font-family: var(--mono); font-size: 11px; padding: 6px 14px; cursor: pointer; border-radius: 4px; transition: all 0.15s; white-space: nowrap; }
+.reset-btn:hover { border-color: var(--indigo); color: var(--indigo); }
+
+/* PROGRESS */
+.prog-track { height: 3px; background: var(--border); margin-bottom: 20px; border-radius: 2px; }
+.prog-fill { height: 100%; background: linear-gradient(90deg, var(--indigo), #c4b5fd); border-radius: 2px; transition: width 0.4s ease; box-shadow: 0 0 6px rgba(167,139,250,0.4); }
+
+/* STEP TABS */
+.steps { display: flex; border-bottom: 1px solid var(--border); margin-bottom: 20px; overflow-x: auto; }
+.stab { flex: 1; min-width: 72px; padding: 7px 4px 9px; text-align: center; font-family: var(--mono); font-size: 9px; color: var(--text3); border-bottom: 2px solid transparent; margin-bottom: -1px; transition: all 0.2s; line-height: 1.3; }
+.stab .sn { display: block; font-size: 14px; font-weight: 600; margin-bottom: 1px; }
+.stab.active { color: var(--indigo); border-bottom-color: var(--indigo); }
+.stab.done   { color: var(--green);  border-bottom-color: var(--green); }
+
+/* SUBTYPE SELECTOR */
+.subtype-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 0; }
+.subtype-btn { padding: 16px; border: 2px solid var(--border); border-radius: 8px; background: var(--card2); cursor: pointer; transition: all 0.2s; text-align: left; }
+.subtype-btn:hover { border-color: var(--border2); background: var(--card); }
+.subtype-btn.sel-t1 { border-color: var(--indigo-bd); background: var(--indigo-bg); }
+.subtype-btn.sel-t2 { border-color: var(--blue-bd); background: var(--blue-bg); }
+.sb-label { font-family: var(--mono); font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text3); margin-bottom: 4px; }
+.sb-title { font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+.sb-desc { font-size: 11px; color: var(--text2); line-height: 1.5; }
+.subtype-btn.sel-t1 .sb-title { color: var(--indigo); }
+.subtype-btn.sel-t2 .sb-title { color: var(--blue); }
+
+/* CARD */
+.card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 22px; margin-bottom: 12px; }
+.ctitle { font-size: 12px; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; margin-bottom: 3px; }
+.csub { font-size: 12px; color: var(--text2); margin-bottom: 16px; line-height: 1.5; }
+
+/* SECTION LABEL */
+.slabel { display: flex; align-items: center; gap: 8px; font-family: var(--mono); font-size: 10px; font-weight: 500; color: var(--text2); letter-spacing: 0.07em; text-transform: uppercase; margin-bottom: 9px; padding-bottom: 6px; border-bottom: 1px solid var(--border); }
+.pill { font-size: 9px; padding: 1px 7px; border-radius: 20px; border: 1px solid; margin-left: auto; }
+.pill-r  { border-color: var(--red);    color: var(--red);    background: var(--red-bg); }
+.pill-a  { border-color: var(--amber);  color: var(--amber);  background: var(--amber-bg); }
+.pill-i  { border-color: var(--indigo); color: var(--indigo); background: var(--indigo-bg); }
+.pill-b  { border-color: var(--blue);   color: var(--blue);   background: var(--blue-bg); }
+.pill-g  { border-color: var(--green);  color: var(--green);  background: var(--green-bg); }
+
+/* CRITERION ROW */
+.crit { border: 1px solid var(--border); border-radius: 6px; margin-bottom: 5px; overflow: hidden; transition: border-color 0.15s, background 0.15s; }
+.crit.c-yes  { border-color: var(--green-bd);  background: var(--green-bg); }
+.crit.c-no   { border-color: var(--red-bd);    background: var(--red-bg); }
+.crit.c-pres { border-color: var(--indigo-bd); background: var(--indigo-bg); }
+.crit.c-abs  { border-color: var(--border2);   background: var(--card2); }
+.crit.c-blue { border-color: var(--blue-bd);   background: var(--blue-bg); }
+.crit.c-amb  { border-color: var(--amber-bd);  background: var(--amber-bg); }
+
+.crit-main { display: flex; align-items: center; gap: 10px; padding: 10px 13px; }
+.crit-name { flex: 1; font-size: 13px; font-weight: 500; color: var(--text); line-height: 1.3; }
+.xbtn { background: none; border: 1px solid var(--border); color: var(--text3); font-size: 11px; cursor: pointer; padding: 2px 8px; font-family: var(--mono); white-space: nowrap; transition: all 0.15s; flex-shrink: 0; border-radius: 3px; }
+.xbtn:hover { color: var(--blue); border-color: var(--blue); }
+
+.crit-detail { display: none; padding: 10px 13px 12px; font-size: 12px; color: var(--text); line-height: 1.65; border-top: 1px solid var(--border); }
+.crit-detail.open { display: block; }
+.cnote { margin-top: 8px; padding: 8px 11px; background: var(--card2); border-left: 3px solid var(--border2); font-family: var(--mono); font-size: 10px; color: var(--text2); line-height: 1.75; border-radius: 0 3px 3px 0; }
+.cnote strong { color: var(--text); }
+
+/* BUTTON ROW */
+.brow { display: flex; border-top: 1px solid var(--border); }
+.abtn { flex: 1; padding: 8px 6px; background: none; border: none; border-right: 1px solid var(--border); color: var(--text2); font-family: var(--mono); font-size: 11px; cursor: pointer; transition: all 0.12s; text-transform: uppercase; letter-spacing: 0.04em; font-weight: 500; }
+.abtn:last-child { border-right: none; }
+.abtn:hover { background: var(--card2); color: var(--text); }
+.abtn.ay { background: var(--green-bg);  color: var(--green);  font-weight: 700; }
+.abtn.an { background: var(--red-bg);    color: var(--red);    font-weight: 700; }
+.abtn.ai { background: var(--indigo-bg); color: var(--indigo); font-weight: 700; }
+.abtn.ab { background: var(--blue-bg);   color: var(--blue);   font-weight: 700; }
+.abtn.aa { background: var(--card2);     color: var(--text2);  font-weight: 700; }
+.abtn.aw { background: var(--amber-bg);  color: var(--amber);  font-weight: 700; }
+
+/* TWO-COL */
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; }
+@media (max-width: 600px) { .two-col { grid-template-columns: 1fr; } .subtype-row { grid-template-columns: 1fr; } }
+
+/* PATHWAY BOXES (Type 1 Criterion B branches) */
+.pathway-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 5px; }
+@media (max-width: 600px) { .pathway-grid { grid-template-columns: 1fr; } }
+
+.pathway-box { border: 1px solid var(--border); border-radius: 6px; overflow: hidden; transition: all 0.2s; }
+.pathway-box.pb-met  { border-color: var(--green-bd);  background: var(--green-bg); }
+.pathway-box.pb-part { border-color: var(--amber-bd);  background: var(--amber-bg); }
+.pathway-box.pb-not  { border-color: var(--border2);   background: var(--card2); }
+
+.pb-header { padding: 9px 13px 7px; border-bottom: 1px solid var(--border); }
+.pb-title { font-size: 11px; font-weight: 700; color: var(--text); letter-spacing: 0.04em; margin-bottom: 2px; }
+.pb-sub { font-family: var(--mono); font-size: 9px; color: var(--text3); }
+.pb-body { padding: 10px 13px 4px; }
+
+/* ALERT */
+.alrt { padding: 9px 13px; border-radius: 5px; font-size: 12px; line-height: 1.55; margin-top: 12px; border-left: 3px solid; display: none; }
+.alrt.show { display: block; }
+.aok   { border-color: var(--green);  background: var(--green-bg);  color: #7ee787; }
+.awn   { border-color: var(--amber);  background: var(--amber-bg);  color: var(--amber); }
+.aerr  { border-color: var(--red);    background: var(--red-bg);    color: #ff7b72; }
+.ainf  { border-color: var(--blue);   background: var(--blue-bg);   color: var(--blue); }
+.aind  { border-color: var(--indigo); background: var(--indigo-bg); color: var(--indigo); }
+
+/* LOGIC BOX */
+.lbox { background: var(--card2); border: 1px solid var(--border); border-radius: 5px; padding: 12px 15px; font-size: 12px; color: var(--text2); line-height: 1.75; margin-bottom: 16px; }
+.lbox strong { color: var(--text); }
+.li { color: var(--indigo); font-weight: 600; }
+.lb { color: var(--blue);   font-weight: 600; }
+.lg { color: var(--green);  font-weight: 600; }
+.lr { color: var(--red);    font-weight: 600; }
+.la { color: var(--amber);  font-weight: 600; }
+
+/* TALLY */
+.tally { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+.chip { display: flex; align-items: center; gap: 5px; padding: 5px 12px; border-radius: 20px; font-family: var(--mono); font-size: 11px; border: 1px solid var(--border); background: var(--card2); color: var(--text2); }
+.chip .n { font-size: 15px; font-weight: 700; }
+.ci { border-color: var(--indigo-bd); background: var(--indigo-bg); color: var(--indigo); }
+.cg { border-color: var(--green-bd);  background: var(--green-bg);  color: var(--green); }
+.cr { border-color: var(--red-bd);    background: var(--red-bg);    color: var(--red); }
+
+/* NAV */
+.nav-row { display: flex; justify-content: space-between; align-items: center; margin-top: 20px; gap: 10px; }
+.nbtn { padding: 9px 22px; border-radius: 5px; font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; border: 1px solid; cursor: pointer; font-weight: 500; transition: all 0.15s; }
+.np { background: var(--indigo); border-color: var(--indigo); color: #0d1117; font-weight: 700; }
+.np:hover { background: #c4b5fd; border-color: #c4b5fd; }
+.np:disabled { opacity: 0.3; cursor: not-allowed; }
+.ns { background: transparent; border-color: var(--border2); color: var(--text2); }
+.ns:hover { border-color: var(--text); color: var(--text); }
+
+/* SCREEN */
+.screen { display: none; }
+.screen.active { display: block; animation: fu 0.25s ease; }
+@keyframes fu { from { opacity:0; transform:translateY(5px); } to { opacity:1; transform:translateY(0); } }
+
+/* VERDICT */
+.vban { border-radius: 8px; padding: 22px 26px; margin-bottom: 16px; text-align: center; border: 2px solid; }
+.vt1 { border-color: var(--indigo); background: var(--indigo-bg); }
+.vt2 { border-color: var(--blue);   background: var(--blue-bg); }
+.vno { border-color: var(--red);    background: var(--red-bg); }
+.vnd { border-color: var(--amber);  background: var(--amber-bg); }
+.vlbl { font-family: var(--mono); font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase; opacity: 0.6; margin-bottom: 5px; }
+.vtitle { font-size: 24px; font-weight: 700; margin-bottom: 7px; letter-spacing: -0.01em; }
+.vt1 .vtitle { color: var(--indigo); }
+.vt2 .vtitle { color: var(--blue); }
+.vno .vtitle { color: var(--red); }
+.vnd .vtitle { color: var(--amber); }
+.vdesc { font-size: 12px; color: var(--text2); line-height: 1.7; max-width: 600px; margin: 0 auto; }
+
+/* SUMMARY */
+.sum-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+@media (max-width: 580px) { .sum-grid { grid-template-columns: 1fr; } }
+.sblock { background: var(--card); border: 1px solid var(--border); border-radius: 6px; overflow: hidden; }
+.sbtitle { font-family: var(--mono); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; padding: 7px 11px; border-bottom: 1px solid var(--border); color: var(--text2); background: var(--card2); }
+.srow { display: flex; align-items: flex-start; gap: 8px; padding: 6px 11px; border-bottom: 1px solid var(--border); font-size: 12px; }
+.srow:last-child { border-bottom: none; }
+.dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; margin-top: 4px; }
+.dg  { background: var(--green); }
+.dr  { background: var(--red); }
+.di  { background: var(--indigo); }
+.db  { background: var(--blue); }
+.da  { background: var(--amber); }
+.dgr { background: var(--text3); }
+.sname { flex: 1; color: var(--text); line-height: 1.4; }
+.stag { font-family: var(--mono); font-size: 9px; padding: 1px 7px; border-radius: 10px; border: 1px solid; white-space: nowrap; }
+.tg  { border-color: var(--green-bd);  color: var(--green); }
+.tr  { border-color: var(--red-bd);    color: var(--red); }
+.ti  { border-color: var(--indigo-bd); color: var(--indigo); }
+.tb  { border-color: var(--blue-bd);   color: var(--blue); }
+.ta  { border-color: var(--amber-bd);  color: var(--amber); }
+.tgr { border-color: var(--border2);   color: var(--text3); }
+
+/* DOC NOTE */
+.doc-header { display: flex; align-items: center; gap: 8px; margin-bottom: 5px; }
+.doc-tog { flex: 1; text-align: left; background: var(--card2); border: 1px solid var(--border2); border-radius: 5px; color: var(--text2); font-family: var(--mono); font-size: 11px; padding: 8px 13px; cursor: pointer; transition: all 0.15s; letter-spacing: 0.04em; }
+.doc-tog:hover { border-color: var(--indigo); color: var(--indigo); }
+.copy-btn { background: var(--card2); border: 1px solid var(--border2); border-radius: 5px; color: var(--text2); font-family: var(--mono); font-size: 11px; padding: 8px 14px; cursor: pointer; white-space: nowrap; transition: all 0.15s; display: none; }
+.copy-btn.visible { display: block; }
+.copy-btn:hover { border-color: var(--green); color: var(--green); }
+.copy-btn.copied { border-color: var(--green); color: var(--green); background: var(--green-bg); }
+.doc-body { display: none; background: var(--card2); border: 1px solid var(--border2); border-radius: 5px; padding: 13px 15px; font-family: var(--mono); font-size: 11px; color: var(--text2); line-height: 1.85; white-space: pre-wrap; margin-bottom: 12px; }
+.doc-body.open { display: block; }
+</style>
+</head>
+<body>
+<div class="app">
+
+<header>
+  <div>
+    <div class="h-title">Narcolepsy <span>ICSD-3-TR Criteria</span></div>
+    <div class="h-sub">AASM International Classification of Sleep Disorders, 3rd Edition, Text Revision · 2023<br>Central Disorders of Hypersomnolence · Type 1 (with cataplexy) · Type 2 (without cataplexy)</div>
+  </div>
+  <button class="reset-btn" onclick="resetAll()">↺ Reset</button>
+</header>
+
+<div class="prog-track"><div class="prog-fill" id="pf" style="width:0%"></div></div>
+
+<div class="steps">
+  <div class="stab active" id="st0"><span class="sn">1</span>Subtype</div>
+  <div class="stab" id="st1"><span class="sn">2</span>EDS</div>
+  <div class="stab" id="st2"><span class="sn">3</span>Core Criteria</div>
+  <div class="stab" id="st3"><span class="sn">4</span>Exclusions</div>
+  <div class="stab" id="st4"><span class="sn">5</span>Verdict</div>
+</div>
+
+<!-- ══════════════ SCREEN 0: SUBTYPE SELECTION ══════════════ -->
+<div class="screen active" id="s0">
+<div class="card">
+  <div class="ctitle" style="color:var(--indigo);">Step 1 · Select Suspected Subtype</div>
+  <div class="csub">Narcolepsy Type 1 is defined by cataplexy and/or orexin (hypocretin) deficiency. Type 2 is diagnosed in the absence of cataplexy with documented MSLT criteria. The pathway will adapt accordingly.</div>
+
+  <div class="subtype-row" style="margin-bottom:16px;">
+    <button class="subtype-btn" id="btn-t1" onclick="selectType('t1')">
+      <div class="sb-label">Narcolepsy</div>
+      <div class="sb-title">Type 1</div>
+      <div class="sb-desc">With cataplexy and/or orexin deficiency. Criteria A–C must be met.</div>
+    </button>
+    <button class="subtype-btn" id="btn-t2" onclick="selectType('t2')">
+      <div class="sb-label">Narcolepsy</div>
+      <div class="sb-title">Type 2</div>
+      <div class="sb-desc">Without cataplexy, no orexin deficiency. Criteria A–E must be met.</div>
+    </button>
+  </div>
+
+  <div class="lbox">
+    <strong>ICSD-3-TR (2023) key update for Type 1:</strong> Previously, Criterion B required cataplexy with MSLT findings (with an overnight SOREMP able to substitute for one MSLT SOREMP). Based on now well-established evidence, <span class="li">cataplexy alone + a single overnight PSG SOREMP (within 15 min of sleep onset)</span> is now sufficient to fulfill Criterion B — even without an MSLT demonstrating ≥2 SOREMPs.
+  </div>
+
+  <div id="a0" class="alrt"></div>
+  <div class="nav-row"><div></div><button class="nbtn np" id="n0" onclick="go(1)" disabled>Next: EDS Assessment →</button></div>
+</div>
+</div>
+
+<!-- ══════════════ SCREEN 1: EDS — CRITERION A ══════════════ -->
+<div class="screen" id="s1">
+<div class="card">
+  <div class="ctitle" style="color:var(--indigo);">Step 2 · Criterion A — Excessive Daytime Sleepiness</div>
+  <div class="csub">Criterion A is identical for both narcolepsy subtypes and is the mandatory cardinal symptom of narcolepsy.</div>
+
+  <div class="slabel">Criterion A <span class="pill pill-r">REQUIRED — BOTH SUBTYPES</span></div>
+
+  <div class="crit" id="eds-item">
+    <div class="crit-main">
+      <div class="crit-name">Daily periods of irrepressible need to sleep, or daytime lapses into drowsiness or sleep</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      Excessive daytime sleepiness (EDS) is the universal, defining symptom of narcolepsy. The irrepressible quality distinguishes narcoleptic sleep attacks from voluntary drowsiness — patients cannot resist the urge to sleep. Sleep attacks may be brief (minutes), often refreshing in Type 1 (in contrast to idiopathic hypersomnia, where naps are typically unrefreshing). EDS must be distinguished from fatigue (the subjective sense of energy depletion without true sleepiness).
+      <div class="cnote">
+        <strong>Type 2 duration requirement:</strong> For Narcolepsy Type 2 only, Criterion A specifies EDS occurring for ≥3 months. Type 1 has no minimum duration specified in the ICSD-3-TR criteria (though EDS is typically present for a prolonged period before diagnosis).<br><br>
+        <strong>Supporting tools:</strong> Epworth Sleepiness Scale (ESS) score ≥10 suggests pathological EDS. The Stanford Sleepiness Scale and patient diaries can supplement the history. Sleep logs + actigraphy (whenever possible) are required prior to in-laboratory sleep testing to evaluate for insufficient sleep and circadian rhythm disturbances — a critical pre-MSLT step.
+      </div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="set('eds','yes')" id="eds-yes">✓ Present — daily irrepressible sleepiness</button>
+      <button class="abtn" onclick="set('eds','no')"  id="eds-no" >✗ Absent / Not clearly irrepressible</button>
+    </div>
+  </div>
+
+  <!-- Type 2 duration qualifier -->
+  <div id="eds-duration-block" style="display:none; margin-top:10px;">
+    <div class="slabel" style="margin-top:0;">Type 2 duration qualifier <span class="pill pill-r">≥3 MONTHS REQUIRED</span></div>
+    <div class="crit" id="edsdur-item">
+      <div class="crit-main">
+        <div class="crit-name">EDS present for ≥3 months (Type 2 specific)</div>
+        <button class="xbtn" onclick="xp(this)">details ▾</button>
+      </div>
+      <div class="crit-detail">
+        Narcolepsy Type 2 requires documentation of EDS for at least 3 months before the diagnosis can be made. This minimum duration requirement helps exclude transient hypersomnolence from acute illness, medication effects, or situational sleep deprivation.
+      </div>
+      <div class="brow">
+        <button class="abtn" onclick="set('edsdur','yes')" id="edsdur-yes">✓ ≥3 months confirmed</button>
+        <button class="abtn" onclick="set('edsdur','no')"  id="edsdur-no" >✗ &lt;3 months</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="a1" class="alrt"></div>
+  <div class="nav-row">
+    <button class="nbtn ns" onclick="go(0)">← Back</button>
+    <button class="nbtn np" id="n1" onclick="go(2)" disabled>Next: Core Criteria →</button>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════ SCREEN 2: CORE CRITERIA ══════════════ -->
+<!-- TYPE 1 PATHWAY -->
+<div class="screen" id="s2">
+<div class="card" id="t1-core" style="display:none;">
+  <div class="ctitle" style="color:var(--indigo);">Step 3 · Criterion B — Type 1 Diagnostic Evidence</div>
+  <div class="csub">Criterion B is met by either Branch 1 (cataplexy + MSLT/PSG) OR Branch 2 (CSF orexin deficiency). Either pathway independently fulfills the diagnosis.</div>
+
+  <div class="lbox">
+    <strong>Type 1 Criterion B requires ONE of:</strong><br>
+    <span class="li">Branch 1:</span> Cataplexy + MSLT (MSL ≤8 min + ≥2 SOREMPs) <em>OR</em> cataplexy + overnight PSG SOREMP (within 15 min of sleep onset) <span style="color:var(--green);font-weight:600;">← New in ICSD-3-TR 2023</span><br>
+    <span class="li">Branch 2:</span> CSF hypocretin-1 ≤110 pg/mL (Stanford reference) or &lt;⅓ of mean normal values — if positive, diagnosis confirmed regardless of other comorbidities
+  </div>
+
+  <!-- BRANCH 1 -->
+  <div class="slabel">Branch 1 · Cataplexy + Sleep Study Evidence <span class="pill pill-i">EITHER BRANCH SUFFICIENT</span></div>
+
+  <div class="crit" id="cat-item">
+    <div class="crit-main">
+      <div class="crit-name">Cataplexy — sudden bilateral loss of muscle tone precipitated by strong emotions, in a conscious patient</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      <strong>Typical cataplexy (ICSD-3-TR "Essential Features"):</strong><br>
+      Sudden, reversible episodes of bilateral skeletal muscle weakness or atonia triggered by strong positive emotions — laughter is the most common trigger; also humor, surprise, excitement, pride, anger. The patient remains conscious and aware during the episode. Duration: seconds to a few minutes. Spontaneous full recovery.<br><br>
+      Manifestations range from subtle (jaw sagging, head drop, knee buckling, facial drooping) to complete postural collapse. Partial episodes are more common than complete. Respiratory and ocular muscles are typically spared.<br><br>
+      <strong>Atypical cataplexy:</strong> Triggered by negative emotions (fear, frustration) or occurring spontaneously. More common in secondary narcolepsy (post-encephalitic, hypothalamic tumor, NMO). A higher index of suspicion for alternative diagnoses is warranted when only atypical cataplexy is present.
+      <div class="cnote">
+        <strong>Differential:</strong> Pseudocataplexy (syncope — pallor, tachycardia, loss of consciousness, non-emotional triggers), drop attacks (no emotional trigger, no retained consciousness), startle disease (exaggerated startle, not emotion-triggered), epileptic drop attacks (typically no emotional trigger, post-ictal confusion), sudden loss of postural tone in REM sleep disorder.
+      </div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="set('cat','typical')"  id="cat-typical" >✓ Typical cataplexy</button>
+      <button class="abtn" onclick="set('cat','atypical')" id="cat-atypical">⚠ Atypical only</button>
+      <button class="abtn" onclick="set('cat','absent')"   id="cat-absent"  >✗ Absent</button>
+    </div>
+  </div>
+
+  <!-- Sub-branch: MSLT or PSG SOREMP -->
+  <div id="cat-branch-block" style="display:none; margin-top:4px;">
+    <div class="pathway-grid">
+      <!-- MSLT pathway -->
+      <div class="pathway-box" id="mslt-pb">
+        <div class="pb-header">
+          <div class="pb-title">MSLT pathway</div>
+          <div class="pb-sub">MSL ≤8 min + ≥2 SOREMPs on MSLT</div>
+        </div>
+        <div class="pb-body">
+          <div class="crit" id="mslt-item" style="margin-bottom:4px;">
+            <div class="crit-main" style="padding:8px 10px;">
+              <div class="crit-name" style="font-size:12px;">Mean sleep latency ≤8 min on MSLT</div>
+            </div>
+            <div class="brow">
+              <button class="abtn" style="font-size:10px;" onclick="set('mslt_msl','yes')" id="mslt_msl-yes">✓ ≤8 min</button>
+              <button class="abtn" style="font-size:10px;" onclick="set('mslt_msl','no')"  id="mslt_msl-no" >✗ &gt;8 min</button>
+              <button class="abtn" style="font-size:10px;" onclick="set('mslt_msl','nd')"  id="mslt_msl-nd" >— Not done</button>
+            </div>
+          </div>
+          <div class="crit" id="soremp-item" style="margin-bottom:8px;">
+            <div class="crit-main" style="padding:8px 10px;">
+              <div class="crit-name" style="font-size:12px;">≥2 SOREMPs on MSLT</div>
+            </div>
+            <div class="brow">
+              <button class="abtn" style="font-size:10px;" onclick="set('mslt_soremp','yes')" id="mslt_soremp-yes">✓ ≥2 SOREMPs</button>
+              <button class="abtn" style="font-size:10px;" onclick="set('mslt_soremp','one')" id="mslt_soremp-one">1 SOREMP</button>
+              <button class="abtn" style="font-size:10px;" onclick="set('mslt_soremp','no')"  id="mslt_soremp-no" >✗ 0 SOREMPs</button>
+              <button class="abtn" style="font-size:10px;" onclick="set('mslt_soremp','nd')"  id="mslt_soremp-nd" >— Not done</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PSG SOREMP pathway (NEW in ICSD-3-TR) -->
+      <div class="pathway-box" id="psg-pb">
+        <div class="pb-header">
+          <div class="pb-title">Overnight PSG pathway <span style="color:var(--green);font-size:9px;font-family:var(--mono);background:var(--green-bg);border:1px solid var(--green-bd);padding:1px 5px;border-radius:3px;margin-left:4px;">NEW 2023</span></div>
+          <div class="pb-sub">SOREMP within 15 min of sleep onset on PSG</div>
+        </div>
+        <div class="pb-body">
+          <div class="crit" id="psg-soremp-item" style="margin-bottom:8px;">
+            <div class="crit-main" style="padding:8px 10px;">
+              <div class="crit-name" style="font-size:12px;">PSG SOREMP within 15 minutes of sleep onset</div>
+            </div>
+            <div class="brow">
+              <button class="abtn" style="font-size:10px;" onclick="set('psg_soremp','yes')" id="psg_soremp-yes">✓ Present (&lt;15 min)</button>
+              <button class="abtn" style="font-size:10px;" onclick="set('psg_soremp','no')"  id="psg_soremp-no" >✗ Absent / &gt;15 min</button>
+              <button class="abtn" style="font-size:10px;" onclick="set('psg_soremp','nd')"  id="psg_soremp-nd" >— Not done</button>
+            </div>
+          </div>
+          <p style="font-family:var(--mono);font-size:10px;color:var(--text3);padding:0 2px 8px;line-height:1.5;">If cataplexy is present and PSG shows SOREMP &lt;15 min of sleep onset, Criterion B Branch 1 is fulfilled — even without an MSLT.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BRANCH 2 -->
+  <div class="slabel" style="margin-top:16px;">Branch 2 · CSF Orexin (Hypocretin-1) <span class="pill pill-i">INDEPENDENT OF BRANCH 1</span></div>
+
+  <div class="crit" id="csf-item">
+    <div class="crit-main">
+      <div class="crit-name">CSF hypocretin-1 ≤110 pg/mL (Stanford reference) or &lt;⅓ of mean normal values with the same standardized assay</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      Measured by radioimmunoassay. Two thresholds are accepted: (1) absolute: ≤110 pg/mL using the Stanford reference sample — the original validated cutoff; (2) relative: &lt;⅓ of mean control values using the same standardized assay — allows for laboratory-specific calibration.<br><br>
+      Pathophysiology: ~70,000–90,000 hypothalamic orexin (hypocretin) neurons are selectively destroyed in Type 1, almost certainly by autoimmune mechanisms (strong HLA-DQB1*06:02 association). CSF orexin levels reflect this loss — typically &lt;50 pg/mL in florid Type 1 (often undetectable).
+      <div class="cnote">
+        <strong>ICSD-3-TR note:</strong> If orexin deficiency is verified, narcolepsy Type 1 should be diagnosed regardless of other comorbidities that could potentially be related to the clinical symptoms — the finding is definitive.<br><br>
+        <strong>HLA testing:</strong> HLA-DQB1*06:02 is present in ~95% of Type 1 (vs. ~25% of general population). A negative HLA-DQB1*06:02 makes orexin deficiency extremely unlikely — consider testing before LP to guide pre-test probability. A positive HLA does not diagnose narcolepsy.<br><br>
+        <strong>Indications for LP:</strong> Atypical cataplexy, MSLT borderline, secondary narcolepsy suspected (trauma, tumor, inflammatory), or when diagnosis requires certainty for disability or pharmacotherapy decisions.
+      </div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="set('csf','low')"  id="csf-low" >✓ ≤110 pg/mL or &lt;⅓ mean — Deficient</button>
+      <button class="abtn" onclick="set('csf','norm')" id="csf-norm">✗ Normal (&gt;110 pg/mL)</button>
+      <button class="abtn" onclick="set('csf','nd')"   id="csf-nd"  >— Not measured</button>
+    </div>
+  </div>
+
+  <div id="a2t1" class="alrt"></div>
+  <div class="nav-row">
+    <button class="nbtn ns" onclick="go(1)">← Back</button>
+    <button class="nbtn np" onclick="go(3)">Next: Exclusions →</button>
+  </div>
+</div>
+
+<!-- TYPE 2 PATHWAY -->
+<div class="card" id="t2-core" style="display:none;">
+  <div class="ctitle" style="color:var(--blue);">Step 3 · Criteria B–D — Type 2 Diagnostic Evidence</div>
+  <div class="csub">Type 2 is a diagnosis of exclusion relative to Type 1. All of Criteria B, C, and D must be satisfied. Cataplexy must be absent and orexin must not be deficient.</div>
+
+  <div class="lbox">
+    <strong>Type 2 requires ALL of:</strong><br>
+    <span class="lb">Criterion B:</span> MSLT — MSL ≤8 min + ≥2 SOREMPs (overnight PSG SOREMP may replace 1 MSLT SOREMP — diagnostic value not established for Type 2, but guides clinical decision-making)<br>
+    <span class="lb">Criterion C:</span> Cataplexy absent<br>
+    <span class="lb">Criterion D:</span> CSF hypocretin-1 normal (&gt;110 pg/mL) if measured — or not measured
+  </div>
+
+  <div class="slabel">Criterion B · MSLT <span class="pill pill-r">REQUIRED</span></div>
+
+  <div class="two-col">
+    <div class="crit" id="t2msl-item">
+      <div class="crit-main">
+        <div class="crit-name">Mean sleep latency ≤8 minutes on MSLT</div>
+        <button class="xbtn" onclick="xp(this)">details ▾</button>
+      </div>
+      <div class="crit-detail">
+        MSLT performed following a nocturnal PSG (to confirm ≥6h of sleep, exclude OSA/PLMs causing EDS). Five 20-min nap opportunities every 2 hours. Mean of all nap latencies calculated. Must be performed after ensuring no medication washout effects and following sleep logs/actigraphy confirming adequate sleep opportunity.
+        <div class="cnote"><strong>ICSD-3-TR note:</strong> Narcolepsy Type 2 should not be diagnosed in a shift worker without prior re-entrainment to a normal sleep-wake schedule — the circadian clock gates REM propensity and can produce false-positive SOREMPs in shift work disorder.</div>
+      </div>
+      <div class="brow">
+        <button class="abtn" onclick="set('t2msl','yes')" id="t2msl-yes">✓ ≤8 min</button>
+        <button class="abtn" onclick="set('t2msl','no')"  id="t2msl-no" >✗ &gt;8 min</button>
+      </div>
+    </div>
+    <div class="crit" id="t2sor-item">
+      <div class="crit-main">
+        <div class="crit-name">≥2 SOREMPs on MSLT (or 1 MSLT SOREMP + overnight PSG SOREMP)</div>
+        <button class="xbtn" onclick="xp(this)">details ▾</button>
+      </div>
+      <div class="crit-detail">
+        Sleep-onset REM period = REM sleep occurring within 15 minutes of sleep onset. On MSLT: 2 or more SOREMPs across the 5 nap opportunities. Alternatively, the overnight PSG SOREMP (within 15 min of sleep onset) may replace one MSLT SOREMP — though ICSD-3-TR notes the diagnostic value of this substitution is not formally established for Type 2 (unlike Type 1 where it is now a recognized independent criterion).
+      </div>
+      <div class="brow">
+        <button class="abtn" onclick="set('t2sor','yes')" id="t2sor-yes">✓ ≥2 SOREMPs</button>
+        <button class="abtn" onclick="set('t2sor','psg')" id="t2sor-psg">1 MSLT + PSG SOREMP</button>
+        <button class="abtn" onclick="set('t2sor','no')"  id="t2sor-no" >✗ &lt;2 SOREMPs</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:14px;">Criterion C · Absence of Cataplexy <span class="pill pill-r">REQUIRED</span></div>
+  <div class="crit" id="t2cat-item">
+    <div class="crit-main">
+      <div class="crit-name">Cataplexy is absent</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      True cataplexy must be absent for a Type 2 diagnosis. If cataplexy develops at any subsequent point, the diagnosis must be reclassified as Narcolepsy Type 1. A careful history for emotion-triggered partial episodes (jaw drop, head nod, knee buckle, facial droop, slurred speech) should be obtained — these may not be spontaneously reported.
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="set('t2cat','absent')"  id="t2cat-absent" >✓ Absent — Type 2 criterion met</button>
+      <button class="abtn" onclick="set('t2cat','present')" id="t2cat-present">✕ Present → Reclassify as Type 1</button>
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:14px;">Criterion D · CSF Orexin (if measured) <span class="pill pill-a">ONLY IF TESTED</span></div>
+  <div class="crit" id="t2csf-item">
+    <div class="crit-main">
+      <div class="crit-name">If CSF hypocretin-1 measured: must be normal (&gt;110 pg/mL or &gt;⅓ mean normal values)</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      If CSF orexin has been measured and is deficient (≤110 pg/mL or &lt;⅓ mean), the diagnosis must be reclassified as Narcolepsy Type 1 — even if cataplexy is currently absent (atypical presentation or early Type 1 before cataplexy develops). LP is not required for Type 2 diagnosis — if not measured, this criterion is simply not applicable.
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="set('t2csf','norm')" id="t2csf-norm">✓ Normal or not measured</button>
+      <button class="abtn" onclick="set('t2csf','low')"  id="t2csf-low" >✕ Deficient → Reclassify as Type 1</button>
+    </div>
+  </div>
+
+  <div id="a2t2" class="alrt"></div>
+  <div class="nav-row">
+    <button class="nbtn ns" onclick="go(1)">← Back</button>
+    <button class="nbtn np" onclick="go(3)">Next: Exclusions →</button>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════ SCREEN 3: EXCLUSIONS ══════════════ -->
+<div class="screen" id="s3">
+<div class="card">
+  <div class="ctitle" style="color:var(--red);">Step 4 · Criterion C/E — Exclusion of Alternative Causes</div>
+  <div class="csub">The final criterion is identical in both subtypes: symptoms must not be better explained by any of the following conditions.</div>
+
+  <div class="slabel">Exclusion criterion (Criterion C for Type 1, Criterion E for Type 2) <span class="pill pill-r">ALL MUST BE ADDRESSED</span></div>
+
+  <div class="crit" id="exc-sleep-item">
+    <div class="crit-main">
+      <div class="crit-name">Chronic insufficient sleep excluded</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      Sleep deprivation is the most common cause of EDS and can produce false-positive MSLT findings including SOREMPs, particularly in adolescents. Sleep logs and actigraphy for ≥1–2 weeks prior to MSLT are mandatory to document adequate sleep opportunity. A sleep diary showing consistently &lt;7 hours/night in an adult, or habitually curtailed sleep, should prompt sleep extension trials before proceeding to MSLT.
+      <div class="cnote">Adolescents with delayed sleep phase commonly accumulate sleep debt on school nights. Extended sleep (e.g., weekend "catch-up" or vacation sleep) should normalize ESS scores and MSLT findings in pure chronic insufficient sleep — failure to normalize after adequate sleep opportunity supports a primary hypersomnolence disorder.</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="set('excslp','excluded')"     id="excslp-excluded"    >✓ Excluded — adequate sleep documented</button>
+      <button class="abtn" onclick="set('excslp','not_excluded')" id="excslp-not_excluded">⚠ Not yet excluded</button>
+    </div>
+  </div>
+
+  <div class="crit" id="exc-circadian-item">
+    <div class="crit-main">
+      <div class="crit-name">Circadian rhythm sleep-wake disorder excluded</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      Delayed sleep phase disorder (DSPD) — especially in adolescents and young adults — can cause profound EDS on a conventional schedule and false-positive SOREMPs on an MSLT performed at an inappropriate circadian time. Shift work disorder similarly gates REM propensity. Sleep logs + actigraphy confirm timing of habitual sleep-wake cycle. MSLT must be performed at the appropriate circadian time relative to the individual's habitual schedule.
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="set('exccir','excluded')"     id="exccir-excluded"    >✓ Excluded</button>
+      <button class="abtn" onclick="set('exccir','not_excluded')" id="exccir-not_excluded">⚠ Not yet excluded</button>
+    </div>
+  </div>
+
+  <div class="crit" id="exc-sleep2-item">
+    <div class="crit-main">
+      <div class="crit-name">Other current sleep disorder excluded (e.g., OSA, idiopathic hypersomnia, REM sleep behavior disorder)</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      <strong>Obstructive sleep apnea (OSA):</strong> Must be adequately treated before MSLT — residual sleepiness from untreated or undertreated OSA can cause short sleep latencies and SOREMPs. If CPAP therapy fully resolves EDS, a primary hypersomnolence disorder is not supported.<br><br>
+      <strong>Idiopathic hypersomnia (IH):</strong> MSLT findings in IH typically show MSL ≤8 min but &lt;2 SOREMPs. IH is explicitly listed as a differential for narcolepsy — both Type 1 and Type 2 MSLT criteria (ICSD-3-TR) now require that MSLT/PSG findings are inconsistent with narcolepsy for an IH diagnosis to be made.<br><br>
+      <strong>Other:</strong> PLMs causing fragmented sleep, upper airway resistance syndrome, kleine-levin syndrome (episodic hypersomnia), post-COVID hypersomnolence.
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="set('excoth','excluded')"     id="excoth-excluded"    >✓ Excluded / Adequately treated</button>
+      <button class="abtn" onclick="set('excoth','not_excluded')" id="excoth-not_excluded">⚠ Not yet excluded</button>
+    </div>
+  </div>
+
+  <div class="crit" id="exc-mental-item">
+    <div class="crit-main">
+      <div class="crit-name">Mental disorder not primarily responsible for symptoms</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      Major depressive disorder with hypersomnia, bipolar disorder (hypersomnia during depressive episodes), and ADHD can all cause EDS. Importantly, depression is common in narcolepsy — comorbid depression does not preclude the diagnosis. The exclusion criterion requires that EDS/cataplexy are <em>not better explained</em> by the psychiatric disorder — clinical judgment is required. Atonic episodes in conversion disorder/functional neurological disorder may mimic cataplexy.
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="set('excmen','excluded')"     id="excmen-excluded"    >✓ Not primary explanation</button>
+      <button class="abtn" onclick="set('excmen','not_excluded')" id="excmen-not_excluded">⚠ Psychiatric cause not excluded</button>
+    </div>
+  </div>
+
+  <div class="crit" id="exc-meds-item">
+    <div class="crit-main">
+      <div class="crit-name">Medication or substance use / withdrawal not responsible for symptoms</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      Drugs causing EDS or MSLT abnormalities: sedating antihistamines, benzodiazepines, opioids, anticonvulsants, antipsychotics, antidepressants (especially TCAs, mirtazapine), and cannabis. REM-suppressing medications (TCAs, SSRIs, SNRIs, MAOIs) — withdrawal can cause REM rebound and false-positive SOREMPs. Standard guidance: allow ≥2 weeks washout of REM-altering medications before MSLT if clinically feasible. A medication review including OTC and recreational substances is essential.
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="set('excmed','excluded')"     id="excmed-excluded"    >✓ No contributing medications identified</button>
+      <button class="abtn" onclick="set('excmed','not_excluded')" id="excmed-not_excluded">⚠ Medication effect not excluded</button>
+    </div>
+  </div>
+
+  <div id="a3" class="alrt"></div>
+  <div class="nav-row">
+    <button class="nbtn ns" onclick="go(2)">← Back</button>
+    <button class="nbtn np" onclick="go(4)">Generate Verdict →</button>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════ SCREEN 4: VERDICT ══════════════ -->
+<div class="screen" id="s4">
+  <div id="vout"></div>
+  <div id="sout"></div>
+  <div class="doc-header">
+    <button class="doc-tog" onclick="toggleDoc()">▼ Documentation Note</button>
+    <button class="copy-btn" id="copy-btn" onclick="copyDoc()">⎘ Copy</button>
+  </div>
+  <div class="doc-body" id="dn"></div>
+  <div class="nav-row">
+    <button class="nbtn ns" onclick="go(3)">← Back</button>
+    <button class="nbtn np" onclick="resetAll()">↺ New Evaluation</button>
+  </div>
+</div>
+
+</div>
+<script>
+const S = {
+  subtype: null,
+  eds: null, edsdur: null,
+  // T1
+  cat: null,
+  mslt_msl: null, mslt_soremp: null,
+  psg_soremp: null,
+  csf: null,
+  // T2
+  t2msl: null, t2sor: null, t2cat: null, t2csf: null,
+  // Exclusions
+  excslp: null, exccir: null, excoth: null, excmen: null, excmed: null
+};
+let cur = 0;
+
+function selectType(t) {
+  S.subtype = t;
+  document.getElementById('btn-t1').className = 'subtype-btn' + (t==='t1'?' sel-t1':'');
+  document.getElementById('btn-t2').className = 'subtype-btn' + (t==='t2'?' sel-t2':'');
+  // Show/hide type-specific EDS duration block
+  document.getElementById('eds-duration-block').style.display = t==='t2' ? 'block' : 'none';
+  // Show/hide type-specific core blocks
+  document.getElementById('t1-core').style.display = t==='t1' ? 'block' : 'none';
+  document.getElementById('t2-core').style.display = t==='t2' ? 'block' : 'none';
+  // Color step tab accent to match subtype
+  document.querySelectorAll('.np').forEach(b => {
+    b.style.background = t==='t1' ? 'var(--indigo)' : 'var(--blue)';
+    b.style.borderColor = t==='t1' ? 'var(--indigo)' : 'var(--blue)';
+  });
+  sa(document.getElementById('a0'), 'aind', t==='t1' ? '✓ Narcolepsy Type 1 pathway selected. Criteria A–C required.' : '✓ Narcolepsy Type 2 pathway selected. Criteria A–E required.');
+  document.getElementById('n0').disabled = false;
+  ui();
+}
+
+function set(k, v) {
+  S[k] = v;
+  const item = document.getElementById(k+'-item');
+  if (item) item.className = 'crit';
+  const btnVals = ['yes','no','nd','low','norm','typical','atypical','absent','present','excluded','not_excluded','psg','one','norm','low','done','pending','notdone'];
+  btnVals.forEach(x => { const b = document.getElementById(k+'-'+x); if(b) b.classList.remove('ay','an','ai','ab','aa','aw'); });
+
+  const clsMap = {
+    yes:'ay', no:'an', nd:'aa', low:'ai', norm:'aa', typical:'ai', atypical:'aw', absent:'ay',
+    present:'an', excluded:'ay', not_excluded:'aw', psg:'ab', one:'aw', done:'ay', pending:'aw', notdone:'aa'
+  };
+  const btn = document.getElementById(k+'-'+v);
+  if (btn) btn.classList.add(clsMap[v]||'aa');
+
+  if (item) {
+    if (['yes','excluded','absent','typical','done'].includes(v)) item.classList.add('c-yes');
+    else if (['no','present','not_excluded'].includes(v))         item.classList.add('c-no');
+    else if (['low'].includes(v) && k==='csf')                   item.classList.add('c-yes');
+    else if (['low'].includes(v))                                 item.classList.add('c-no');
+    else if (['norm'].includes(v))                                item.classList.add('c-abs');
+    else if (['atypical','psg','one','pending'].includes(v))      item.classList.add('c-amb');
+    else if (['nd','notdone'].includes(v))                        item.classList.add('c-abs');
+  }
+
+  // Show cat branch block only if cataplexy is present
+  const cbb = document.getElementById('cat-branch-block');
+  if (cbb) cbb.style.display = (S.cat === 'typical' || S.cat === 'atypical') ? 'block' : 'none';
+
+  ui();
+}
+
+function excCount() { return ['excslp','exccir','excoth','excmen','excmed'].filter(k=>S[k]==='excluded').length; }
+function excAllMet() { return ['excslp','exccir','excoth','excmen','excmed'].every(k=>S[k]==='excluded'); }
+function excAnyPending() { return ['excslp','exccir','excoth','excmen','excmed'].some(k=>S[k]==='not_excluded'); }
+
+// T1 Branch 1 check
+function t1Branch1Met() {
+  const catOk = S.cat === 'typical' || S.cat === 'atypical';
+  const msltOk = S.mslt_msl === 'yes' && S.mslt_soremp === 'yes';
+  const psgOk  = S.psg_soremp === 'yes';
+  return catOk && (msltOk || psgOk);
+}
+function t1Branch2Met() { return S.csf === 'low'; }
+function t1CriterionBMet() { return t1Branch1Met() || t1Branch2Met(); }
+
+// T2 check
+function t2CritBMet() { return S.t2msl === 'yes' && (S.t2sor === 'yes' || S.t2sor === 'psg'); }
+function t2CritCMet() { return S.t2cat === 'absent'; }
+function t2CritDMet() { return S.t2csf !== 'low'; }
+
+function ui() {
+  if (!S.subtype) return;
+
+  // Step 1 EDS
+  const a1 = document.getElementById('a1'), n1 = document.getElementById('n1');
+  if (S.subtype === 't1') {
+    if (S.eds === 'yes') { sa(a1,'aok','✓ EDS established. Proceed to diagnostic evidence (Branch 1 or Branch 2).'); n1.disabled = false; }
+    else if (S.eds === 'no') { sa(a1,'aerr','✕ Criterion A not met. EDS is the cardinal required symptom for both narcolepsy subtypes.'); n1.disabled = true; }
+    else { ha(a1); n1.disabled = true; }
+  } else {
+    const durOk = S.edsdur === 'yes';
+    if (S.eds === 'yes' && durOk) { sa(a1,'aok','✓ EDS present for ≥3 months. Criterion A met for Type 2.'); n1.disabled = false; }
+    else if (S.eds === 'yes' && S.edsdur === 'no') { sa(a1,'aerr','✕ EDS present but duration <3 months. Type 2 requires EDS for ≥3 months.'); n1.disabled = true; }
+    else if (S.eds === 'no') { sa(a1,'aerr','✕ Criterion A not met.'); n1.disabled = true; }
+    else { ha(a1); n1.disabled = true; }
+  }
+
+  // Step 2 T1 alerts
+  if (S.subtype === 't1') {
+    const a2 = document.getElementById('a2t1');
+    if (t1Branch2Met()) { sa(a2,'aok','✓ Branch 2 met — CSF orexin deficiency confirmed. Narcolepsy Type 1 diagnosis is established regardless of other comorbidities or Branch 1 status.'); }
+    else if (t1Branch1Met()) { sa(a2,'aok','✓ Branch 1 met — cataplexy + sleep study evidence ('+( (S.mslt_msl==='yes'&&S.mslt_soremp==='yes') ? 'MSLT criteria' : 'overnight PSG SOREMP') +').'); }
+    else if ((S.cat==='typical'||S.cat==='atypical') && S.psg_soremp==='yes' && !(S.mslt_msl==='yes'&&S.mslt_soremp==='yes')) { sa(a2,'aok','✓ Cataplexy + overnight PSG SOREMP — Branch 1 met via new ICSD-3-TR 2023 pathway.'); }
+    else if (S.cat !== null || S.csf !== null) { sa(a2,'awn','⚠ Criterion B not yet fulfilled. Complete both branches before proceeding.'); }
+    else ha(a2);
+  } else {
+    const a2 = document.getElementById('a2t2');
+    if (S.t2cat === 'present') { sa(a2,'aerr','✕ Cataplexy is present — this patient should be evaluated under Narcolepsy Type 1 criteria.'); }
+    else if (S.t2csf === 'low') { sa(a2,'aerr','✕ CSF orexin deficiency — reclassify as Narcolepsy Type 1.'); }
+    else if (t2CritBMet() && t2CritCMet() && t2CritDMet()) { sa(a2,'aok','✓ Criteria B, C, and D for Type 2 are all met.'); }
+    else if (S.t2msl !== null || S.t2sor !== null) { sa(a2,'awn','⚠ Type 2 core criteria not yet fully met.'); }
+    else ha(a2);
+  }
+
+  // Step 3 exclusions
+  const a3 = document.getElementById('a3');
+  if (excAllMet()) sa(a3,'aok','✓ All exclusion criteria addressed. Criterion '+(S.subtype==='t1'?'C':'E')+' satisfied.');
+  else if (excAnyPending()) sa(a3,'awn','⚠ '+(['excslp','exccir','excoth','excmen','excmed'].filter(k=>S[k]==='not_excluded').length)+' exclusion(s) not yet addressed. Complete workup before finalizing diagnosis.');
+  else ha(a3);
+}
+
+function sa(el,cls,msg){ if(!el)return; el.className='alrt show '+cls; el.innerHTML=msg; }
+function ha(el){ if(el) el.classList.remove('show'); }
+
+// VERDICT ENGINE
+function verdict() {
+  if (!S.subtype) return { cls:'vnd', t:'No Subtype Selected', d:'Please return to Step 1 and select Narcolepsy Type 1 or Type 2.' };
+  const edsOk = S.eds === 'yes';
+  const edsDurOk = S.subtype === 't1' ? true : S.edsdur === 'yes';
+  if (!edsOk || !edsDurOk) return { cls:'vno', t:'Criterion A Not Met', d:'Excessive daytime sleepiness (irrepressible need to sleep) is the mandatory cardinal symptom for both narcolepsy subtypes. '+( S.subtype==='t2'&&edsOk?'EDS duration <3 months — Type 2 requires ≥3 months.':'' ) };
+
+  if (S.subtype === 't1') {
+    if (S.t2cat === 'present' || S.cat === 'typical' || S.cat === 'atypical' || S.csf === 'low') {
+      // Type 1 evaluation
+      const b2 = t1Branch2Met();
+      const b1 = t1Branch1Met();
+      if (!excAllMet() && excAnyPending()) {
+        if (b2 || b1) return { cls:'vnd', t:'Type 1 Criteria Met — Exclusions Pending', d:'Criterion B is fulfilled ('+( b2?'CSF orexin deficiency':( (S.mslt_msl==='yes'&&S.mslt_soremp==='yes')? 'cataplexy + MSLT' : 'cataplexy + overnight PSG SOREMP')+'')+'), but outstanding exclusions prevent final confirmation. Complete exclusion workup.' };
+      }
+      if (b2 && excAllMet()) return { cls:'vt1', t:'Narcolepsy Type 1', d:'Diagnosis established by CSF orexin deficiency (≤110 pg/mL or <⅓ mean normal) — the definitive biomarker. Type 1 diagnosis is confirmed regardless of cataplexy status or other comorbidities. All exclusion criteria satisfied. ICSD-3-TR 2023.' };
+      if (b1 && excAllMet()) {
+        const via = (S.mslt_msl==='yes'&&S.mslt_soremp==='yes') ? 'cataplexy + MSLT (MSL ≤8 min, ≥2 SOREMPs)' : 'cataplexy + overnight PSG SOREMP within 15 minutes of sleep onset (ICSD-3-TR 2023 pathway)';
+        return { cls:'vt1', t:'Narcolepsy Type 1', d:'All criteria met. Criterion B fulfilled via Branch 1: '+via+'. Exclusions satisfied. ICSD-3-TR 2023.' };
+      }
+      if (!b1 && !b2) return { cls:'vno', t:'Criterion B Not Met — Type 1', d:'EDS is present. For Type 1, Criterion B requires either (1) cataplexy + MSLT evidence (MSL ≤8 min + ≥2 SOREMPs) or cataplexy + overnight PSG SOREMP, OR (2) CSF orexin deficiency. Neither branch is currently fulfilled.' };
+    }
+    return { cls:'vnd', t:'Insufficient Data — Type 1', d:'Complete Criterion B assessment (cataplexy status, MSLT/PSG findings, and/or CSF orexin) to generate a classification.' };
+  }
+
+  // TYPE 2
+  if (S.t2cat === 'present') return { cls:'vno', t:'Cataplexy Present — Reclassify as Type 1', d:'Cataplexy has been identified. Type 2 diagnosis requires absence of cataplexy. This patient should be evaluated under Narcolepsy Type 1 criteria.' };
+  if (S.t2csf === 'low') return { cls:'vno', t:'Orexin Deficient — Reclassify as Type 1', d:'CSF hypocretin-1 is ≤110 pg/mL or <⅓ of mean normal values. Orexin deficiency establishes a Type 1 diagnosis regardless of cataplexy status. Reclassify accordingly.' };
+  const b = t2CritBMet(), c = t2CritCMet(), d = t2CritDMet();
+  if (b && c && d && excAllMet()) return { cls:'vt2', t:'Narcolepsy Type 2', d:'All criteria met. MSLT: MSL ≤8 min + ≥2 SOREMPs ('+( S.t2sor==='psg'?'1 MSLT SOREMP + overnight PSG SOREMP':'≥2 MSLT SOREMPs' )+'), cataplexy absent, orexin normal/not measured, exclusions satisfied. Monitor for emergence of cataplexy — reclassify to Type 1 if cataplexy or orexin deficiency develop. ICSD-3-TR 2023.' };
+  if (b && c && d && excAnyPending()) return { cls:'vnd', t:'Type 2 Core Criteria Met — Exclusions Pending', d:'MSLT criteria, cataplexy absence, and orexin status satisfy Type 2 criteria, but outstanding exclusions prevent final confirmation.' };
+  if (!b) return { cls:'vno', t:'MSLT Criteria Not Met — Type 2', d:'Type 2 requires MSL ≤8 minutes AND ≥2 SOREMPs on MSLT. Current findings do not fulfill Criterion B. Consider repeat testing after ensuring adequate sleep, circadian re-entrainment, and medication washout.' };
+  return { cls:'vnd', t:'Insufficient Data — Type 2', d:'Complete all criteria to generate a final classification.' };
+}
+
+function rv() {
+  const v = verdict();
+
+  let html = `<div class="vban ${v.cls}">
+    <div class="vlbl">ICSD-3-TR 2023 · Narcolepsy Classification</div>
+    <div class="vtitle">${v.t}</div>
+    <div class="vdesc">${v.d}</div>
+  </div>`;
+
+  html += `<div class="sum-grid">`;
+  // Left: Key diagnostic findings
+  html += `<div class="sblock"><div class="sbtitle">Diagnostic Findings</div>`;
+  const diagRows = [];
+  if (S.eds !== null)      diagRows.push([S.eds==='yes', 'EDS (irrepressible sleepiness)', S.eds==='yes']);
+  if (S.subtype==='t2' && S.edsdur !== null) diagRows.push([S.edsdur==='yes', 'EDS ≥3 months', S.edsdur==='yes']);
+  if (S.subtype==='t1') {
+    if (S.cat !== null)     diagRows.push([S.cat==='typical', 'Cataplexy: '+(S.cat==='typical'?'Typical':S.cat==='atypical'?'Atypical':'Absent'), S.cat!=='absent']);
+    if (S.mslt_msl !== null) diagRows.push([S.mslt_msl==='yes', 'MSLT MSL ≤8 min', S.mslt_msl==='yes']);
+    if (S.mslt_soremp !== null) diagRows.push([S.mslt_soremp==='yes', 'MSLT ≥2 SOREMPs', S.mslt_soremp==='yes']);
+    if (S.psg_soremp !== null) diagRows.push([S.psg_soremp==='yes', 'Overnight PSG SOREMP (<15 min)', S.psg_soremp==='yes']);
+    if (S.csf !== null)     diagRows.push([S.csf==='low', 'CSF orexin: '+(S.csf==='low'?'Deficient ≤110 pg/mL':S.csf==='norm'?'Normal':'Not measured'), S.csf==='low']);
+  } else {
+    if (S.t2msl !== null)  diagRows.push([S.t2msl==='yes', 'MSLT MSL ≤8 min', S.t2msl==='yes']);
+    if (S.t2sor !== null)  diagRows.push([S.t2sor!=='no', 'MSLT SOREMPs: '+(S.t2sor==='yes'?'≥2 on MSLT':S.t2sor==='psg'?'1 MSLT + PSG SOREMP':'<2'), S.t2sor!=='no']);
+    if (S.t2cat !== null)  diagRows.push([S.t2cat==='absent', 'Cataplexy absent', S.t2cat==='absent']);
+    if (S.t2csf !== null)  diagRows.push([S.t2csf==='norm', 'CSF orexin: '+(S.t2csf==='norm'?'Normal/not measured':'Deficient → Type 1'), S.t2csf==='norm']);
+  }
+  diagRows.forEach(([met, label]) => {
+    const dc = met?'di':'dr'; const tc = met?'ti':'tr';
+    html += `<div class="srow"><div class="dot ${dc}"></div><div class="sname">${label}</div><div class="stag ${tc}">${met?'MET':'NOT MET'}</div></div>`;
+  });
+  html += `</div>`;
+
+  // Right: Exclusions
+  const excNames = { excslp:'Chronic insufficient sleep', exccir:'Circadian rhythm disorder', excoth:'Other sleep disorder', excmen:'Mental disorder', excmed:'Medication/substance effect' };
+  html += `<div class="sblock"><div class="sbtitle">Exclusions (Criterion ${S.subtype==='t1'?'C':'E'})</div>`;
+  ['excslp','exccir','excoth','excmen','excmed'].forEach(k => {
+    const st = S[k];
+    const dc = st==='excluded'?'dg':st==='not_excluded'?'dr':'dgr';
+    const tc = st==='excluded'?'tg':st==='not_excluded'?'tr':'tgr';
+    html += `<div class="srow"><div class="dot ${dc}"></div><div class="sname">${excNames[k]}</div><div class="stag ${tc}">${st==='excluded'?'EXCLUDED':st==='not_excluded'?'PENDING':'N/A'}</div></div>`;
+  });
+  html += `</div>`;
+  html += `</div>`;
+
+  document.getElementById('vout').innerHTML = html;
+
+  // Documentation note
+  let note = `SLEEP MEDICINE / NEUROLOGY CONSULTATION\nICSD-3-TR 2023 Narcolepsy Criteria Assessment\nAASM International Classification of Sleep Disorders, 3rd Edition, Text Revision. 2023.\nDate: ${new Date().toLocaleDateString()}\n\n`;
+  note += `SUSPECTED SUBTYPE: Narcolepsy ${S.subtype==='t1'?'Type 1 (with cataplexy / orexin deficiency)':'Type 2 (without cataplexy)'}\n\n`;
+  note += `CRITERION A — EXCESSIVE DAYTIME SLEEPINESS\n  Irrepressible EDS: ${S.eds==='yes'?'Present':'Absent/not established'}\n`;
+  if (S.subtype==='t2') note += `  Duration ≥3 months: ${S.edsdur==='yes'?'Confirmed':S.edsdur==='no'?'Not confirmed':'Not assessed'}\n`;
+  note += `\n`;
+
+  if (S.subtype==='t1') {
+    note += `CRITERION B — NARCOLEPSY TYPE 1 DIAGNOSTIC EVIDENCE\n\nBranch 1 (Cataplexy + Sleep Study):\n`;
+    note += `  Cataplexy: ${S.cat==='typical'?'Present — Typical':S.cat==='atypical'?'Present — Atypical (increased diagnostic uncertainty)':S.cat==='absent'?'Absent':'Not assessed'}\n`;
+    note += `  MSLT mean sleep latency: ${S.mslt_msl==='yes'?'≤8 min (met)':S.mslt_msl==='no'?'>8 min (not met)':S.mslt_msl==='nd'?'Not done':'Not assessed'}\n`;
+    note += `  MSLT SOREMPs: ${S.mslt_soremp==='yes'?'≥2 (met)':S.mslt_soremp==='one'?'1 SOREMP only':S.mslt_soremp==='no'?'0 SOREMPs':S.mslt_soremp==='nd'?'Not done':'Not assessed'}\n`;
+    note += `  Overnight PSG SOREMP (<15 min from sleep onset): ${S.psg_soremp==='yes'?'Present (met — new ICSD-3-TR 2023 pathway)':S.psg_soremp==='no'?'Absent':S.psg_soremp==='nd'?'Not done':'Not assessed'}\n`;
+    note += `  Branch 1 fulfilled: ${t1Branch1Met()?'YES':'NO'}\n\nBranch 2 (CSF Orexin):\n`;
+    note += `  CSF hypocretin-1: ${S.csf==='low'?'DEFICIENT — ≤110 pg/mL or <1/3 mean normal (Branch 2 met — definitive)':S.csf==='norm'?'Normal (>110 pg/mL)':S.csf==='nd'?'Not measured':'Not assessed'}\n`;
+    note += `  Branch 2 fulfilled: ${t1Branch2Met()?'YES':'NO'}\n`;
+    note += `  Criterion B overall: ${t1CriterionBMet()?'MET ('+( t1Branch2Met()?'via CSF orexin':((S.mslt_msl==='yes'&&S.mslt_soremp==='yes')?'via MSLT':'via overnight PSG SOREMP'))+')':'NOT MET'}\n`;
+  } else {
+    note += `CRITERION B — MSLT FINDINGS\n`;
+    note += `  Mean sleep latency: ${S.t2msl==='yes'?'≤8 min (met)':S.t2msl==='no'?'>8 min (not met)':'Not assessed'}\n`;
+    note += `  SOREMPs: ${S.t2sor==='yes'?'≥2 on MSLT (met)':S.t2sor==='psg'?'1 MSLT + overnight PSG SOREMP (may replace 1; diagnostic value in Type 2 not formally established)':S.t2sor==='no'?'<2 (not met)':'Not assessed'}\n`;
+    note += `  Criterion B: ${t2CritBMet()?'MET':'NOT MET'}\n\n`;
+    note += `CRITERION C — CATAPLEXY ABSENT\n  ${S.t2cat==='absent'?'Confirmed absent — Criterion C met':S.t2cat==='present'?'CATAPLEXY PRESENT — reclassify as Type 1':'Not assessed'}\n\n`;
+    note += `CRITERION D — CSF OREXIN (IF MEASURED)\n  ${S.t2csf==='norm'?'Normal or not measured — Criterion D met':S.t2csf==='low'?'DEFICIENT — reclassify as Type 1':'Not assessed'}\n`;
+  }
+
+  note += `\nCRITERION ${S.subtype==='t1'?'C':'E'} — EXCLUSION OF ALTERNATIVE CAUSES\n`;
+  const excFull = { excslp:'Chronic insufficient sleep', exccir:'Circadian rhythm sleep-wake disorder', excoth:'Other current sleep disorder (OSA, IH, etc.)', excmen:'Mental disorder as primary cause', excmed:'Medication/substance use or withdrawal' };
+  ['excslp','exccir','excoth','excmen','excmed'].forEach(k=>{
+    note += `  ${excFull[k]}: ${S[k]==='excluded'?'Excluded':S[k]==='not_excluded'?'NOT YET EXCLUDED':'Not documented'}\n`;
+  });
+
+  note += `\nICSD-3-TR 2023 CLASSIFICATION\n${v.t}\n${v.d}\n\n`;
+  note += `Key ICSD-3-TR 2023 update:\n  - Type 1: Cataplexy + overnight PSG SOREMP (<15 min from sleep onset) now independently\n    fulfills Criterion B without requiring MSLT. This is a new pathway confirmed by well-\n    established evidence (previously only allowed as a substitute for one of the MSLT SOREMPs).\n\nPre-MSLT requirements:\n  - Sleep logs (required) + actigraphy (whenever possible) ≥1-2 weeks prior\n  - Adequate sleep opportunity confirmed (insufficient sleep excluded)\n  - Circadian re-entrainment confirmed (shift workers re-entrained before testing)\n  - REM-altering medications withheld ≥2 weeks if clinically feasible\n  - Nocturnal PSG immediately preceding MSLT (same day)\n\nRef: American Academy of Sleep Medicine. International Classification of Sleep Disorders,\n3rd Edition, Text Revision (ICSD-3-TR). AASM; 2023.`;
+  document.getElementById('dn').textContent = note;
+}
+
+function go(n) {
+  document.getElementById('s'+cur).classList.remove('active');
+  document.getElementById('s'+n).classList.add('active');
+  for(let i=0;i<5;i++){
+    const d=document.getElementById('st'+i);
+    d.classList.remove('active','done');
+    if(i<n) d.classList.add('done'); else if(i===n) d.classList.add('active');
+  }
+  cur=n;
+  document.getElementById('pf').style.width=((n/4)*100)+'%';
+  if(n===4) rv();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function xp(btn) {
+  const d = btn.closest('.crit').querySelector('.crit-detail'); if(!d) return;
+  const o = d.classList.toggle('open');
+  btn.textContent = o ? 'close ▴' : 'details ▾';
+}
+
+function toggleDoc() {
+  const body=document.getElementById('dn'), btn=document.getElementById('copy-btn'), tog=document.querySelector('.doc-tog');
+  if(!body) return;
+  const open=body.classList.toggle('open');
+  if(tog) tog.textContent=open?'▲ Documentation Note':'▼ Documentation Note';
+  if(btn) btn.classList.toggle('visible',open);
+}
+
+function copyDoc() {
+  const body=document.getElementById('dn'), btn=document.getElementById('copy-btn');
+  if(!body) return;
+  const text=body.textContent||body.innerText;
+  navigator.clipboard.writeText(text).then(()=>{ if(btn){ btn.textContent='✓ Copied'; btn.classList.add('copied'); setTimeout(()=>{ btn.textContent='⎘ Copy'; btn.classList.remove('copied'); },2000); } })
+  .catch(()=>{ const ta=document.createElement('textarea'); ta.value=text; ta.style.position='fixed'; ta.style.opacity='0'; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); if(btn){ btn.textContent='✓ Copied'; btn.classList.add('copied'); setTimeout(()=>{ btn.textContent='⎘ Copy'; btn.classList.remove('copied'); },2000); } });
+}
+
+function resetAll() {
+  Object.keys(S).forEach(k=>S[k]=null);
+  document.querySelectorAll('.crit').forEach(el=>el.className='crit');
+  document.querySelectorAll('.abtn').forEach(b=>b.classList.remove('ay','an','ai','ab','aa','aw'));
+  document.querySelectorAll('.subtype-btn').forEach(b=>b.className='subtype-btn');
+  document.querySelectorAll('.crit-detail').forEach(d=>d.classList.remove('open'));
+  document.querySelectorAll('.xbtn').forEach(b=>b.textContent='details ▾');
+  document.getElementById('cat-branch-block').style.display='none';
+  document.getElementById('eds-duration-block').style.display='none';
+  document.getElementById('t1-core').style.display='none';
+  document.getElementById('t2-core').style.display='none';
+  ['a0','a1','a2t1','a2t2','a3'].forEach(id=>{ const el=document.getElementById(id); if(el) el.classList.remove('show'); });
+  const dn=document.getElementById('dn'); if(dn) dn.classList.remove('open');
+  const cb=document.getElementById('copy-btn'); if(cb) cb.classList.remove('visible','copied');
+  const tog=document.querySelector('.doc-tog'); if(tog) tog.textContent='▼ Documentation Note';
+  document.querySelectorAll('.nbtn.np').forEach(b=>{ b.style.background='var(--indigo)'; b.style.borderColor='var(--indigo)'; });
+  go(0);
+  document.getElementById('n0').disabled=true;
+  document.getElementById('n1').disabled=true;
+}
+
+ui();
+</script>
+</body>
+</html>

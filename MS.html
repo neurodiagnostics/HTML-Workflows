@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2024 McDonald Criteria — MS Diagnosis</title>
+<style>
+:root {
+  --bg:#0f1117; --surface:#1a1d27; --surface2:#222636; --surface3:#2a2e42;
+  --border:rgba(255,255,255,0.08); --border2:rgba(255,255,255,0.14);
+  --text:#e8eaf0; --text2:#9499b0; --text3:#6b7091;
+  --accent:#4f7fff; --accent2:#3d6bef;
+  --green:#2ecc71; --green-bg:rgba(46,204,113,0.12); --green-border:rgba(46,204,113,0.3);
+  --red:#e74c3c; --red-bg:rgba(231,76,60,0.12); --red-border:rgba(231,76,60,0.3);
+  --amber:#f39c12; --amber-bg:rgba(243,156,18,0.12); --amber-border:rgba(243,156,18,0.3);
+  --purple:#9b59b6; --purple-bg:rgba(155,89,182,0.12); --purple-border:rgba(155,89,182,0.3);
+  --teal:#1abc9c; --teal-bg:rgba(26,188,156,0.1); --teal-border:rgba(26,188,156,0.3);
+  --blue-bg:rgba(79,127,255,0.1); --blue-border:rgba(79,127,255,0.25);
+  --radius:10px; --radius-sm:6px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);font-family:'Segoe UI',system-ui,sans-serif;color:var(--text);min-height:100vh;}
+.header{background:var(--surface);border-bottom:1px solid var(--border2);padding:16px 22px 12px;position:sticky;top:0;z-index:10;}
+.header-top{display:flex;align-items:center;gap:10px;margin-bottom:3px;}
+.hbadge{background:var(--blue-bg);border:1px solid var(--blue-border);color:var(--accent);font-size:11px;font-weight:600;letter-spacing:.06em;padding:3px 8px;border-radius:20px;text-transform:uppercase;}
+.new24{background:var(--green-bg);border:1px solid var(--green-border);color:var(--green);font-size:11px;font-weight:600;letter-spacing:.05em;padding:3px 8px;border-radius:20px;}
+.header h1{font-size:17px;font-weight:600;color:var(--text);}
+.header-sub{font-size:12px;color:var(--text3);margin-top:2px;}
+.pbar-wrap{background:var(--surface2);border-bottom:1px solid var(--border);padding:9px 22px;display:flex;align-items:center;gap:12px;}
+.ptrack{flex:1;height:4px;background:var(--surface3);border-radius:2px;overflow:hidden;}
+.pfill{height:100%;background:linear-gradient(90deg,var(--accent2),var(--accent));border-radius:2px;transition:width .4s ease;}
+.plabel{font-size:11px;color:var(--text3);white-space:nowrap;}
+.main{padding:18px 22px;max-width:780px;margin:0 auto;}
+.sc{background:var(--surface);border:1px solid var(--border2);border-radius:var(--radius);padding:18px 20px;margin-bottom:12px;animation:fi .22s ease;}
+@keyframes fi{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+.slabel{font-size:10px;font-weight:600;letter-spacing:.09em;color:var(--accent);text-transform:uppercase;margin-bottom:5px;}
+.sq{font-size:15px;font-weight:500;color:var(--text);line-height:1.5;margin-bottom:9px;}
+.snote{font-size:12px;color:var(--text2);line-height:1.55;padding:8px 10px;background:var(--surface2);border-radius:var(--radius-sm);border-left:2px solid var(--accent2);margin-bottom:9px;}
+.snote.warn{border-left-color:var(--amber);}
+.snote.green{border-left-color:var(--green);background:rgba(46,204,113,0.05);}
+.snote.purple{border-left-color:var(--purple);background:rgba(155,89,182,0.05);}
+.n24{display:inline-block;background:var(--green-bg);border:1px solid var(--green-border);color:var(--green);font-size:9px;font-weight:700;padding:1px 5px;border-radius:3px;letter-spacing:.05em;margin-left:5px;vertical-align:middle;text-transform:uppercase;}
+.opts{display:flex;flex-direction:column;gap:7px;}
+.opt{background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius-sm);color:var(--text);font-size:13px;padding:9px 13px;text-align:left;cursor:pointer;transition:all .13s;display:flex;align-items:center;gap:9px;line-height:1.4;}
+.opt:hover{background:var(--surface3);border-color:var(--accent);}
+.opt.sel{background:var(--blue-bg);border-color:var(--accent);}
+.rdot{width:15px;height:15px;min-width:15px;border-radius:50%;border:1px solid var(--border2);background:var(--surface);display:flex;align-items:center;justify-content:center;}
+.opt.sel .rdot{background:var(--accent);border-color:var(--accent);}
+.ri{width:6px;height:6px;border-radius:50%;background:white;display:none;}
+.opt.sel .ri{display:block;}
+.copts{display:flex;flex-direction:column;gap:7px;margin-bottom:4px;}
+.copt{background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius-sm);color:var(--text);font-size:13px;padding:9px 13px;text-align:left;cursor:pointer;transition:all .13s;display:flex;align-items:flex-start;gap:9px;line-height:1.4;}
+.copt:hover{background:var(--surface3);}
+.copt.chk{background:var(--blue-bg);border-color:var(--accent);}
+.cbox{width:15px;height:15px;min-width:15px;border-radius:3px;border:1px solid var(--border2);background:var(--surface);display:flex;align-items:center;justify-content:center;margin-top:1px;font-size:10px;color:white;}
+.copt.chk .cbox{background:var(--accent);border-color:var(--accent);}
+.mn{font-size:11px;color:var(--text3);margin-top:4px;font-style:italic;}
+.arow{display:flex;gap:9px;margin-top:12px;flex-wrap:wrap;align-items:center;}
+.bp{background:var(--accent);border:none;border-radius:var(--radius-sm);color:white;font-size:13px;font-weight:500;padding:8px 17px;cursor:pointer;transition:background .13s;}
+.bp:hover{background:var(--accent2);}
+.bp:disabled{opacity:.3;cursor:default;}
+.bs{background:transparent;border:1px solid var(--border2);border-radius:var(--radius-sm);color:var(--text2);font-size:13px;padding:8px 15px;cursor:pointer;transition:all .13s;}
+.bs:hover{color:var(--text);background:var(--surface2);}
+/* Biomarker detail box */
+.bm-box{background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:12px 14px;margin-bottom:10px;}
+.bm-title{font-size:11px;font-weight:600;letter-spacing:.07em;color:var(--text3);text-transform:uppercase;margin-bottom:8px;}
+.bm-row{display:flex;gap:8px;align-items:flex-start;padding:4px 0;border-bottom:1px solid var(--border);font-size:12px;}
+.bm-row:last-child{border-bottom:none;}
+.bm-k{color:var(--text3);flex:0 0 110px;}
+.bm-v{color:var(--text2);flex:1;line-height:1.4;}
+.bm-v strong{color:var(--text);}
+/* Status chips */
+.chip{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:600;padding:2px 8px;border-radius:20px;margin:2px;}
+.chip-green{background:var(--green-bg);border:1px solid var(--green-border);color:var(--green);}
+.chip-red{background:var(--red-bg);border:1px solid var(--red-border);color:var(--red);}
+.chip-amber{background:var(--amber-bg);border:1px solid var(--amber-border);color:var(--amber);}
+.chip-blue{background:var(--blue-bg);border:1px solid var(--blue-border);color:var(--accent);}
+.chip-purple{background:var(--purple-bg);border:1px solid var(--purple-border);color:var(--purple);}
+/* Results */
+.rc{border-radius:var(--radius);padding:20px;margin-bottom:12px;animation:fi .3s ease;}
+.r-green{background:var(--green-bg);border:1px solid var(--green-border);}
+.r-amber{background:var(--amber-bg);border:1px solid var(--amber-border);}
+.r-red{background:var(--red-bg);border:1px solid var(--red-border);}
+.r-purple{background:var(--purple-bg);border:1px solid var(--purple-border);}
+.r-blue{background:var(--blue-bg);border:1px solid var(--blue-border);}
+.rtitle{font-size:15px;font-weight:600;margin-bottom:6px;display:flex;align-items:center;gap:8px;}
+.r-green .rtitle{color:var(--green);}
+.r-amber .rtitle{color:var(--amber);}
+.r-red .rtitle{color:var(--red);}
+.r-purple .rtitle{color:var(--purple);}
+.r-blue .rtitle{color:var(--accent);}
+.rico{width:21px;height:21px;min-width:21px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;}
+.r-green .rico{background:var(--green);color:#fff;}
+.r-amber .rico{background:var(--amber);color:#fff;}
+.r-red .rico{background:var(--red);color:#fff;}
+.r-purple .rico{background:var(--purple);color:#fff;}
+.r-blue .rico{background:var(--accent);color:#fff;}
+.richd{font-size:10px;font-weight:600;letter-spacing:.06em;opacity:.6;margin-bottom:4px;}
+.rbody{font-size:13px;color:var(--text2);line-height:1.65;}
+.rbody ul{margin:7px 0 0 15px;}
+.rbody li{margin-bottom:4px;}
+.rbody strong{color:var(--text);}
+.sum-card{background:var(--surface);border:1px solid var(--border2);border-radius:var(--radius);padding:14px 18px;margin-bottom:12px;}
+.sum-title{font-size:10px;font-weight:600;letter-spacing:.07em;color:var(--text3);text-transform:uppercase;margin-bottom:10px;}
+.sum-row{display:flex;align-items:flex-start;gap:8px;padding:5px 0;border-bottom:1px solid var(--border);font-size:13px;}
+.sum-row:last-child{border-bottom:none;}
+.sum-k{color:var(--text2);flex:1;line-height:1.4;}
+.sum-v{color:var(--text);font-weight:500;text-align:right;font-size:12px;}
+.sum-v.yes{color:var(--green);}
+.sum-v.no{color:var(--red);}
+.sum-v.part{color:var(--amber);}
+/* Bread */
+.bread{display:flex;gap:5px;align-items:center;flex-wrap:wrap;margin-bottom:12px;}
+.bc{font-size:11px;color:var(--text3);background:var(--surface2);border:1px solid var(--border);border-radius:4px;padding:2px 7px;}
+.bc.cur{color:var(--accent);border-color:var(--blue-border);background:var(--blue-bg);}
+.bcsep{color:var(--text3);font-size:11px;}
+@media(max-width:520px){.main{padding:12px;}.header{padding:12px;}.bm-k{flex:0 0 85px;}}
+/* Documentation note */
+.doc-tog{width:100%;text-align:left;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius-sm);color:var(--text2);font-family:'Consolas','Menlo',monospace;font-size:12px;padding:9px 13px;cursor:pointer;margin-top:8px;margin-bottom:4px;transition:all .15s;letter-spacing:.03em;}
+.doc-tog:hover{border-color:var(--accent);color:var(--accent);}
+.doc-body{display:none;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:13px 15px;font-family:'Consolas','Menlo',monospace;font-size:11px;color:var(--text2);line-height:1.85;white-space:pre-wrap;margin-bottom:8px;}
+.doc-body.open{display:block;}
+</style>
+</head>
+<body>
+<div class="header">
+  <div class="header-top">
+    <div class="hbadge">Diagnostic Tool</div>
+    <div class="new24">2024 McDonald Criteria</div>
+  </div>
+  <h1>MS Diagnosis — 2024 McDonald Criteria</h1>
+  <div class="header-sub">Neuroimmunology edition · κFLC · Central Vein Sign · Paramagnetic Rim Lesions · RIS pathway</div>
+</div>
+<div class="pbar-wrap">
+  <div class="ptrack"><div class="pfill" id="pFill" style="width:0%"></div></div>
+  <div class="plabel" id="pLabel">Step 1</div>
+</div>
+<div class="main" id="main"></div>
+
+<script>
+// ═══════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════
+var S = { phase:'prereq', answers:{}, trail:[] };
+function advance(to){ S.trail.push(S.phase); S.phase=to; render(); }
+function back(){ if(S.trail.length){ S.phase=S.trail.pop(); render(); } }
+function restart(){ S={phase:'prereq',answers:{},trail:[]}; render(); }
+
+var PHASES = ['prereq','age_comorbid','presentation','attacks','mri_dit','dis_locations','optic_nerve','csf_lp','csf_ocb','csf_kflc','cvs','prl','exclusion','ppms_worsening','ppms_criteria','result'];
+function pIdx(){ return PHASES.indexOf(S.phase); }
+function upP(){
+  var i=pIdx(), tot=PHASES.length-2;
+  var pct=i<0?100:Math.min(100,Math.round((i/tot)*100));
+  document.getElementById('pFill').style.width=pct+'%';
+  document.getElementById('pLabel').textContent=i<0?'Complete':'Step '+(i+1);
+}
+
+// ═══════════════════════════════════════════
+// HELPERS
+// ═══════════════════════════════════════════
+var LABELS={prereq:'Presentation',age_comorbid:'Age/comorbid',presentation:'Syndrome',attacks:'Attacks',mri_dit:'MRI DIT',dis_locations:'DIS locations',optic_nerve:'Optic nerve',csf_lp:'LP performed?',csf_ocb:'OCBs',csf_kflc:'κFLC',cvs:'Central Vein Sign',prl:'Param. Rim Lesions',exclusion:'Exclusions',ppms_worsening:'Progression',ppms_criteria:'PPMS criteria',result:'Result'};
+function bread(cur){
+  if(!S.trail.length) return '';
+  var h='<div class="bread">';
+  S.trail.slice(-4).forEach(function(p){ h+='<span class="bc">'+(LABELS[p]||p)+'</span><span class="bcsep">›</span>'; });
+  h+='<span class="bc cur">'+(LABELS[cur]||cur)+'</span></div>';
+  return h;
+}
+function bb(){ return S.trail.length ? '<button class="bs" onclick="back()">Back</button>' : ''; }
+function n24(){ return '<span class="n24">2024</span>'; }
+function chip(cls,txt){ return '<span class="chip chip-'+cls+'">'+txt+'</span>'; }
+
+// Radio step
+function radioStep(lbl,q,note,ncls,key,opts,cb){
+  var cur=S.answers[key];
+  var h='<div class="sc"><div class="slabel">'+lbl+'</div><div class="sq">'+q+'</div>';
+  if(note) h+='<div class="snote'+(ncls?' '+ncls:'')+'">'+note+'</div>';
+  h+='<div class="opts" id="ro_'+key+'">';
+  opts.forEach(function(o,i){ var s=cur===o.val?' sel':''; h+='<button class="opt'+s+'" onclick="pR(\''+key+'\',\''+o.val+'\','+i+')">'+'<div class="rdot"><div class="ri"></div></div><span>'+o.label+'</span></button>'; });
+  h+='</div><div class="arow"><button class="bp" id="rg_'+key+'" onclick="rGo(\''+key+'\')"'+(cur?'':' disabled')+'>Continue</button>'+bb()+'</div></div>';
+  window._rc=window._rc||{}; window._rc[key]=cb;
+  return h;
+}
+window.pR=function(k,v,i){
+  S.answers[k]=v;
+  var c=document.getElementById('ro_'+k);
+  if(c){c.querySelectorAll('.opt').forEach(function(b){b.classList.remove('sel')});c.querySelectorAll('.opt')[i].classList.add('sel');}
+  var b=document.getElementById('rg_'+k); if(b) b.removeAttribute('disabled');
+};
+window.rGo=function(k){ var v=S.answers[k]; if(!v)return; var cb=(window._rc||{})[k]; if(cb) cb(v); };
+
+// Checkbox step
+function checkStep(lbl,q,notes,key,opts,cl,cb){
+  var sel=S.answers[key]||[];
+  var h='<div class="sc"><div class="slabel">'+lbl+'</div><div class="sq">'+q+'</div>';
+  notes.forEach(function(n){ h+='<div class="snote'+(n.cls?' '+n.cls:'')+'">'+(n.badge?n24()+' ':'')+n.text+'</div>'; });
+  h+='<div class="copts">';
+  opts.forEach(function(o){ var c=sel.indexOf(o.val)>=0?' chk':''; h+='<button class="copt'+c+'" onclick="tC(\''+key+'\',\''+o.val+'\')">'+'<div class="cbox">'+(sel.indexOf(o.val)>=0?'&#10003;':'')+'</div><span>'+o.label+(o.new?' '+n24():'')+'</span></button>'; });
+  h+='</div><div class="mn">Select all that apply</div>';
+  h+='<div class="arow"><button class="bp" onclick="cGo(\''+key+'\')">'+(cl||'Continue')+'</button>'+bb()+'</div></div>';
+  window._cc=window._cc||{}; window._cc[key]=cb;
+  return h;
+}
+window.tC=function(k,v){ if(!S.answers[k])S.answers[k]=[]; var arr=S.answers[k],i=arr.indexOf(v); if(i>=0)arr.splice(i,1);else arr.push(v); render(); };
+window.cGo=function(k){ var cb=(window._cc||{})[k]; if(cb) cb(S.answers[k]||[]); };
+
+// Summary row
+function sRow(k,v,cls){ var cv=cls||''; return '<div class="sum-row"><div class="sum-k">'+k+'</div><div class="sum-v '+cv+'">'+v+'</div></div>'; }
+// Result card
+function rCard(cls,ico,title,ichd,body,rows){
+  var h='<div class="rc r-'+cls+'"><div class="richd">'+ichd+'</div><div class="rtitle"><div class="rico">'+ico+'</div>'+title+'</div><div class="rbody">'+body+'</div></div>';
+  if(rows&&rows.length){
+    h+='<div class="sum-card"><div class="sum-title">Evidence Summary</div>';
+    rows.forEach(function(r){ h+=sRow(r.k,r.v,r.c); });
+    h+='</div>';
+  }
+  return h;
+}
+
+// ═══════════════════════════════════════════
+// RENDER ROUTER
+// ═══════════════════════════════════════════
+function render(){
+  upP();
+  var m=document.getElementById('main');
+  switch(S.phase){
+    case 'prereq':         m.innerHTML=bread('prereq')+phPrereq(); break;
+    case 'age_comorbid':   m.innerHTML=bread('age_comorbid')+phAgeComorbid(); break;
+    case 'presentation':   m.innerHTML=bread('presentation')+phPresentation(); break;
+    case 'attacks':        m.innerHTML=bread('attacks')+phAttacks(); break;
+    case 'mri_dit':        m.innerHTML=bread('mri_dit')+phMriDit(); break;
+    case 'dis_locations':  m.innerHTML=bread('dis_locations')+phDisLocations(); break;
+    case 'optic_nerve':    m.innerHTML=bread('optic_nerve')+phOpticNerve(); break;
+    case 'csf_lp':         m.innerHTML=bread('csf_lp')+phCsfLp(); break;
+    case 'csf_ocb':        m.innerHTML=bread('csf_ocb')+phCsfOcb(); break;
+    case 'csf_kflc':       m.innerHTML=bread('csf_kflc')+phCsfKflc(); break;
+    case 'cvs':            m.innerHTML=bread('cvs')+phCvs(); break;
+    case 'prl':            m.innerHTML=bread('prl')+phPrl(); break;
+    case 'exclusion':      m.innerHTML=bread('exclusion')+phExclusion(); break;
+    case 'ppms_worsening': m.innerHTML=bread('ppms_worsening')+phPpmsWorsening(); break;
+    case 'ppms_criteria':  m.innerHTML=bread('ppms_criteria')+phPpmsCriteria(); break;
+    case 'result':         phResult(m); break;
+    case 'atypical':       phAtypical(m); break;
+    default: m.innerHTML='<p>Unknown phase</p>';
+  }
+}
+
+// ═══════════════════════════════════════════
+// PHASES
+// ═══════════════════════════════════════════
+
+function phPrereq(){
+  return radioStep('Step 1 — Clinical Syndrome','What is the presenting clinical syndrome?',
+    'The 2024 McDonald Criteria apply to patients with a typical demyelinating event or progressive neurological worsening. Atypical features (complete spinal cord syndrome, bilateral optic neuritis at onset, area postrema syndrome, meningeal enhancement, CSF pleocytosis >50) should prompt broadening the differential — particularly NMOSD and MOGAD.',
+    'warn','prereq',[
+      {val:'cis',    label:'Clinically Isolated Syndrome (CIS) — first demyelinating episode with objective evidence'},
+      {val:'ris',    label:'Radiologically Isolated Syndrome (RIS) — incidental MRI findings, no clinical symptoms'},
+      {val:'relapse',label:'Relapsing presentation — ≥1 prior attack with objective evidence'},
+      {val:'prog',   label:'Progressive neurological worsening — possible PPMS'},
+      {val:'atypical',label:'Atypical presentation — features not consistent with typical MS demyelination'}
+    ],function(v){
+      S.answers.prereq=v;
+      if(v==='atypical') advance('atypical');
+      else if(v==='prog') advance('ppms_worsening');
+      else advance('age_comorbid');
+    });
+}
+
+function phAgeComorbid(){
+  return checkStep('Step 2 — Age & Comorbidities',
+    'Are any of the following present?',
+    [{cls:'warn',text:'<strong>2024 update:</strong> In patients ≥50 years OR with significant vascular/migraine comorbidities, the criteria require at least one additional specificity-conferring feature to confirm MS: (1) classical spinal cord lesion, (2) positive CSF (OCBs or κFLC), or (3) Select-6 CVS positivity. These questions will be accounted for in the final diagnostic summary.',badge:false}],
+    'age_comorbid',[
+      {val:'age50',  label:'Age ≥50 years at symptom onset'},
+      {val:'vascular',label:'Significant vascular risk factors (hypertension, diabetes, hyperlipidaemia, smoking, prior stroke/TIA)'},
+      {val:'migraine',label:'Known migraine with MRI white matter changes'},
+      {val:'none',   label:'None of the above / age <50, no significant vascular comorbidities'}
+    ],'Continue',function(sel){
+      S.answers.age_comorbid=sel;
+      if(S.answers.prereq==='ris') advance('dis_locations');
+      else advance('presentation');
+    });
+}
+
+function phPresentation(){
+  return radioStep('Step 3 — Attack Evidence','How many clinical attacks has the patient had with objective evidence?',
+    'An attack = acute neurological symptoms lasting ≥24 h, without fever/infection, with an objective clinical or paraclinical abnormality. Historical evidence from prior MRI or VEP may support a previous lesion in a different location.',
+    '','presentation',[
+      {val:'2att2les', label:'≥2 attacks + objective evidence of ≥2 lesions'},
+      {val:'2att1les', label:'≥2 attacks + objective evidence of 1 lesion (+ historical evidence of prior attack in a different location)'},
+      {val:'1att2les', label:'1 attack + objective evidence of ≥2 lesions'},
+      {val:'1att1les', label:'1 attack + objective evidence of 1 lesion (monosymptomatic CIS)'}
+    ],function(v){
+      S.answers.presentation=v;
+      if(v==='2att2les') advance('dis_locations');
+      else if(v==='2att1les') advance('dis_locations');
+      else advance('mri_dit');
+    });
+}
+
+function phMriDit(){
+  return radioStep('Step 4 — MRI Dissemination in Time (DIT)','Does MRI demonstrate DIT?',
+    '2024 criteria: DIT by MRI = (a) simultaneous Gd-enhancing AND non-enhancing T2 lesions on a single scan at any time, OR (b) a new T2 or Gd+ lesion on any follow-up MRI compared to prior scan (no minimum interval). A positive CSF result (OCBs or κFLC) can also substitute for DIT when DIS is met.',
+    'green','mri_dit',[
+      {val:'yes',  label:'Yes — simultaneous Gd+ and non-enhancing T2 lesions, OR new T2/Gd+ lesion on follow-up scan'},
+      {val:'no',   label:'No — single time point, no enhancement, no follow-up scan'}
+    ],function(v){
+      S.answers.mri_dit=v;
+      advance('dis_locations');
+    });
+}
+
+function phDisLocations(){
+  var isRIS = S.answers.prereq==='ris';
+  return checkStep('Step '+(isRIS?'3':'5')+' — Dissemination in Space (DIS)',
+    'Which typical MS lesion locations are present on MRI (T2/FLAIR)?',
+    [
+      {text:'DIS is fulfilled with ≥2 of 5 characteristic locations. Symptomatic and asymptomatic lesions both count. Only "classical" lesions count — non-specific subcortical white matter lesions do not fulfill DIS criteria.',cls:''},
+      {text:'Optic nerve is now the 5th DIS location (MRI, OCT, or VEP evidence — see next step). A positive CSF result (OCBs or κFLC) counts as an additional DIS location substitute.',cls:'green',badge:true},
+      isRIS?{text:'RIS: MS can now be diagnosed if DIS is met (≥2 locations) AND at least one supportive biomarker (positive CSF, Select-6 CVS, or ≥1 PRL).',cls:'green',badge:true}:{text:'',cls:'hidden'}
+    ].filter(function(n){return n.cls!=='hidden';}),
+    'dis_locations',[
+      {val:'periventricular', label:'Periventricular — ≥1 lesion touching ependyma (prefer ≥3 Dawson-finger morphology lesions ≥3 mm)'},
+      {val:'cortical',       label:'Cortical/juxtacortical — ≥1 intracortical or within 3 mm of cortex', new:false},
+      {val:'infratentorial', label:'Infratentorial — ≥1 brainstem or cerebellar lesion'},
+      {val:'spinal',         label:'Spinal cord — ≥1 T2 lesion, any level'},
+      {val:'optic',          label:'Optic nerve — to be assessed on next screen (MRI / OCT / VEP)', new:true}
+    ],'Continue',function(sel){
+      S.answers.dis_locations=sel;
+      // Always assess optic nerve next
+      advance('optic_nerve');
+    });
+}
+
+function phOpticNerve(){
+  return checkStep('Step '+(S.answers.prereq==='ris'?'4':'6')+' — Optic Nerve DIS Evidence '+n24(),
+    'How is optic nerve involvement established (if present)?',
+    [
+      {text:'The optic nerve is the new 5th DIS location. Any ONE of the following methods is sufficient to confirm involvement. If "optic nerve" was selected on the previous screen, select the method(s) below.',cls:'green',badge:true},
+      {text:'OCT criteria: peripapillary RNFL intereye difference ≥6 μm OR macular ganglion cell + inner plexiform layer (GCIPL) intereye difference ≥4 μm. VEP criteria: delayed P100 latency ≥2.5 SD above mean AND/OR prolonged interocular latency difference ≥2.5 SD above mean, with no better explanation.',cls:''}
+    ],
+    'optic_nerve',[
+      {val:'mri_optic',  label:'MRI — classical T2 lesion on dedicated fat-suppressed orbital MRI (3T preferred)', new:false},
+      {val:'oct_rnfl',   label:'OCT — peripapillary RNFL intereye difference ≥6 μm', new:true},
+      {val:'oct_gcipl',  label:'OCT — macular GCIPL intereye difference ≥4 μm', new:true},
+      {val:'vep',        label:'VEP — delayed P100 latency ≥2.5 SD and/or prolonged interocular difference ≥2.5 SD (no other explanation)', new:false},
+      {val:'none_optic', label:'No optic nerve evidence / not assessed'}
+    ],'Continue',function(sel){
+      S.answers.optic_nerve=sel;
+      advance('csf_lp');
+    });
+}
+
+function phCsfLp(){
+  return radioStep('Step '+(S.answers.prereq==='ris'?'5':'7')+' — Lumbar Puncture','Has a lumbar puncture been performed?',
+    'CSF analysis (OCBs and κFLC) can: (1) substitute for one DIS location, (2) substitute for MRI DIT (if DIS is met), and (3) serve as the required specificity-confirming biomarker for patients ≥50 or with vascular comorbidities, and for RIS diagnosis.',
+    'green','csf_lp',[
+      {val:'yes', label:'Yes — LP has been performed'},
+      {val:'no',  label:'No — LP not performed or results not available'}
+    ],function(v){
+      S.answers.csf_lp=v;
+      if(v==='yes') advance('csf_ocb');
+      else advance('cvs');
+    });
+}
+
+function phCsfOcb(){
+  return radioStep('Step '+(S.answers.prereq==='ris'?'6':'8')+' — CSF Oligoclonal Bands (OCBs)',
+    'What is the CSF OCB result?',
+    'Positive CSF (OCBs OR κFLC) = intrathecal immunoglobulin synthesis. Either result alone is sufficient — both need not be positive. ~87% concordance between OCBs and κFLC index. If both are negative, MS diagnosis is less supported.',
+    '','csf_ocb',[
+      {val:'pos',  label:'Positive — ≥2 unique IgG bands in CSF absent from matched serum'},
+      {val:'neg',  label:'Negative — <2 bands or present in both CSF and serum'},
+      {val:'nd',   label:'Not done / result pending'}
+    ],function(v){
+      S.answers.csf_ocb=v;
+      advance('csf_kflc');
+    });
+}
+
+function phCsfKflc(){
+  var h = '<div class="sc">';
+  h += '<div class="slabel">Step '+(S.answers.prereq==='ris'?'7':'9')+' — CSF κ Free Light Chain (κFLC) '+n24()+'</div>';
+  h += '<div class="sq">What is the CSF κFLC index result?</div>';
+  h += '<div class="snote green">'+n24()+' κFLC index is now formally equivalent to OCBs for demonstrating intrathecal immunoglobulin synthesis. Sensitivity 95% (MS) / 82% (CIS), specificity 95%. Use automated turbidimetric or nephelometric assay — manual ELISA not recommended. ~87% concordance with OCBs; in rare discordant cases both results are informative.</div>';
+  h += '<div class="bm-box"><div class="bm-title">κFLC Index — Interpretation Thresholds</div>';
+  h += '<div class="bm-row"><div class="bm-k">Recommended cutoff</div><div class="bm-v"><strong>≥6.1</strong> — performs best for MS diagnosis (validated turbidimetric/nephelometric assay)</div></div>';
+  h += '<div class="bm-row"><div class="bm-k">Formula</div><div class="bm-v">κFLC index = (CSF κFLC / serum κFLC) × (serum albumin / CSF albumin) — requires paired serum sample</div></div>';
+  h += '<div class="bm-row"><div class="bm-k">Alternative</div><div class="bm-v">Absolute CSF κFLC concentration (lab-specific cutoff, typically >0.62 mg/L) — use index where possible</div></div>';
+  h += '<div class="bm-row"><div class="bm-k">Prognostic note</div><div class="bm-v">Higher κFLC index values correlate with greater disease activity — document quantitative value for longitudinal comparison</div></div>';
+  h += '</div>';
+  h += '<div class="opts" id="ro_csf_kflc">';
+  var opts=[
+    {val:'pos_high', label:'Positive — κFLC index ≥6.1 (or lab-validated positive threshold)'},
+    {val:'pos_border',label:'Borderline — κFLC index 4.0–6.0 (consider alongside OCB result)'},
+    {val:'neg',      label:'Negative — κFLC index <4.0 (or below validated threshold)'},
+    {val:'nd',       label:'Not measured / not available at this institution'}
+  ];
+  var cur=S.answers.csf_kflc;
+  opts.forEach(function(o,i){ var s=cur===o.val?' sel':''; h+='<button class="opt'+s+'" onclick="pR(\'csf_kflc\',\''+o.val+'\','+i+')">'+'<div class="rdot"><div class="ri"></div></div><span>'+o.label+'</span></button>'; });
+  h += '</div>';
+  h += '<div class="arow"><button class="bp" id="rg_csf_kflc" onclick="rGo(\'csf_kflc\')"'+(cur?'':' disabled')+'>Continue</button>'+bb()+'</div></div>';
+  window._rc=window._rc||{};
+  window._rc['csf_kflc']=function(v){ S.answers.csf_kflc=v; advance('cvs'); };
+  return h;
+}
+
+function phCvs(){
+  var h = '<div class="sc">';
+  h += '<div class="slabel">Step '+(S.answers.prereq==='ris'?'8':'10')+' — Central Vein Sign (CVS) '+n24()+'</div>';
+  h += '<div class="sq">Has the Central Vein Sign been assessed on susceptibility-weighted MRI?</div>';
+  h += '<div class="snote green">'+n24()+' The CVS (a central vein visible as a line or dot within a T2/FLAIR lesion on SWI or T2* sequences) is now an incorporated MRI biomarker. It reflects perivenular inflammation — the histological hallmark of MS plaques. Sensitivity 95%, specificity 92% for MS lesions.</div>';
+  h += '<div class="bm-box"><div class="bm-title">CVS Diagnostic Thresholds — Select-6 Method</div>';
+  h += '<div class="bm-row"><div class="bm-k">When ≥10 lesions present</div><div class="bm-v"><strong>Select-6 positive: ≥6 CVS-positive lesions</strong> — fulfills CVS criterion (sens 90%, spec 89%)</div></div>';
+  h += '<div class="bm-row"><div class="bm-k">When <10 lesions present</div><div class="bm-v"><strong>CVS-positive lesions must outnumber CVS-negative lesions</strong> (majority rule) — still fulfills Select-6</div></div>';
+  h += '<div class="bm-row"><div class="bm-k">40% rule (alternative)</div><div class="bm-v">≥40% of white matter lesions CVS-positive — equivalent diagnostic performance to Select-6; Select-6 is the criterion per 2024 McDonald</div></div>';
+  h += '<div class="bm-row"><div class="bm-k">Sequence</div><div class="bm-v">SWI preferred; T2* (GRE) also acceptable — slightly better accuracy with T2*-weighted sequences in published data</div></div>';
+  h += '<div class="bm-row"><div class="bm-k">Key use cases</div><div class="bm-v">Age ≥50 / vascular comorbidities; RIS diagnosis; borderline DIS (1 location); differentiating from small vessel disease</div></div>';
+  h += '<div class="bm-row"><div class="bm-k">Limitation</div><div class="bm-v">Requires SWI/T2* — not available on all standard MS protocols; periventricular and infratentorial lesions most reliable; cortical lesions technically challenging</div></div>';
+  h += '</div>';
+  h += '<div class="opts" id="ro_cvs">';
+  var cvsopts=[
+    {val:'select6_pos', label:'Select-6 POSITIVE — ≥6 CVS-positive lesions (if ≥10 total) OR majority CVS-positive (if <10 total)'},
+    {val:'select6_neg', label:'Select-6 NEGATIVE — fewer than required CVS-positive lesions'},
+    {val:'not_done',    label:'CVS not assessed — SWI/T2* not available or not performed'}
+  ];
+  var cur=S.answers.cvs;
+  cvsopts.forEach(function(o,i){ var s=cur===o.val?' sel':''; h+='<button class="opt'+s+'" onclick="pR(\'cvs\',\''+o.val+'\','+i+')">'+'<div class="rdot"><div class="ri"></div></div><span>'+o.label+'</span></button>'; });
+  h += '</div>';
+  h += '<div class="arow"><button class="bp" id="rg_cvs" onclick="rGo(\'cvs\')"'+(cur?'':' disabled')+'>Continue</button>'+bb()+'</div></div>';
+  window._rc=window._rc||{};
+  window._rc['cvs']=function(v){ S.answers.cvs=v; advance('prl'); };
+  return h;
+}
+
+function phPrl(){
+  var h = '<div class="sc">';
+  h += '<div class="slabel">Step '+(S.answers.prereq==='ris'?'9':'11')+' — Paramagnetic Rim Lesions (PRLs) '+n24()+'</div>';
+  h += '<div class="sq">Are paramagnetic rim lesions (PRLs) present on phase susceptibility MRI?</div>';
+  h += '<div class="snote green">'+n24()+' PRLs represent chronically active demyelinating lesions with an iron-laden microglial rim. They are the most specific MRI biomarker for MS — not seen in vascular or migraine-related white matter changes.</div>';
+  h += '<div class="bm-box"><div class="bm-title">PRL Criteria & Thresholds</div>';
+  h += '<div class="bm-row"><div class="bm-k">Appearance</div><div class="bm-v">Hypointense (dark) rim on phase susceptibility (SWI/QSM) surrounding a T2/FLAIR hyperintense lesion — the rim must be complete or nearly complete</div></div>';
+  h += '<div class="bm-row"><div class="bm-k">Diagnostic threshold</div><div class="bm-v"><strong>≥1 PRL</strong> = positive for 2024 McDonald criteria. Count-1 (any PRL present) has near-perfect specificity in most studies</div></div>';
+  h += '<div class="bm-row"><div class="bm-k">Specificity</div><div class="bm-v">≥95% across multicenter studies; 86% of patients presenting to a neurology center with MS had ≥1 PRL (NAIMS study)</div></div>';
+  h += '<div class="bm-row"><div class="bm-k">Sensitivity</div><div class="bm-v">~55–86% (lower than CVS); absence of PRLs does not exclude MS</div></div>';
+  h += '<div class="bm-row"><div class="bm-k">Prognostic use</div><div class="bm-v">≥4 PRLs associated with greater neurological disability — document count for longitudinal monitoring</div></div>';
+  h += '<div class="bm-row"><div class="bm-k">Rating standard</div><div class="bm-v">NAIMS consensus criteria for PRL rating published 2024 — apply standardized visual scoring</div></div>';
+  h += '<div class="bm-row"><div class="bm-k">Key use case</div><div class="bm-v">Age ≥50 / vascular comorbidities; RIS; borderline DIS; high specificity even when Select-6 not available</div></div>';
+  h += '</div>';
+  h += '<div class="opts" id="ro_prl">';
+  var prlopts=[
+    {val:'pos',   label:'PRL POSITIVE — ≥1 paramagnetic rim lesion identified on phase susceptibility (SWI/QSM) sequence'},
+    {val:'multi', label:'Multiple PRLs — ≥4 PRLs present (note: associated with greater disability risk)'},
+    {val:'neg',   label:'PRL NEGATIVE — no rim lesions identified on susceptibility imaging'},
+    {val:'nd',    label:'PRL not assessed — susceptibility sequences not available or not performed'}
+  ];
+  var cur=S.answers.prl;
+  prlopts.forEach(function(o,i){ var s=cur===o.val?' sel':''; h+='<button class="opt'+s+'" onclick="pR(\'prl\',\''+o.val+'\','+i+')">'+'<div class="rdot"><div class="ri"></div></div><span>'+o.label+'</span></button>'; });
+  h += '</div>';
+  h += '<div class="arow"><button class="bp" id="rg_prl" onclick="rGo(\'prl\')"'+(cur?'':' disabled')+'>Continue</button>'+bb()+'</div></div>';
+  window._rc=window._rc||{};
+  window._rc['prl']=function(v){ S.answers.prl=v; advance('exclusion'); };
+  return h;
+}
+
+function phExclusion(){
+  return checkStep('Step '+(S.answers.prereq==='ris'?'10':'12')+' — Exclusion of Alternatives',
+    'Which alternative diagnoses have been considered and adequately excluded?',
+    [{text:'MS remains a diagnosis of exclusion — "no better explanation" is a fundamental requirement of the 2024 criteria. NMOSD and MOGAD must be tested in all patients before applying McDonald criteria.'}],
+    'exclusion',[
+      {val:'nmosd',    label:'NMOSD excluded — AQP4-IgG negative (serum; cell-based assay preferred); especially if LETM, bilateral ON, area postrema syndrome, or brainstem syndrome'},
+      {val:'mogad',    label:'MOGAD excluded — MOG-IgG negative (serum; FACS/cell-based assay); especially if cortical/leptomeningeal enhancement, bilateral ON, or ADEM-like'},
+      {val:'vasculitis',label:'CNS vasculitis / SLE / Sjögren excluded — ANA, anti-dsDNA, anti-Ro/La, ANCA, complement as clinically indicated'},
+      {val:'sarcoid',  label:'Neurosarcoidosis excluded — no systemic features; ACE, BALF, or biopsy if indicated'},
+      {val:'infection',label:'Infectious causes excluded — Lyme (Western blot), syphilis (RPR/TPPA), HIV, PML risk (JCV Ab index if relevant)'},
+      {val:'genetic',  label:'Hereditary leukodystrophies considered — CADASIL, mitochondrial disorders; family history and clinical pattern reviewed'},
+      {val:'b12',      label:'Nutritional/metabolic excluded — B12, folate, copper if relevant (myelopathy predominant)'},
+      {val:'structural',label:'Structural causes excluded — spondylotic myelopathy, foramen magnum lesion, Chiari (MRI reviewed)'}
+    ],'Continue',function(sel){
+      S.answers.exclusion=sel;
+      advance('result');
+    });
+}
+
+// ── PROGRESSIVE PATHWAY ──────────────────────────────────────────
+function phPpmsWorsening(){
+  return radioStep('Progressive — Step 1','Has there been ≥1 year of progressive neurological worsening?',
+    '2024 update: PIRA (Progression Independent of Relapse Activity) is now formally recognized as a disease activity measure. Slowly Evolving Activity (SEA) — gradual volume loss on previously stable lesions on serial MRI — also counts as disease activity/DIT evidence in progressive MS.',
+    'green','ppms_worsening',[
+      {val:'yes', label:'Yes — ≥1 year of insidious progressive neurological decline (retrospective or prospective)'},
+      {val:'no',  label:'No — insufficient duration or presentation not clearly progressive'}
+    ],function(v){
+      S.answers.ppms_worsening=v;
+      if(v==='no') advance('result');
+      else advance('age_comorbid');
+    });
+}
+
+function phPpmsCriteria(){
+  return checkStep('Progressive — Step 3 — PPMS Supporting Criteria',
+    'Which PPMS supporting criteria are met? (Need ≥2 of 3)',
+    [
+      {text:'≥1 year progression + ≥2 of the following 3 criteria = PPMS fulfilled. For patients ≥50 or with vascular comorbidities, at least one of these must be a specificity-conferring biomarker (CSF positive or Select-6 CVS).'},
+      {text:'An optic nerve lesion (MRI, OCT, or VEP criteria) qualifies for the brain topography criterion.',badge:true,cls:'green'}
+    ],
+    'ppms_criteria',[
+      {val:'brain',  label:'≥1 T2 brain lesion in a typical MS location (periventricular, cortical/juxtacortical, infratentorial, or optic nerve)'},
+      {val:'spine',  label:'≥2 T2 spinal cord lesions (2024: ≥2 spinal lesions may suffice as objective evidence with positive CSF)', new:true},
+      {val:'csf',    label:'Positive CSF — OCBs (≥2) and/or κFLC index ≥6.1 (or lab-validated threshold)', new:true}
+    ],'Continue to Exclusions',function(sel){
+      S.answers.ppms_criteria=sel;
+      advance('cvs');
+    });
+}
+
+// ── ATYPICAL ─────────────────────────────────────────────────────
+function phAtypical(m){
+  m.innerHTML='<div class="rc r-amber"><div class="richd">Atypical Presentation</div>'
+    +'<div class="rtitle"><div class="rico">!</div>Atypical Features — Broaden Differential Before Applying McDonald Criteria</div>'
+    +'<div class="rbody">The 2024 McDonald Criteria are validated for typical demyelinating syndromes. Atypical features mandate ruling out NMOSD and MOGAD before proceeding.<ul>'
+    +'<li><strong>Priority serology:</strong> AQP4-IgG (serum, cell-based assay) and MOG-IgG (serum, FACS/cell-based assay)</li>'
+    +'<li><strong>Red flags for NMOSD:</strong> LETM (≥3 vertebral segments), bilateral optic neuritis, area postrema syndrome, intractable nausea/hiccups</li>'
+    +'<li><strong>Red flags for MOGAD:</strong> Cortical/leptomeningeal enhancement, bilateral optic neuritis with disc swelling, ADEM-like presentation, large tumefactive lesions</li>'
+    +'<li><strong>Red flags for other causes:</strong> CSF pleocytosis >50, meningeal enhancement, systemic features, complete spinal cord syndrome</li>'
+    +'</ul></div></div>'
+    +'<button class="bs" onclick="restart()" style="margin-top:8px">Restart Assessment</button>';
+}
+
+// ═══════════════════════════════════════════
+// RESULT ENGINE
+// ═══════════════════════════════════════════
+function phResult(m){
+  var a=S.answers;
+  document.getElementById('pFill').style.width='100%';
+  document.getElementById('pLabel').textContent='Complete';
+
+  if(S.phase!=='result'){ S.phase='result'; }
+
+  // ── Compute biomarker status ──────────────
+  var isRIS = a.prereq==='ris';
+  var isProg = a.prereq==='prog';
+
+  // CSF positive = OCBs positive OR κFLC positive (≥6.1 index or borderline treated as positive for DIS substitution discussion)
+  var ocbPos = a.csf_ocb==='pos';
+  var kflcPos = a.csf_kflc==='pos_high';
+  var kflcBorder = a.csf_kflc==='pos_border';
+  var csfPos = ocbPos || kflcPos; // formally positive
+  var csfBorderlinePos = ocbPos || kflcPos || kflcBorder;
+  var csfDone = a.csf_lp==='yes';
+  var cvsPos = a.cvs==='select6_pos';
+  var prlPos = a.prl==='pos' || a.prl==='multi';
+  var prlMulti = a.prl==='multi';
+
+  // Optic nerve count
+  var opticConfirmed = (a.dis_locations||[]).indexOf('optic')>=0 &&
+    (a.optic_nerve||[]).filter(function(v){return v!=='none_optic';}).length>0;
+
+  // DIS locations (MRI + optic nerve)
+  var mriLocs = (a.dis_locations||[]).filter(function(v){return v!=='optic';});
+  var disLocCount = mriLocs.length + (opticConfirmed?1:0) + (csfPos?1:0); // CSF adds 1 virtual location
+  var disMet = false;
+  var disReason = '';
+
+  var pres = a.presentation;
+  if(pres==='2att2les'){ disMet=true; disReason='Clinically met (≥2 attacks, ≥2 lesions)'; }
+  else if(disLocCount>=2){ disMet=true; disReason='MRI: '+disLocCount+' location(s)'+(csfPos?' incl. CSF substitution':'')+(opticConfirmed?' incl. optic nerve':''); }
+  else { disReason='Not met — '+disLocCount+'/2 location(s) confirmed'; }
+
+  // DIT
+  var ditMet = false;
+  var ditReason = '';
+  if(pres==='2att2les'||pres==='2att1les'){ ditMet=true; ditReason='Clinically met (≥2 attacks)'; }
+  else if(a.mri_dit==='yes'){ ditMet=true; ditReason='MRI DIT (Gd+/non-enhancing or new T2 on follow-up)'; }
+  else if(csfPos && disMet){
+    // 2024: CSF+ substitutes for DIT when DIS is met
+    ditMet=true; ditReason='CSF positivity substituting for DIT '+(kflcPos&&!ocbPos?'(κFLC index ≥6.1)':ocbPos&&!kflcPos?'(OCBs)':'(OCBs + κFLC)');
+  }
+  if(!ditMet) ditReason='Not met — no second attack, no MRI DIT evidence, no positive CSF';
+
+  // Age/comorbidity specificity requirement
+  var ageComorbid = (a.age_comorbid||[]).filter(function(v){return v!=='none';}).length>0;
+  var specificityMet = false;
+  var specificityItems = [];
+  if(!ageComorbid){ specificityMet=true; specificityItems=['Not required — age <50, no significant comorbidities']; }
+  else {
+    var hasSpinal = (a.dis_locations||[]).indexOf('spinal')>=0;
+    if(hasSpinal){ specificityMet=true; specificityItems.push('Classical spinal cord lesion present'); }
+    if(csfPos){ specificityMet=true; specificityItems.push('Positive CSF ('+(ocbPos?'OCBs':'')+(ocbPos&&kflcPos?' + ':'')+(kflcPos?'κFLC ≥6.1':'')+')');}
+    if(cvsPos){ specificityMet=true; specificityItems.push('Select-6 CVS positive');}
+    if(!specificityMet) specificityItems=['Not confirmed — requires ≥1 of: spinal cord lesion, positive CSF (OCBs/κFLC), or Select-6 CVS'];
+  }
+
+  // Exclusions
+  var exclDone=(a.exclusion||[]).length;
+  var nmosdExcl=(a.exclusion||[]).indexOf('nmosd')>=0;
+  var mogadExcl=(a.exclusion||[]).indexOf('mogad')>=0;
+  var exclusionsOk = exclDone>=5 && nmosdExcl && mogadExcl;
+
+  // ── PROGRESSIVE ───────────────────────────
+  if(isProg){
+    var progYear=a.ppms_worsening==='yes';
+    var ppmsC=(a.ppms_criteria||[]).length;
+    var diagMet=progYear && ppmsC>=2 && specificityMet && exclusionsOk;
+    var html='<div class="sum-card"><div class="sum-title">PPMS Diagnostic Summary</div>';
+    html+=sRow('≥1 year progressive worsening',progYear?'Yes':'No / insufficient',progYear?'yes':'no');
+    html+=sRow('PPMS supporting criteria',ppmsC+'/3 met (need ≥2)',ppmsC>=2?'yes':'no');
+    html+=sRow('CSF result',!csfDone?'Not performed':csfPos?'Positive — '+(ocbPos?'OCBs ':'')+(kflcPos?'κFLC ≥6.1':''):'Negative',!csfDone?'part':csfPos?'yes':'no');
+    html+=sRow('CVS (Select-6)',a.cvs==='not_done'?'Not assessed':cvsPos?'Positive (Select-6)':'Negative',a.cvs==='not_done'?'part':cvsPos?'yes':'no');
+    html+=sRow('PRL',a.prl==='nd'?'Not assessed':prlPos?'Positive (≥1 PRL)'+(prlMulti?' — ≥4 PRLs (higher disability risk)':''):'Negative',a.prl==='nd'?'part':prlPos?'yes':'no');
+    html+=sRow('Specificity criteria (age/comorbid)',specificityItems.join('; '),specificityMet?'yes':'no');
+    html+=sRow('AQP4-IgG / MOG-IgG excluded',nmosdExcl&&mogadExcl?'Both excluded':(!nmosdExcl?'AQP4-IgG not confirmed excluded':'')+(!mogadExcl?' MOG-IgG not confirmed excluded':''),nmosdExcl&&mogadExcl?'yes':'no');
+    html+='</div>';
+
+    if(!nmosdExcl||!mogadExcl){
+      html+=rCard('red','!','AQP4-IgG and/or MOG-IgG not excluded','Priority',
+        'NMOSD and MOGAD must be excluded before confirming PPMS. Both can present with progressive myelopathy.',[]); }
+
+    if(diagMet){
+      html+=rCard('green','✓','2024 McDonald Criteria for PPMS: FULFILLED','PPMS',
+        'Progressive neurological worsening ≥1 year with ≥2 of 3 supporting criteria confirmed.',
+        [{k:'Criteria met',v:ppmsC+'/3 PPMS criteria',c:'yes'},
+         {k:'Specificity',v:specificityItems.join('; '),c:'yes'},
+         {k:'Treatment',v:'Ocrelizumab or ofatumumab (approved for PPMS with active imaging). SEA on serial MRI = disease activity for eligibility.',c:''},
+         {k:'Monitoring',v:'Baseline EDSS, 9HPT, T25FW, SDMT. MRI brain + spine as reference. Serial PRL count for progression risk.',c:''}]);
+    } else if(!progYear){
+      html+=rCard('red','✕','PPMS Criteria Not Met — Insufficient Duration','PPMS',
+        'Less than 1 year of documented progressive worsening. Continue prospective documentation.',[]);
+    } else if(ppmsC<2){
+      html+=rCard('amber','?','PPMS Criteria Not Met — Insufficient Supporting Criteria','PPMS',
+        'Progression criterion met but only '+ppmsC+'/3 supporting criteria.',
+        [{k:'LP if not done',v:'OCBs / κFLC index — satisfies CSF criterion. κFLC index ≥6.1 is positive.',c:''},
+         {k:'Spinal MRI',v:'≥2 T2 lesions satisfy spinal criterion.',c:''},
+         {k:'CVS / PRL',v:'Select-6 CVS or ≥1 PRL can support diagnosis in appropriate clinical context.',c:''}]);
+    } else if(!specificityMet){
+      html+=rCard('amber','!','Age/Comorbidity Specificity Requirement Not Met','PPMS',
+        'Age ≥50 or vascular comorbidities require ≥1 of: spinal cord lesion, positive CSF (OCBs/κFLC), or Select-6 CVS.',
+        [{k:'Next step',v:'LP for OCBs + κFLC if not done; dedicated SWI for CVS assessment; spinal MRI if not performed',c:''}]);
+    } else {
+      html+=rCard('amber','!','Criteria Met — Exclusion Workup Incomplete','PPMS',
+        'Address outstanding differentials (AQP4-IgG, MOG-IgG) before confirming PPMS.',[]);
+    }
+    html+=docNoteHTML(diagMet?'2024 McDonald Criteria for PPMS: FULFILLED':!progYear?'PPMS Criteria Not Met — Insufficient Duration':ppmsC<2?'PPMS Criteria Not Met — Insufficient Supporting Criteria ('+ppmsC+'/3)':!specificityMet?'Criteria Met — Age/Comorbidity Specificity Requirement Not Fulfilled':'Criteria Met — Exclusion Workup Incomplete', diagMet?'Primary Progressive MS (PPMS)':null);
+    html+='<button class="bs" onclick="restart()" style="margin-top:8px">Restart Assessment</button>';
+    m.innerHTML=html; return;
+  }
+
+  // ── RIS ───────────────────────────────────
+  if(isRIS){
+    var risDiagnosis = disMet && (csfPos || cvsPos || prlPos) && exclusionsOk;
+    var html='<div class="sum-card"><div class="sum-title">RIS → MS Evaluation (2024) '+n24()+'</div>';
+    html+=sRow('DIS (≥2 of 5 locations)',disMet?disReason:'Not met — '+disLocCount+'/2',disMet?'yes':'no');
+    html+=sRow('Supporting biomarker (need ≥1)',
+      (csfPos?'Positive CSF ':'')+(cvsPos?'Select-6 CVS ':'')+(prlPos?'≥1 PRL ':''),
+      (csfPos||cvsPos||prlPos)?'yes':'no');
+    html+=sRow('CSF (OCBs / κFLC)',!csfDone?'Not performed':csfPos?'Positive':'Negative',!csfDone?'part':csfPos?'yes':'no');
+    html+=sRow('κFLC index',a.csf_kflc==='nd'||!csfDone?'Not assessed':kflcPos?'≥6.1 (positive)':kflcBorder?'4.0–6.0 (borderline)':'Negative',!csfDone||a.csf_kflc==='nd'?'part':kflcPos?'yes':kflcBorder?'part':'no');
+    html+=sRow('CVS (Select-6)',a.cvs==='not_done'?'Not assessed':cvsPos?'Positive':'Negative',a.cvs==='not_done'?'part':cvsPos?'yes':'no');
+    html+=sRow('PRL (≥1)',a.prl==='nd'?'Not assessed':prlPos?'Positive':'Negative',a.prl==='nd'?'part':prlPos?'yes':'no');
+    html+=sRow('AQP4-IgG / MOG-IgG',nmosdExcl&&mogadExcl?'Both excluded':'Outstanding',nmosdExcl&&mogadExcl?'yes':'no');
+    html+='</div>';
+    if(!nmosdExcl||!mogadExcl){
+      html+=rCard('red','!','AQP4-IgG and/or MOG-IgG not excluded','Priority action',
+        'Must be excluded before applying McDonald criteria to RIS.',[]);}
+    if(risDiagnosis){
+      html+=rCard('green','✓','2024 McDonald Criteria Met — MS Diagnosis in RIS Context','RIS → MS (2024)',
+        'DIS fulfilled (≥2 locations) AND at least one supportive biomarker confirmed. 2024 criteria permit MS diagnosis in RIS if these conditions are met.',
+        [{k:'DIS',v:disReason,c:'yes'},
+         {k:'Biomarker',v:(csfPos?'CSF positive ':'')+(cvsPos?'Select-6 CVS ':'')+(prlPos?'≥1 PRL':''),c:'yes'},
+         {k:'Clinical note',v:'Patient was asymptomatic — document carefully. ~19% RIS → clinical MS within 2 years, 51% within 10 years.',c:''},
+         {k:'DMT discussion',v:'Emerging evidence supports early DMT in biomarker-positive RIS — shared decision-making required.',c:''}]);
+    } else if(!disMet){
+      html+=rCard('amber','?','RIS — DIS Criteria Not Yet Met','RIS',
+        'Fewer than 2 typical MS locations confirmed. Further MRI (repeat, dedicated sequences) or LP required.',
+        [{k:'Next step',v:'Dedicated optic nerve MRI, SWI for CVS/PRL, spinal MRI if not performed; LP for OCBs + κFLC index.',c:''}]);
+    } else {
+      html+=rCard('amber','?','RIS — DIS Met, Supportive Biomarker Needed','RIS',
+        'DIS criterion fulfilled but no confirmatory biomarker yet. LP and/or dedicated susceptibility MRI needed to qualify for MS diagnosis.',
+        [{k:'LP for OCBs + κFLC',v:'If positive, RIS → MS criteria met.',c:''},
+         {k:'CVS (Select-6)',v:'SWI or T2* sequences required.',c:''},
+         {k:'PRL (≥1)',v:'Phase susceptibility sequence required.',c:''}]);
+    }
+    html+=docNoteHTML(risDiagnosis?'2024 McDonald Criteria Met — MS Diagnosis in RIS Context':!disMet?'RIS — DIS Criteria Not Yet Met':'RIS — DIS Met, Supportive Biomarker Needed', risDiagnosis?'MS diagnosed in RIS context (asymptomatic)':null);
+    html+='<button class="bs" onclick="restart()" style="margin-top:8px">Restart Assessment</button>';
+    m.innerHTML=html; return;
+  }
+
+  // ── CIS / RELAPSING MS ───────────────────
+  var html='<div class="sum-card"><div class="sum-title">Diagnostic Summary — 2024 McDonald Criteria</div>';
+  html+=sRow('DIT (Dissemination in Time)',ditReason,ditMet?'yes':'no');
+  html+=sRow('DIS (Dissemination in Space)',disMet?disReason:'Not met — '+disLocCount+'/2',disMet?'yes':'no');
+  if(opticConfirmed) html+=sRow('Optic nerve (5th DIS location)',
+    (a.optic_nerve||[]).filter(function(v){return v!=='none_optic';}).join(', ').replace('mri_optic','MRI').replace('oct_rnfl','OCT RNFL').replace('oct_gcipl','OCT GCIPL').replace('vep','VEP'),
+    'yes');
+  html+=sRow('CSF OCBs',!csfDone?'LP not performed':ocbPos?'Positive (≥2 unique bands)':'Negative',!csfDone?'part':ocbPos?'yes':'no');
+  html+=sRow('CSF κFLC index '+n24(),!csfDone||a.csf_kflc==='nd'?'Not assessed':kflcPos?'≥6.1 — Positive':kflcBorder?'4.0–6.0 — Borderline':'Negative — <4.0',!csfDone||a.csf_kflc==='nd'?'part':kflcPos?'yes':kflcBorder?'part':'no');
+  html+=sRow('CVS — Select-6 '+n24(),a.cvs==='not_done'?'Not assessed':cvsPos?'Positive (Select-6)':'Negative',a.cvs==='not_done'?'part':cvsPos?'yes':'no');
+  html+=sRow('Paramagnetic Rim Lesions '+n24(),a.prl==='nd'?'Not assessed':prlPos?'Positive (≥1 PRL)'+(prlMulti?' — ≥4 PRLs':''):'Negative',a.prl==='nd'?'part':prlPos?'yes':'no');
+  if(ageComorbid) html+=sRow('Specificity requirement (age ≥50/comorbid)',specificityItems.join('; '),specificityMet?'yes':'no');
+  html+=sRow('AQP4-IgG / MOG-IgG excluded',nmosdExcl&&mogadExcl?'Both excluded':'Outstanding',nmosdExcl&&mogadExcl?'yes':'no');
+  html+=sRow('Exclusion workup',exclDone+'/8 items addressed',exclDone>=6?'yes':exclDone>=3?'part':'no');
+  html+='</div>';
+
+  // Priority: NMOSD/MOGAD alert
+  if(!nmosdExcl||!mogadExcl){
+    html+=rCard('red','!','AQP4-IgG and/or MOG-IgG Not Confirmed Excluded','Required',
+      (!nmosdExcl?'<strong>AQP4-IgG</strong> — must be tested (serum, cell-based assay preferred over ELISA) before applying McDonald criteria. ':'')
+      +(!mogadExcl?'<strong>MOG-IgG</strong> — must be tested (serum, FACS/cell-based assay) before applying McDonald criteria.':'')+
+      '<br>Both NMOSD and MOGAD can fulfill MRI DIS/DIT criteria and mimic RRMS.',[]);
+  }
+
+  var diagMet = ditMet && disMet && specificityMet && exclusionsOk;
+
+  if(diagMet){
+    var msType = '';
+    if(pres==='2att2les') msType='Clinically definite MS (≥2 attacks + ≥2 lesions)';
+    else if(pres==='2att1les') msType='MS — DIT met clinically (≥2 attacks), DIS met by MRI';
+    else if(pres==='1att2les') msType='MS — DIS met clinically (1 attack ≥2 lesions), DIT met by MRI';
+    else msType='MS — DIT and DIS met by MRI/CSF/clinical combination';
+    if(isRIS) msType='MS — diagnosed in RIS context with DIS + supportive biomarker';
+
+    html+=rCard('green','✓','2024 McDonald Criteria for MS: FULFILLED','McDonald 2024',
+      '<strong>Classification:</strong> '+msType,
+      [{k:'Positive biomarkers',v:[ocbPos?'OCBs':'',kflcPos?'κFLC ≥6.1':'',kflcBorder?'κFLC borderline (4.0–6.0)':'',cvsPos?'Select-6 CVS':'',prlPos?'PRL ≥1'+(prlMulti?' (≥4 — monitor for disability progression)':''):'',opticConfirmed?'Optic nerve (5th DIS location)':''].filter(Boolean).join(' · '),c:'yes'},
+       {k:'Acute Rx / DMT',v:'Initiate shared DMT decision. Baseline MRI brain + spine before or within 3–6 months of starting.',c:''},
+       {k:'Disability baseline',v:'EDSS, SDMT, 9HPT, T25FW. Document PRL count (≥4 = higher disability risk).',c:''},
+       {k:'Monitoring',v:'Annual MRI (brain ± spine); reassess CSF biomarkers not needed routinely once diagnosed; serial SDMT for cognitive tracking.',c:''}]);
+
+  } else if(ditMet && disMet && !specificityMet){
+    html+=rCard('amber','!','Criteria Met — Age/Comorbidity Specificity Requirement Not Fulfilled','McDonald 2024',
+      'DIT and DIS are met, but patient is age ≥50 or has vascular/migraine comorbidities. At least one specificity-conferring feature is required to confirm MS in this population.',
+      [{k:'Options',v:'(1) Classical spinal cord lesion on MRI, (2) Positive CSF: OCBs or κFLC index ≥6.1, (3) Select-6 CVS positivity on SWI/T2*',c:'part'},
+       {k:'Clinical context',v:'This requirement specifically addresses the higher rate of non-specific white matter lesions in vascular disease and migraine. CVS is particularly discriminating in this setting.',c:''}]);
+
+  } else if(ditMet && disMet && !exclusionsOk){
+    html+=rCard('amber','!','Criteria Met — Exclusion Workup Incomplete','McDonald 2024',
+      'DIT and DIS are technically fulfilled. Address outstanding differentials before confirming MS.',
+      [{k:'Priority',v:(!nmosdExcl?'AQP4-IgG testing required. ':'')+(!mogadExcl?'MOG-IgG testing required.':''),c:'part'}]);
+
+  } else if(!ditMet && disMet){
+    html+=rCard('amber','?','DIS Met — DIT Not Yet Demonstrated','McDonald 2024',
+      'Dissemination in space is confirmed. DIT can be met by:',
+      [{k:'MRI follow-up',v:'New T2 or Gd+ lesion on any follow-up scan — no minimum interval required.',c:''},
+       {k:'CSF (preferred)',v:'Positive OCBs or κFLC index ≥6.1 substitutes for DIT when DIS is met — consider LP now.',c:''},
+       {k:'Clinical',v:'Second attack in a different location meets DIT clinically.',c:''},
+       {k:'CIS classification',v:'Classify as CIS pending further assessment. Risk of conversion to MS: ~50–70% within 10 years with DIS lesions present.',c:''}]);
+
+  } else if(ditMet && !disMet){
+    html+=rCard('amber','?','DIT Met — DIS Not Yet Fulfilled','McDonald 2024',
+      'Dissemination in time is confirmed. DIS can be completed with:',
+      [{k:'MRI locations',v:disLocCount+'/2 typical locations confirmed. Need ≥2 of 5 (periventricular, cortical/juxtacortical, infratentorial, spinal cord, optic nerve).',c:''},
+       {k:'CSF substitution',v:'Positive OCBs or κFLC ≥6.1 counts as 1 DIS location. If 1 MRI location present + positive CSF → DIS met.',c:''},
+       {k:'Optic nerve MRI',v:'Dedicated fat-sat orbital MRI; or OCT RNFL intereye diff ≥6 μm / GCIPL ≥4 μm; or VEP delayed P100 ≥2.5 SD.',c:''},
+       {k:'CVS / PRL',v:'Select-6 CVS or ≥1 PRL can support specificity but do not independently replace DIS location count.',c:''}]);
+
+  } else {
+    html+=rCard('red','✕','2024 McDonald Criteria: NOT Fulfilled','McDonald 2024',
+      'Neither DIT nor DIS are met.',
+      [{k:'DIT',v:ditReason,c:'no'},
+       {k:'DIS',v:disReason,c:'no'},
+       {k:'Next steps',v:'Repeat MRI in 3–6 months; LP for OCBs + κFLC index (can substitute for both 1 DIS location and DIT); optic nerve MRI/OCT/VEP if not performed.',c:''}]);
+  }
+
+  // κFLC borderline note
+  if(kflcBorder && !kflcPos){
+    html+='<div class="rc r-blue"><div class="richd">κFLC Note</div><div class="rtitle"><div class="rico">i</div>κFLC Index Borderline (4.0–6.0)</div>'
+    +'<div class="rbody">Borderline κFLC does not formally fulfill the ≥6.1 threshold for CSF positivity per 2024 criteria. Consider: (1) repeat LP, (2) ensure paired serum sample was collected, (3) verify assay platform (turbidimetric/nephelometric preferred — not manual ELISA). If OCBs are also negative, CSF does not substitute for DIS or DIT in this case.</div></div>';
+  }
+
+  // PRL prognostic note
+  if(prlMulti){
+    html+='<div class="rc r-purple"><div class="richd">Prognostic Note</div><div class="rtitle"><div class="rico">!</div>≥4 Paramagnetic Rim Lesions — Higher Disability Risk</div>'
+    +'<div class="rbody">Published data associate ≥4 PRLs with greater neurological disability over time. Document PRL count at baseline for longitudinal comparison. This does not change the diagnosis but may influence DMT selection discussions.</div></div>';
+  }
+
+  // Determine verdict string for doc note
+  var verdictStr='';
+  if(diagMet){ var msType=''; if(pres==='2att2les') msType='Clinically definite MS (≥2 attacks + ≥2 lesions)'; else if(pres==='2att1les') msType='MS — DIT met clinically (≥2 attacks), DIS met by MRI'; else if(pres==='1att2les') msType='MS — DIS met clinically, DIT met by MRI'; else msType='MS — DIT and DIS met by MRI/CSF/clinical combination'; if(isRIS) msType='MS diagnosed in RIS context'; verdictStr='2024 McDonald Criteria for MS: FULFILLED — '+msType; }
+  else if(ditMet&&disMet&&!specificityMet) verdictStr='Criteria Met — Age/Comorbidity Specificity Requirement Not Fulfilled';
+  else if(ditMet&&disMet&&!exclusionsOk) verdictStr='Criteria Met — Exclusion Workup Incomplete';
+  else if(!ditMet&&disMet) verdictStr='DIS Met — DIT Not Yet Demonstrated (CIS)';
+  else if(ditMet&&!disMet) verdictStr='DIT Met — DIS Not Yet Fulfilled';
+  else verdictStr='2024 McDonald Criteria: NOT Fulfilled — DIT and DIS not met';
+
+  html+=docNoteHTML(verdictStr, diagMet?verdictStr:null);
+  html+='<button class="bs" onclick="restart()" style="margin-top:8px">Restart Assessment</button>';
+  m.innerHTML=html;
+}
+
+window.back=back;
+window.restart=restart;
+
+// ── DOCUMENTATION NOTE ──────────────────────────────────────────
+window.toggleDocNote = function(){
+  var el=document.getElementById('doc-note-body');
+  if(el) el.classList.toggle('open');
+};
+
+function buildDocNote(verdict, subtype){
+  var a=S.answers;
+  var isRIS=a.prereq==='ris', isProg=a.prereq==='prog';
+  var ocbPos=a.csf_ocb==='pos', kflcPos=a.csf_kflc==='pos_high', kflcBorder=a.csf_kflc==='pos_border';
+  var csfDone=a.csf_lp==='yes', csfPos=ocbPos||kflcPos;
+  var cvsPos=a.cvs==='select6_pos', prlPos=a.prl==='pos'||a.prl==='multi', prlMulti=a.prl==='multi';
+  var opticConfirmed=(a.dis_locations||[]).indexOf('optic')>=0&&(a.optic_nerve||[]).filter(function(v){return v!=='none_optic';}).length>0;
+  var mriLocs=(a.dis_locations||[]).filter(function(v){return v!=='optic';});
+  var disLocCount=mriLocs.length+(opticConfirmed?1:0)+(csfPos?1:0);
+  var exclList=a.exclusion||[];
+  var ageComorbid=(a.age_comorbid||[]).filter(function(v){return v!=='none';});
+
+  var presLabels={'2att2les':'≥2 attacks + ≥2 lesions','2att1les':'≥2 attacks + 1 lesion (+ historical evidence)','1att2les':'1 attack + ≥2 lesions','1att1les':'1 attack + 1 lesion (CIS)'};
+  var exclLabels={'nmosd':'NMOSD (AQP4-IgG negative)','mogad':'MOGAD (MOG-IgG negative)','vasculitis':'CNS vasculitis / SLE / Sjögren','sarcoid':'Neurosarcoidosis','infection':'Infectious causes (Lyme, syphilis, HIV)','genetic':'Hereditary leukodystrophies','b12':'Nutritional/metabolic (B12, copper)','structural':'Structural causes (spondylosis, Chiari)'};
+  var opticLabels={'mri_optic':'Orbital MRI (T2 lesion)','oct_rnfl':'OCT RNFL intereye diff ≥6 μm','oct_gcipl':'OCT GCIPL intereye diff ≥4 μm','vep':'VEP delayed P100 ≥2.5 SD'};
+  var disLabels={'periventricular':'Periventricular','cortical':'Cortical/juxtacortical','infratentorial':'Infratentorial','spinal':'Spinal cord','optic':'Optic nerve'};
+  var ppmsLabels={'brain':'≥1 T2 brain lesion (typical MS location)','spine':'≥2 T2 spinal cord lesions','csf':'Positive CSF (OCBs and/or κFLC ≥6.1)'};
+  var acLabels={'age50':'Age ≥50','migraine':'Migraine','vascular':'Vascular risk factors / WMH'};
+
+  var n = 'NEUROIMMUNOLOGY CONSULTATION\n2024 McDonald Criteria Assessment\nThompson AJ et al. Lancet Neurol 2024\nDate: '+new Date().toLocaleDateString()+'\n';
+  n += '\nPRESENTATION TYPE: '+(isRIS?'Radiologically Isolated Syndrome (RIS)':isProg?'Progressive MS pathway':'Relapsing / CIS pathway')+'\n';
+
+  if(!isRIS && !isProg){
+    n+='\nCLINICAL ATTACK EVIDENCE\n  '+((presLabels[a.presentation])||'Not specified')+'\n';
+    if(a.mri_dit) n+='  MRI DIT: '+(a.mri_dit==='yes'?'Demonstrated (Gd+/non-enhancing T2 or new T2 on follow-up)':'Not demonstrated')+'\n';
+  }
+
+  if(isProg){
+    n+='\nPROGRESSIVE WORSENING: '+(a.ppms_worsening==='yes'?'≥1 year documented':'Insufficient duration')+'\n';
+    var ppmsC=(a.ppms_criteria||[]);
+    n+='PPMS SUPPORTING CRITERIA ('+ppmsC.length+'/3):\n';
+    if(ppmsC.length>0) ppmsC.forEach(function(k){ n+='  - '+(ppmsLabels[k]||k)+'\n'; });
+    else n+='  None confirmed\n';
+  }
+
+  var disMRI=mriLocs.map(function(k){return disLabels[k]||k;});
+  n+='\nDISSEMINATION IN SPACE (DIS)\n';
+  n+='  MRI locations ('+mriLocs.length+'): '+(disMRI.length>0?disMRI.join(', '):'None')+'\n';
+  if(opticConfirmed){
+    var opticMethods=(a.optic_nerve||[]).filter(function(v){return v!=='none_optic';}).map(function(k){return opticLabels[k]||k;});
+    n+='  Optic nerve: Confirmed — '+opticMethods.join(', ')+'\n';
+  } else n+='  Optic nerve: Not confirmed\n';
+  n+='  CSF as DIS substitute: '+(csfPos?'Yes (counts as 1 location)':'No')+'\n';
+  n+='  Total DIS location count: '+disLocCount+'/5'+(disLocCount>=2?' — MET':'— NOT MET')+'\n';
+
+  n+='\nCSF ANALYSIS\n';
+  if(!csfDone){ n+='  Lumbar puncture: Not performed\n'; }
+  else{
+    n+='  Lumbar puncture: Performed\n';
+    n+='  OCBs: '+(a.csf_ocb==='pos'?'Positive (≥2 unique IgG bands)':a.csf_ocb==='neg'?'Negative':'Not done')+'\n';
+    n+='  κFLC index: '+(kflcPos?'Positive — ≥6.1':kflcBorder?'Borderline — 4.0–6.0':a.csf_kflc==='neg'?'Negative — <4.0':'Not measured')+'\n';
+    n+='  Intrathecal IgG synthesis: '+(csfPos?'Confirmed':'Not confirmed'+(kflcBorder?' (borderline κFLC — does not formally fulfill ≥6.1 threshold)':''))+'\n';
+  }
+
+  n+='\nMRI BIOMARKERS (2024 CRITERIA)\n';
+  n+='  Central Vein Sign (Select-6): '+(a.cvs==='select6_pos'?'POSITIVE — Select-6 fulfilled':a.cvs==='select6_neg'?'Negative — Select-6 not fulfilled':'Not assessed (SWI/T2* not performed)')+'\n';
+  n+='  Paramagnetic Rim Lesions: '+(prlMulti?'POSITIVE — ≥4 PRLs present (higher disability risk — document count)':prlPos?'POSITIVE — ≥1 PRL identified':a.prl==='neg'?'Negative — no PRLs identified':'Not assessed (susceptibility sequences not performed)')+'\n';
+
+  if(ageComorbid.length>0){
+    n+='\nAGE / COMORBIDITY SPECIFICITY REQUIREMENT (ACTIVE)\n';
+    n+='  Risk factors: '+ageComorbid.map(function(k){return acLabels[k]||k;}).join(', ')+'\n';
+    var specItems=[];
+    if((a.dis_locations||[]).indexOf('spinal')>=0) specItems.push('Classical spinal cord lesion present');
+    if(csfPos) specItems.push('Positive CSF ('+(ocbPos?'OCBs':'')+(ocbPos&&kflcPos?' + ':'')+(kflcPos?'κFLC ≥6.1':'')+')')
+    if(cvsPos) specItems.push('Select-6 CVS positive');
+    n+='  Specificity criteria met: '+(specItems.length>0?specItems.join('; '):'None — criteria NOT fulfilled')+'\n';
+  }
+
+  n+='\nEXCLUSION OF ALTERNATIVE DIAGNOSES ('+exclList.length+'/8 addressed)\n';
+  if(exclList.length>0) exclList.forEach(function(k){ n+='  ✓ '+(exclLabels[k]||k)+'\n'; });
+  var outstanding=['nmosd','mogad','vasculitis','sarcoid','infection','genetic','b12','structural'].filter(function(k){return exclList.indexOf(k)<0;});
+  if(outstanding.length>0) n+='  Outstanding: '+outstanding.map(function(k){return exclLabels[k]||k;}).join('; ')+'\n';
+
+  n+='\n2024 McDONALD CRITERIA — FINAL CLASSIFICATION\n'+verdict+'\n';
+  if(subtype) n+='Classification: '+subtype+'\n';
+
+  n+='\nRef: Thompson AJ, Banwell BL, Barkhof F, et al. Diagnosis of multiple sclerosis: 2024 revisions of the McDonald criteria. Lancet Neurol. 2024. DOI: 10.1016/S1474-4422(24)00400-X';
+  return n;
+}
+
+function docNoteHTML(verdict, subtype){
+  return '<button class="doc-tog" onclick="toggleDocNote()">▼ Documentation Note</button>'
+    +'<div class="doc-body" id="doc-note-body">'+buildDocNote(verdict, subtype)+'</div>';
+}
+
+render();
+</script>
+</body>
+</html>

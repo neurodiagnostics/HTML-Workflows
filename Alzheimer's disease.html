@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2024 AA Alzheimer's Criteria · Diagnostic Navigator</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+  --bg:        #0d1117;
+  --card:      #161b22;
+  --card2:     #1c2330;
+  --border:    #3a4556;
+  --border2:   #4a5f7a;
+  --green:     #3fb950;
+  --green-bg:  rgba(63,185,80,0.10);
+  --green-bd:  rgba(63,185,80,0.35);
+  --red:       #f85149;
+  --red-bg:    rgba(248,81,73,0.10);
+  --red-bd:    rgba(248,81,73,0.35);
+  --amber:     #e3b341;
+  --amber-bg:  rgba(227,179,65,0.10);
+  --amber-bd:  rgba(227,179,65,0.35);
+  --blue:      #58a6ff;
+  --blue-bg:   rgba(88,166,255,0.10);
+  --blue-bd:   rgba(88,166,255,0.35);
+  --purple:    #bc8cff;
+  --purple-bg: rgba(188,140,255,0.10);
+  --purple-bd: rgba(188,140,255,0.35);
+  --text:      #e6edf3;
+  --text2:     #aab4c0;
+  --text3:     #6e7f94;
+  --sans:  'Inter', system-ui, sans-serif;
+  --mono:  'IBM Plex Mono', monospace;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg); color: var(--text); font-family: var(--sans); font-size: 14px; line-height: 1.5; min-height: 100vh; }
+.app { max-width: 960px; margin: 0 auto; padding: 0 20px 80px; }
+
+/* HEADER */
+header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+.h-title { font-size: 19px; font-weight: 700; }
+.h-title span { color: var(--purple); }
+.h-sub { font-family: var(--mono); font-size: 10px; color: var(--text3); margin-top: 3px; line-height: 1.5; }
+.reset-btn { background: var(--card2); border: 1px solid var(--border); color: var(--text2); font-family: var(--mono); font-size: 11px; padding: 6px 14px; cursor: pointer; border-radius: 4px; transition: all 0.15s; white-space: nowrap; }
+.reset-btn:hover { border-color: var(--purple); color: var(--purple); }
+
+/* PROGRESS */
+.prog-track { height: 3px; background: var(--border); margin-bottom: 20px; border-radius: 2px; }
+.prog-fill { height: 100%; background: linear-gradient(90deg, var(--purple), #d8b4fe); border-radius: 2px; transition: width 0.4s ease; box-shadow: 0 0 6px rgba(188,140,255,0.4); }
+
+/* STEP TABS */
+.steps { display: flex; border-bottom: 1px solid var(--border); margin-bottom: 20px; overflow-x: auto; }
+.stab { flex: 1; min-width: 70px; padding: 7px 4px 9px; text-align: center; font-family: var(--mono); font-size: 9px; color: var(--text3); border-bottom: 2px solid transparent; margin-bottom: -1px; transition: all 0.2s; line-height: 1.3; }
+.stab .sn { display: block; font-size: 13px; font-weight: 600; margin-bottom: 1px; }
+.stab.active { color: var(--purple); border-bottom-color: var(--purple); }
+.stab.done   { color: var(--green);  border-bottom-color: var(--green); }
+
+/* CARD */
+.card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 22px; margin-bottom: 12px; }
+.ctitle { font-size: 12px; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; margin-bottom: 3px; }
+.csub { font-size: 12px; color: var(--text2); margin-bottom: 16px; line-height: 1.5; }
+
+/* SECTION LABEL */
+.slabel { display: flex; align-items: center; gap: 8px; font-family: var(--mono); font-size: 10px; font-weight: 500; color: var(--text2); letter-spacing: 0.07em; text-transform: uppercase; margin-bottom: 9px; padding-bottom: 6px; border-bottom: 1px solid var(--border); }
+.pill { font-size: 9px; padding: 1px 7px; border-radius: 20px; border: 1px solid; margin-left: auto; }
+.pill-r { border-color: var(--red);    color: var(--red);    background: var(--red-bg); }
+.pill-a { border-color: var(--amber);  color: var(--amber);  background: var(--amber-bg); }
+.pill-p { border-color: var(--purple); color: var(--purple); background: var(--purple-bg); }
+.pill-g { border-color: var(--green);  color: var(--green);  background: var(--green-bg); }
+
+/* CRITERION ROW */
+.crit { border: 1px solid var(--border); border-radius: 6px; margin-bottom: 5px; overflow: hidden; transition: border-color 0.15s, background 0.15s; }
+.crit.c-yes  { border-color: var(--green-bd);  background: var(--green-bg); }
+.crit.c-no   { border-color: var(--red-bd);    background: var(--red-bg); }
+.crit.c-pres { border-color: var(--purple-bd); background: var(--purple-bg); }
+.crit.c-abs  { border-color: var(--border2);   background: var(--card2); }
+.crit.c-part { border-color: var(--amber-bd);  background: var(--amber-bg); }
+.crit.c-blue { border-color: var(--blue-bd);   background: var(--blue-bg); }
+
+.crit-main { display: flex; align-items: center; gap: 10px; padding: 10px 13px; }
+.crit-name { flex: 1; font-size: 13px; font-weight: 500; color: var(--text); line-height: 1.3; }
+.xbtn { background: none; border: 1px solid var(--border); color: var(--text3); font-size: 11px; cursor: pointer; padding: 2px 8px; font-family: var(--mono); white-space: nowrap; transition: all 0.15s; flex-shrink: 0; border-radius: 3px; }
+.xbtn:hover { color: var(--blue); border-color: var(--blue); }
+
+.crit-detail { display: none; padding: 10px 13px 12px; font-size: 12px; color: var(--text); line-height: 1.65; border-top: 1px solid var(--border); }
+.crit-detail.open { display: block; }
+.cnote { margin-top: 8px; padding: 8px 11px; background: var(--card2); border-left: 3px solid var(--border2); font-family: var(--mono); font-size: 10px; color: var(--text2); line-height: 1.75; border-radius: 0 3px 3px 0; }
+.cnote strong { color: var(--text); }
+
+/* BUTTON ROW */
+.brow { display: flex; border-top: 1px solid var(--border); }
+.abtn { flex: 1; padding: 8px 6px; background: none; border: none; border-right: 1px solid var(--border); color: var(--text2); font-family: var(--mono); font-size: 11px; cursor: pointer; transition: all 0.12s; text-transform: uppercase; letter-spacing: 0.04em; font-weight: 500; }
+.abtn:last-child { border-right: none; }
+.abtn:hover { background: var(--card2); color: var(--text); }
+.abtn.ay  { background: var(--green-bg);  color: var(--green);  font-weight: 700; }
+.abtn.an  { background: var(--red-bg);    color: var(--red);    font-weight: 700; }
+.abtn.ap  { background: var(--purple-bg); color: var(--purple); font-weight: 700; }
+.abtn.ab  { background: var(--blue-bg);   color: var(--blue);   font-weight: 700; }
+.abtn.aa  { background: var(--card2);     color: var(--text2);  font-weight: 700; }
+.abtn.aw  { background: var(--amber-bg);  color: var(--amber);  font-weight: 700; }
+
+/* TWO-COL */
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; }
+@media (max-width: 600px) { .two-col { grid-template-columns: 1fr; } }
+
+/* ALERT */
+.alrt { padding: 9px 13px; border-radius: 5px; font-size: 12px; line-height: 1.55; margin-top: 12px; border-left: 3px solid; display: none; }
+.alrt.show { display: block; }
+.aok   { border-color: var(--green);  background: var(--green-bg);  color: #7ee787; }
+.awn   { border-color: var(--amber);  background: var(--amber-bg);  color: var(--amber); }
+.aerr  { border-color: var(--red);    background: var(--red-bg);    color: #ff7b72; }
+.ainf  { border-color: var(--blue);   background: var(--blue-bg);   color: var(--blue); }
+.apurp { border-color: var(--purple); background: var(--purple-bg); color: var(--purple); }
+
+/* LOGIC BOX */
+.lbox { background: var(--card2); border: 1px solid var(--border); border-radius: 5px; padding: 12px 15px; font-size: 12px; color: var(--text2); line-height: 1.75; margin-bottom: 14px; }
+.lbox strong { color: var(--text); }
+.lp { color: var(--purple); font-weight: 600; }
+.lg { color: var(--green);  font-weight: 600; }
+.la { color: var(--amber);  font-weight: 600; }
+.lr { color: var(--red);    font-weight: 600; }
+.lb { color: var(--blue);   font-weight: 600; }
+
+/* TALLY / CHIP */
+.tally { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+.chip { display: flex; align-items: center; gap: 5px; padding: 5px 11px; border-radius: 20px; font-family: var(--mono); font-size: 11px; border: 1px solid var(--border); background: var(--card2); color: var(--text2); }
+.chip .n { font-size: 14px; font-weight: 700; }
+.cp { border-color: var(--purple-bd); background: var(--purple-bg); color: var(--purple); }
+.cg { border-color: var(--green-bd);  background: var(--green-bg);  color: var(--green); }
+.cb { border-color: var(--blue-bd);   background: var(--blue-bg);   color: var(--blue); }
+.ca { border-color: var(--amber-bd);  background: var(--amber-bg);  color: var(--amber); }
+
+/* STAGE GRID (biological stages A–D) */
+.stage-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 8px; margin-bottom: 14px; }
+@media (max-width: 640px) { .stage-grid { grid-template-columns: repeat(2,1fr); } }
+
+.stage-card { border: 1px solid var(--border); border-radius: 6px; overflow: hidden; cursor: pointer; transition: all 0.2s; }
+.stage-card:hover { border-color: var(--border2); }
+.stage-card.sel { border-color: var(--purple-bd); background: var(--purple-bg); }
+.stage-card.sel-b { border-color: var(--blue-bd);   background: var(--blue-bg); }
+.stage-card.sel-g { border-color: var(--green-bd);  background: var(--green-bg); }
+.stage-card.sel-a { border-color: var(--amber-bd);  background: var(--amber-bg); }
+.stage-header { padding: 10px 12px 6px; }
+.stage-letter { font-size: 22px; font-weight: 700; font-family: var(--mono); }
+.stage-name { font-size: 11px; color: var(--text2); font-family: var(--mono); }
+.stage-body { padding: 0 12px 10px; font-size: 11px; color: var(--text2); line-height: 1.5; }
+.stage-tag { font-family: var(--mono); font-size: 9px; padding: 1px 7px; border-radius: 10px; border: 1px solid; display: inline-block; margin-top: 4px; }
+
+/* CLINICAL STAGE PICKER */
+.clin-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 6px; }
+@media (max-width: 580px) { .clin-grid { grid-template-columns: repeat(2,1fr); } }
+.clin-btn { padding: 10px 8px; border: 1px solid var(--border); border-radius: 5px; background: var(--card2); cursor: pointer; transition: all 0.2s; text-align: center; font-family: var(--mono); font-size: 10px; color: var(--text2); }
+.clin-btn:hover { border-color: var(--border2); color: var(--text); }
+.clin-btn.csel { border-color: var(--purple-bd); background: var(--purple-bg); color: var(--purple); font-weight: 700; }
+.clin-num { font-size: 18px; font-weight: 700; display: block; margin-bottom: 2px; }
+.clin-desc { font-size: 9px; line-height: 1.4; }
+
+/* INTEGRATED STAGING TABLE */
+.isTable { width: 100%; border-collapse: collapse; font-size: 11px; font-family: var(--mono); }
+.isTable th, .isTable td { border: 1px solid var(--border); padding: 6px 8px; text-align: center; }
+.isTable th { background: var(--card2); color: var(--text2); font-size: 10px; letter-spacing: 0.05em; }
+.isTable .row-head { background: var(--card2); color: var(--text2); font-size: 10px; text-align: left; padding-left: 10px; }
+.isTable .cell-hl { background: var(--purple-bg); color: var(--purple); font-weight: 700; font-size: 13px; border-color: var(--purple-bd); }
+.isTable .cell-diag { background: var(--green-bg); border-color: var(--green-bd); color: var(--text3); font-size: 9px; }
+.isTable .cell-x { color: var(--text3); }
+
+/* NAV */
+.nav-row { display: flex; justify-content: space-between; align-items: center; margin-top: 20px; gap: 10px; }
+.nbtn { padding: 9px 22px; border-radius: 5px; font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; border: 1px solid; cursor: pointer; font-weight: 500; transition: all 0.15s; }
+.np { background: var(--purple); border-color: var(--purple); color: #0d1117; font-weight: 700; }
+.np:hover { background: #d8b4fe; border-color: #d8b4fe; }
+.np:disabled { opacity: 0.3; cursor: not-allowed; }
+.ns { background: transparent; border-color: var(--border2); color: var(--text2); }
+.ns:hover { border-color: var(--text); color: var(--text); }
+
+/* SCREEN */
+.screen { display: none; }
+.screen.active { display: block; animation: fu 0.25s ease; }
+@keyframes fu { from { opacity:0; transform:translateY(5px); } to { opacity:1; transform:translateY(0); } }
+
+/* VERDICT */
+.vban { border-radius: 8px; padding: 22px 26px; margin-bottom: 16px; border: 2px solid; }
+.vad   { border-color: var(--purple); background: var(--purple-bg); }
+.vneg  { border-color: var(--red);    background: var(--red-bg); }
+.vund  { border-color: var(--amber);  background: var(--amber-bg); }
+.vban-head { text-align: center; margin-bottom: 14px; }
+.vlbl { font-family: var(--mono); font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase; opacity: 0.6; margin-bottom: 5px; }
+.vtitle { font-size: 22px; font-weight: 700; margin-bottom: 6px; letter-spacing: -0.01em; }
+.vad  .vtitle { color: var(--purple); }
+.vneg .vtitle { color: var(--red); }
+.vund .vtitle { color: var(--amber); }
+.vdesc { font-size: 12px; color: var(--text2); line-height: 1.7; max-width: 620px; margin: 0 auto; }
+
+/* SUMMARY */
+.sum-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+@media (max-width: 580px) { .sum-grid { grid-template-columns: 1fr; } }
+.sblock { background: var(--card); border: 1px solid var(--border); border-radius: 6px; overflow: hidden; }
+.sbtitle { font-family: var(--mono); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; padding: 7px 11px; border-bottom: 1px solid var(--border); color: var(--text2); background: var(--card2); }
+.srow { display: flex; align-items: flex-start; gap: 8px; padding: 6px 11px; border-bottom: 1px solid var(--border); font-size: 12px; }
+.srow:last-child { border-bottom: none; }
+.dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; margin-top: 4px; }
+.dg { background: var(--green); } .dr { background: var(--red); }
+.dp { background: var(--purple); } .db { background: var(--blue); }
+.da { background: var(--amber); } .dgr{ background: var(--text3); }
+.sname { flex: 1; color: var(--text); line-height: 1.4; }
+.stag { font-family: var(--mono); font-size: 9px; padding: 1px 7px; border-radius: 10px; border: 1px solid; white-space: nowrap; }
+.tg { border-color: var(--green-bd);  color: var(--green); }
+.tr { border-color: var(--red-bd);    color: var(--red); }
+.tp { border-color: var(--purple-bd); color: var(--purple); }
+.tb { border-color: var(--blue-bd);   color: var(--blue); }
+.ta { border-color: var(--amber-bd);  color: var(--amber); }
+.tgr{ border-color: var(--border2);   color: var(--text3); }
+
+/* DOC NOTE */
+.doc-header { display: flex; align-items: center; gap: 8px; margin-bottom: 5px; }
+.doc-tog { flex: 1; text-align: left; background: var(--card2); border: 1px solid var(--border2); border-radius: 5px; color: var(--text2); font-family: var(--mono); font-size: 11px; padding: 8px 13px; cursor: pointer; transition: all 0.15s; letter-spacing: 0.04em; }
+.doc-tog:hover { border-color: var(--purple); color: var(--purple); }
+.copy-btn { background: var(--card2); border: 1px solid var(--border2); border-radius: 5px; color: var(--text2); font-family: var(--mono); font-size: 11px; padding: 8px 14px; cursor: pointer; white-space: nowrap; transition: all 0.15s; display: none; }
+.copy-btn.visible { display: block; }
+.copy-btn:hover { border-color: var(--green); color: var(--green); }
+.copy-btn.copied { border-color: var(--green); color: var(--green); background: var(--green-bg); }
+.doc-body { display: none; background: var(--card2); border: 1px solid var(--border2); border-radius: 5px; padding: 13px 15px; font-family: var(--mono); font-size: 11px; color: var(--text2); line-height: 1.85; white-space: pre-wrap; margin-bottom: 12px; }
+.doc-body.open { display: block; }
+</style>
+</head>
+<body>
+<div class="app">
+
+<header>
+  <div>
+    <div class="h-title">2024 AA <span>Alzheimer's Disease Criteria</span></div>
+    <div class="h-sub">Jack CR et al. · Alzheimer's & Dementia 2024;20:5143–5169 · doi:10.1002/alz.13859<br>Alzheimer's Association Workgroup · Revised Biological Diagnosis and Integrated Staging Framework</div>
+  </div>
+  <button class="reset-btn" onclick="resetAll()">↺ Reset</button>
+</header>
+
+<div class="prog-track"><div class="prog-fill" id="pf" style="width:0%"></div></div>
+
+<div class="steps">
+  <div class="stab active" id="st0"><span class="sn">1</span>Context</div>
+  <div class="stab" id="st1"><span class="sn">2</span>Core 1</div>
+  <div class="stab" id="st2"><span class="sn">3</span>Core 2</div>
+  <div class="stab" id="st3"><span class="sn">4</span>Bio Stage</div>
+  <div class="stab" id="st4"><span class="sn">5</span>Clin Stage</div>
+  <div class="stab" id="st5"><span class="sn">6</span>NIVS</div>
+  <div class="stab" id="st6"><span class="sn">7</span>Verdict</div>
+</div>
+
+<!-- ══ SCREEN 0: CONTEXT / FUNDAMENTAL PRINCIPLES ══ -->
+<div class="screen active" id="s0">
+<div class="card">
+  <div class="ctitle" style="color:var(--purple);">Step 1 · Clinical Context and Fundamental Principles</div>
+  <div class="csub">The 2024 AA criteria define AD as a biological disease — symptoms are not required for diagnosis. AD exists on a continuum, beginning with the appearance of biomarkers while the individual is asymptomatic.</div>
+
+  <div class="lbox">
+    <strong>Box 1 — Fundamental principles (carried forward from NIA-AA):</strong><br>
+    <span class="lp">AD is defined by its biology.</span> Detection of AD neuropathologic change (ADNPC) by biomarkers is equivalent to diagnosing the disease.<br>
+    AD exists on a continuum — first evident in vivo with Core biomarkers while asymptomatic.<br>
+    <span class="lp">Symptoms are not required to diagnose AD.</span> Unimpaired individuals with abnormal biomarkers have AD — they are not "at risk" for a disease they already have.<br>
+    Clinical syndromes may be caused by disorders other than AD — clinical presentation alone is not diagnostic.<br>
+    The same AD biology may result in different phenotypic presentations.
+  </div>
+
+  <div class="slabel">Patient context <span class="pill pill-r">REQUIRED</span></div>
+
+  <div class="crit" id="symp-item">
+    <div class="crit-main">
+      <div class="crit-name">Current symptomatic status</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      This determines the intended use of biomarker testing. The workgroup recommends against diagnostic testing in cognitively unimpaired individuals outside observational or therapeutic research contexts at this time — disease-targeted therapies are currently approved only for early symptomatic AD (MCI and mild dementia). AD <em>can</em> be diagnosed biologically in asymptomatic individuals, but the workgroup states it should not routinely be done for clinical purposes yet.
+      <div class="cnote">Five recognized AD phenotypes: amnestic (typical), language variant, visuospatial variant, behavioral variant, dysexecutive variant. Phenotype does not change the biomarker-based diagnostic criteria.</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="set('symp','symp')"    id="symp-symp"   >Symptomatic (MCI or dementia)</button>
+      <button class="abtn" onclick="set('symp','asymp')"   id="symp-asymp"  >Asymptomatic / Research context</button>
+      <button class="abtn" onclick="set('symp','genetic')" id="symp-genetic">Known deterministic gene (ADAD/DSAD)</button>
+    </div>
+  </div>
+
+  <div id="a0" class="alrt"></div>
+  <div class="nav-row"><div></div><button class="nbtn np" id="n0" onclick="go(1)" disabled>Next: Core 1 Biomarkers →</button></div>
+</div>
+</div>
+
+<!-- ══ SCREEN 1: CORE 1 BIOMARKERS ══ -->
+<div class="screen" id="s1">
+<div class="card">
+  <div class="ctitle" style="color:var(--purple);">Step 2 · Core 1 Biomarkers — Diagnostic Tests for AD</div>
+  <div class="csub">An abnormal Core 1 biomarker is sufficient to establish the biological diagnosis of AD. Core 1 biomarkers become abnormal around the same time as amyloid PET — early in the disease, before symptoms.</div>
+
+  <div class="lbox">
+    <strong>Core 1 biomarkers (A + T1 + Hybrid Ratios):</strong><br>
+    <span class="lp">A (Aβ proteinopathy):</span> Amyloid PET — the reference standard<br>
+    <span class="lp">T1 (phosphorylated secreted AD tau):</span> Plasma p-tau217 (preferred — highest accuracy in head-to-head comparisons); also p-tau181, p-tau231<br>
+    <span class="lp">Hybrid ratios (CSF):</span> CSF Aβ42/40; CSF p-tau181/Aβ42; CSF t-tau/Aβ42<br><br>
+    <strong>Accuracy requirement for standalone diagnosis:</strong> Minimum 90% accuracy for detecting moderate/frequent neuritic plaques at autopsy (or approved surrogate). For BBM, this means performance equivalent to approved CSF assays. Not all available plasma assays meet this threshold — only validated "accurate" assays qualify.
+  </div>
+
+  <div class="slabel">Amyloid PET (A biomarker) <span class="pill pill-p">DEFINITIVE REFERENCE STANDARD</span></div>
+
+  <div class="crit" id="amypet-item">
+    <div class="crit-main">
+      <div class="crit-name">Amyloid PET — abnormal (positive for moderate/frequent neuritic plaques)</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      Approved tracers (florbetapir, flutemetamol, florbetaben): visual reads have sensitivity ~96%, specificity ~100% for CERAD moderate/frequent neuritic plaques vs. neuropathologic reference within 1 year. Quantification using Centiloid scale is the accepted standardized method. Amyloid PET positive → ~95% of symptomatic individuals will have intermediate/high ADNPC (Braak III–VI); ~74–87% of asymptomatic individuals at that time, with ~91% showing Braak II–VI (i.e., will progress).
+      <div class="cnote">
+        <strong>Special consideration for ADAD and DSAD:</strong> Florid striatal amyloid PET uptake often occurs early in ADAD/DSAD (not typical of sporadic AD). The Centiloid method and A+/A− thresholds may need modification in these populations. The indeterminant zone (confidently normal / indeterminant / confidently abnormal) should be applied for values near cutpoints.
+      </div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="set('amypet','pos')"  id="amypet-pos" >✓ Abnormal (positive)</button>
+      <button class="abtn" onclick="set('amypet','indet')" id="amypet-indet">⚠ Indeterminant / near cutpoint</button>
+      <button class="abtn" onclick="set('amypet','neg')"  id="amypet-neg" >✗ Normal (negative)</button>
+      <button class="abtn" onclick="set('amypet','nd')"   id="amypet-nd"  >— Not performed</button>
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:14px;">Plasma Biomarker (T1) <span class="pill pill-p">IF ACCURATE ASSAY AVAILABLE</span></div>
+
+  <div class="crit" id="ptau-item">
+    <div class="crit-main">
+      <div class="crit-name">Plasma p-tau217 (preferred) — or p-tau181, p-tau231 — using accurate validated assay</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      Plasma p-tau217 typically outperforms other plasma assays in head-to-head comparisons and in some cohorts achieves diagnostic accuracy equivalent to approved CSF assays (i.e., ≥90% accuracy for detecting amyloid PET positivity). The %p-tau217 ratio (p-tau217/non-phosphorylated-tau217) has high performance. Plasma Aβ42/40 has limited diagnostic range (~10–15% fold difference vs ~50% for CSF Aβ42/40) — generally less clinically robust than plasma p-tau assays.
+      <div class="cnote">
+        <strong>Confounders of plasma biomarkers:</strong> Head trauma and cardiorespiratory arrest may transiently increase p-tau values. Elevated p-tau181 has been reported in ALS without AD. Certain medications (e.g., neprilysin inhibitors), CSF dynamics disorders, impaired renal function, and food intake can alter plasma biomarker values. Clinical judgment required.
+      </div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="set('ptau','pos')"   id="ptau-pos"  >✓ Abnormal (accurate assay)</button>
+      <button class="abtn" onclick="set('ptau','indet')" id="ptau-indet">⚠ Indeterminant / borderline</button>
+      <button class="abtn" onclick="set('ptau','neg')"   id="ptau-neg"  >✗ Normal</button>
+      <button class="abtn" onclick="set('ptau','nd')"    id="ptau-nd"   >— Not performed / not accurate assay</button>
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:14px;">CSF Hybrid Ratios <span class="pill pill-p">FDA-APPROVED ASSAYS AVAILABLE</span></div>
+
+  <div class="crit" id="csf-item">
+    <div class="crit-main">
+      <div class="crit-name">CSF Aβ42/40, CSF p-tau181/Aβ42, or CSF t-tau/Aβ42 — using approved or validated assay</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      CSF p-tau is not typically used as a standalone diagnostic test — hybrid ratios are used instead because they have the highest accuracy. Regulatory approval of CSF assays was anchored to amyloid PET positive/negative visual reads as reference standard (sensitivity/specificity 85–88% / 93–94%). CSF Aβ42/40 has ~50% fold difference between AD+ and AD− compared to only 10–15% for plasma Aβ42/40 — making CSF Aβ42/40 more diagnostically robust than its plasma counterpart.
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="set('csf','pos')"   id="csf-pos"  >✓ Abnormal (consistent with ADNPC)</button>
+      <button class="abtn" onclick="set('csf','indet')" id="csf-indet">⚠ Indeterminant</button>
+      <button class="abtn" onclick="set('csf','neg')"   id="csf-neg"  >✗ Normal</button>
+      <button class="abtn" onclick="set('csf','nd')"    id="csf-nd"   >— Not performed</button>
+    </div>
+  </div>
+
+  <div id="a1" class="alrt"></div>
+  <div class="nav-row">
+    <button class="nbtn ns" onclick="go(0)">← Back</button>
+    <button class="nbtn np" onclick="go(2)">Next: Core 2 Biomarkers →</button>
+  </div>
+</div>
+</div>
+
+<!-- ══ SCREEN 2: CORE 2 BIOMARKERS ══ -->
+<div class="screen" id="s2">
+<div class="card">
+  <div class="ctitle" style="color:var(--purple);">Step 3 · Core 2 Biomarkers — Staging, Prognosis, and Symptom Attribution</div>
+  <div class="csub">Core 2 biomarkers become abnormal later — more closely linked to symptom onset. They cannot rule out AD (a normal Core 2 with abnormal Core 1 does not exclude AD), but an abnormal Core 2 in the presence of abnormal Core 1 increases confidence that AD is contributing to symptoms.</div>
+
+  <div class="lbox">
+    <strong>Core 2 biomarkers (T2 — AD tau proteinopathy):</strong><br>
+    <span class="lp">Tau PET:</span> The primary Core 2 imaging biomarker. Provides topographic and magnitude information. Stages: no uptake (A only) → MTL uptake → moderate neocortical → high neocortical uptake<br>
+    <span class="lp">CSF/plasma T2 fluid markers:</span> MTBR-tau243, p-tau205, non-phosphorylated mid-region tau fragments (conceptual staging — less validated than tau PET)<br><br>
+    <strong>Key principle:</strong> Amyloidosis is nearly always a prerequisite for neocortical AD tauopathy. A−T2+ profile is rare, inconsistent with AD, and corresponds neuropathologically to primary age-related tauopathy (PART) — not AD.
+  </div>
+
+  <div class="slabel">Tau PET (T2 — Core 2 Imaging) <span class="pill pill-p">PRIMARY STAGING BIOMARKER</span></div>
+
+  <div class="crit" id="taupet-item">
+    <div class="crit-main">
+      <div class="crit-name">Tau PET result and topographic pattern</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      The neocortical meta-ROI includes inferior/lateral temporal, inferior/medial parietal lobes. The medial temporal ROI includes hippocampus (some ligands), entorhinal cortex, amygdala. PET-detectable medial temporal tauopathy does not always precede neocortical tauopathy in atypical presentations (e.g., posterior cortical atrophy, logopenic variant PPA), though MTL→neocortical spread is by far the most common pattern. Off-target tau ligand binding must be excluded (e.g., basal ganglia uptake). CenTauR standardization scale in development (analogous to Centiloid for amyloid).
+      <div class="cnote">
+        <strong>Prognostic hazard ratios (from large meta-analysis, Ossenkoppele et al.):</strong> vs. A−T2− reference — A+T2− (Stage A): HR 1.5 for progression to dementia; A+ with MTL tau only (Stage B): HR 5.6; A+ with neocortical tau (Stages C/D): HR 39.9. A 40-fold range in hazard ratios across PET stages.
+      </div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="set('taupet','none')" id="taupet-none">✓ No uptake above threshold</button>
+      <button class="abtn" onclick="set('taupet','mtl')"  id="taupet-mtl" >MTL uptake only</button>
+      <button class="abtn" onclick="set('taupet','mod')"  id="taupet-mod" >Moderate neocortical uptake</button>
+      <button class="abtn" onclick="set('taupet','high')" id="taupet-high">High neocortical uptake</button>
+      <button class="abtn" onclick="set('taupet','nd')"   id="taupet-nd"  >— Not performed</button>
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:14px;">T2 Fluid Biomarkers (Conceptual — Less Validated) <span class="pill pill-a">RESEARCH USE</span></div>
+
+  <div class="crit" id="t2fluid-item">
+    <div class="crit-main">
+      <div class="crit-name">CSF/plasma MTBR-tau243, p-tau205, or non-phosphorylated mid-region tau fragments</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      These later-changing tau fragments correlate more strongly with tau PET than with amyloid PET — distinguishing them from T1 markers (p-tau217, 181, 231 which correlate with both). The fluid staging scheme (Table 5 in the paper) mirrors Stages A–D but is regarded as conceptual at present: T1 fluid → p-tau205 (Stage B approximate) → MTBR-tau243 (Stage C approximate) → non-phosphorylated tau fragments (Stage D approximate). PET and fluid stages should not be treated as equivalent.
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="set('t2fluid','ab')" id="t2fluid-ab">✓ Abnormal (elevated)</button>
+      <button class="abtn" onclick="set('t2fluid','nm')" id="t2fluid-nm">✗ Normal</button>
+      <button class="abtn" onclick="set('t2fluid','nd')" id="t2fluid-nd">— Not performed</button>
+    </div>
+  </div>
+
+  <div id="a2" class="alrt"></div>
+  <div class="nav-row">
+    <button class="nbtn ns" onclick="go(1)">← Back</button>
+    <button class="nbtn np" onclick="go(3)">Next: Biological Staging →</button>
+  </div>
+</div>
+</div>
+
+<!-- ══ SCREEN 3: BIOLOGICAL STAGING ══ -->
+<div class="screen" id="s3">
+<div class="card">
+  <div class="ctitle" style="color:var(--purple);">Step 4 · Biological Disease Staging (Stages A–D)</div>
+  <div class="csub">Biological staging applies only after AD is diagnosed via Core 1 biomarkers. It uses Core biomarkers only (N/I markers not included as staging criteria). Select the current biological stage.</div>
+
+  <div class="lbox">
+    <strong>Staging sequence (Table 3 — Jack et al. 2024):</strong><br>
+    <span class="lg">Stage A (Initial):</span> Abnormal amyloid PET (or Core 1 fluid) + no tau PET uptake. A+T2−<br>
+    <span class="lb">Stage B (Early):</span> Abnormal amyloid PET + tau PET in medial temporal region only. A+T2MTL+<br>
+    <span class="la">Stage C (Intermediate):</span> Abnormal amyloid PET + moderate neocortical tau PET uptake. A+T2MOD+<br>
+    <span class="lr">Stage D (Advanced):</span> Abnormal amyloid PET + high neocortical tau PET uptake. A+T2HIGH+<br><br>
+    Core 1 fluid biomarkers establish Stage A or higher but cannot discriminate Stages A–D without tau PET.
+  </div>
+
+  <div class="stage-grid">
+    <div class="stage-card" id="bsc-A" onclick="setBioStage('A')">
+      <div class="stage-header"><div class="stage-letter" style="color:var(--green);">A</div><div class="stage-name">Initial</div></div>
+      <div class="stage-body">A+T2−<br>Amyloid+ only<br>No tau PET uptake<br><span class="stage-tag" style="border-color:var(--green-bd);color:var(--green);">Amyloid onset</span></div>
+    </div>
+    <div class="stage-card" id="bsc-B" onclick="setBioStage('B')">
+      <div class="stage-header"><div class="stage-letter" style="color:var(--blue);">B</div><div class="stage-name">Early</div></div>
+      <div class="stage-body">A+T2MTL+<br>Tau PET restricted<br>to medial temporal<br><span class="stage-tag" style="border-color:var(--blue-bd);color:var(--blue);">MTL tau spread</span></div>
+    </div>
+    <div class="stage-card" id="bsc-C" onclick="setBioStage('C')">
+      <div class="stage-header"><div class="stage-letter" style="color:var(--amber);">C</div><div class="stage-name">Intermediate</div></div>
+      <div class="stage-body">A+T2MOD+<br>Moderate neocortical<br>tau PET uptake<br><span class="stage-tag" style="border-color:var(--amber-bd);color:var(--amber);">Neocortical tau</span></div>
+    </div>
+    <div class="stage-card" id="bsc-D" onclick="setBioStage('D')">
+      <div class="stage-header"><div class="stage-letter" style="color:var(--red);">D</div><div class="stage-name">Advanced</div></div>
+      <div class="stage-body">A+T2HIGH+<br>High neocortical<br>tau PET uptake<br><span class="stage-tag" style="border-color:var(--red-bd);color:var(--red);">Advanced tauopathy</span></div>
+    </div>
+  </div>
+
+  <div class="crit" id="biofluid-stage-item" style="margin-top:8px;">
+    <div class="crit-main">
+      <div class="crit-name">Core 1 fluid only available (no tau PET) — Stage A or higher</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      If only Core 1 fluid biomarkers (plasma p-tau217 or CSF hybrid ratios) are available without tau PET, the individual can be confirmed as Stage A or higher, but stages B–D cannot be discriminated. If tau PET is subsequently available, it can be used to discriminate the stage. The conceptual fluid-only staging scheme (Table 5) using p-tau205, MTBR-tau243, and non-phosphorylated tau is available for research but not routinely validated for clinical staging.
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setBioStage('A_fluid')" id="bsc-A_fluid">Core 1 fluid only (Stage A+, exact stage unknown)</button>
+      <button class="abtn" onclick="setBioStage('none')"    id="bsc-none"   >Core 1 negative / AD not diagnosed</button>
+    </div>
+  </div>
+
+  <div id="a3" class="alrt"></div>
+  <div class="nav-row">
+    <button class="nbtn ns" onclick="go(2)">← Back</button>
+    <button class="nbtn np" onclick="go(4)">Next: Clinical Staging →</button>
+  </div>
+</div>
+</div>
+
+<!-- ══ SCREEN 4: CLINICAL STAGING ══ -->
+<div class="screen" id="s4">
+<div class="card">
+  <div class="ctitle" style="color:var(--purple);">Step 5 · Clinical Staging (Stages 0–6)</div>
+  <div class="csub">Clinical staging applies only to individuals in the AD pathophysiologic continuum (AD diagnosed by Core 1). It is independent of biological stage — the two axes are then integrated in the verdict. Select the current clinical stage.</div>
+
+  <div class="lbox">
+    <strong>Clinical stages (Table 6):</strong> Based on severity of cognitive/functional impairment — NOT phenotype. Any cognitive domain may be affected, not only memory. Five phenotypes recognized: amnestic/typical, language, visuospatial, behavioral, dysexecutive.<br><br>
+    <span class="lp">Stage 0:</span> ADAD or DSAD — biomarker negative, asymptomatic (genetically determined from birth)<br>
+    <span class="lp">Stage 1:</span> Asymptomatic — abnormal biomarker only, no clinical change<br>
+    <span class="lp">Stage 2:</span> Transitional — mild detectable change, minimal functional impact, still fully independent<br>
+    <span class="lp">Stage 3:</span> Cognitive impairment — objective impairment, early functional impact, still independent (≈MCI)<br>
+    <span class="lp">Stage 4:</span> Dementia — mild functional impairment on instrumental ADLs, independent in basic ADLs (≈mild dementia)<br>
+    <span class="lp">Stage 5:</span> Dementia — moderate functional impairment on basic ADLs requiring assistance (≈moderate dementia)<br>
+    <span class="lp">Stage 6:</span> Dementia — severe impairment, complete dependence for basic ADLs (≈severe dementia)
+  </div>
+
+  <div class="clin-grid">
+    <button class="clin-btn" id="clin-0" onclick="setClinStage(0)"><span class="clin-num">0</span><span class="clin-desc">ADAD/DSAD<br>Biomarker neg<br>Asymptomatic</span></button>
+    <button class="clin-btn" id="clin-1" onclick="setClinStage(1)"><span class="clin-num">1</span><span class="clin-desc">Asymptomatic<br>Biomarker+<br>No symptoms</span></button>
+    <button class="clin-btn" id="clin-2" onclick="setClinStage(2)"><span class="clin-num">2</span><span class="clin-desc">Transitional<br>Mild change<br>Fully independent</span></button>
+    <button class="clin-btn" id="clin-3" onclick="setClinStage(3)"><span class="clin-num">3</span><span class="clin-desc">Cognitive<br>impairment<br>Early impact (≈MCI)</span></button>
+    <button class="clin-btn" id="clin-4" onclick="setClinStage(4)"><span class="clin-num">4</span><span class="clin-desc">Dementia<br>Mild impairment<br>Instr. ADLs</span></button>
+    <button class="clin-btn" id="clin-5" onclick="setClinStage(5)"><span class="clin-num">5</span><span class="clin-desc">Dementia<br>Moderate<br>Basic ADLs</span></button>
+    <button class="clin-btn" id="clin-6" onclick="setClinStage(6)"><span class="clin-num">6</span><span class="clin-desc">Dementia<br>Severe<br>Complete dependence</span></button>
+    <button class="clin-btn" id="clin-nd" onclick="setClinStage('nd')"><span class="clin-num">—</span><span class="clin-desc">Not assessed<br>/ Not in AD<br>continuum</span></button>
+  </div>
+
+  <div style="margin-top:12px;font-size:11px;color:var(--text3);font-family:var(--mono);line-height:1.6;">
+    ⓘ Stage 2 details: Decline from baseline within past 1–3 years, persistent ≥6 months. May be documented by: subtle longitudinal cognitive decline (within normal range), subjective report, or recent-onset mood/anxiety/motivational change not explained by life events. Individuals must have cognitive impairment (not just neurobehavioral) to reach Stages 3–6.<br>
+    ⓘ APOE ε4: Not included in the staging scheme — regarded as a risk factor, not a stage. However, APOE ε4 homozygosity substantially increases ARIA risk with anti-Aβ immunotherapy; APOE screening recommended per FDA labeling for lecanemab.
+  </div>
+
+  <div id="a4" class="alrt"></div>
+  <div class="nav-row">
+    <button class="nbtn ns" onclick="go(3)">← Back</button>
+    <button class="nbtn np" onclick="go(5)">Next: NIVS Biomarkers →</button>
+  </div>
+</div>
+</div>
+
+<!-- ══ SCREEN 5: NIVS NON-CORE BIOMARKERS ══ -->
+<div class="screen" id="s5">
+<div class="card">
+  <div class="ctitle" style="color:var(--green);">Step 6 · NIVS Non-Core Biomarkers</div>
+  <div class="csub">N (neurodegeneration), I (inflammation), V (vascular), S (α-synuclein) biomarkers characterize the full neuropathophysiological state. They are important for prognosis, copathology identification, and clinical management — but are not part of the core diagnostic criteria.</div>
+
+  <div class="slabel">N — Neurodegeneration / Neuronal Injury</div>
+  <div class="two-col">
+    <div class="crit" id="nfl-item">
+      <div class="crit-main"><div class="crit-name">NfL (neurofilament light chain) — plasma or CSF</div><button class="xbtn" onclick="xp(this)">details ▾</button></div>
+      <div class="crit-detail">NfL is a non-specific marker of large-caliber axonal injury. Elevated in MSA, ALS, MS, traumatic brain injury — not specific to AD. Useful as a non-specific prognostic marker of neurodegeneration severity. CSF total tau (removed from N category in 2024 compared to 2018) — its categorization remains unclear as it also increases in CJD, head trauma, anoxia, and infarction.</div>
+      <div class="brow"><button class="abtn" onclick="setNIVS('nfl','ab')" id="nfl-ab">✓ Elevated</button><button class="abtn" onclick="setNIVS('nfl','nm')" id="nfl-nm">✗ Normal</button><button class="abtn" onclick="setNIVS('nfl','nd')" id="nfl-nd">— Not tested</button></div>
+    </div>
+    <div class="crit" id="mri-atr-item">
+      <div class="crit-main"><div class="crit-name">Anatomic MRI — hippocampal/cortical atrophy; FDG-PET — hypometabolism</div></div>
+      <div class="brow"><button class="abtn" onclick="setNIVS('mriatr','ab')" id="mriatr-ab">✓ Abnormal</button><button class="abtn" onclick="setNIVS('mriatr','nm')" id="mriatr-nm">✗ Normal</button><button class="abtn" onclick="setNIVS('mriatr','nd')" id="mriatr-nd">— Not done</button></div>
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:14px;">I — Inflammation / Immune Activation</div>
+  <div class="crit" id="gfap-item">
+    <div class="crit-main"><div class="crit-name">GFAP (glial fibrillary acidic protein) — astrocytic activation — plasma or CSF</div><button class="xbtn" onclick="xp(this)">details ▾</button></div>
+    <div class="crit-detail">GFAP reflects astrocytic reactivity. Not specific to AD but associated with early amyloid PET positivity, higher risk of incident dementia, and faster cognitive decline. Performs better in plasma than CSF for unclear reasons. Associated with progression even in cognitively normal individuals. Soluble TREM2 (CSF) reflects microglial reactivity — under investigation.</div>
+    <div class="brow"><button class="abtn" onclick="setNIVS('gfap','ab')" id="gfap-ab">✓ Elevated</button><button class="abtn" onclick="setNIVS('gfap','nm')" id="gfap-nm">✗ Normal</button><button class="abtn" onclick="setNIVS('gfap','nd')" id="gfap-nd">— Not tested</button></div>
+  </div>
+
+  <div class="slabel" style="margin-top:14px;">V — Vascular Brain Injury</div>
+  <div class="crit" id="vasc-item">
+    <div class="crit-main"><div class="crit-name">MRI/CT vascular markers — infarctions (cortical, lacunar), white matter hyperintensities, CAA features (microbleeds, superficial siderosis)</div><button class="xbtn" onclick="xp(this)">details ▾</button></div>
+    <div class="crit-detail">Macroscopic infarctions and WMH are definitive biomarkers of ischemic vascular brain injury. CAA (cerebral amyloid angiopathy) is due to Aβ accumulation in vessel walls — distinct from traditional vascular risk factors but closely associated with Aβ plaques in AD. CAA on MRI (lobar microbleeds, superficial siderosis) increases ARIA risk with anti-Aβ immunotherapy — critical for treatment eligibility assessment. STRIVE-2 guidelines provide current neuroimaging standards for small vessel disease.</div>
+    <div class="brow"><button class="abtn" onclick="setNIVS('vasc','ab')" id="vasc-ab">✓ Vascular markers present</button><button class="abtn" onclick="setNIVS('vasc','nm')" id="vasc-nm">✗ None identified</button><button class="abtn" onclick="setNIVS('vasc','nd')" id="vasc-nd">— Not assessed</button></div>
+  </div>
+
+  <div class="slabel" style="margin-top:14px;">S — α-Synuclein Copathology</div>
+  <div class="crit" id="syn-item">
+    <div class="crit-main"><div class="crit-name">αSyn-SAA (α-synuclein seed amplification assay) — CSF only (plasma not informative)</div><button class="xbtn" onclick="xp(this)">details ▾</button></div>
+    <div class="crit-detail">αSyn-SAA is sensitive and specific for ante mortem identification of cortical α-synuclein pathology as a primary pathology or copathology. Cortical α-synuclein is associated with cognitive decline independent of amyloid and tau in both impaired and unimpaired individuals. Less sensitive to α-synuclein inclusions in MSA (different cellular location and conformation). No α-synuclein PET ligands are currently available for clinical use. DAT-SPECT/PET assesses striatal dopaminergic loss (relevant for suspected neuronal synuclein disease / Lewy body copathology).</div>
+    <div class="brow"><button class="abtn" onclick="setNIVS('syn','pos')" id="syn-pos">✓ Positive — copathology present</button><button class="abtn" onclick="setNIVS('syn','neg')" id="syn-neg">✗ Negative</button><button class="abtn" onclick="setNIVS('syn','nd')" id="syn-nd">— Not tested</button></div>
+  </div>
+
+  <div id="a5" class="alrt"></div>
+  <div class="nav-row">
+    <button class="nbtn ns" onclick="go(4)">← Back</button>
+    <button class="nbtn np" onclick="go(6)">Generate Verdict →</button>
+  </div>
+</div>
+</div>
+
+<!-- ══ SCREEN 6: VERDICT ══ -->
+<div class="screen" id="s6">
+  <div id="vout"></div>
+  <div id="sout"></div>
+  <div class="doc-header">
+    <button class="doc-tog" onclick="toggleDoc()">▼ Documentation Note</button>
+    <button class="copy-btn" id="copy-btn" onclick="copyDoc()">⎘ Copy</button>
+  </div>
+  <div class="doc-body" id="dn"></div>
+  <div class="nav-row">
+    <button class="nbtn ns" onclick="go(5)">← Back</button>
+    <button class="nbtn np" onclick="resetAll()">↺ New Evaluation</button>
+  </div>
+</div>
+
+</div><!-- /app -->
+<script>
+const S = {
+  symp: null,
+  amypet: null, ptau: null, csf: null,
+  taupet: null, t2fluid: null,
+  bioStage: null,
+  clinStage: null,
+  nfl: null, mriatr: null, gfap: null, vasc: null, syn: null
+};
+let cur = 0;
+
+function set(k, v) {
+  S[k] = v;
+  const item = document.getElementById(k+'-item');
+  if(item) item.className = 'crit';
+  ['pos','neg','nd','symp','asymp','genetic','indet','none','mtl','mod','high','ab','nm','low'].forEach(x=>{
+    const b = document.getElementById(k+'-'+x); if(b) b.classList.remove('ay','an','ap','ab','aa','aw');
+  });
+  const clsMap = {pos:'ay',neg:'an',symp:'ap',asymp:'ab',genetic:'aw',indet:'aw',none:'ay',mtl:'ab',mod:'aw',high:'an',ab:'ay',nm:'an',nd:'aa',low:'ab'};
+  const btn = document.getElementById(k+'-'+v); if(btn) btn.classList.add(clsMap[v]||'aa');
+  if(item){
+    if(['pos','symp','none','ab'].includes(v)) item.classList.add('c-yes');
+    else if(['neg','an'].includes(v)) item.classList.add('c-no');
+    else if(['asymp','genetic'].includes(v)) item.classList.add('c-blue');
+    else if(['indet','mtl','mod'].includes(v)) item.classList.add('c-part');
+    else if(['high'].includes(v)) item.classList.add('c-no');
+    else if(['nd','nm'].includes(v)) item.classList.add('c-abs');
+  }
+  ui();
+}
+
+function setBioStage(stage) {
+  S.bioStage = stage;
+  ['A','B','C','D','A_fluid','none'].forEach(s => {
+    const el = document.getElementById('bsc-'+s);
+    if(el) { el.className = el.tagName==='BUTTON'?'abtn':'stage-card'; }
+  });
+  const colors = {A:'sel-g',B:'sel-b',C:'sel-a',D:'crit c-no',A_fluid:'crit c-pres',none:'crit c-abs'};
+  const el = document.getElementById('bsc-'+stage);
+  if(el) {
+    if(el.tagName==='BUTTON') { const cls={A_fluid:'ap',none:'aa'}; el.classList.add(cls[stage]||'ap'); }
+    else el.className = 'stage-card '+colors[stage];
+  }
+  ui();
+}
+
+function setClinStage(n) {
+  S.clinStage = n;
+  ['0','1','2','3','4','5','6','nd'].forEach(x => {
+    const el = document.getElementById('clin-'+x); if(el) el.classList.remove('csel');
+  });
+  const el = document.getElementById('clin-'+n); if(el) el.classList.add('csel');
+  ui();
+}
+
+function setNIVS(k, v) {
+  S[k] = v;
+  const item = document.getElementById(k+'-item');
+  if(item) item.className = 'crit';
+  ['ab','nm','nd','pos','neg'].forEach(x=>{
+    const b=document.getElementById(k+'-'+x); if(b) b.classList.remove('ay','an','aa');
+  });
+  const map={ab:'ay',pos:'ay',nm:'an',neg:'an',nd:'aa'};
+  const btn=document.getElementById(k+'-'+v); if(btn) btn.classList.add(map[v]||'aa');
+  if(item){
+    if(['ab','pos'].includes(v)) item.classList.add('c-pres');
+    else if(['nm','neg'].includes(v)) item.classList.add('c-abs');
+  }
+  ui();
+}
+
+function core1Positive() { return S.amypet==='pos' || S.ptau==='pos' || S.csf==='pos'; }
+function core1Negative() { return S.amypet==='neg' && S.ptau==='neg' && S.csf==='neg'; }
+function core1Indet()    { return !core1Positive() && !core1Negative() && [S.amypet,S.ptau,S.csf].some(v=>v==='indet'); }
+function core2Info()     { return S.taupet!==null && S.taupet!=='nd'; }
+
+function integStage() {
+  const bio = S.bioStage; const clin = S.clinStage;
+  if(bio===null||clin===null) return null;
+  if(bio==='none') return null;
+  if(clin==='nd') return null;
+  if(bio==='A_fluid') return clin+'A+';
+  if(clin===0) return 'Stage 0 (pre-biomarker)';
+  return clin+''+bio;
+}
+
+function ui() {
+  // Step 0
+  const a0=document.getElementById('a0'), n0=document.getElementById('n0');
+  if(S.symp){
+    if(S.symp==='symp') sa(a0,'apurp','Symptomatic context. Biomarker testing is recommended to confirm AD etiology and assess treatment eligibility.');
+    else if(S.symp==='asymp') sa(a0,'awn','Asymptomatic/research context. AD can be diagnosed biologically if biomarkers are abnormal, but the workgroup recommends against routine clinical testing in asymptomatic individuals at this time.');
+    else sa(a0,'ainf','Known deterministic gene (ADAD/DSAD). These individuals have AD from birth. Clinical Stage 0 until Core 1 biomarkers become positive (Stage 1).');
+    n0.disabled = false;
+  } else { ha(a0); n0.disabled = true; }
+
+  // Step 1
+  const a1 = document.getElementById('a1');
+  if(core1Positive()) sa(a1,'aok','✓ Core 1 biomarker positive — biological diagnosis of AD established. Proceed to Core 2 biomarkers for staging and prognosis.');
+  else if(core1Negative()) sa(a1,'aerr','✕ All performed Core 1 biomarkers are negative. AD cannot be diagnosed. If clinical suspicion remains high, consider additional testing or imaging.');
+  else if(core1Indet()) sa(a1,'awn','⚠ Indeterminant Core 1 result(s). Values near cutpoints introduce diagnostic uncertainty. Two-cutpoint approach: report as confidently normal / indeterminant / confidently abnormal. Consider additional testing or repeat biomarker assessment.');
+  else if([S.amypet,S.ptau,S.csf].some(v=>v!==null)) sa(a1,'ainf','ⓘ Some biomarkers pending or not performed. Core 1 status not yet determinable.');
+  else ha(a1);
+
+  // Step 2
+  const a2 = document.getElementById('a2');
+  if(core1Positive() && S.taupet && S.taupet!=='nd'){
+    const msgs = {none:'Stage A pattern (A+T2−). Biologically confirmed AD — no tau PET uptake yet. Note: amyloid PET alone is binary in this scheme; tau PET determines sub-stage.',mtl:'Stage B pattern (A+T2MTL+). Early tau PET spread — medial temporal only. HR ~5.6× for dementia progression vs. A−T2−.',mod:'Stage C pattern (A+T2MOD+). Moderate neocortical tau PET. AD contributing to symptoms likely. Part of the HR 39.9 group.',high:'Stage D pattern (A+T2HIGH+). High neocortical tau PET. Highest biological severity. Strongly predicts cognitive decline and dementia.'};
+    sa(a2,'aok','✓ '+msgs[S.taupet]);
+  } else if(!core1Positive() && S.taupet==='mtl' || !core1Positive() && S.taupet==='high') {
+    sa(a2,'aerr','⚠ Tau PET abnormal without Core 1 positivity (A−T2+ profile). This combination is inconsistent with AD — corresponds neuropathologically to primary age-related tauopathy (PART), not AD. Do not diagnose AD.');
+  } else ha(a2);
+
+  // Step 3
+  const a3 = document.getElementById('a3');
+  if(S.bioStage==='none') sa(a3,'aerr','Core 1 negative — AD not diagnosed. Biological staging does not apply.');
+  else if(S.bioStage) {
+    const stageInfo = {A:'Stage A (Initial) — A+T2−. Asymptomatic or early symptomatic. Low risk of near-term progression. HR 1.5× for dementia.',B:'Stage B (Early) — A+T2MTL+. Intermediate risk. HR 5.6× for dementia progression.',C:'Stage C (Intermediate) — A+T2MOD+. High risk. Likely contributing to symptoms if present.',D:'Stage D (Advanced) — A+T2HIGH+. Highest biological severity. HR ~39.9× for dementia progression.',A_fluid:'Stage A or higher (fluid Core 1 only) — exact stage unknown without tau PET.'};
+    sa(a3,'apurp','◈ '+stageInfo[S.bioStage]);
+  } else ha(a3);
+
+  // Step 4
+  const a4 = document.getElementById('a4');
+  if(S.clinStage!==null) {
+    const integ = integStage();
+    if(integ) sa(a4,'aok','✓ Integrated stage: '+integ+'. Biological stage and clinical stage are quasi-independent — copathologies, cognitive reserve, and resilience modulate their relationship.');
+    else if(S.clinStage==='nd') sa(a4,'ainf','Clinical stage not assessed.');
+    else sa(a4,'ainf','Integrated stage not calculable — biological diagnosis not established.');
+  } else ha(a4);
+
+  // Step 5 NIVS
+  const a5 = document.getElementById('a5');
+  const copaths = [];
+  if(S.syn==='pos') copaths.push('αSyn copathology (αSyn-SAA+)');
+  if(S.vasc==='ab') copaths.push('Vascular brain injury / CAA');
+  if(S.nfl==='ab') copaths.push('Elevated NfL (neurodegeneration/injury)');
+  if(S.mriatr==='ab') copaths.push('Structural atrophy or hypometabolism (N marker)');
+  if(S.gfap==='ab') copaths.push('Elevated GFAP (astrocytic activation)');
+  if(copaths.length>0) sa(a5,'awn','⚠ Non-core markers present: '+copaths.join(', ')+'. These may contribute to clinical symptoms, modify prognosis, affect treatment eligibility (ARIA risk from CAA), and guide clinical management.');
+  else if([S.nfl,S.mriatr,S.gfap,S.vasc,S.syn].some(v=>v!==null)) sa(a5,'aok','✓ No significant non-core biomarker abnormalities identified.');
+  else ha(a5);
+}
+
+function sa(el,cls,msg){ if(!el)return; el.className='alrt show '+cls; el.innerHTML=msg; }
+function ha(el){ if(el) el.classList.remove('show'); }
+
+function rv() {
+  const adDx = core1Positive();
+  const adNeg = core1Negative();
+  const integ = integStage();
+  const bioStage = S.bioStage;
+  const clinStage = S.clinStage;
+
+  const bioLabel={A:'Stage A — Initial (A+T2−)',B:'Stage B — Early (A+T2MTL+)',C:'Stage C — Intermediate (A+T2MOD+)',D:'Stage D — Advanced (A+T2HIGH+)',A_fluid:'Stage A or Higher (fluid Core 1, tau PET not done)',none:'Not in AD pathway',null:'Not staged'};
+  const clinLabel={0:'Stage 0 (ADAD/DSAD, pre-biomarker)',1:'Stage 1 (Asymptomatic, biomarker+)',2:'Stage 2 (Transitional — mild change, fully independent)',3:'Stage 3 (Cognitive impairment, early functional impact ≈MCI)',4:'Stage 4 (Dementia — mild, instrumental ADLs affected)',5:'Stage 5 (Dementia — moderate, basic ADL assistance needed)',6:'Stage 6 (Dementia — severe, complete dependence)',nd:'Not assessed'};
+
+  let vcls='', vt='', vd='';
+  if(!adDx && !adNeg && core1Indet()) { vcls='vund'; vt='Indeterminant Core 1 Results'; vd='One or more Core 1 biomarker results fall near cutpoints. The two-cutpoint approach divides values into confidently normal / indeterminant / confidently abnormal. Values in the indeterminant zone warrant additional testing (repeat biomarker, complementary modality, or longitudinal monitoring) before an AD diagnosis can be confirmed or excluded.'; }
+  else if(adNeg) { vcls='vneg'; vt='AD Not Diagnosed — Core 1 Negative'; vd='All performed Core 1 biomarkers are within normal range. Alzheimer\'s disease cannot be diagnosed on current biomarker evidence. If clinical suspicion remains, consider alternative diagnoses (other neurodegenerative diseases, vascular cognitive impairment, psychiatric conditions, metabolic disorders) and consult NIVS profile for copathology evidence.'; }
+  else if(!adDx) { vcls='vund'; vt='Insufficient Biomarker Data'; vd='Core 1 biomarker status is not yet determinable from available results. Biological diagnosis of AD requires at least one accurate Core 1 biomarker (amyloid PET, accurate plasma p-tau217, or approved CSF hybrid ratio) to be abnormal.'; }
+  else { vcls='vad'; vt='Alzheimer\'s Disease — Biological Diagnosis Established'; vd='Core 1 biomarker positivity confirms the presence of AD neuropathologic change (ADNPC). An abnormal Core 1 biomarker represents ADNPC generally (both neuritic plaques and neurofibrillary tangles) — not only the specific pathway the assay measures.'; }
+
+  let html=`<div class="vban ${vcls}"><div class="vban-head"><div class="vlbl">2024 AA Criteria · Jack CR et al. · Alzheimer's & Dementia 2024</div><div class="vtitle">${vt}</div><div class="vdesc">${vd}</div></div></div>`;
+
+  if(adDx) {
+    // Integrated staging table
+    html+=`<div class="card" style="margin-bottom:12px;"><div class="ctitle" style="color:var(--purple);margin-bottom:12px;">Integrated Biological + Clinical Staging (Table 7)</div>`;
+    html+=`<table class="isTable"><tr><th></th><th>Clinical 0</th><th>Clinical 1</th><th>Clinical 2</th><th>Clinical 3</th><th>Clinical 4–6</th></tr>`;
+    ['A','B','C','D'].forEach(bio=>{
+      const bioNames={A:'Initial (A)',B:'Early (B)',C:'Intermediate (C)',D:'Advanced (D)'};
+      html+=`<tr><td class="row-head">${bioNames[bio]}</td>`;
+      ['0','1','2','3','46'].forEach(clin=>{
+        const clVal = clin==='46'?'4-6':'';
+        const label = clin==='0'?'X':clin==='46'?`4-6${bio}`:`${clin}${bio}`;
+        const isX = clin==='0';
+        const isCur = (clin==='1'&&clinStage===1&&bioStage===bio)||(clin==='2'&&clinStage===2&&bioStage===bio)||(clin==='3'&&clinStage===3&&bioStage===bio)||(['4','5','6'].includes(String(clinStage))&&clin==='46'&&bioStage===bio);
+        const isDiag = (clin==='1'&&bio==='A')||(clin==='2'&&bio==='B')||(clin==='3'&&bio==='C')||(['46'].includes(clin)&&bio==='D');
+        const cellcls = isX?'cell-x':isCur?'cell-hl':isDiag?'cell-diag':'';
+        html+=`<td class="${cellcls}">${isX?'X':label}</td>`;
+      });
+      html+=`</tr>`;
+    });
+    html+=`</table><p style="font-size:10px;color:var(--text3);font-family:var(--mono);margin-top:8px;line-height:1.5;">Diagonal (shaded) = typical expected progression. Above diagonal = worse clinical stage than expected (greater copathology burden). Below diagonal = better clinical stage than expected (greater cognitive reserve/resilience).</p></div>`;
+  }
+
+  // Summary grid
+  html+=`<div class="sum-grid">`;
+  html+=`<div class="sblock"><div class="sbtitle">Core Biomarker Results</div>`;
+  const c1map = {pos:'Abnormal (AD positive)',neg:'Normal (negative)',indet:'Indeterminant',nd:'Not performed'};
+  [['Amyloid PET (A)','amypet'],['Plasma p-tau217 (T1)','ptau'],['CSF hybrid ratios (T1/A)','csf']].forEach(([nm,k])=>{
+    const v=S[k]; const dc=v==='pos'?'dp':v==='neg'?'dr':v==='indet'?'da':'dgr';
+    const tc=v==='pos'?'tp':v==='neg'?'tr':v==='indet'?'ta':'tgr';
+    html+=`<div class="srow"><div class="dot ${dc}"></div><div class="sname">${nm}</div><div class="stag ${tc}">${c1map[v]||'—'}</div></div>`;
+  });
+  const tpmap={none:'No uptake (Stage A)',mtl:'MTL uptake (Stage B)',mod:'Mod. neocortical (Stage C)',high:'High neocortical (Stage D)',nd:'Not performed'};
+  html+=`<div class="srow"><div class="dot ${S.taupet&&S.taupet!=='nd'&&S.taupet!=='none'?'dp':'dgr'}"></div><div class="sname">Tau PET (T2)</div><div class="stag ${S.taupet==='none'?'tg':S.taupet&&S.taupet!=='nd'?'tp':'tgr'}">${tpmap[S.taupet]||'—'}</div></div>`;
+  html+=`<div class="srow"><div class="dot ${S.t2fluid==='ab'?'dp':'dgr'}"></div><div class="sname">T2 fluid (MTBR-tau243 / p-tau205)</div><div class="stag ${S.t2fluid==='ab'?'tp':S.t2fluid==='nm'?'tgr':'tgr'}">${S.t2fluid==='ab'?'Elevated':S.t2fluid==='nm'?'Normal':'—'}</div></div>`;
+  html+=`</div>`;
+
+  html+=`<div class="sblock"><div class="sbtitle">Staging + NIVS Profile</div>`;
+  html+=`<div class="srow"><div class="dot ${['A','B','C','D','A_fluid'].includes(bioStage)?'dp':'dgr'}"></div><div class="sname">Biological stage</div><div class="stag ${['A','B','C','D','A_fluid'].includes(bioStage)?'tp':'tgr'}">${bioLabel[bioStage]||'—'}</div></div>`;
+  html+=`<div class="srow"><div class="dot ${clinStage!==null&&clinStage!=='nd'?'dp':'dgr'}"></div><div class="sname">Clinical stage</div><div class="stag ${clinStage!==null&&clinStage!=='nd'?'tp':'tgr'}">${clinStage!==null?clinLabel[clinStage]||'—':'—'}</div></div>`;
+  html+=`<div class="srow"><div class="dot ${integ?'dg':'dgr'}"></div><div class="sname">Integrated stage</div><div class="stag ${integ?'tg':'tgr'}">${integ||'—'}</div></div>`;
+  const nivs=[];
+  if(S.nfl==='ab') nivs.push('NfL↑');if(S.mriatr==='ab') nivs.push('Atrophy/hypomet↑');if(S.gfap==='ab') nivs.push('GFAP↑');if(S.vasc==='ab') nivs.push('Vascular+');if(S.syn==='pos') nivs.push('αSyn-SAA+');
+  html+=`<div class="srow"><div class="dot ${nivs.length>0?'da':'dgr'}"></div><div class="sname">NIVS non-core findings</div><div class="stag ${nivs.length>0?'ta':'tgr'}">${nivs.length>0?nivs.join(', '):'None identified'}</div></div>`;
+  html+=`</div>`;
+  html+=`</div>`;
+
+  document.getElementById('vout').innerHTML = html;
+  buildDoc(vt, integ, bioLabel, clinLabel, nivs);
+}
+
+function buildDoc(vt, integ, bioLabel, clinLabel, nivsArr) {
+  const c1map={pos:'Abnormal (AD positive)',neg:'Normal (negative)',indet:'Indeterminant',nd:'Not performed'};
+  const tpmap={none:'No uptake (Stage A pattern — A+T2−)',mtl:'MTL tau uptake only (Stage B pattern — A+T2MTL+)',mod:'Moderate neocortical uptake (Stage C pattern — A+T2MOD+)',high:'High neocortical uptake (Stage D pattern — A+T2HIGH+)',nd:'Not performed'};
+  let note=`COGNITIVE NEUROLOGY / MEMORY CONSULTATION\n2024 Alzheimer's Association Criteria — Biological Diagnosis and Integrated Staging\nJack CR et al. Alzheimer's & Dementia. 2024;20:5143–5169. doi:10.1002/alz.13859\nDate: ${new Date().toLocaleDateString()}\n\nCLINICAL CONTEXT\n  Symptomatic status: ${S.symp==='symp'?'Symptomatic (MCI or dementia)':S.symp==='asymp'?'Asymptomatic / Research context':S.symp==='genetic'?'Known deterministic gene (ADAD/DSAD)':'Not specified'}\n\nCORE 1 BIOMARKERS (Diagnostic Tests for AD)\n  Amyloid PET (A): ${c1map[S.amypet]||'Not performed'}\n  Plasma p-tau217 or equivalent (T1): ${c1map[S.ptau]||'Not performed'}\n  CSF hybrid ratio (T1/A — Aβ42/40, p-tau181/Aβ42, t-tau/Aβ42): ${c1map[S.csf]||'Not performed'}\n  Core 1 summary: ${core1Positive()?'POSITIVE — AD diagnosed (ADNPC established)':core1Negative()?'NEGATIVE — AD not diagnosed':core1Indet()?'INDETERMINANT — additional testing warranted':'Insufficient data'}\n\nCORE 2 BIOMARKERS (Staging, Prognosis, Symptom Attribution)\n  Tau PET (T2): ${tpmap[S.taupet]||'Not performed'}\n  T2 fluid biomarkers (MTBR-tau243, p-tau205): ${S.t2fluid==='ab'?'Elevated':S.t2fluid==='nm'?'Normal':'Not performed'}\n\n`;
+  note+=`BIOLOGICAL STAGING (Stages A–D by PET; or A+ by fluid Core 1)\n  Biological stage: ${bioLabel[S.bioStage]||'Not staged / AD not diagnosed'}\n\nCLINICAL STAGING (Stages 0–6)\n  Clinical stage: ${S.clinStage!==null?clinLabel[S.clinStage]||'Not staged':'Not staged'}\n\nINTEGRATED BIOLOGICAL + CLINICAL STAGE\n  Integrated stage: ${integ||'Not calculable (AD not diagnosed or staging incomplete)'}\n  Note: Biological and clinical stages are quasi-independent. Individuals above the diagonal have worse clinical stage than expected for their biological stage (greater copathology burden). Individuals below the diagonal have better clinical stage (greater cognitive reserve/resilience).\n\n`;
+  note+=`NIVS NON-CORE BIOMARKER PROFILE\n  N (Neurodegeneration):\n    NfL: ${S.nfl==='ab'?'Elevated (non-specific neuronal injury)':S.nfl==='nm'?'Normal':'Not tested'}\n    Anatomic MRI / FDG-PET: ${S.mriatr==='ab'?'Atrophy / hypometabolism present':S.mriatr==='nm'?'Normal':'Not performed'}\n  I (Inflammation):\n    GFAP (astrocytic activation): ${S.gfap==='ab'?'Elevated':S.gfap==='nm'?'Normal':'Not tested'}\n  V (Vascular brain injury):\n    MRI vascular markers: ${S.vasc==='ab'?'Present (infarction, WMH, and/or CAA features — microbleeds/siderosis)':S.vasc==='nm'?'None identified':'Not assessed'}\n  S (α-Synuclein copathology):\n    αSyn-SAA (CSF): ${S.syn==='pos'?'POSITIVE — α-synuclein copathology present':S.syn==='neg'?'Negative':'Not tested'}\n  NIVS summary: ${nivsArr.length>0?nivsArr.join(', '):'No non-core abnormalities identified'}\n\n`;
+  note+=`2024 AA CRITERIA — CLASSIFICATION\n${vt}\n${integ?'Integrated stage: '+integ:''}\n\nKey conceptual updates in 2024 criteria vs. 2018 NIA-AA framework:\n  - Core 1 (A + T1 + hybrid ratios): Abnormality ALONE is sufficient to diagnose AD\n  - Core 2 (T2 = tau PET + MTBR-tau243 etc.): Used for staging and symptom attribution\n  - T split into T1 (early, phosphorylated mid-region fragments — p-tau217/181/231) and T2 (later, tau aggregates — tau PET + MTBR-tau243)\n  - Biological Stages A–D based on amyloid PET + tau PET (Table 3 & 4)\n  - Clinical Stages 0–6 (Table 6) — Stage 0 added for ADAD/DSAD\n  - Integrated staging matrix (Table 7): biological stage × clinical stage = integrated stage\n  - NIVS categories added: N, I, V, S (non-core, non-diagnostic but clinically important)\n  - APOE ε4: risk factor only — not a stage. Screening recommended for anti-Aβ therapy (ARIA risk)\n  - Blood-based biomarkers (BBM): diagnostic if accuracy ≥90% equivalent to approved CSF assays\n\nRef: Jack CR, Andrews JS, Beach TG, et al. Revised criteria for diagnosis and staging of Alzheimer's disease: Alzheimer's Association Workgroup. Alzheimer's & Dementia. 2024;20:5143–5169.`;
+  document.getElementById('dn').textContent = note;
+}
+
+function go(n) {
+  document.getElementById('s'+cur).classList.remove('active');
+  document.getElementById('s'+n).classList.add('active');
+  for(let i=0;i<7;i++){const d=document.getElementById('st'+i);d.classList.remove('active','done');if(i<n)d.classList.add('done');else if(i===n)d.classList.add('active');}
+  cur=n;
+  document.getElementById('pf').style.width=((n/6)*100)+'%';
+  if(n===6) rv();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function xp(btn){
+  const d=btn.closest('.crit').querySelector('.crit-detail');if(!d)return;
+  const o=d.classList.toggle('open');
+  btn.textContent=o?'close ▴':'details ▾';
+}
+
+function toggleDoc(){
+  const body=document.getElementById('dn'),btn=document.getElementById('copy-btn'),tog=document.querySelector('.doc-tog');
+  if(!body)return;
+  const open=body.classList.toggle('open');
+  if(tog)tog.textContent=open?'▲ Documentation Note':'▼ Documentation Note';
+  if(btn)btn.classList.toggle('visible',open);
+}
+
+function copyDoc(){
+  const body=document.getElementById('dn'),btn=document.getElementById('copy-btn');
+  if(!body)return;
+  const text=body.textContent||body.innerText;
+  navigator.clipboard.writeText(text).then(()=>{if(btn){btn.textContent='✓ Copied';btn.classList.add('copied');setTimeout(()=>{btn.textContent='⎘ Copy';btn.classList.remove('copied');},2000);}})
+  .catch(()=>{const ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);if(btn){btn.textContent='✓ Copied';btn.classList.add('copied');setTimeout(()=>{btn.textContent='⎘ Copy';btn.classList.remove('copied');},2000);}});
+}
+
+function resetAll(){
+  Object.keys(S).forEach(k=>S[k]=null);
+  document.querySelectorAll('.crit').forEach(el=>el.className='crit');
+  document.querySelectorAll('.abtn').forEach(b=>b.classList.remove('ay','an','ap','ab','aa','aw'));
+  document.querySelectorAll('.stage-card').forEach(el=>el.className='stage-card');
+  document.querySelectorAll('.clin-btn').forEach(b=>b.classList.remove('csel'));
+  document.querySelectorAll('.crit-detail').forEach(d=>d.classList.remove('open'));
+  document.querySelectorAll('.xbtn').forEach(b=>b.textContent='details ▾');
+  ['a0','a1','a2','a3','a4','a5'].forEach(id=>{const el=document.getElementById(id);if(el)el.classList.remove('show');});
+  const dn=document.getElementById('dn');if(dn)dn.classList.remove('open');
+  const cb=document.getElementById('copy-btn');if(cb)cb.classList.remove('visible','copied');
+  const tog=document.querySelector('.doc-tog');if(tog)tog.textContent='▼ Documentation Note';
+  go(0);
+  document.getElementById('n0').disabled=true;
+}
+
+ui();
+</script>
+</body>
+</html>
