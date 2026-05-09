@@ -298,7 +298,7 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
 <header>
   <div>
     <div class="h-title">Ischemic Stroke Etiology · <span>TOAST+ Classifier</span></div>
-    <div class="h-sub">Adams HP et al. · Stroke 1993;24:35–41 · TOAST criteria with evidence-weighted adjudication<br>Vascular Neurology Clinical Decision Support Tool · For educator use only<br>Designed by neurology resident physician Daniel Short, MD</div>
+    <div class="h-sub">Adams HP et al. · Stroke 1993;24:35–41 · TOAST criteria with evidence-weighted adjudication<br>For educator use only<br>Designed by neurology resident physician Daniel Short, MD</div>
   </div>
   <button class="reset-btn" onclick="resetAll()">↺ Reset</button>
 </header>
@@ -532,21 +532,23 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
 
   <div class="crit" id="topo-item">
     <div class="crit-main">
-      <div class="crit-name">Predominant infarct location on DWI</div>
+      <div class="crit-name">Infarct locations on DWI — select ALL that apply</div>
       <button class="xbtn" onclick="xp(this)">details ▾</button>
     </div>
     <div class="crit-detail">
-      Purely cortical infarcts: gyral DWI signal, cortical ribbon, wedge-shaped — select <em>Strictly cortical</em>. <strong style='color:var(--amber)'>Important: cortical infarcts are virtually never due to hypertensive SVD — select this if the infarct is truly limited to the cortical ribbon.</strong> Cortical + subcortical: large territorial infarcts (MCA, ACA, PCA territory) with both grey and white matter involvement — select <em>Cortical + subcortical</em>. Striatocapsular: caudate, putamen, globus pallidus, internal capsule, thalamus — deep perforator territory; select <em>Striatocapsular/BG/IC</em>. <strong>Corona radiata or centrum semiovale infarcts</strong>: these lie in the deep white matter supplied by deep MCA perforators — select <em>Striatocapsular / BG / IC / corona radiata</em> as this represents the same perforator territory; if the infarct is at the ACA/MCA internal watershed zone (see diagram), select <em>Watershed / border-zone</em> instead. Watershed: linear DWI signal at the MCA/ACA or MCA/PCA boundary; "rosary bead" subcortical pattern. Brainstem: anteromedial (basilar perforators — SVD/BAD) vs. lateral (PICA/vertebral — atherosclerosis or dissection).
-      <div class="cnote"><strong>Ref:</strong> Yaghi S et al. Front Neurol 2020;11:606521. Kang DW et al. Stroke 2005;36:2134–2139 — identification of embolic patterns in lacunar syndromes. Schiphorst AT et al. BMC Neurol 2019 — small cortical cerebellar infarcts associated with CE.</div>
+      Select every location where DWI infarcts are present — multiple selections are encouraged and improve classification accuracy. <strong style='color:var(--amber)'>Example: strictly cortical + cerebellar = strongly cardioembolic. Cortical + watershed = suggests proximal stenosis with both embolic and hemodynamic mechanisms.</strong><br><br>
+      Purely cortical: gyral DWI signal, cortical ribbon, wedge-shaped. <strong style='color:var(--amber)'>Cortical infarcts are virtually never SVD.</strong> Cortical + subcortical: large territorial infarcts with both grey and white matter. Striatocapsular / BG / IC / corona radiata: deep perforator territory (SVD/BAD). Watershed: linear "rosary bead" DWI at ACA/MCA or MCA/PCA boundary. Brainstem: anteromedial = basilar perforators (SVD/BAD); lateral = PICA/vertebral (atherosclerosis/dissection).
+      <div class="cnote"><strong>Ref:</strong> Yaghi S et al. Front Neurol 2020;11:606521. Kang DW et al. Stroke 2005;36:2134–2139. Schiphorst AT et al. BMC Neurol 2019 — small cortical cerebellar infarcts associated with CE.</div>
     </div>
+    <div class="multi-note">Select all infarct locations present — multiple selections allowed</div>
     <div class="brow">
-      <button class="abtn" onclick="set('topo','cortical')">Strictly cortical</button>
-      <button class="abtn" onclick="set('topo','cortical-sub')">Cortical + subcortical (large territorial)</button>
-      <button class="abtn" onclick="set('topo','striatocapsular')">Striatocapsular / BG / IC / corona radiata / centrum semiovale</button>
-      <button class="abtn" onclick="set('topo','thalamus')">Thalamus</button>
-      <button class="abtn" onclick="set('topo','brainstem')">Brainstem (pons / medulla / midbrain)</button>
-      <button class="abtn" onclick="set('topo','cerebellum')">Cerebellum</button>
-      <button class="abtn" onclick="set('topo','watershed')">Watershed / border-zone (see diagram)</button>
+      <button class="abtn toggle-topo" onclick="toggleTopo(this,'cortical')">Strictly cortical</button>
+      <button class="abtn toggle-topo" onclick="toggleTopo(this,'cortical-sub')">Cortical + subcortical (large territorial)</button>
+      <button class="abtn toggle-topo" onclick="toggleTopo(this,'striatocapsular')">Striatocapsular / BG / IC / corona radiata</button>
+      <button class="abtn toggle-topo" onclick="toggleTopo(this,'thalamus')">Thalamus</button>
+      <button class="abtn toggle-topo" onclick="toggleTopo(this,'brainstem')">Brainstem (pons / medulla / midbrain)</button>
+      <button class="abtn toggle-topo" onclick="toggleTopo(this,'cerebellum')">Cerebellum</button>
+      <button class="abtn toggle-topo" onclick="toggleTopo(this,'watershed')">Watershed / border-zone</button>
     </div>
   </div>
 
@@ -560,6 +562,39 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
       <button class="abtn" onclick="set('circ','ant')">Anterior — ICA / MCA / ACA territory</button>
       <button class="abtn" onclick="set('circ','post')">Posterior — vertebral / basilar / PCA / PICA / AICA</button>
       <button class="abtn" onclick="set('circ','both')">Both circulations involved</button>
+    </div>
+  </div>
+
+  <!-- Fetal PCA question — only relevant when posterior or both circulations are involved -->
+  <div id="fetal-pca-section" class="" style="display:none;">
+    <div class="slabel" style="margin-top:14px;">
+      Fetal posterior cerebral artery (fetal PCA) <span class="pill pill-r">RELEVANT WHEN POSTERIOR / BOTH CIRCULATIONS INVOLVED</span>
+    </div>
+    <div class="crit" id="fetal-pca-item">
+      <div class="crit-main">
+        <div class="crit-name">Is there an ipsilateral fetal-type PCA (fetal PCA / fetal PComA) on CTA or MRA — ipsilateral to the side with carotid or anterior circulation disease?</div>
+        <button class="xbtn" onclick="xp(this)">details ▾</button>
+      </div>
+      <div class="crit-detail">
+        <strong>What is a fetal PCA?</strong> In a fetal-type posterior cerebral artery (FPCA / fetal PComA), the distal PCA territory is supplied predominantly by the internal carotid artery (ICA) via a large posterior communicating artery, rather than from the basilar artery. The P1 segment of the PCA is hypoplastic or absent. Prevalence: 20–30% of the general population (range 11–46% across studies); can be unilateral or bilateral. Identified on CTA/MRA as a large PComA (≥1 mm, often ≥1.5 mm) with a hypoplastic P1 segment.<br><br>
+        <strong>Why it matters for stroke etiology:</strong> In the presence of an ipsilateral fetal PCA, the PCA territory is perfused by the ICA — meaning carotid artery disease (stenosis, unstable plaque, carotid web) can cause ipsilateral PCA territory infarction <em>in addition to</em> anterior circulation infarction. This is the pathophysiologic basis of <strong>"carotid-fetal-posterior (CFP) syndrome"</strong> — PCA territory stroke caused by ipsilateral carotid disease via the fetal PComA.<br><br>
+        <strong>Clinical implications:</strong>
+        <ul style="margin:8px 0 0 16px;line-height:1.9;font-size:11px;color:var(--text2);">
+          <li><strong>Anterior + ipsilateral PCA infarction WITH fetal PCA:</strong> Can be entirely explained by a single ipsilateral carotid source — does NOT require a central (cardiac) embolic source. Changes apparent "multi-territory" infarct to effectively a single carotid-territory event.</li>
+          <li><strong>Anterior + posterior infarction WITHOUT fetal PCA:</strong> A single ipsilateral carotid source cannot explain the posterior circulation infarct — strongly favours a central cardioembolic source, aortic embolism, or separate posterior circulation disease.</li>
+          <li><strong>Bilateral posterior infarcts:</strong> Cannot be explained by fetal PCA regardless of its presence — requires a central embolic source or bilateral posterior circulation disease.</li>
+          <li><strong>CFP syndrome prevalence:</strong> Among patients with ≥50% carotid stenosis, ~9% who have ipsilateral fetal PCA and posterior circulation symptoms fulfil criteria for CFP syndrome (Nedeltchev 2024, PMC10733935).</li>
+        </ul>
+        <strong>How to identify on imaging:</strong> CTA/MRA: look for a dominant, large PComA on the side of carotid disease, with a hypoplastic or absent P1 segment of the ipsilateral PCA. The PCA fills from the ICA, not from the basilar artery. Often reported by neuroradiology but may be missed if not specifically noted.
+        <div class="cnote"><strong>Key refs:</strong> Lambert SL et al. J Neurol Sci 2016 — FPCA prevalence 11–46%; carotid thromboembolism causing concurrent PCA + MCA infarction via FPCA. Nedeltchev K et al. PMC10733935 (2024) — CFP syndrome: 9% of patients with ≥50% carotid stenosis + ipsilateral FPCA + posterior symptoms meet CFP criteria. Prevalence FPCA 20–30% (Saveetha MRI study 2024). Fetal-type PComA incidence 4–29% (Cureus 2019).</div>
+      </div>
+      <div class="brow">
+        <button class="abtn" onclick="set('fetal-pca','yes-ipsi')">✓ Yes — ipsilateral fetal PCA confirmed on CTA/MRA (ipsilateral to carotid/anterior disease)</button>
+        <button class="abtn" onclick="set('fetal-pca','yes-contra')">~ Contralateral fetal PCA only — ipsilateral P1 present; does not explain posterior infarct via carotid</button>
+        <button class="abtn" onclick="set('fetal-pca','bilateral')">~ Bilateral fetal PCA — both sides; PCA territory on affected side still carotid-supplied</button>
+        <button class="abtn" onclick="set('fetal-pca','no')">✗ No fetal PCA — standard anatomy; posterior circulation via basilar (carotid cannot supply PCA)</button>
+        <button class="abtn" onclick="set('fetal-pca','nd')">— Not assessed / CTA/MRA not reviewed for this</button>
+      </div>
     </div>
   </div>
 
@@ -1002,7 +1037,7 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
     <div class="brow">
       <button class="abtn" onclick="setToggle('oth-hypercog','yes')">✓ Hypercoagulable state confirmed</button>
       <button class="abtn" onclick="setToggle('oth-hypercog','no')">✗ Tested — negative</button>
-      <button class="abtn" onclick="setToggle('oth-hypercog','nd')">— Not yet tested</button>
+      <button class="abtn" onclick="setToggle('oth-hypercog','nd')">— Not suspected / not tested</button>
     </div>
   </div>
 
@@ -1233,7 +1268,7 @@ const S = {
   age: null, antihtn: null,
   bpsys: null, bpdia: null,
   size: null, count: null,
-  topo: null, circ: null,
+  topos: [], topo: null, circ: null,  // topos = multi-select array; topo = primary (first selected)
   vessel: null, dissection: null, icad: null,
   nascet: null,
   plaqcomp: null,
@@ -1241,11 +1276,31 @@ const S = {
   ilt: null,
   'ce-afib': null, 'ce-thrombus': null, 'ce-valve': null, 'ce-cmp': null,
   'ce-pfo': null, 'ce-complete': null,
+  'fetal-pca': null,
   'carotid-web': null,
   'tcd-done': null, 'tcd-hits': null, 'tcd-bubble': null, 'tcd-velocity': null,
   'oth-hypercog': null, 'oth-vasc': null, 'oth-genetic': null, 'oth-postinfect': null
 };
 let cur = 0;
+
+// ─── TOPO MULTI-SELECT ────────────────────────────────────
+function toggleTopo(btn, val) {
+  if (!S.topos) S.topos = [];
+  const idx = S.topos.indexOf(val);
+  if (idx === -1) {
+    // Add
+    S.topos.push(val);
+    btn.classList.add('ay');
+    // Set S.topo to first selected (for backward compat with existing scoring that uses S.topo)
+    if (S.topos.length === 1) S.topo = val;
+  } else {
+    // Remove
+    S.topos.splice(idx, 1);
+    btn.classList.remove('ay','an','at','ab','aa','aw');
+    S.topo = S.topos.length > 0 ? S.topos[0] : null;
+  }
+  ui();
+}
 
 // ─── BUTTON SETTERS ───────────────────────────────────────
 
@@ -1384,12 +1439,34 @@ function ui() {
     a1.className='alrt awn show'; a1.innerHTML='Multiple infarcts in same territory: consistent with artery-to-artery embolism from proximal stenosis or unstable plaque.';
   } else { a1.className='alrt'; a1.innerHTML=''; }
 
-  // Step 2 — topo
+  // Step 2 — topo: show/hide fetal PCA section based on circulation involved
+  const fetalPcaSection = document.getElementById('fetal-pca-section');
+  const circInvolvesPost = S.circ === 'post' || S.circ === 'both';
+  if (fetalPcaSection) {
+    fetalPcaSection.style.display = circInvolvesPost ? 'block' : 'none';
+    // If anterior only, clear fetal PCA to avoid stale data affecting scoring
+    if (!circInvolvesPost && S['fetal-pca'] !== null) {
+      S['fetal-pca'] = null;
+      const fpItem = document.getElementById('fetal-pca-item');
+      if (fpItem) {
+        fpItem.querySelectorAll('.abtn').forEach(b => b.classList.remove('ay','an','at','ab','aa','aw'));
+        fpItem.className = 'crit';
+      }
+    }
+  }
+
+  // Step 2 — topo alerts
   const a2 = document.getElementById('a2');
   if (S.topo === 'watershed') {
     a2.className='alrt awn show'; a2.innerHTML='Watershed pattern: radiologic hallmark of hemodynamic ischemia from high-grade carotid stenosis. Evaluate carefully for ≥70% ICA stenosis or occlusion.';
-  } else if (S.topo === 'cortical' || S.topo === 'cortical-sub') {
-    a2.className='alrt ainf show'; a2.innerHTML='Cortical or large territorial infarct: 2× more frequent in cardioembolic stroke (Yaghi 2020). Does not exclude LVD — assess vascular imaging carefully.';
+  } else if ((S.topos&&(S.topos.includes('cortical')||S.topos.includes('cortical-sub')))) {
+    a2.className='alrt ainf show'; a2.innerHTML='Cortical or large territorial infarct selected: 2× more frequent in cardioembolic stroke (Yaghi 2020). Does not exclude LVD — assess vascular imaging carefully.';
+  } else if (S.circ === 'both' && S['fetal-pca'] === 'yes-ipsi') {
+    a2.className='alrt awn show'; a2.innerHTML='⚠ Ipsilateral fetal PCA confirmed: anterior + posterior infarction may be explained by a SINGLE ipsilateral carotid source (CFP syndrome). This is NOT necessarily a multi-territory cardioembolic event — re-evaluate as a unilateral carotid-territory event before attributing to cardiac embolism.';
+  } else if (S.circ === 'both' && (S['fetal-pca'] === 'no' || S['fetal-pca'] === 'yes-contra')) {
+    a2.className='alrt aerr show'; a2.innerHTML='Both circulations involved + no ipsilateral fetal PCA: a single carotid source CANNOT explain the posterior circulation infarct. Strongly favours a central (cardiac/aortic) embolic source or separate posterior circulation disease.';
+  } else if (S.circ === 'post' && S.vessel !== 'none' && S.vessel !== 'mild') {
+    a2.className='alrt ainf show'; a2.innerHTML='Posterior circulation involved with parent vessel disease noted — ensure posterior circulation vessels (vertebral, basilar) are specifically evaluated on CTA/MRA.';
   } else { a2.className='alrt'; a2.innerHTML=''; }
 
   // Step 3 — vessel
@@ -1512,6 +1589,13 @@ function ui() {
 
 // ─── CLASSIFICATION ENGINE ────────────────────────────────
 function computeScores() {
+  // Helper: check if a topo value is present in the multi-select array
+  const topos = S.topos && S.topos.length > 0 ? S.topos : (S.topo ? [S.topo] : []);
+  const hasTopo = (v) => topos.includes(v);
+  const hasAnyTopo = (...vals) => vals.some(v => topos.includes(v));
+
+  // Declare fetalPcaIpsi first — used throughout this function
+  const fetalPcaIpsi = S['fetal-pca']==='yes-ipsi' || S['fetal-pca']==='bilateral';
   let laa=0, ce=0, svd=0, other=0;
   const ev = { laa:[], ce:[], svd:[], other:[] };
 
@@ -1611,15 +1695,17 @@ function computeScores() {
   if (S.plaqcomp==='calcified') {
     ev.laa.push({txt:'<strong>Purely macrocalcified plaque</strong> — associated with more stable, less vulnerable plaque (Hunt 2023, AJNR; JACC 2021)', w:'LOWER RISK', cls:'ev-pos'});
   }
-  if (S.topo==='watershed') {
+  if (hasTopo('watershed')) {
     laa += 15; ev.laa.push({txt:'<strong>Watershed/border-zone topography</strong> — radiologic hallmark of hemodynamic ischemia from high-grade carotid stenosis', w:'MOD', cls:'ev-mod'});
   }
   if (S.count==='multi-same') {
     laa += 7; ev.laa.push({txt:'<strong>Multiple infarcts in same territory</strong> — consistent with proximal artery-to-artery embolism', w:'MOD', cls:'ev-mod'});
   }
-  if (S.count==='multi-diff') {
+  if (S.count==='multi-diff' && !fetalPcaIpsi) {
     laa = Math.max(0, laa - 20);
-    ev.laa.push({txt:'<strong>Multiple infarcts in different vascular territories</strong> — by definition inconsistent with a single large vessel source (one stenosed vessel cannot cause bilateral or multi-territory infarcts). LVD score penalised.', w:'NEGATIVE', cls:''});
+    ev.laa.push({txt:'<strong>Multiple infarcts in different vascular territories</strong> — by definition inconsistent with a single large vessel source (one stenosed vessel cannot cause bilateral or multi-territory infarcts). LVD score penalised. Exception: if an ipsilateral fetal PCA is present, anterior + posterior infarction may still be a single carotid-territory event — enter fetal PCA status in Step 3.', w:'NEGATIVE', cls:''});
+  } else if (S.count==='multi-diff' && fetalPcaIpsi) {
+    ev.laa.push({txt:'<strong>Multi-territory infarction with ipsilateral fetal PCA</strong> — LVD multi-territory penalty waived: with fetal PCA, carotid disease can simultaneously cause anterior + posterior infarction (CFP syndrome). LVD remains a viable explanation.', w:'MODIFIER (fetal PCA)', cls:''});
   }
 
   // ── CE ──
@@ -1650,6 +1736,25 @@ function computeScores() {
   if (S.count==='multi-diff') {
     ce += 20; ev.ce.push({txt:'<strong>Multiple infarcts in different vascular territories</strong> — 2–3× more likely in cardioembolic vs. non-cardioembolic stroke (OR ~2.1)', w:'MOD-HIGH', cls:'ev-high'});
   }
+  // ── Fetal PCA scoring — modifies multi-territory interpretation ──
+  // (fetalPcaIpsi declared at top of function)
+  if (fetalPcaIpsi && (S.circ==='both' || S.circ==='post')) {
+    // With ipsilateral fetal PCA, anterior + posterior infarction can be explained
+    // by a single carotid source — boost LVD, and COUNTERACT the CE multi-diff boost
+    laa += 20;
+    ev.laa.push({txt:'<strong>Ipsilateral fetal PCA confirmed</strong> — anterior + posterior circulation infarction CAN be explained by a single ipsilateral carotid source (carotid-fetal-posterior / CFP syndrome). The PCA territory is supplied by the ICA via the fetal PComA. This transforms apparent "multi-territory" into a single carotid-territory event. (Lambert 2016; Nedeltchev 2024 — CFP syndrome in ~9% of ≥50% carotid stenosis with ipsilateral FPCA and posterior symptoms)', w:'HIGH (changes territory interpretation)', cls:'ev-high'});
+    // Also counteract the CE multi-diff boost that would have been added for circ=both
+    // The CE boost from multi-diff was +20; partial reversal for fetal PCA context
+    ce = Math.max(0, ce - 15);
+    ev.ce.push({txt:'<strong>Ipsilateral fetal PCA present — CE multi-territory assumption partially reversed</strong>: anterior + posterior infarction with ipsilateral FPCA may be a single carotid-territory event (CFP syndrome), not requiring a central cardiac embolic source. CE multi-territory bonus partially offset.', w:'MODIFIER', cls:''});
+  } else if (S['fetal-pca']==='no' && S.circ==='both') {
+    // No fetal PCA and both circulations — strengthens the CE argument further
+    ce += 10;
+    ev.ce.push({txt:'<strong>No ipsilateral fetal PCA — both circulations involved</strong>: without a fetal PCA, ipsilateral carotid disease cannot explain the posterior circulation infarct. Multi-territory involvement requires a central (cardiac/aortic) embolic source or separate posterior circulation disease. CE score further boosted.', w:'HIGH', cls:'ev-high'});
+    laa = Math.max(0, laa - 10);
+    ev.laa.push({txt:'<strong>No fetal PCA — both circulations involved</strong>: ipsilateral carotid disease alone cannot cause posterior circulation infarction without a fetal PCA. LVD score further penalised for posterior involvement.', w:'NEGATIVE', cls:''});
+  }
+
   // Multi-territory also boosts "Other" — hypercoagulable states (APLS, malignancy-associated)
   // and post-infectious vasculopathy commonly cause multi-territory infarcts
   if (S.count==='multi-diff') {
@@ -1659,13 +1764,13 @@ function computeScores() {
       other += 18; ev.other.push({txt:'<strong>Multiple infarcts in different vascular territories — non-CE source</strong>: hypercoagulable states (APLS: aPL-mediated disseminated thrombosis causing multi-territory infarcts in ~30–40% of APS-stroke; Carecchio 2014), malignancy-associated coagulopathy, and post-infectious vasculopathy are important causes of unexplained multi-territory strokes when cardiac and large vessel sources are excluded (Esmed 2025, J Neurolog Sci 2021).', w:'MOD', cls:'ev-mod'});
     }
   }
-  if (S.topo==='cortical') {
+  if (hasTopo('cortical')) {
     ce += 8; ev.ce.push({txt:'<strong>Purely cortical infarct</strong> — cortical infarcts 2× more frequent in CE (Yaghi 2020, Front Neurol)', w:'MOD', cls:'ev-mod'});
   }
-  if (S.topo==='cortical-sub') {
+  if (hasTopo('cortical-sub')) {
     ce += 8; ev.ce.push({txt:'<strong>Large territorial infarct (cortical + subcortical)</strong> — consistent with large-vessel cardioembolic occlusion', w:'MOD', cls:'ev-mod'});
   }
-  if (S.topo==='cerebellum') {
+  if (hasTopo('cerebellum')) {
     ce += 5; ev.ce.push({txt:'<strong>Cerebellar infarct</strong> — small oblique cortical cerebellar infarcts associated with CE (Schiphorst 2019)', w:'LOW', cls:''});
   }
 
@@ -1699,7 +1804,7 @@ function computeScores() {
   }
 
   // ── SVD ──
-  const perfoTopo = ['striatocapsular','brainstem','thalamus'].includes(S.topo);
+  const perfoTopo = hasAnyTopo('striatocapsular','brainstem','thalamus');
   // Punctate: tiny multi-foci embolic shower — boosts CE + Other, penalises SVD
   if (S.size==='punctate') {
     ce += 15; ev.ce.push({txt:'<strong>Punctate infarcts (&lt;5 mm) — embolic shower pattern</strong>: multiple tiny DWI foci are characteristic of distal microembolism from a cardiac or proximal source. Not consistent with hypertensive SVD (which causes single or few lacunes in perforator territories). Also seen in hypercoagulable states (APLS, malignancy). (Kang 2003, Stroke)', w:'MOD', cls:'ev-mod'});
@@ -1712,7 +1817,7 @@ function computeScores() {
   } else if (S.size==='small') {
     svd += 20; ev.svd.push({txt:'<strong>&lt;15 mm infarct</strong> — lacunar size consistent with SVD; territory less specific', w:'MOD', cls:'ev-mod'});
   }
-  if (perfoTopo && S.size !== 'large') {
+  if (perfoTopo && S.size !== 'large' && S.size !== 'punctate') {
     svd += 15; ev.svd.push({txt:'<strong>Perforator territory location</strong> ('+S.topo+') — SVD/BAD signature territory', w:'MOD', cls:'ev-mod'});
   }
   if (S.bpsys==='severe') {
@@ -1729,7 +1834,7 @@ function computeScores() {
   if (['ce-afib','ce-thrombus','ce-valve'].every(k => S[k]==='no') && S['ce-cmp']==='no' && S['ce-complete']==='yes') {
     svd += 8; ev.svd.push({txt:'<strong>Complete cardiac workup negative</strong> — no high-risk CE source found', w:'SUPPORTIVE', cls:'ev-pos'});
   }
-  if (S.size==='large' || S.topo==='cortical-sub') {
+  if (S.size==='large' || hasTopo('cortical-sub')) {
     svd = Math.max(0, svd - 30);
     ev.svd.push({txt:'<strong>Large territorial infarct</strong> — inconsistent with SVD; lipohyalinosis causes &lt;15 mm perforator occlusions, not territorial infarcts. SVD score penalised.', w:'NEGATIVE', cls:''});
   }
@@ -1737,12 +1842,28 @@ function computeScores() {
   // not perforators. Cortical infarcts are embolic (CE or LAA) or, rarely, vasculitic.
   // Hypertensive SVD (lipohyalinosis/fibrinoid necrosis) is exclusively a disease of
   // small penetrating arteries and DOES NOT affect cortical branches.
-  if (S.topo==='cortical') {
+  if (hasTopo('cortical')) {
     svd = Math.max(0, svd - 40);
     ev.svd.push({txt:'<strong>Strictly cortical infarct — strongly against SVD</strong>: Hypertensive small vessel disease (lipohyalinosis/fibrinoid necrosis) affects exclusively small penetrating (perforator) arteries supplying deep structures — it does not affect leptomeningeal/cortical branches. A purely cortical DWI infarct is embolic (cardioembolic or artery-to-artery) or, rarely, vasculitic (Other Determined). SVD score heavily penalised.', w:'STRONG NEGATIVE', cls:''});
   }
+
+  // ── Multi-location combination bonuses ──
+  if (hasTopo('cortical') && hasTopo('cerebellum')) {
+    ce += 15; ev.ce.push({txt:'<strong>Cortical + cerebellar infarcts</strong> — strongly cardioembolic: simultaneous cortical and cerebellar DWI lesions strongly favour a central (cardiac/aortic) embolic source that can reach both anterior and posterior circulations simultaneously. OR ~2–3× more likely CE vs. non-CE (Yaghi 2020, Front Neurol)', w:'HIGH', cls:'ev-high'});
+    laa = Math.max(0, laa - 10); ev.laa.push({txt:'<strong>Cortical + cerebellar combination</strong>: this multi-territory cortical pattern is inconsistent with a single carotid/unilateral LVD source (unless ipsilateral fetal PCA is confirmed). LVD score partially penalised.', w:'NEGATIVE', cls:''});
+  }
+  if (hasTopo('cortical') && hasTopo('watershed')) {
+    laa += 10; ce += 5; ev.laa.push({txt:'<strong>Cortical + watershed infarcts</strong>: mixed embolic and hemodynamic pattern — suggests proximal stenosis causing both artery-to-artery embolism (cortical infarct) AND flow-failure (watershed infarct). Supports LVD with dual mechanism.', w:'MOD', cls:'ev-mod'});
+  }
+  if (hasTopo('brainstem') && hasTopo('cerebellum') && !fetalPcaIpsi) {
+    ce += 8; ev.ce.push({txt:'<strong>Brainstem + cerebellar infarcts</strong>: bilateral posterior fossa involvement. Consider bilateral vertebrobasilar disease vs. central (cardiac/aortic) embolic source.', w:'LOW-MOD', cls:'ev-mod'});
+  }
+  if (topos.filter(t=>['cortical','cortical-sub','cerebellum'].includes(t)).length >= 2 && topos.some(t=>['striatocapsular','brainstem','thalamus'].includes(t))) {
+    // Mixed cortical + deep: suggest embolic (embolism can hit both cortical and deep targets)
+    ce += 8; ev.ce.push({txt:'<strong>Mixed cortical/territorial + deep/perforator infarcts</strong>: simultaneous involvement of cortical/territorial AND perforator territory argues for an embolic mechanism that can reach multiple locations — favours CE or proximal artery-to-artery source over isolated SVD.', w:'MOD', cls:'ev-mod'});
+  }
   // Multi-territory reduces SVD unless all infarcts are small (<15mm) — in that case vasculitis-mediated SVD is possible
-  if (S.count==='multi-diff' && S.size !== 'small') {
+  if (S.count==='multi-diff' && S.size !== 'small' && S.size !== 'punctate') {
     svd = Math.max(0, svd - 25);
     ev.svd.push({txt:'<strong>Multiple infarcts in different territories (non-small)</strong> — hypertensive SVD (lipohyalinosis) does not cause multi-territory infarcts. SVD score penalised. Exception: if all infarcts &lt;15mm in multi-territory, consider vasculitis-mediated small vessel disease (see Step 9).', w:'NEGATIVE', cls:''});
   }
@@ -2011,7 +2132,9 @@ function buildVerdict() {
       const hasHighRiskPlaque = S['hrp-iph']==='yes' || S['hrp-lrnc']==='yes' || S['hrp-ulcer']==='yes' || S['hrp-cap']==='yes' || S.plaqcomp==='soft';
       const hasCarotidWeb = S['carotid-web']==='yes';
       const hasSignificantStenosis = S.nascet==='severe' || S.nascet==='occ' || S.vessel==='severe' || S.vessel==='occlusion';
-      const isWatershed = S.topo==='watershed';
+      const toposV = S.topos && S.topos.length > 0 ? S.topos : (S.topo ? [S.topo] : []);
+      const hasTv = (v) => toposV.includes(v);
+      const isWatershed = hasTv('watershed');
       const hasUnilateralHITS = S['tcd-hits']==='unilateral';
       const hasBilateralHITS = S['tcd-hits']==='bilateral';
       const hasImpairedVMR = S['tcd-velocity']==='reduced' || S['tcd-velocity']==='collateral';
@@ -2049,13 +2172,17 @@ function buildVerdict() {
         lvdMech = '<strong>Mechanism: Intracranial atherosclerotic disease (ICAD).</strong> Mechanism may be in-situ thrombosis at the stenotic plaque site, occlusion of a perforating artery by plaque, or distal embolism from unstable intracranial plaque. TCD may show focal velocity elevation at the stenotic segment.';
 
       } else if (isWatershed) {
-        // Watershed without confirmed high-grade stenosis documented yet
-        mechLabel = 'Watershed infarct pattern — hemodynamic ischemia likely; confirm stenosis degree';
-        lvdMech = '<strong>Mechanism: Probable hemodynamic (flow-failure) ischemia.</strong> Watershed/border-zone infarct pattern is the radiologic hallmark of flow-failure from proximal stenosis or hypoperfusion. Ensure high-grade ICA stenosis or occlusion has been adequately characterised on CTA/MRA.';
+        // Watershed selected WITHOUT confirmed high-grade stenosis documented yet
+        mechLabel = 'Watershed infarct pattern → hemodynamic ischemia likely — confirm stenosis degree urgently';
+        lvdMech = '<strong>Mechanism: Probable hemodynamic (flow-failure) ischemia.</strong> Watershed/border-zone infarct pattern is the radiologic hallmark of flow-failure from proximal stenosis or hypoperfusion. This is a hemodynamic (not embolic) mechanism. Ensure high-grade ICA stenosis or occlusion has been adequately characterised on CTA/MRA — the key question is whether revascularisation is indicated.';
 
+      } else if (!isWatershed && hasSignificantStenosis) {
+        // Significant stenosis WITHOUT watershed pattern — artery-to-artery is primary consideration
+        mechLabel = 'Large vessel stenosis → artery-to-artery embolism (no watershed pattern; hemodynamic ischemia less likely)';
+        lvdMech = '<strong>Mechanism: Artery-to-artery embolism most likely.</strong> Significant proximal stenosis is present but the infarct pattern is NOT a watershed distribution, making hemodynamic flow-failure less likely as the primary mechanism. Artery-to-artery embolism from the stenotic plaque (even without confirmed intraplaque hemorrhage or intraluminal thrombus) is the favoured mechanism. Further plaque characterisation (vessel wall MRI, CTA plaque analysis) may identify high-risk features confirming embolic potential.';
       } else {
-        mechLabel = 'Large vessel atherosclerosis — mechanism unclear (artery-to-artery embolism or hemodynamic)';
-        lvdMech = '<strong>Mechanism: Uncertain — further characterisation needed.</strong> Large vessel atherosclerotic disease is present but the dominant mechanism (artery-to-artery embolism vs. hemodynamic ischemia) is not clearly distinguishable from available data. Consider: (1) vessel wall MRI for plaque vulnerability features; (2) TCD for HITS and vasomotor reactivity; (3) CT perfusion for hemodynamic reserve assessment.';
+        mechLabel = 'Large vessel atherosclerosis — mechanism unclear (artery-to-artery embolism most likely; hemodynamic ischemia only if watershed pattern present)';
+        lvdMech = '<strong>Mechanism: Uncertain — artery-to-artery embolism most likely without watershed pattern.</strong> Large vessel atherosclerotic disease is present. Without a watershed/border-zone infarct pattern, hemodynamic flow-failure is less favoured. Consider: (1) vessel wall MRI for plaque vulnerability; (2) TCD for HITS and vasomotor reactivity; (3) CT perfusion if hemodynamic mechanism still suspected despite non-watershed pattern.';
       }
       desc = '<strong>LVD — Proposed mechanism:</strong> ' + lvdMech + ' Meets or approaches TOAST large vessel disease criteria.';
       mgmtHTML = buildMgmt('laa', mechLabel);
@@ -2138,8 +2265,9 @@ function buildVerdict() {
   if (S['oth-genetic']==='nd' && (S.age==='young' || S.age==='mid45') && !ceHigh && !lvdHigh) recs.push('🧬 <strong>Consider genetic arteriopathy:</strong> Young cryptogenic stroke without clear CE or LVD source — review MRI for anterior temporal pole T2 signal (CADASIL), consider Fabry screen in appropriate demographics.');
   // Vasculitis rec: only suggest if NOT in a large vessel territory (ICA/CCA/MCA M1 occlusion)
   // Inflammatory arteriopathies predominantly affect medium and small vessels, not large vessels
-  const largeVesselTerritory = S.vessel==='severe' || S.vessel==='occlusion' || S.nascet==='severe' || S.nascet==='occ' || S.icad==='yes' || S.topo==='cortical-sub';
-  if ((S['oth-vasc']==='nd' || S['oth-vasc']==='low') && (S.count==='multi-diff' || (S.topo==='cortical' && !ceHigh)) && !largeVesselTerritory) {
+  const toposRec = S.topos && S.topos.length > 0 ? S.topos : (S.topo ? [S.topo] : []);
+  const largeVesselTerritory = S.vessel==='severe' || S.vessel==='occlusion' || S.nascet==='severe' || S.nascet==='occ' || S.icad==='yes' || toposRec.includes('cortical-sub');
+  if ((S['oth-vasc']==='nd' || S['oth-vasc']==='low') && (S.count==='multi-diff' || (toposRec.includes('cortical') && !ceHigh)) && !largeVesselTerritory) {
     recs.push('🔬 <strong>Inflammatory arteriopathy evaluation recommended:</strong> Multiterritory cryptogenic infarcts without a cardioembolic or clear large vessel source, in a distribution consistent with medium/small vessel vasculitis — consider vessel wall MRI (concentric enhancement pattern), CSF analysis, ESR/CRP/ANA/ANCA, and rheumatology referral if clinically indicated. Note: inflammatory arteriopathies predominantly affect medium and small vessels; large territorial infarcts (MCA M1, ICA) are less typical for vasculitis.');
   }
   if (S['ce-afib']==='nd') recs.push('📡 <strong>Prolonged cardiac monitoring recommended:</strong> AF detection with ≤24h telemetry is inadequate — outpatient event monitoring for ≥30 days recommended for cryptogenic stroke (CRYSTAL-AF trial: 30-day monitoring detected AF in 12.4% vs. 2% with standard monitoring).');
@@ -2254,8 +2382,9 @@ function buildVerdict() {
         ${srow('','Presenting SBP', bpLabel[S.bpsys]||'—', S.bpsys==='severe'?'tr':S.bpsys==='mod'?'ta':S.bpsys==='normal'?'tg':'tgr')}
         ${srow('','Infarct size', sizeLabel[S.size]||'—', S.size==='punctate'?'ta':S.size==='small'?'tg':S.size==='large'?'tr':S.size==='grey'?'ta':'tgr')}
         ${srow('','Infarct count', countLabel[S.count]||'—', S.count==='multi-diff'?'tr':S.count==='multi-same'?'ta':S.count==='single'?'tg':'tgr')}
-        ${srow('','Topography', topoLabel[S.topo]||'—', S.topo==='watershed'||S.topo==='cortical'||S.topo==='cortical-sub'?'ta':S.topo==='striatocapsular'||S.topo==='brainstem'?'tt':'tgr')}
+        ${srow('','Topography', (()=>{ const ts=S.topos&&S.topos.length>0?S.topos:(S.topo?[S.topo]:[]); const tl={cortical:'Cortical','cortical-sub':'Cortical+Sub',striatocapsular:'Striatocap/BG',thalamus:'Thalamus',brainstem:'Brainstem',cerebellum:'Cerebellum',watershed:'Watershed'}; return ts.length>0?ts.map(t=>tl[t]||t).join(' + '):'—'; })(), (()=>{ const ts=S.topos&&S.topos.length>0?S.topos:(S.topo?[S.topo]:[]); return ts.includes('watershed')||ts.includes('cortical')||ts.includes('cortical-sub')?'ta':ts.includes('striatocapsular')||ts.includes('brainstem')?'tt':'tgr'; })())}
         ${srow('','Circulation', S.circ||'—', 'tgr')}
+        ${(S.circ==='post'||S.circ==='both') ? srow('','Fetal PCA (ipsi)', {'yes-ipsi':'YES — ipsilateral (CFP syndrome possible)','yes-contra':'Contralateral only','bilateral':'Bilateral','no':'No fetal PCA','nd':'Not assessed'}[S['fetal-pca']]||'Not assessed', S['fetal-pca']==='yes-ipsi'||S['fetal-pca']==='bilateral'?'ta':S['fetal-pca']==='no'?'tg':'tgr') : ''}
         ${srow('','Parent vessel', vesselLabel[S.vessel]||'—', S.vessel==='severe'||S.vessel==='occlusion'?'tr':S.vessel==='moderate'?'ta':S.vessel==='none'?'tg':'tgr')}
         ${srow('','NASCET ICA', nascetLabel[S.nascet]||'—', S.nascet==='severe'||S.nascet==='occ'?'tr':S.nascet==='mod'?'ta':S.nascet==='none'?'tg':'tgr')}
       </div>
@@ -2336,8 +2465,9 @@ CLINICAL DATA ENTERED
 
   Infarct size (DWI): ${sizeLabel[S.size]||'Not assessed'}
   Infarct count/distribution: ${countLabel[S.count]||'Not assessed'}
-  Topography: ${topoLabel[S.topo]||'Not entered'}
+  Topography: ${(()=>{ const ts=S.topos&&S.topos.length>0?S.topos:(S.topo?[S.topo]:[]); const tl={cortical:'Strictly cortical','cortical-sub':'Cortical+subcortical',striatocapsular:'Striatocapsular/BG/IC',thalamus:'Thalamus',brainstem:'Brainstem',cerebellum:'Cerebellum',watershed:'Watershed/border-zone'}; return ts.length>0?ts.map(t=>tl[t]||t).join(' + '):'Not entered'; })()}
   Circulation: ${S.circ==='ant'?'Anterior (ICA/MCA/ACA)':S.circ==='post'?'Posterior (vertebral/basilar/PCA/PICA/AICA)':S.circ==='both'?'Both circulations':'Not entered'}
+  Ipsilateral fetal PCA: ${(S.circ==='post'||S.circ==='both') ? ({'yes-ipsi':'YES — confirmed ipsilateral (CFP syndrome possible)','yes-contra':'Contralateral only','bilateral':'Bilateral','no':'No fetal PCA (standard anatomy)','nd':'Not assessed'}[S['fetal-pca']]||'Not assessed') : 'N/A (anterior circulation only)'}
 
   Parent vessel stenosis: ${vesselLabel[S.vessel]||'Not assessed'}
   Arterial dissection: ${S.dissection==='yes'?'IDENTIFIED':S.dissection==='no'?'No':'Not assessed'}
@@ -2403,6 +2533,7 @@ function resetAll() {
   Object.keys(S).forEach(k => S[k]=null);
   document.querySelectorAll('.crit').forEach(el => el.className='crit');
   document.querySelectorAll('.abtn').forEach(b => b.classList.remove('ay','an','at','ab','aa','aw'));
+  document.querySelectorAll('.toggle-topo').forEach(b => b.classList.remove('ay','an','at','ab','aa','aw'));
   document.querySelectorAll('.crit-detail').forEach(d => d.classList.remove('open'));
   document.querySelectorAll('.xbtn').forEach(b => b.textContent='details ▾');
   document.querySelectorAll('.alrt').forEach(el => { el.className='alrt'; el.innerHTML=''; });
