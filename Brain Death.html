@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Brain Death / DNC Navigator · AAN 2023</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@300;400;500;600;700&family=Lexend:wght@300;400;500;600&display=swap');
 
 :root {
   --bg:        #0d1117;
@@ -34,7 +34,7 @@
   --text:      #e6edf3;
   --text2:     #aab4c0;
   --text3:     #6e7f94;
-  --sans:  'Inter', system-ui, sans-serif;
+  --sans:  'Lexend', 'Inter', system-ui, sans-serif;
   --mono:  'IBM Plex Mono', monospace;
 }
 
@@ -46,8 +46,9 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); font
 header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
 .h-title { font-size: 19px; font-weight: 700; }
 .h-title span { color: var(--teal); }
-.h-sub { font-family: var(--mono); font-size: 10px; color: var(--text3); margin-top: 3px; }
-.reset-btn { background: var(--card2); border: 1px solid var(--border); color: var(--text2); font-family: var(--mono); font-size: 11px; padding: 6px 14px; cursor: pointer; border-radius: 4px; transition: all 0.15s; white-space: nowrap; }
+.h-sub { font-family: var(--sans); font-size: 11px; color: var(--text3); margin-top: 3px; line-height: 1.6; }
+.h-credit { font-family: var(--sans); font-size: 11px; color: var(--text3); margin-top: 2px; }
+.reset-btn { background: var(--card2); border: 1px solid var(--border); color: var(--text2); font-family: var(--sans); font-size: 12px; padding: 6px 14px; cursor: pointer; border-radius: 4px; transition: all 0.15s; white-space: nowrap; font-weight: 500; }
 .reset-btn:hover { border-color: var(--teal); color: var(--teal); }
 
 /* PROGRESS */
@@ -55,20 +56,25 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
 .prog-fill { height: 100%; background: linear-gradient(90deg, var(--teal), #8af0f5); border-radius: 2px; transition: width 0.4s ease; box-shadow: 0 0 6px rgba(57,208,216,0.4); }
 
 /* STEP TABS */
-.steps { display: flex; border-bottom: 1px solid var(--border); margin-bottom: 20px; overflow-x: auto; }
-.stab { flex: 1; min-width: 76px; padding: 7px 4px 9px; text-align: center; font-family: var(--sans); font-size: 11px; font-weight: 600; color: var(--text3); border-bottom: 2px solid transparent; margin-bottom: -1px; transition: all 0.2s; line-height: 1.3; }
-.stab .sn { display: block; font-size: 15px; font-weight: 700; margin-bottom: 2px; }
-.stab.active { color: var(--teal); border-bottom-color: var(--teal); }
-.stab.done   { color: var(--green); border-bottom-color: var(--green); }
+.steps { display: grid; grid-template-columns: repeat(6, 1fr); border: 1px solid var(--border); border-radius: 8px; margin-bottom: 20px; overflow: hidden; background: var(--card); }
+.stab { padding: 9px 4px 10px; text-align: center; font-family: var(--sans); font-size: 10px; color: var(--text3); border-right: 1px solid var(--border); transition: all 0.2s; line-height: 1.3; cursor: pointer; background: var(--card); }
+.stab:nth-child(6n) { border-right: none; }
+.stab .sn { display: flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 50%; background: var(--card2); border: 1px solid var(--border); font-size: 11px; font-weight: 700; margin: 0 auto 4px; transition: all 0.2s; }
+.stab .slbl { display: block; font-size: 9px; font-weight: 600; letter-spacing: 0; line-height: 1.3; }
+.stab.active { color: var(--teal); background: rgba(57,208,176,0.06); }
+.stab.active .sn { background: var(--teal); color: #0d1117; border-color: var(--teal); }
+.stab.done { color: var(--green); }
+.stab.done .sn { background: var(--green); color: #0d1117; border-color: var(--green); }
+.stab:hover:not(.active) { background: var(--card2); }
 
 /* CARD */
 .card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 22px; margin-bottom: 12px; }
-.ctitle { font-size: 12px; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; margin-bottom: 3px; }
+.ctitle { font-size: 13px; font-weight: 700; font-family: var(--sans); letter-spacing: 0; text-transform: none; margin-bottom: 3px; }
 .csub { font-size: 12px; color: var(--text2); margin-bottom: 16px; line-height: 1.45; }
 
 /* SECTION LABEL */
-.slabel { display: flex; align-items: center; gap: 8px; font-family: var(--mono); font-size: 10px; font-weight: 500; color: var(--text2); letter-spacing: 0.07em; text-transform: uppercase; margin-bottom: 9px; padding-bottom: 6px; border-bottom: 1px solid var(--border); }
-.pill { font-size: 9px; padding: 1px 7px; border-radius: 20px; border: 1px solid; margin-left: auto; }
+.slabel { display: flex; align-items: center; gap: 8px; font-family: var(--sans); font-size: 11px; font-weight: 600; color: var(--text); letter-spacing: 0; text-transform: none; margin-bottom: 9px; padding-bottom: 6px; border-bottom: 1px solid var(--border); }
+.pill { font-size: 9px; padding: 1px 7px; border-radius: 20px; border: 1px solid; margin-left: auto; font-family: var(--sans); letter-spacing: 0.04em; text-transform: uppercase; }
 .pill-r { border-color: var(--red);    color: var(--red);    background: var(--red-bg); }
 .pill-a { border-color: var(--amber);  color: var(--amber);  background: var(--amber-bg); }
 .pill-t { border-color: var(--teal);   color: var(--teal);   background: var(--teal-bg); }
@@ -85,8 +91,8 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
 
 .crit-main { display: flex; align-items: center; gap: 10px; padding: 10px 13px; }
 .crit-name { flex: 1; font-size: 13px; font-weight: 500; color: var(--text); line-height: 1.3; }
-.xbtn { background: none; border: 1px solid var(--border); color: var(--text3); font-size: 11px; cursor: pointer; padding: 2px 8px; font-family: var(--mono); white-space: nowrap; transition: all 0.15s; flex-shrink: 0; border-radius: 3px; }
-.xbtn:hover { color: var(--blue); border-color: var(--blue); }
+.xbtn { background: var(--purple-bg); border: 1px solid var(--purple-bd); color: var(--purple); font-size: 11px; cursor: pointer; padding: 2px 8px; font-family: var(--sans); white-space: nowrap; transition: all 0.15s; flex-shrink: 0; border-radius: 3px; font-weight: 500; }
+.xbtn:hover { background: var(--purple); color: #0d1117; border-color: var(--purple); }
 
 .crit-detail { display: none; padding: 10px 13px 12px; font-size: 12px; color: var(--text); line-height: 1.65; border-top: 1px solid var(--border); }
 .crit-detail.open { display: block; }
@@ -97,7 +103,7 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
 
 /* BUTTON ROW */
 .brow { display: flex; border-top: 1px solid var(--border); }
-.abtn { flex: 1; padding: 8px 6px; background: none; border: none; border-right: 1px solid var(--border); color: var(--text2); font-family: var(--mono); font-size: 11px; cursor: pointer; transition: all 0.12s; text-transform: uppercase; letter-spacing: 0.04em; font-weight: 500; }
+.abtn { flex: 1; padding: 9px 10px; background: none; border: none; border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); color: var(--text2); font-family: var(--sans); font-size: 12px; cursor: pointer; transition: all 0.12s; text-transform: none; letter-spacing: 0; font-weight: 400; line-height: 1.4; text-align: left; }
 .abtn:last-child { border-right: none; }
 .abtn:hover { background: var(--card2); color: var(--text); }
 .abtn.ay  { background: var(--green-bg);  color: var(--green);  font-weight: 700; }
@@ -139,7 +145,7 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
 
 /* NAV */
 .nav-row { display: flex; justify-content: space-between; align-items: center; margin-top: 20px; gap: 10px; }
-.nbtn { padding: 9px 22px; border-radius: 5px; font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; border: 1px solid; cursor: pointer; font-weight: 500; transition: all 0.15s; }
+.nbtn { padding: 9px 22px; border-radius: 5px; font-family: var(--sans); font-size: 13px; letter-spacing: 0; text-transform: none; border: 1px solid; cursor: pointer; font-weight: 600; transition: all 0.15s; }
 .np { background: var(--teal); border-color: var(--teal); color: #0d1117; font-weight: 700; }
 .np:hover { background: #8af0f5; border-color: #8af0f5; }
 .np:disabled { opacity: 0.3; cursor: not-allowed; }
@@ -169,7 +175,7 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
 .sum-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
 @media (max-width: 580px) { .sum-grid { grid-template-columns: 1fr; } }
 .sblock { background: var(--card); border: 1px solid var(--border); border-radius: 6px; overflow: hidden; }
-.sbtitle { font-family: var(--mono); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; padding: 7px 11px; border-bottom: 1px solid var(--border); color: var(--text2); background: var(--card2); }
+.sbtitle { font-family: var(--sans); font-size: 11px; font-weight: 600; letter-spacing: 0; text-transform: none; padding: 7px 11px; border-bottom: 1px solid var(--border); color: var(--text); background: var(--card2); }
 .srow { display: flex; align-items: flex-start; gap: 8px; padding: 6px 11px; border-bottom: 1px solid var(--border); font-size: 12px; }
 .srow:last-child { border-bottom: none; }
 .dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; margin-top: 4px; }
@@ -189,12 +195,12 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
 /* DISCLAIMER */
 .disclaimer { background: rgba(248,81,73,0.08); border: 1px solid var(--red-bd); border-left: 4px solid var(--red); border-radius: 6px; padding: 10px 14px; margin-bottom: 18px; display: flex; align-items: flex-start; gap: 10px; }
 .disclaimer-icon { color: var(--red); font-size: 15px; flex-shrink: 0; margin-top: 1px; }
-.disclaimer-text { font-size: 11px; color: #ff9490; line-height: 1.6; font-family: var(--mono); }
-.disclaimer-text strong { color: var(--red); font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; display: block; margin-bottom: 2px; }
+.disclaimer-text { font-size: 12px; color: #ff9490; line-height: 1.6; font-family: var(--sans); }
+.disclaimer-text strong { color: var(--red); font-size: 12px; font-family: var(--sans); display: block; margin-bottom: 2px; font-weight: 700; }
 .doc-header { display: flex; align-items: center; gap: 8px; margin-bottom: 5px; }
-.doc-tog { flex: 1; text-align: left; background: var(--card2); border: 1px solid var(--border2); border-radius: 5px; color: var(--text2); font-family: var(--mono); font-size: 11px; padding: 8px 13px; cursor: pointer; transition: all 0.15s; letter-spacing: 0.04em; }
+.doc-tog { flex: 1; text-align: left; background: var(--card2); border: 1px solid var(--border2); border-radius: 5px; color: var(--text2); font-family: var(--sans); font-size: 13px; padding: 8px 13px; cursor: pointer; transition: all 0.15s; }
 .doc-tog:hover { border-color: var(--teal); color: var(--teal); }
-.copy-btn { background: var(--card2); border: 1px solid var(--border2); border-radius: 5px; color: var(--text2); font-family: var(--mono); font-size: 11px; padding: 8px 14px; cursor: pointer; white-space: nowrap; transition: all 0.15s; display: none; }
+.copy-btn { background: var(--card2); border: 1px solid var(--border2); border-radius: 5px; color: var(--text2); font-family: var(--sans); font-size: 12px; padding: 8px 14px; cursor: pointer; white-space: nowrap; transition: all 0.15s; display: none; }
 .copy-btn.visible { display: block; }
 .copy-btn:hover { border-color: var(--green); color: var(--green); }
 .copy-btn.copied { border-color: var(--green); color: var(--green); background: var(--green-bg); }
@@ -218,7 +224,8 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
 <header>
   <div>
     <div class="h-title">Brain Death / <span>DNC</span> Navigator</div>
-    <div class="h-sub">DNC = Death by Neurologic Criteria · Greer DM et al. · Neurology 2023;101:1112–1132 · doi:10.1212/WNL.0000000000207740 · AAN/AAP/CNS/SCCM</div>
+    <div class="h-sub">Death by Neurologic Criteria · Greer DM et al. · Neurology 2023;101:1112–1132 · AAN/AAP/CNS/SCCM · For educator use only</div>
+    <div class="h-credit">Designed by neurology resident physician Daniel Short, MD</div>
   </div>
   <button class="reset-btn" onclick="resetAll()">↺ Reset</button>
 </header>
@@ -226,12 +233,12 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
 <div class="prog-track"><div class="prog-fill" id="pf" style="width:0%"></div></div>
 
 <div class="steps">
-  <div class="stab active" id="st0"><span class="sn">1</span>Prerequisites</div>
-  <div class="stab" id="st1"><span class="sn">2</span>Confounders</div>
-  <div class="stab" id="st2"><span class="sn">3</span>Neuro Exam</div>
-  <div class="stab" id="st3"><span class="sn">4</span>Apnea Test</div>
-  <div class="stab" id="st4"><span class="sn">5</span>Ancillary</div>
-  <div class="stab" id="st5"><span class="sn">6</span>Verdict</div>
+  <div class="stab active" id="st0" onclick="goTab(0)" title="Go to step 1"><span class="sn">1</span><span class="slbl">Prerequisites</span></div>
+  <div class="stab" id="st1" onclick="goTab(1)" title="Go to step 2"><span class="sn">2</span><span class="slbl">Confounders</span></div>
+  <div class="stab" id="st2" onclick="goTab(2)" title="Go to step 3"><span class="sn">3</span><span class="slbl">Neuro Exam</span></div>
+  <div class="stab" id="st3" onclick="goTab(3)" title="Go to step 4"><span class="sn">4</span><span class="slbl">Apnea Test</span></div>
+  <div class="stab" id="st4" onclick="goTab(4)" title="Go to step 5"><span class="sn">5</span><span class="slbl">Ancillary</span></div>
+  <div class="stab" id="st5" onclick="goTab(5)" title="Go to step 6"><span class="sn">6</span><span class="slbl">Verdict</span></div>
 </div>
 
 <!-- ══ SCREEN 0: PREREQUISITES ══ -->
@@ -1184,6 +1191,11 @@ function rv() {
   note += `  - Spinal reflexes (Lazarus sign, triple flexion) may persist after BD/DNC and do not negate determination\n\n`;
   note += `Reference: Greer DM, Kirschen MP, Lewis A, et al. Pediatric and Adult Brain Death/Death by Neurologic Criteria Consensus Guideline. Neurology. 2023;101(24):1112–1132. doi:10.1212/WNL.0000000000207740\nEndorsed by: Neurocritical Care Society (September 28, 2023)`;
   document.getElementById('dn').textContent = note;
+}
+
+function goTab(n) {
+  if (n === cur) return;
+  go(n);
 }
 
 function go(n) {
