@@ -1064,7 +1064,7 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
 
   <div class="crit" id="oth-postinfect-item">
     <div class="crit-main">
-      <div class="crit-name">Post-infectious vasculopathy — VZV (varicella/HSV (herpes simplex/zoster virus)), COVID-19, other preceding infection within 6 months</div>
+      <div class="crit-name">Post-infectious vasculopathy — VZV/HSV (zoster, herpes simplex), COVID-19, other preceding infection within 6 months</div>
       <button class="xbtn" onclick="xp(this)">details ▾</button>
     </div>
     <div class="crit-detail">
@@ -1363,12 +1363,14 @@ function setToggle(k, v) {
     allBtns.forEach(b => {
       const action = b.getAttribute('onclick');
       if (action && action.includes(`'${v}'`)) {
-        if (v === 'yes' || v === 'confirmed') { b.classList.add('ay'); item.classList.add('c-warn'); }
-        else if (v === 'high') { b.classList.add('an'); item.classList.add('c-warn'); }
+        if (v === 'yes' || v === 'confirmed' || v === 'vzv' || v === 'covid' || v === 'other') {
+          b.classList.add('ay'); item.classList.add('c-warn');
+        } else if (v === 'high') { b.classList.add('an'); item.classList.add('c-warn'); }
         else if (v === 'low') { b.classList.add('aw'); item.classList.add('c-part'); }
         else if (v === 'no') { b.classList.add('an'); item.classList.add('c-yes'); }
         else if (v === 'small') { b.classList.add('aw'); item.classList.add('c-part'); }
         else if (v === 'tte') { b.classList.add('aw'); item.classList.add('c-part'); }
+        else if (v === 'nd') { b.classList.add('aa'); item.classList.add('c-abs'); }
         else { b.classList.add('aa'); item.classList.add('c-abs'); }
       }
     });
@@ -1405,21 +1407,8 @@ function xp(btn) {
 
 // ─── TAB CLICK NAVIGATION ─────────────────────────────────
 function goTab(n) {
-  // Only navigate to steps already completed (done) or the current step
-  // This prevents skipping forward to unanswered steps
   if (n === cur) return; // already here
-  if (n < cur) {
-    // Going back is always allowed
-    go(n);
-  } else if (n > cur) {
-    // Going forward: only allow if all intermediate steps have been visited
-    // We track this via tab classes — if st(n-1) is 'done', the step was reached
-    const prevTab = document.getElementById('st' + (n-1));
-    if (prevTab && (prevTab.classList.contains('done') || prevTab.classList.contains('active'))) {
-      go(n);
-    }
-    // If not yet reached, do nothing (tab is visually greyed out)
-  }
+  go(n); // allow jumping to any step freely, in any direction
 }
 
 // ─── STEP NAVIGATION ──────────────────────────────────────
