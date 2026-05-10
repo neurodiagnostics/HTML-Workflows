@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Ischemic Stroke Etiology · TOAST+ Classifier</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@300;400;500;600;700&family=Lexend:wght@300;400;500;600&display=swap');
 
 :root {
   --bg:        #0d1117;
@@ -35,7 +35,7 @@
   --text2:     #aab4c0;
   --text3:     #6e7f94;
   --text-bright: #f0f5ff;
-  --sans:  'Inter', system-ui, sans-serif;
+  --sans:  'Lexend', 'Inter', system-ui, sans-serif;
   --mono:  'IBM Plex Mono', monospace;
 }
 
@@ -48,7 +48,7 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
 .h-title { font-size: 19px; font-weight: 700; }
 .h-title span { color: var(--teal); }
 .h-sub { font-family: var(--mono); font-size: 10px; color: var(--text3); margin-top: 3px; line-height: 1.5; }
-.reset-btn { background: var(--card2); border: 1px solid var(--border); color: var(--text2); font-family: var(--mono); font-size: 11px; padding: 6px 14px; cursor: pointer; border-radius: 4px; transition: all 0.15s; white-space: nowrap; }
+.reset-btn { background: var(--card2); border: 1px solid var(--border); color: var(--text2); font-family: var(--sans); font-size: 12px; padding: 6px 14px; cursor: pointer; border-radius: 4px; transition: all 0.15s; white-space: nowrap; font-weight: 500; }
 .reset-btn:hover { border-color: var(--teal); color: var(--teal); }
 
 /* PROGRESS */
@@ -128,8 +128,8 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
 
 .crit-main { display: flex; align-items: center; gap: 10px; padding: 10px 13px; }
 .crit-name { flex: 1; font-size: 13px; font-weight: 500; color: var(--text); line-height: 1.3; }
-.xbtn { background: none; border: 1px solid var(--border); color: var(--text3); font-size: 11px; cursor: pointer; padding: 2px 8px; font-family: var(--mono); white-space: nowrap; transition: all 0.15s; flex-shrink: 0; border-radius: 3px; }
-.xbtn:hover { color: var(--blue); border-color: var(--blue); }
+.xbtn { background: var(--purple-bg); border: 1px solid var(--purple-bd); color: var(--purple); font-size: 11px; cursor: pointer; padding: 2px 8px; font-family: var(--sans); white-space: nowrap; transition: all 0.15s; flex-shrink: 0; border-radius: 3px; font-weight: 500; }
+.xbtn:hover { background: var(--purple); color: #0d1117; border-color: var(--purple); }
 .crit-detail { display: none; padding: 10px 13px 12px; font-size: 12px; color: var(--text); line-height: 1.65; border-top: 1px solid var(--border); }
 .crit-detail.open { display: block; }
 .cnote { margin-top: 8px; padding: 8px 11px; background: var(--card2); border-left: 3px solid var(--border2); font-family: var(--mono); font-size: 10px; color: var(--text2); line-height: 1.75; border-radius: 0 3px 3px 0; }
@@ -137,7 +137,7 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
 
 /* BUTTON ROW */
 .brow { display: flex; border-top: 1px solid var(--border); flex-wrap: wrap; }
-.abtn { flex: 1; min-width: 120px; padding: 8px 6px; background: none; border: none; border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); color: var(--text2); font-family: var(--mono); font-size: 11px; cursor: pointer; transition: all 0.12s; text-transform: uppercase; letter-spacing: 0.04em; font-weight: 500; line-height: 1.3; }
+.abtn { flex: 1; min-width: 120px; padding: 9px 10px; background: none; border: none; border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); color: var(--text2); font-family: var(--sans); font-size: 12px; cursor: pointer; transition: all 0.12s; text-transform: none; letter-spacing: 0; font-weight: 400; line-height: 1.4; text-align: left; }
 .abtn:last-child { border-right: none; }
 .abtn:hover { background: var(--card2); color: var(--text); }
 .abtn.ay  { background: var(--green-bg);  color: var(--green);  font-weight: 700; }
@@ -148,7 +148,7 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
 .abtn.aw  { background: var(--amber-bg);  color: var(--amber);  font-weight: 700; }
 
 /* MULTI-SELECT note */
-.multi-note { font-family: var(--mono); font-size: 10px; color: var(--text3); padding: 6px 13px; border-top: 1px solid var(--border); background: var(--card2); }
+.multi-note { font-family: var(--sans); font-size: 11px; color: var(--text3); padding: 6px 13px; border-top: 1px solid var(--border); background: var(--card2); }
 
 /* LOGIC BOX */
 .lbox { background: var(--card2); border: 1px solid var(--border); border-radius: 5px; padding: 12px 15px; font-size: 12px; color: var(--text2); line-height: 1.75; margin-bottom: 14px; }
@@ -181,7 +181,7 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
 
 /* NAV */
 .nav-row { display: flex; justify-content: space-between; align-items: center; margin-top: 20px; gap: 10px; }
-.nbtn { padding: 9px 22px; border-radius: 5px; font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; border: 1px solid; cursor: pointer; font-weight: 500; transition: all 0.15s; }
+.nbtn { padding: 9px 22px; border-radius: 5px; font-family: var(--sans); font-size: 13px; letter-spacing: 0; text-transform: none; border: 1px solid; cursor: pointer; font-weight: 600; transition: all 0.15s; }
 .np { background: var(--teal); border-color: var(--teal); color: #0d1117; font-weight: 700; }
 .np:hover { background: #58efd4; border-color: #58efd4; }
 .np:disabled { opacity: 0.3; cursor: not-allowed; }
