@@ -68,7 +68,7 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
 .stab {
   padding: 9px 6px 10px;
   text-align: center;
-  font-family: var(--mono);
+  font-family: var(--sans);
   font-size: 10px;
   color: var(--text3);
   border-right: 1px solid var(--border);
@@ -96,7 +96,7 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
   margin: 0 auto 4px;
   transition: all 0.2s;
 }
-.stab .slbl { display: block; font-size: 9px; font-weight: 700; letter-spacing: 0.03em; line-height: 1.3; }
+.stab .slbl { display: block; font-size: 10px; font-weight: 600; letter-spacing: 0; line-height: 1.3; }
 .stab.active { color: var(--teal); background: rgba(57,208,176,0.06); }
 .stab.active .sn { background: var(--teal); color: #0d1117; border-color: var(--teal); }
 .stab.done { color: var(--green); }
@@ -931,7 +931,7 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
     <strong>Cardiac imaging hierarchy:</strong> <span class="lt">TTE</span> (transthoracic echo) is the default first-line study — evaluates EF, wall motion, valves, pericardium, and gross intracardiac thrombus. <span class="la">TEE</span> (transesophageal echo) provides superior resolution for left atrial appendage (LAA) thrombus, patent foramen ovale (PFO), aortic arch atheroma, and valvular vegetations — pursue when TTE is non-diagnostic and cardioembolism remains on the differential. <span class="lb">CT heart / cardiac MRI</span> can evaluate LAA thrombus, cardiac masses, and myocardial scar — useful when TEE is not tolerated.
   </div>
 
-  <div class="slabel">Tier 1 — Standard workup (all patients) <span class="pill pill-r">TTE + ECG + TELEMETRY</span></div>
+  <div class="slabel" style="font-size:11px;font-weight:700;color:var(--text);letter-spacing:0;text-transform:none;">Tier 1 — Standard workup (all patients) <span class="pill pill-r" style="text-transform:uppercase;letter-spacing:0.06em;font-size:9px;">TTE + ECG + TELEMETRY</span></div>
 
   <div class="crit" id="ce-afib-item">
     <div class="crit-main">
@@ -975,7 +975,7 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
     </div>
   </div>
 
-  <div class="slabel" style="margin-top:14px;">Tier 2 — Advanced cardiac imaging <span class="pill pill-a">TEE / CT HEART / CARDIAC MRI</span></div>
+  <div class="slabel" style="margin-top:14px;font-size:11px;font-weight:700;color:var(--text);letter-spacing:0;text-transform:none;">Tier 2 — Advanced cardiac imaging <span class="pill pill-a" style="text-transform:uppercase;letter-spacing:0.06em;font-size:9px;">TEE / CT HEART / CARDIAC MRI</span></div>
 
   <div class="crit" id="ce-thrombus-item">
     <div class="crit-main">
@@ -983,7 +983,9 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
       <button class="xbtn" onclick="xp(this)">details ▾</button>
     </div>
     <div class="crit-detail">
-      TTE sensitivity for left atrial appendage thrombus is only ~40–60% — TEE is the gold standard (~95–99% sensitivity with spontaneous echo contrast). Cardiac CT is an alternative with ~96% sensitivity when TEE is not tolerated. LV thrombus: TTE sensitivity ~17–33% for small/mural thrombus — cardiac MRI (delayed gadolinium enhancement) is most sensitive. Pursue TEE or cardiac CT when: (a) non-diagnostic TTE, (b) cryptogenic stroke with AF or structural heart disease, (c) suspected endocarditis, or (d) PFO evaluation requiring precise shunt sizing.
+      TTE sensitivity for left atrial appendage (LAA) thrombus is only ~40–60% — advanced imaging is essential when CE suspicion is high.<br><br>
+      <strong style="color:var(--teal)">TEE (transesophageal echocardiography) — first-line advanced imaging:</strong> Sensitivity ~95–99% for LAA thrombus with spontaneous echo contrast; superior resolution for LAA, PFO anatomy, aortic arch atheroma, and valvular vegetations. Pursue TEE when: (a) TTE is non-diagnostic and CE suspicion remains high; (b) cryptogenic stroke with AF or structural heart disease; (c) suspected endocarditis or valvular source; (d) PFO evaluation requiring precise shunt sizing and anatomy. TEE is preferred over CT in most patients as it also assesses cardiac function in real time.<br><br>
+      <strong style="color:var(--amber)">CTA heart morphology (cardiac CT) — second-line when TEE is not an option:</strong> Sensitivity ~96% for LAA thrombus; useful when TEE is not tolerated (patient refusal, oesophageal contraindications, procedural risk), or when rapid non-invasive assessment is needed. CT cardiac cannot assess valvular function dynamically and may have artefact in irregular rhythms. Cardiac MRI (delayed gadolinium enhancement) is most sensitive for LV thrombus and myocardial scar.
     </div>
     <div class="brow">
       <button class="abtn" onclick="setToggle('ce-thrombus','yes')">✓ Intracardiac thrombus on TEE / CT / MRI</button>
