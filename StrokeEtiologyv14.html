@@ -47,7 +47,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); font
 header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
 .h-title { font-size: 19px; font-weight: 700; }
 .h-title span { color: var(--teal); }
-.h-sub { font-family: var(--mono); font-size: 10px; color: var(--text3); margin-top: 3px; line-height: 1.5; }
+.h-sub { font-family: var(--sans); font-size: 11px; color: var(--text3); margin-top: 3px; line-height: 1.5; }
 .reset-btn { background: var(--card2); border: 1px solid var(--border); color: var(--text2); font-family: var(--sans); font-size: 12px; padding: 6px 14px; cursor: pointer; border-radius: 4px; transition: all 0.15s; white-space: nowrap; font-weight: 500; }
 .reset-btn:hover { border-color: var(--teal); color: var(--teal); }
 
@@ -75,7 +75,7 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
   border-bottom: 1px solid var(--border);
   transition: all 0.2s;
   line-height: 1.3;
-  cursor: default;
+  cursor: pointer;
   background: var(--card);
 }
 /* Remove right border on last of each row */
@@ -101,15 +101,16 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
 .stab.active .sn { background: var(--teal); color: #0d1117; border-color: var(--teal); }
 .stab.done { color: var(--green); }
 .stab.done .sn { background: var(--green); color: #0d1117; border-color: var(--green); }
+.stab:hover:not(.active) { background: var(--card2); }
 
 /* CARD */
 .card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 22px; margin-bottom: 12px; }
-.ctitle { font-size: 12px; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; margin-bottom: 3px; }
+.ctitle { font-size: 13px; font-weight: 700; font-family: var(--sans); letter-spacing: 0; text-transform: none; margin-bottom: 3px; }
 .csub { font-size: 12px; color: var(--text2); margin-bottom: 16px; line-height: 1.5; }
 
 /* SECTION LABEL */
-.slabel { display: flex; align-items: center; gap: 8px; font-family: var(--mono); font-size: 10px; font-weight: 500; color: var(--text2); letter-spacing: 0.07em; text-transform: uppercase; margin-bottom: 9px; padding-bottom: 6px; border-bottom: 1px solid var(--border); }
-.pill { font-size: 9px; padding: 1px 7px; border-radius: 20px; border: 1px solid; margin-left: auto; flex-shrink: 0; }
+.slabel { display: flex; align-items: center; gap: 8px; font-family: var(--sans); font-size: 11px; font-weight: 600; color: var(--text); letter-spacing: 0; text-transform: none; margin-bottom: 9px; padding-bottom: 6px; border-bottom: 1px solid var(--border); }
+.pill { font-size: 9px; padding: 1px 7px; border-radius: 20px; border: 1px solid; margin-left: auto; flex-shrink: 0; font-family: var(--sans); letter-spacing: 0.04em; text-transform: uppercase; }
 .pill-r { border-color: var(--red);    color: var(--red);    background: var(--red-bg); }
 .pill-a { border-color: var(--amber);  color: var(--amber);  background: var(--amber-bg); }
 .pill-t { border-color: var(--teal);   color: var(--teal);   background: var(--teal-bg); }
@@ -226,7 +227,7 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
 .sum-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
 @media (max-width: 580px) { .sum-grid { grid-template-columns: 1fr; } }
 .sblock { background: var(--card); border: 1px solid var(--border); border-radius: 6px; overflow: hidden; }
-.sbtitle { font-family: var(--mono); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; padding: 7px 11px; border-bottom: 1px solid var(--border); color: var(--text2); background: var(--card2); }
+.sbtitle { font-family: var(--sans); font-size: 11px; font-weight: 600; letter-spacing: 0; text-transform: none; padding: 7px 11px; border-bottom: 1px solid var(--border); color: var(--text); background: var(--card2); }
 .srow { display: flex; align-items: flex-start; gap: 8px; padding: 6px 11px; border-bottom: 1px solid var(--border); font-size: 12px; }
 .srow:last-child { border-bottom: none; }
 .dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; margin-top: 4px; }
@@ -254,9 +255,9 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
 
 /* DOC NOTE */
 .doc-header { display: flex; align-items: center; gap: 8px; margin-bottom: 5px; }
-.doc-tog { flex: 1; text-align: left; background: var(--card2); border: 1px solid var(--border2); border-radius: 5px; color: var(--text2); font-family: var(--mono); font-size: 11px; padding: 8px 13px; cursor: pointer; transition: all 0.15s; letter-spacing: 0.04em; }
+.doc-tog { flex: 1; text-align: left; background: var(--card2); border: 1px solid var(--border2); border-radius: 5px; color: var(--text2); font-family: var(--sans); font-size: 12px; padding: 8px 13px; cursor: pointer; transition: all 0.15s; }
 .doc-tog:hover { border-color: var(--teal); color: var(--teal); }
-.copy-btn { background: var(--card2); border: 1px solid var(--border2); border-radius: 5px; color: var(--text2); font-family: var(--mono); font-size: 11px; padding: 8px 14px; cursor: pointer; white-space: nowrap; transition: all 0.15s; display: none; }
+.copy-btn { background: var(--card2); border: 1px solid var(--border2); border-radius: 5px; color: var(--text2); font-family: var(--sans); font-size: 12px; padding: 8px 14px; cursor: pointer; white-space: nowrap; transition: all 0.15s; display: none; }
 .copy-btn.visible { display: block; }
 .copy-btn:hover { border-color: var(--green); color: var(--green); }
 .copy-btn.copied { border-color: var(--green); color: var(--green); background: var(--green-bg); }
@@ -306,17 +307,17 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
 <div class="prog-track"><div class="prog-fill" id="pf" style="width:0%"></div></div>
 
 <div class="steps">
-  <div class="stab active" id="st0"><span class="sn">1</span><span class="slbl">Age &amp; BP</span></div>
-  <div class="stab" id="st1"><span class="sn">2</span><span class="slbl">Infarct</span></div>
-  <div class="stab" id="st2"><span class="sn">3</span><span class="slbl">Topography</span></div>
-  <div class="stab" id="st3"><span class="sn">4</span><span class="slbl">Parent Vessel</span></div>
-  <div class="stab" id="st4"><span class="sn">5</span><span class="slbl">NASCET</span></div>
-  <div class="stab" id="st5"><span class="sn">6</span><span class="slbl">Plaque</span></div>
-  <div class="stab" id="st6"><span class="sn">7</span><span class="slbl">Thrombus</span></div>
-  <div class="stab" id="st7"><span class="sn">8</span><span class="slbl">Cardiac</span></div>
-  <div class="stab" id="st8"><span class="sn">9</span><span class="slbl">TCD</span></div>
-  <div class="stab" id="st9"><span class="sn">10</span><span class="slbl">Vasculitis</span></div>
-  <div class="stab" id="st10"><span class="sn">11</span><span class="slbl">Verdict</span></div>
+  <div class="stab active" id="st0" onclick="goTab(0)" title="Go to step 1"><span class="sn">1</span><span class="slbl">Age &amp; BP</span></div>
+  <div class="stab" id="st1" onclick="goTab(1)" title="Go to step 2"><span class="sn">2</span><span class="slbl">Infarct</span></div>
+  <div class="stab" id="st2" onclick="goTab(2)" title="Go to step 3"><span class="sn">3</span><span class="slbl">Topography</span></div>
+  <div class="stab" id="st3" onclick="goTab(3)" title="Go to step 4"><span class="sn">4</span><span class="slbl">Parent Vessel</span></div>
+  <div class="stab" id="st4" onclick="goTab(4)" title="Go to step 5"><span class="sn">5</span><span class="slbl">NASCET</span></div>
+  <div class="stab" id="st5" onclick="goTab(5)" title="Go to step 6"><span class="sn">6</span><span class="slbl">Plaque</span></div>
+  <div class="stab" id="st6" onclick="goTab(6)" title="Go to step 7"><span class="sn">7</span><span class="slbl">Thrombus</span></div>
+  <div class="stab" id="st7" onclick="goTab(7)" title="Go to step 8"><span class="sn">8</span><span class="slbl">Cardiac</span></div>
+  <div class="stab" id="st8" onclick="goTab(8)" title="Go to step 9"><span class="sn">9</span><span class="slbl">TCD</span></div>
+  <div class="stab" id="st9" onclick="goTab(9)" title="Go to step 10"><span class="sn">10</span><span class="slbl">Vasculitis</span></div>
+  <div class="stab" id="st10" onclick="goTab(10)" title="Go to step 11"><span class="sn">11</span><span class="slbl">Verdict</span></div>
 </div>
 
 <!-- ══════════════════════════════════════════════════════
@@ -931,7 +932,7 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
     <strong>Cardiac imaging hierarchy:</strong> <span class="lt">TTE</span> (transthoracic echo) is the default first-line study — evaluates EF, wall motion, valves, pericardium, and gross intracardiac thrombus. <span class="la">TEE</span> (transesophageal echo) provides superior resolution for left atrial appendage (LAA) thrombus, patent foramen ovale (PFO), aortic arch atheroma, and valvular vegetations — pursue when TTE is non-diagnostic and cardioembolism remains on the differential. <span class="lb">CT heart / cardiac MRI</span> can evaluate LAA thrombus, cardiac masses, and myocardial scar — useful when TEE is not tolerated.
   </div>
 
-  <div class="slabel" style="font-size:11px;font-weight:700;color:var(--text);letter-spacing:0;text-transform:none;">Tier 1 — Standard workup (all patients) <span class="pill pill-r" style="text-transform:uppercase;letter-spacing:0.06em;font-size:9px;">TTE + ECG + TELEMETRY</span></div>
+  <div class="slabel">Tier 1 — Standard Workup (All Patients) <span class="pill pill-r">TTE + ECG + Telemetry</span></div>
 
   <div class="crit" id="ce-afib-item">
     <div class="crit-main">
@@ -975,23 +976,23 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
     </div>
   </div>
 
-  <div class="slabel" style="margin-top:14px;font-size:11px;font-weight:700;color:var(--text);letter-spacing:0;text-transform:none;">Tier 2 — Advanced cardiac imaging <span class="pill pill-a" style="text-transform:uppercase;letter-spacing:0.06em;font-size:9px;">TEE / CT HEART / CARDIAC MRI</span></div>
+  <div class="slabel" style="margin-top:14px;">Tier 2 — Advanced Cardiac Imaging <span class="pill pill-a">TEE / CT / Cardiac MRI</span></div>
 
   <div class="crit" id="ce-thrombus-item">
     <div class="crit-main">
-      <div class="crit-name">Intracardiac thrombus — LV thrombus or left atrial appendage (LAA) thrombus on TEE, cardiac CT, or cardiac MRI</div>
+      <div class="crit-name">Intracardiac thrombus — LV thrombus or left atrial appendage (LAA) thrombus identified on advanced imaging</div>
       <button class="xbtn" onclick="xp(this)">details ▾</button>
     </div>
     <div class="crit-detail">
       TTE sensitivity for left atrial appendage (LAA) thrombus is only ~40–60% — advanced imaging is essential when CE suspicion is high.<br><br>
       <strong style="color:var(--teal)">TEE (transesophageal echocardiography) — first-line advanced imaging:</strong> Sensitivity ~95–99% for LAA thrombus with spontaneous echo contrast; superior resolution for LAA, PFO anatomy, aortic arch atheroma, and valvular vegetations. Pursue TEE when: (a) TTE is non-diagnostic and CE suspicion remains high; (b) cryptogenic stroke with AF or structural heart disease; (c) suspected endocarditis or valvular source; (d) PFO evaluation requiring precise shunt sizing and anatomy. TEE is preferred over CT in most patients as it also assesses cardiac function in real time.<br><br>
-      <strong style="color:var(--amber)">CTA heart morphology (cardiac CT) — second-line when TEE is not an option:</strong> Sensitivity ~96% for LAA thrombus; useful when TEE is not tolerated (patient refusal, oesophageal contraindications, procedural risk), or when rapid non-invasive assessment is needed. CT cardiac cannot assess valvular function dynamically and may have artefact in irregular rhythms. Cardiac MRI (delayed gadolinium enhancement) is most sensitive for LV thrombus and myocardial scar.
+      <strong style="color:var(--amber)">CTA heart morphology (cardiac CT) — second-line when TEE is not an option:</strong> Sensitivity ~96% for LAA thrombus; useful when TEE is not tolerated (patient refusal, esophageal contraindications, procedural risk), or when rapid non-invasive assessment is needed. CT cardiac cannot assess valvular function dynamically and may have artefact in irregular rhythms. Cardiac MRI (delayed gadolinium enhancement) is most sensitive for LV thrombus and myocardial scar.
     </div>
     <div class="brow">
-      <button class="abtn" onclick="setToggle('ce-thrombus','yes')">✓ Intracardiac thrombus on TEE / CT / MRI</button>
-      <button class="abtn" onclick="setToggle('ce-thrombus','no')">✗ No thrombus on advanced imaging</button>
-      <button class="abtn" onclick="setToggle('ce-thrombus','tte')">~ TTE only — TEE / CT not yet done</button>
-      <button class="abtn" onclick="setToggle('ce-thrombus','nd')">— No cardiac imaging yet</button>
+      <button class="abtn" onclick="setToggle('ce-thrombus','yes')">✓ Intracardiac thrombus confirmed on TEE</button>
+      <button class="abtn" onclick="setToggle('ce-thrombus','no')">✗ No thrombus on TEE (or cardiac CT if TEE not performed)</button>
+      <button class="abtn" onclick="setToggle('ce-thrombus','tte')">~ TEE not yet performed — TTE only so far</button>
+      <button class="abtn" onclick="setToggle('ce-thrombus','nd')">— No advanced cardiac imaging performed</button>
     </div>
   </div>
 
@@ -1063,18 +1064,18 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
 
   <div class="crit" id="oth-postinfect-item">
     <div class="crit-main">
-      <div class="crit-name">Post-infectious vasculopathy — VZV (varicella/herpes zoster), COVID-19, other preceding infection within 6 months</div>
+      <div class="crit-name">Post-infectious vasculopathy — VZV (varicella/HSV (herpes simplex/zoster virus)), COVID-19, other preceding infection within 6 months</div>
       <button class="xbtn" onclick="xp(this)">details ▾</button>
     </div>
     <div class="crit-detail">
       <strong>Mechanism:</strong> Several infections can trigger inflammatory vasculopathy as a delayed or concurrent complication — distinct from direct septic embolism. The vessel wall is injured by direct viral invasion, immune-mediated inflammation, or hypercoagulable state induced by infection.<br><br>
-      <span style="color:var(--red)"><strong>Varicella Zoster Virus (VZV) / Herpes Zoster:</strong></span> Most well-established post-infectious vasculopathy. VZV travels transaxonally from cranial ganglia (especially trigeminal) to cerebral artery adventitia, causing transmural granulomatous inflammation → intimal hyperplasia, thrombosis, and arterial stenosis/occlusion. Stroke risk is 1.3–4× higher after herpes zoster, peaking in the first 6 months (Gilden et al.; Langan 2014). Risk is highest in herpes zoster ophthalmicus (ophthalmic division → ipsilateral anterior circulation). Can affect both large and small vessels. Treat with IV acyclovir + corticosteroids.<br><br>
+      <span style="color:var(--red)"><strong>Varicella Zoster Virus (VZV) / HSV (herpes simplex/zoster virus):</strong></span> Most well-established post-infectious vasculopathy. VZV travels transaxonally from cranial ganglia (especially trigeminal) to cerebral artery adventitia, causing transmural granulomatous inflammation → intimal hyperplasia, thrombosis, and arterial stenosis/occlusion. Stroke risk is 1.3–4× higher after HSV (herpes simplex/zoster virus), peaking in the first 6 months (Gilden et al.; Langan 2014). Risk is highest in HSV (herpes simplex/zoster virus) ophthalmicus (ophthalmic division → ipsilateral anterior circulation). Can affect both large and small vessels. Treat with IV acyclovir + corticosteroids.<br><br>
       <span style="color:var(--amber)"><strong>COVID-19 (SARS-CoV-2):</strong></span> Associated with stroke through several mechanisms: hypercoagulable state (elevated D-dimer, antiphospholipid antibodies in ~50% of severe COVID-19), endothelial injury and ACE-2-mediated vascular inflammation, cardioembolism from COVID-19 myocarditis/cardiomyopathy, and direct CNS vasculitis (rare). Thromboinflammatory pathway predominates (Romero et al. 2021).<br><br>
       <span style="color:var(--blue)"><strong>Other:</strong></span> Bacterial meningitis (septic vasculitis), Lyme disease, HIV vasculopathy, rickettsia, mycoplasma, influenza (rare). Consider in appropriate clinical and geographic context.
       <div class="cnote"><strong>Key refs:</strong> Gilden DH et al. VZV vasculopathy. Neurology 2019. Langan SM et al. Lancet 2014 — 1.3× stroke risk after zoster, highest 1st year. Romero JR et al. J Neurol Sci 2021 — COVID-19 thromboinflammatory stroke mechanisms. VZV stroke risk in &lt;40y: OR up to 4× in first 6 months post-zoster.</div>
     </div>
     <div class="brow">
-      <button class="abtn" onclick="setToggle('oth-postinfect','vzv')">✓ VZV / Herpes Zoster — within 6 months, particularly ophthalmic zoster</button>
+      <button class="abtn" onclick="setToggle('oth-postinfect','vzv')">✓ VZV / HSV (herpes simplex/zoster virus) — within 6 months, particularly ophthalmic zoster</button>
       <button class="abtn" onclick="setToggle('oth-postinfect','covid')">✓ COVID-19 — confirmed SARS-CoV-2 infection within 6 months</button>
       <button class="abtn" onclick="setToggle('oth-postinfect','other')">✓ Other preceding infection — bacterial meningitis, HIV, Lyme, other</button>
       <button class="abtn" onclick="setToggle('oth-postinfect','no')">✗ No relevant preceding infection identified</button>
@@ -1402,6 +1403,25 @@ function xp(btn) {
   btn.textContent = o ? 'close ▴' : 'details ▾';
 }
 
+// ─── TAB CLICK NAVIGATION ─────────────────────────────────
+function goTab(n) {
+  // Only navigate to steps already completed (done) or the current step
+  // This prevents skipping forward to unanswered steps
+  if (n === cur) return; // already here
+  if (n < cur) {
+    // Going back is always allowed
+    go(n);
+  } else if (n > cur) {
+    // Going forward: only allow if all intermediate steps have been visited
+    // We track this via tab classes — if st(n-1) is 'done', the step was reached
+    const prevTab = document.getElementById('st' + (n-1));
+    if (prevTab && (prevTab.classList.contains('done') || prevTab.classList.contains('active'))) {
+      go(n);
+    }
+    // If not yet reached, do nothing (tab is visually greyed out)
+  }
+}
+
 // ─── STEP NAVIGATION ──────────────────────────────────────
 function go(n) {
   document.getElementById('s'+cur).classList.remove('active');
@@ -1629,7 +1649,7 @@ function computeScores() {
   }
   // Post-infectious vasculopathy scoring
   if (S['oth-postinfect']==='vzv') {
-    other += 50; ev.other.push({txt:'<strong>VZV / Herpes Zoster vasculopathy</strong> — zoster within 6 months; stroke risk 1.3–4× higher post-zoster (Langan 2014, Lancet); direct viral arterial invasion → granulomatous transmural inflammation. Treat with IV acyclovir + corticosteroids.', w:'HIGH', cls:'ev-high'});
+    other += 50; ev.other.push({txt:'<strong>VZV / HSV (herpes simplex/zoster virus) vasculopathy</strong> — zoster within 6 months; stroke risk 1.3–4× higher post-zoster (Langan 2014, Lancet); direct viral arterial invasion → granulomatous transmural inflammation. Treat with IV acyclovir + corticosteroids.', w:'HIGH', cls:'ev-high'});
   }
   if (S['oth-postinfect']==='covid') {
     other += 35; ev.other.push({txt:'<strong>COVID-19 / SARS-CoV-2 vasculopathy</strong> — infection within 6 months; thromboinflammatory mechanism, antiphospholipid antibodies, endothelial injury (Romero 2021). May overlap with hypercoagulable state.', w:'MOD', cls:'ev-mod'});
