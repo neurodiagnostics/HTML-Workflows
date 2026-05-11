@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>NMOSD 2015 | Diagnostic Criteria Navigator</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,300;0,400;0,500;1,300&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Sans+Condensed:wght@600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Lexend:wght@300;400;500;600&family=Inter:wght@300;400;500;600;700&display=swap');
 
 :root {
   --bg: #080b10;
@@ -36,8 +36,8 @@
   --purple2: #a090e8;
   --purple-d: rgba(136,112,216,0.14);
   --mono: 'IBM Plex Mono', monospace;
-  --sans: 'IBM Plex Sans', sans-serif;
-  --cond: 'IBM Plex Sans Condensed', sans-serif;
+  --sans: 'Lexend', 'Inter', system-ui, sans-serif;
+  --cond: 'Lexend', 'Inter', system-ui, sans-serif;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -81,7 +81,7 @@ body::before {
   border: 1px solid rgba(64,200,224,0.3);
   border-radius: 8px;
   display: flex; align-items: center; justify-content: center;
-  font-family: var(--mono);
+  font-family: var(--sans);
   font-size: 12px;
   color: var(--cyan);
   letter-spacing: 0.05em;
@@ -93,25 +93,32 @@ body::before {
   font-size: 15px;
   font-weight: 700;
   color: var(--text);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  letter-spacing: 0;
+  text-transform: none;
 }
 .hdr-sub {
-  font-family: var(--mono);
-  font-size: 10px;
+  font-family: var(--sans);
+  font-size: 11px;
   color: var(--text3);
-  letter-spacing: 0.05em;
+  letter-spacing: 0;
+  margin-top: 2px;
+}
+.hdr-credit {
+  font-family: var(--sans);
+  font-size: 11px;
+  color: var(--text3);
   margin-top: 2px;
 }
 .hdr-badge {
-  font-family: var(--mono);
+  font-family: var(--sans);
   font-size: 9px;
   color: var(--cyan);
   background: var(--cyan-d);
   border: 1px solid rgba(64,200,224,0.25);
   padding: 3px 8px;
   border-radius: 3px;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
 }
 
 /* ── PROGRESS ── */
@@ -132,14 +139,16 @@ body::before {
   align-items: center;
   gap: 6px;
   flex: 1;
+  cursor: pointer;
 }
 .prog-dot {
   width: 20px; height: 20px;
   border-radius: 50%;
   border: 1.5px solid var(--b3);
   background: var(--s2);
-  font-family: var(--mono);
+  font-family: var(--sans);
   font-size: 9px;
+  font-weight: 700;
   color: var(--text3);
   display: flex; align-items: center; justify-content: center;
   flex-shrink: 0;
@@ -156,10 +165,10 @@ body::before {
   color: var(--green);
 }
 .prog-label {
-  font-family: var(--mono);
+  font-family: var(--sans);
   font-size: 9px;
   color: var(--text3);
-  letter-spacing: 0.04em;
+  letter-spacing: 0;
   white-space: nowrap;
   transition: color 0.25s;
 }
@@ -198,25 +207,37 @@ body::before {
   margin-bottom: 20px;
 }
 .sec-num {
-  font-family: var(--mono);
+  font-family: var(--sans);
   font-size: 10px;
   color: var(--text3);
   width: 24px;
-  letter-spacing: 0.06em;
+  letter-spacing: 0;
 }
 .sec-title {
   font-family: var(--cond);
   font-size: 18px;
   font-weight: 700;
   color: var(--text);
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
+  letter-spacing: 0;
+  text-transform: none;
 }
 .sec-line {
   flex: 1;
   height: 1px;
   background: linear-gradient(90deg, var(--b2), transparent);
 }
+
+/* STEP TABS */
+.steps { display: grid; grid-template-columns: repeat(5, 1fr); border: 1px solid var(--b2); border-radius: 8px; margin: 0 24px 20px; overflow: hidden; background: var(--s2); }
+.stab { padding: 9px 4px 10px; text-align: center; font-family: var(--sans); font-size: 10px; color: var(--text3); border-right: 1px solid var(--b1); transition: all 0.2s; cursor: pointer; background: var(--s2); line-height: 1.3; }
+.stab:nth-child(5n) { border-right: none; }
+.stab .sn { display: flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 50%; background: var(--s3); border: 1px solid var(--b2); font-size: 11px; font-weight: 700; margin: 0 auto 4px; transition: all 0.2s; }
+.stab .slbl { display: block; font-size: 9px; font-weight: 600; letter-spacing: 0; line-height: 1.3; }
+.stab.active { color: var(--cyan); background: var(--cyan-g); }
+.stab.active .sn { background: var(--cyan); color: #0d1117; border-color: var(--cyan); }
+.stab.done { color: var(--green); }
+.stab.done .sn { background: var(--green); color: #0d1117; border-color: var(--green); }
+.stab:hover:not(.active) { background: var(--s3); }
 
 /* ── QUESTION CARD ── */
 .qcard {
@@ -227,11 +248,12 @@ body::before {
   margin-bottom: 16px;
 }
 .qcard-label {
-  font-family: var(--mono);
-  font-size: 9px;
+  font-family: var(--sans);
+  font-size: 10px;
+  font-weight: 600;
   color: var(--text3);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  letter-spacing: 0;
+  text-transform: none;
   margin-bottom: 8px;
 }
 .qcard-text {
@@ -242,7 +264,7 @@ body::before {
   margin-bottom: 14px;
 }
 .qcard-note {
-  font-family: var(--mono);
+  font-family: var(--sans);
   font-size: 10px;
   color: var(--text2);
   line-height: 1.5;
@@ -260,11 +282,11 @@ body::before {
   flex-wrap: wrap;
 }
 .btn {
-  font-family: var(--cond);
-  font-size: 12px;
+  font-family: var(--sans);
+  font-size: 13px;
   font-weight: 600;
-  letter-spacing: 0.07em;
-  text-transform: uppercase;
+  letter-spacing: 0;
+  text-transform: none;
   padding: 9px 20px;
   border-radius: 5px;
   border: 1.5px solid;
@@ -322,15 +344,15 @@ body::before {
   background: var(--cyan-d);
 }
 .choice-title {
-  font-family: var(--cond);
+  font-family: var(--sans);
   font-size: 13px;
   font-weight: 700;
   color: var(--text);
-  letter-spacing: 0.03em;
+  letter-spacing: 0;
   margin-bottom: 4px;
 }
 .choice-desc {
-  font-family: var(--mono);
+  font-family: var(--sans);
   font-size: 10px;
   color: var(--text2);
   line-height: 1.5;
@@ -382,15 +404,16 @@ body::before {
   flex: 1;
 }
 .check-sub {
-  font-family: var(--mono);
+  font-family: var(--sans);
   font-size: 10px;
   color: var(--text2);
   margin-top: 3px;
   line-height: 1.45;
 }
 .check-tag {
-  font-family: var(--mono);
+  font-family: var(--sans);
   font-size: 9px;
+  font-weight: 600;
   padding: 2px 6px;
   border-radius: 3px;
   margin-top: 4px;
@@ -419,7 +442,7 @@ body::before {
   border: 1px solid var(--b2);
   border-radius: 6px;
   padding: 8px 14px;
-  font-family: var(--mono);
+  font-family: var(--sans);
   font-size: 11px;
   color: var(--text2);
 }
@@ -445,11 +468,12 @@ body::before {
   line-height: 1.55;
 }
 .info-box .ib-title {
-  font-family: var(--mono);
-  font-size: 9px;
+  font-family: var(--sans);
+  font-size: 10px;
+  font-weight: 600;
   color: var(--cyan);
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+  letter-spacing: 0;
+  text-transform: none;
   margin-bottom: 6px;
 }
 .warn-box {
@@ -463,11 +487,12 @@ body::before {
   line-height: 1.55;
 }
 .warn-box .ib-title {
-  font-family: var(--mono);
-  font-size: 9px;
+  font-family: var(--sans);
+  font-size: 10px;
+  font-weight: 600;
   color: var(--amber);
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+  letter-spacing: 0;
+  text-transform: none;
   margin-bottom: 6px;
 }
 
@@ -505,7 +530,7 @@ body::before {
   flex: 1;
 }
 .redflag-item .rf-sub {
-  font-family: var(--mono);
+  font-family: var(--sans);
   font-size: 10px;
   color: var(--text2);
   margin-top: 3px;
@@ -540,10 +565,11 @@ body::before {
   border-bottom: 1px solid var(--b2);
 }
 .verdict-status {
-  font-family: var(--mono);
+  font-family: var(--sans);
   font-size: 9px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
+  font-weight: 600;
+  letter-spacing: 0;
+  text-transform: none;
   margin-bottom: 8px;
 }
 .verdict-title {
@@ -570,7 +596,7 @@ body::before {
   padding: 18px 24px 20px;
 }
 .verdict-subtype {
-  font-family: var(--mono);
+  font-family: var(--sans);
   font-size: 10px;
   color: var(--text2);
   margin-bottom: 12px;
@@ -596,7 +622,7 @@ body::before {
   background: var(--s3);
   border-radius: 6px;
   padding: 12px 14px;
-  font-family: var(--mono);
+  font-family: var(--sans);
   font-size: 10px;
   color: var(--text2);
   line-height: 1.55;
@@ -624,7 +650,7 @@ body::before {
 }
 .mri-row:last-child { border-bottom: none; }
 .mri-syndrome {
-  font-family: var(--mono);
+  font-family: var(--sans);
   font-size: 10px;
   color: var(--cyan);
   padding: 10px 12px;
@@ -644,7 +670,7 @@ body::before {
 .mri-req em {
   color: var(--text2);
   font-style: normal;
-  font-family: var(--mono);
+  font-family: var(--sans);
   font-size: 10px;
 }
 
@@ -662,11 +688,12 @@ body::before {
   padding: 12px 14px;
 }
 .si-label {
-  font-family: var(--mono);
+  font-family: var(--sans);
   font-size: 9px;
+  font-weight: 600;
   color: var(--text3);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  letter-spacing: 0;
+  text-transform: none;
   margin-bottom: 5px;
 }
 .si-val {
@@ -686,11 +713,11 @@ body::before {
   margin-top: 16px;
 }
 .btn-proceed {
-  font-family: var(--cond);
-  font-size: 12px;
+  font-family: var(--sans);
+  font-size: 13px;
   font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  letter-spacing: 0;
+  text-transform: none;
   padding: 10px 24px;
   border-radius: 5px;
   border: 1.5px solid var(--cyan);
@@ -717,7 +744,7 @@ body::before {
   margin-top: 10px;
 }
 .expand-toggle {
-  font-family: var(--mono);
+  font-family: var(--sans);
   font-size: 10px;
   color: var(--text3);
   cursor: pointer;
@@ -735,7 +762,7 @@ body::before {
   padding: 12px 14px;
   background: var(--s3);
   border-radius: 6px;
-  font-family: var(--mono);
+  font-family: var(--sans);
   font-size: 10px;
   color: var(--text2);
   line-height: 1.6;
@@ -748,7 +775,7 @@ body::before {
   background: var(--s1);
   border-top: 1px solid var(--b1);
   padding: 12px 24px;
-  font-family: var(--mono);
+  font-family: var(--sans);
   font-size: 9px;
   color: var(--text3);
   letter-spacing: 0.04em;
@@ -771,41 +798,23 @@ body::before {
     <div class="hdr-icon">NMO</div>
     <div class="hdr-titles">
       <div class="hdr-title">NMOSD Diagnostic Criteria Navigator</div>
-      <div class="hdr-sub">Wingerchuk et al. — Neurology 2015;85:177–189 · IPND Consensus Criteria</div>
+      <div class="hdr-sub">Wingerchuk et al. — Neurology 2015;85:177–189 · IPND Consensus Criteria · For educator use only</div>
+      <div class="hdr-credit">Designed by neurology resident physician Daniel Short, MD</div>
     </div>
     <div class="hdr-badge">Adult</div>
   </div>
 </div>
 
 <!-- PROGRESS -->
-<div class="progress-bar">
-  <div class="progress-inner" id="prog-inner">
-    <div class="prog-step" id="ps0">
-      <div class="prog-dot active" id="pd0">1</div>
-      <div class="prog-label">AQP4-IgG</div>
-    </div>
-    <div class="prog-line"></div>
-    <div class="prog-step" id="ps1">
-      <div class="prog-dot" id="pd1">2</div>
-      <div class="prog-label">Core Features</div>
-    </div>
-    <div class="prog-line"></div>
-    <div class="prog-step" id="ps2">
-      <div class="prog-dot" id="pd2">3</div>
-      <div class="prog-label">MRI Requirements</div>
-    </div>
-    <div class="prog-line"></div>
-    <div class="prog-step" id="ps3">
-      <div class="prog-dot" id="pd3">4</div>
-      <div class="prog-label">Red Flags</div>
-    </div>
-    <div class="prog-line"></div>
-    <div class="prog-step" id="ps4">
-      <div class="prog-dot" id="pd4">5</div>
-      <div class="prog-label">Verdict</div>
-    </div>
-  </div>
+
+<div class="steps">
+  <div class="stab active" id="st0" onclick="goTab(0)" title="Go to step 1"><span class="sn">1</span><span class="slbl">AQP4-IgG Status</span></div>
+  <div class="stab" id="st1" onclick="goTab(1)" title="Go to step 2"><span class="sn">2</span><span class="slbl">Core Features</span></div>
+  <div class="stab" id="st2" onclick="goTab(2)" title="Go to step 3"><span class="sn">3</span><span class="slbl">MRI Findings</span></div>
+  <div class="stab" id="st3" onclick="goTab(3)" title="Go to step 4"><span class="sn">4</span><span class="slbl">Red Flags</span></div>
+  <div class="stab" id="st4" onclick="goTab(4)" title="Go to step 5"><span class="sn">5</span><span class="slbl">Verdict</span></div>
 </div>
+
 
 <div class="main">
 
@@ -1118,11 +1127,24 @@ var MRI_REQUIRED_FEATURES = ['ON','TM','AP','BS'];
 // ═══════════════════════════════════════════
 // NAVIGATION
 // ═══════════════════════════════════════════
+function goTab(n) {
+  if (n === state.currentPanel) return;
+  go(n);
+}
+
 function go(n) {
   document.querySelectorAll('.panel').forEach(function(p,i){
     p.classList.toggle('active', i === n);
   });
   state.currentPanel = n;
+  // Update step tabs
+  for (var i = 0; i < 5; i++) {
+    var t = document.getElementById('st'+i);
+    if (!t) continue;
+    t.classList.remove('active','done');
+    if (i < n) t.classList.add('done');
+    else if (i === n) t.classList.add('active');
+  }
   updateProgress();
   if (n === 4) renderVerdict();
   window.scrollTo({top:0, behavior:'smooth'});
@@ -1133,11 +1155,11 @@ function updateProgress() {
   for (var i = 0; i < 5; i++) {
     var dot = document.getElementById('pd'+i);
     var step = document.getElementById('ps'+i);
-    dot.classList.remove('active','done');
-    step.classList.remove('active','done');
-    if (i < n) { dot.classList.add('done'); step.classList.add('done'); dot.textContent = '✓'; }
-    else if (i === n) { dot.classList.add('active'); step.classList.add('active'); dot.textContent = i+1; }
-    else { dot.textContent = i+1; }
+    if (dot) { dot.classList.remove('active','done'); }
+    if (step) { step.classList.remove('active','done'); }
+    if (i < n) { if(dot){dot.classList.add('done');dot.textContent='✓';} if(step)step.classList.add('done'); }
+    else if (i === n) { if(dot){dot.classList.add('active');dot.textContent=i+1;} if(step)step.classList.add('active'); }
+    else { if(dot) dot.textContent = i+1; }
   }
 }
 
@@ -1237,7 +1259,7 @@ function setupMRIPanel() {
   // Header row
   var hdr = document.createElement('div');
   hdr.className = 'mri-row';
-  hdr.innerHTML = '<div class="mri-syndrome" style="color:var(--text3);background:var(--s1)">Core Feature</div><div class="mri-req" style="color:var(--text3);font-family:var(--mono);font-size:10px">Required MRI Finding</div>';
+  hdr.innerHTML = '<div class="mri-syndrome" style="color:var(--text3);background:var(--s1)">Core Feature</div><div class="mri-req" style="color:var(--text3);font-family:var(--sans);font-size:10px">Required MRI Finding</div>';
   tbl.appendChild(hdr);
 
   state.coreSelected.forEach(function(key) {
