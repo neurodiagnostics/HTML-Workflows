@@ -1,0 +1,1007 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Autoimmune Encephalitis Navigator · Graus 2016</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@300;400;500;600;700&family=Lexend:wght@300;400;500;600&display=swap');
+:root {
+  --bg:#0d1117;--card:#161b22;--card2:#1c2330;--border:#3a4556;--border2:#4a5f7a;
+  --green:#3fb950;--green-bg:rgba(63,185,80,0.10);--green-bd:rgba(63,185,80,0.35);
+  --red:#f85149;--red-bg:rgba(248,81,73,0.10);--red-bd:rgba(248,81,73,0.35);
+  --amber:#e3b341;--amber-bg:rgba(227,179,65,0.10);--amber-bd:rgba(227,179,65,0.35);
+  --blue:#58a6ff;--blue-bg:rgba(88,166,255,0.10);--blue-bd:rgba(88,166,255,0.35);
+  --purple:#bc8cff;--purple-bg:rgba(188,140,255,0.10);--purple-bd:rgba(188,140,255,0.35);
+  --teal:#39d0d8;--teal-bg:rgba(57,208,216,0.10);--teal-bd:rgba(57,208,216,0.35);
+  --text:#e6edf3;--text2:#aab4c0;--text3:#6e7f94;
+  --sans:'Lexend','Inter',system-ui,sans-serif;--mono:'IBM Plex Mono',monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:14px;line-height:1.5;min-height:100vh;}
+.app{max-width:900px;margin:0 auto;padding:0 20px 80px;}
+header{padding:24px 0 16px;border-bottom:1px solid var(--border);margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;}
+.h-title{font-size:19px;font-weight:700;}.h-title span{color:var(--teal);}
+.h-sub{font-family:var(--sans);font-size:11px;color:var(--text3);margin-top:3px;line-height:1.6;}
+.h-credit{font-family:var(--sans);font-size:11px;color:var(--text3);margin-top:2px;}
+.reset-btn{background:var(--card2);border:1px solid var(--border);color:var(--text2);font-family:var(--sans);font-size:12px;padding:6px 14px;cursor:pointer;border-radius:4px;transition:all 0.15s;white-space:nowrap;font-weight:500;}
+.reset-btn:hover{border-color:var(--teal);color:var(--teal);}
+.prog-track{height:3px;background:var(--border);margin-bottom:20px;border-radius:2px;}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--teal),#8af0f5);border-radius:2px;transition:width 0.4s ease;box-shadow:0 0 6px rgba(57,208,216,0.4);}
+.steps{display:grid;grid-template-columns:repeat(6,1fr);border:1px solid var(--border);border-radius:8px;margin-bottom:20px;overflow:hidden;background:var(--card);}
+.stab{padding:9px 4px 10px;text-align:center;font-family:var(--sans);font-size:10px;color:var(--text3);border-right:1px solid var(--border);transition:all 0.2s;line-height:1.3;cursor:pointer;background:var(--card);}
+.stab:nth-child(6n){border-right:none;}
+.stab .sn{display:flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;background:var(--card2);border:1px solid var(--border);font-size:11px;font-weight:700;margin:0 auto 4px;transition:all 0.2s;}
+.stab .slbl{display:block;font-size:9px;font-weight:600;line-height:1.3;}
+.stab.active{color:var(--teal);background:rgba(57,208,216,0.06);}
+.stab.active .sn{background:var(--teal);color:#0d1117;border-color:var(--teal);}
+.stab.done{color:var(--green);}
+.stab.done .sn{background:var(--green);color:#0d1117;border-color:var(--green);}
+.stab:hover:not(.active){background:var(--card2);}
+.card{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:22px;margin-bottom:12px;}
+.ctitle{font-size:13px;font-weight:700;font-family:var(--sans);margin-bottom:3px;}
+.csub{font-size:12px;color:var(--text2);margin-bottom:16px;line-height:1.45;}
+.slabel{display:flex;align-items:center;gap:8px;font-family:var(--sans);font-size:11px;font-weight:600;color:var(--text);margin-bottom:9px;padding-bottom:6px;border-bottom:1px solid var(--border);}
+.pill{font-size:9px;padding:1px 7px;border-radius:20px;border:1px solid;margin-left:auto;font-family:var(--sans);letter-spacing:0.04em;text-transform:uppercase;}
+.pill-r{border-color:var(--red);color:var(--red);background:var(--red-bg);}
+.pill-a{border-color:var(--amber);color:var(--amber);background:var(--amber-bg);}
+.pill-t{border-color:var(--teal);color:var(--teal);background:var(--teal-bg);}
+.pill-g{border-color:var(--green);color:var(--green);background:var(--green-bg);}
+.pill-b{border-color:var(--blue);color:var(--blue);background:var(--blue-bg);}
+.pill-p{border-color:var(--purple);color:var(--purple);background:var(--purple-bg);}
+.crit{border:1px solid var(--border);border-radius:6px;margin-bottom:5px;overflow:hidden;transition:border-color 0.15s,background 0.15s;}
+.crit.c-yes{border-color:var(--green-bd);background:var(--green-bg);}
+.crit.c-no{border-color:var(--red-bd);background:var(--red-bg);}
+.crit.c-met{border-color:var(--teal-bd);background:var(--teal-bg);}
+.crit.c-abs{border-color:var(--border2);background:var(--card2);}
+.crit.c-warn{border-color:var(--amber-bd);background:var(--amber-bg);}
+.crit-main{display:flex;align-items:center;gap:10px;padding:10px 13px;}
+.crit-name{flex:1;font-size:13px;font-weight:500;color:var(--text);line-height:1.3;}
+.xbtn{background:var(--purple-bg);border:1px solid var(--purple-bd);color:var(--purple);font-size:11px;cursor:pointer;padding:2px 8px;font-family:var(--sans);white-space:nowrap;transition:all 0.15s;flex-shrink:0;border-radius:3px;font-weight:500;}
+.xbtn:hover{background:var(--purple);color:#0d1117;border-color:var(--purple);}
+.crit-detail{display:none;padding:10px 13px 12px;font-size:12px;color:var(--text);line-height:1.65;border-top:1px solid var(--border);}
+.crit-detail.open{display:block;}
+.cnote{margin-top:8px;padding:7px 10px;background:var(--card2);border-left:3px solid var(--border2);font-family:var(--mono);font-size:10px;color:var(--text2);line-height:1.7;font-style:italic;border-radius:0 3px 3px 0;}
+.cnote-warn{border-left-color:var(--amber);}
+.cnote-red{border-left-color:var(--red);}
+.cnote-grn{border-left-color:var(--green);}
+.cnote-blue{border-left-color:var(--blue);}
+.brow{display:flex;border-top:1px solid var(--border);flex-wrap:wrap;}
+.abtn{flex:1;min-width:100px;padding:9px 10px;background:none;border:none;border-right:1px solid var(--border);border-bottom:1px solid var(--border);color:var(--text2);font-family:var(--sans);font-size:12px;cursor:pointer;transition:all 0.12s;font-weight:400;line-height:1.4;text-align:left;}
+.abtn:last-child{border-right:none;}
+.abtn:hover{background:var(--card2);color:var(--text);}
+.abtn.ay{background:var(--green-bg);color:var(--green);font-weight:700;}
+.abtn.an{background:var(--red-bg);color:var(--red);font-weight:700;}
+.abtn.at{background:var(--teal-bg);color:var(--teal);font-weight:700;}
+.abtn.aw{background:var(--amber-bg);color:var(--amber);font-weight:700;}
+.abtn.ab{background:var(--blue-bg);color:var(--blue);font-weight:700;}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:5px;}
+@media(max-width:600px){.two-col{grid-template-columns:1fr;}}
+.alrt{padding:9px 13px;border-radius:5px;font-size:12px;line-height:1.5;margin-top:12px;border-left:3px solid;display:none;}
+.alrt.show{display:block;}
+.aok{border-color:var(--green);background:var(--green-bg);color:#7ee787;}
+.awn{border-color:var(--amber);background:var(--amber-bg);color:var(--amber);}
+.aerr{border-color:var(--red);background:var(--red-bg);color:#ff7b72;}
+.ainf{border-color:var(--blue);background:var(--blue-bg);color:var(--blue);}
+.ateal{border-color:var(--teal);background:var(--teal-bg);color:var(--teal);}
+.lbox{background:var(--card2);border:1px solid var(--border);border-radius:5px;padding:11px 15px;font-size:12px;color:var(--text2);line-height:1.7;margin-bottom:16px;}
+.lbox strong{color:var(--text);}
+.lg{color:var(--green);font-weight:600;}.la{color:var(--amber);font-weight:600;}
+.lr{color:var(--red);font-weight:600;}.lt{color:var(--teal);font-weight:600;}
+.lb{color:var(--blue);font-weight:600;}
+/* APE2 */
+.ape2-grid{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-bottom:12px;}
+@media(max-width:600px){.ape2-grid{grid-template-columns:1fr;}}
+.ape2-item{border:1px solid var(--border);border-radius:6px;overflow:hidden;transition:border-color 0.15s,background 0.15s;}
+.ape2-item.a-yes{border-color:var(--teal-bd);background:var(--teal-bg);}
+.ape2-item.a-no{border-color:var(--border);background:var(--card2);}
+.ape2-main{display:flex;align-items:center;gap:8px;padding:9px 11px;}
+.ape2-pts{font-family:var(--mono);font-size:11px;font-weight:700;color:var(--amber);min-width:28px;text-align:right;flex-shrink:0;}
+.ape2-label{flex:1;font-size:12px;font-weight:500;color:var(--text);line-height:1.3;}
+.ape2-brow{display:flex;border-top:1px solid var(--border);}
+.ape2-btn{flex:1;padding:7px 10px;background:none;border:none;border-right:1px solid var(--border);color:var(--text2);font-family:var(--sans);font-size:11px;cursor:pointer;transition:all 0.12s;font-weight:400;text-align:left;}
+.ape2-btn:last-child{border-right:none;}
+.ape2-btn:hover{background:var(--card2);color:var(--text);}
+.ape2-btn.ay{background:var(--teal-bg);color:var(--teal);font-weight:700;}
+.ape2-btn.an{background:var(--card2);color:var(--text3);font-weight:400;}
+.ape2-scorebox{background:var(--card2);border:1px solid var(--amber-bd);border-radius:6px;padding:14px 18px;display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+.ape2-scorebox-left{font-size:12px;color:var(--text2);line-height:1.5;}
+.ape2-scorebox-left strong{color:var(--text);display:block;font-size:13px;margin-bottom:2px;}
+.ape2-scorenum{font-family:var(--mono);font-size:36px;font-weight:700;color:var(--amber);min-width:60px;text-align:right;}
+/* NAV */
+.nav-row{display:flex;justify-content:space-between;align-items:center;margin-top:20px;gap:10px;}
+.nbtn{padding:9px 22px;border-radius:5px;font-family:var(--sans);font-size:13px;border:1px solid;cursor:pointer;font-weight:600;transition:all 0.15s;}
+.np{background:var(--teal);border-color:var(--teal);color:#0d1117;font-weight:700;}
+.np:hover{background:#8af0f5;border-color:#8af0f5;}
+.np:disabled{opacity:0.3;cursor:not-allowed;}
+.ns{background:transparent;border-color:var(--border2);color:var(--text2);}
+.ns:hover{border-color:var(--text);color:var(--text);}
+.screen{display:none;}
+.screen.active{display:block;animation:fu 0.25s ease;}
+@keyframes fu{from{opacity:0;transform:translateY(5px);}to{opacity:1;transform:translateY(0);}}
+/* VERDICT */
+.vban{border-radius:8px;padding:22px 26px;margin-bottom:16px;text-align:center;border:2px solid;}
+.ve{border-color:var(--green);background:var(--green-bg);}
+.vt{border-color:var(--teal);background:var(--teal-bg);}
+.va{border-color:var(--amber);background:var(--amber-bg);}
+.vn{border-color:var(--red);background:var(--red-bg);}
+.vlbl{font-family:var(--mono);font-size:9px;letter-spacing:0.15em;text-transform:uppercase;opacity:0.6;margin-bottom:5px;}
+.vtitle{font-size:22px;font-weight:700;margin-bottom:7px;letter-spacing:-0.01em;}
+.ve .vtitle{color:var(--green);}.vt .vtitle{color:var(--teal);}
+.va .vtitle{color:var(--amber);}.vn .vtitle{color:var(--red);}
+.vdesc{font-size:12px;color:var(--text2);line-height:1.7;max-width:580px;margin:0 auto;}
+/* APE2 verdict band */
+.ape2-vband{border-radius:6px;padding:14px 18px;margin-bottom:12px;border:1px solid;display:flex;align-items:center;gap:16px;}
+.ape2-vband.av-hi{border-color:var(--green-bd);background:var(--green-bg);}
+.ape2-vband.av-mid{border-color:var(--amber-bd);background:var(--amber-bg);}
+.ape2-vband.av-lo{border-color:var(--red-bd);background:var(--red-bg);}
+.ape2-vnum{font-family:var(--mono);font-size:32px;font-weight:700;min-width:48px;text-align:center;}
+.av-hi .ape2-vnum{color:var(--green);}.av-mid .ape2-vnum{color:var(--amber);}.av-lo .ape2-vnum{color:var(--red);}
+.ape2-vtext{flex:1;}
+.ape2-vtitle{font-size:14px;font-weight:700;margin-bottom:3px;}
+.av-hi .ape2-vtitle{color:var(--green);}.av-mid .ape2-vtitle{color:var(--amber);}.av-lo .ape2-vtitle{color:var(--red);}
+.ape2-vdesc{font-size:11px;color:var(--text2);line-height:1.6;}
+/* SUMMARY */
+.sum-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;}
+@media(max-width:580px){.sum-grid{grid-template-columns:1fr;}}
+.sblock{background:var(--card);border:1px solid var(--border);border-radius:6px;overflow:hidden;}
+.sbtitle{font-family:var(--sans);font-size:11px;font-weight:600;padding:7px 11px;border-bottom:1px solid var(--border);color:var(--text);background:var(--card2);}
+.srow{display:flex;align-items:flex-start;gap:8px;padding:6px 11px;border-bottom:1px solid var(--border);font-size:12px;}
+.srow:last-child{border-bottom:none;}
+.dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;margin-top:4px;}
+.dg{background:var(--green);}.dr{background:var(--red);}.dt{background:var(--teal);}
+.dgr{background:var(--text3);}.da{background:var(--amber);}
+.sname{flex:1;color:var(--text);}
+.stag{font-family:var(--mono);font-size:9px;padding:1px 7px;border-radius:10px;border:1px solid;white-space:nowrap;}
+.tg{border-color:var(--green-bd);color:var(--green);}.tr{border-color:var(--red-bd);color:var(--red);}
+.tt{border-color:var(--teal-bd);color:var(--teal);}.tgr{border-color:var(--border2);color:var(--text3);}
+.ta{border-color:var(--amber-bd);color:var(--amber);}
+/* DISCLAIMER */
+.disclaimer{background:rgba(248,81,73,0.08);border:1px solid var(--red-bd);border-left:4px solid var(--red);border-radius:6px;padding:10px 14px;margin-bottom:18px;display:flex;align-items:flex-start;gap:10px;}
+.disclaimer-icon{color:var(--red);font-size:15px;flex-shrink:0;margin-top:1px;}
+.disclaimer-text{font-size:12px;color:#ff9490;line-height:1.6;font-family:var(--sans);}
+.disclaimer-text strong{color:var(--red);font-size:12px;font-family:var(--sans);display:block;margin-bottom:2px;font-weight:700;}
+.doc-header{display:flex;align-items:center;gap:8px;margin-bottom:5px;}
+.doc-tog{flex:1;text-align:left;background:var(--card2);border:1px solid var(--border2);border-radius:5px;color:var(--text2);font-family:var(--sans);font-size:13px;padding:8px 13px;cursor:pointer;transition:all 0.15s;}
+.doc-tog:hover{border-color:var(--teal);color:var(--teal);}
+.copy-btn{background:var(--card2);border:1px solid var(--border2);border-radius:5px;color:var(--text2);font-family:var(--sans);font-size:12px;padding:8px 14px;cursor:pointer;white-space:nowrap;transition:all 0.15s;display:none;}
+.copy-btn.visible{display:block;}
+.copy-btn:hover{border-color:var(--green);color:var(--green);}
+.copy-btn.copied{border-color:var(--green);color:var(--green);background:var(--green-bg);}
+.doc-body{display:none;background:var(--card2);border:1px solid var(--border2);border-radius:5px;padding:13px 15px;font-family:var(--mono);font-size:11px;color:var(--text2);line-height:1.85;white-space:pre-wrap;margin-bottom:12px;}
+.doc-body.open{display:block;}
+</style>
+</head>
+<body>
+<div class="app">
+
+<header>
+  <div>
+    <div class="h-title">Autoimmune Encephalitis <span>Navigator</span></div>
+    <div class="h-sub">Graus F et al. · Lancet Neurol 2016;15:391–404 · Possible / Probable / Definite · APE2 Score · For educator use only</div>
+    <div class="h-credit">Designed by neurology resident physician Daniel Short, MD</div>
+  </div>
+  <button class="reset-btn" onclick="resetAll()">↺ Reset</button>
+</header>
+
+<div class="prog-track"><div class="prog-fill" id="pf" style="width:0%"></div></div>
+
+<div class="steps">
+  <div class="stab active" id="st0" onclick="goTab(0)"><span class="sn">1</span><span class="slbl">Possible AE</span></div>
+  <div class="stab"        id="st1" onclick="goTab(1)"><span class="sn">2</span><span class="slbl">Syndrome</span></div>
+  <div class="stab"        id="st2" onclick="goTab(2)"><span class="sn">3</span><span class="slbl">Work-up</span></div>
+  <div class="stab"        id="st3" onclick="goTab(3)"><span class="sn">4</span><span class="slbl">Antibodies</span></div>
+  <div class="stab"        id="st4" onclick="goTab(4)"><span class="sn">5</span><span class="slbl">APE2 Score</span></div>
+  <div class="stab"        id="st5" onclick="goTab(5)"><span class="sn">6</span><span class="slbl">Verdict</span></div>
+</div>
+
+
+<!-- ══ SCREEN 0: POSSIBLE AE ══ -->
+<div class="screen active" id="s0">
+<div class="card">
+  <div class="disclaimer">
+    <div class="disclaimer-icon">⚠</div>
+    <div class="disclaimer-text">
+      <strong>Educational Use Only</strong>
+      This tool is for clinical education and training only. It does not replace expert clinician assessment or comprehensive neurological evaluation. All diagnostic and treatment decisions must be made by qualified clinicians.
+    </div>
+  </div>
+  <div class="ctitle" style="color:var(--teal);">Step 1 · Possible Autoimmune Encephalitis (Panel 1)</div>
+  <div class="csub">All three criteria must be present to qualify as possible AE and proceed with this diagnostic pathway. Active exclusion of alternative diagnoses — especially infectious encephalitis — is mandatory before immunotherapy.</div>
+
+  <div class="lbox">
+    <strong>Why this threshold exists:</strong> Prior encephalitis criteria assumed infectious aetiology and required fever, CSF pleocytosis, and altered consciousness — features <span class="la">frequently absent in autoimmune encephalitis</span>. Panel 1 (Graus 2016) lowers the entry threshold to ensure early recognition. <span class="lt">The most critical mimic to exclude is HSV encephalitis</span> — CSF PCR can be falsely negative within 24 h. Repeat PCR if clinical suspicion persists. Primary CNS lymphoma can mimic AE and may transiently respond to steroids.
+  </div>
+
+  <div class="slabel">A · Onset &amp; Core Presentation <span class="pill pill-r">REQUIRED</span></div>
+  <div class="crit" id="onset-item">
+    <div class="crit-main">
+      <div class="crit-name">Subacute onset (&lt;3 months) of working memory deficit, altered mental status, or psychiatric symptoms</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      <strong>Working memory deficit</strong> — inability to form new long-term memories (hippocampal dysfunction), or problems with temporary storage/manipulation of information. <strong>Altered mental status</strong> — decreased or altered level of consciousness, lethargy, or personality change. <strong>Psychiatric symptoms</strong> — new-onset psychosis, agitation, affective changes, or behavioural disturbance without prior psychiatric history. Autoimmune encephalitis can present with purely psychiatric features without fever or impaired consciousness — a pattern that does not meet traditional infectious encephalitis criteria.
+      <div class="cnote cnote-warn">In children younger than 5 years, syndromic recognition is more difficult and these criteria should be applied with particular caution. Paediatric AE is more antibody-dependent for definitive diagnosis (Armangue et al. J Child Neurol 2012).</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="pset('onset','yes')" id="onset-yes">✓ Present — subacute onset confirmed</button>
+      <button class="abtn" onclick="pset('onset','no')"  id="onset-no">✗ Absent or onset &gt;3 months</button>
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:14px;">B · Supporting Feature (≥1 required) <span class="pill pill-r">REQUIRED</span></div>
+  <div class="crit" id="feature-item">
+    <div class="crit-main">
+      <div class="crit-name">New focal CNS findings, unexplained seizures, CSF pleocytosis (&gt;5 WBC/mm³), or MRI suggestive of encephalitis</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      At least <strong>one</strong> of the following must be present:<br><br>
+      • <strong>New focal CNS findings</strong> — deficits, brainstem signs, movement disorder, dysautonomia<br>
+      • <strong>Seizures not explained by a previously known seizure disorder</strong><br>
+      • <strong>CSF pleocytosis</strong> — WBC &gt;5 cells/mm³ (note: absent in 59% of LGI1 antibody LE — absence does not exclude AE)<br>
+      • <strong>MRI features suggestive of encephalitis</strong> — T2/FLAIR hyperintensity in one or both medial temporal lobes, or multifocal grey/white matter signal compatible with demyelination or inflammation
+      <div class="cnote cnote-warn">EEG alone is rarely specific but supports the diagnosis — particularly temporal slow-wave activity in limbic encephalitis, or extreme delta brush (highly specific for NMDAR encephalitis). Actively exclude subclinical seizures and non-convulsive status epilepticus.</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="pset('feature','yes')" id="feature-yes">✓ ≥1 supporting feature present</button>
+      <button class="abtn" onclick="pset('feature','no')"  id="feature-no">✗ None present</button>
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:14px;">C · Exclusion of Alternative Diagnoses <span class="pill pill-r">REQUIRED</span></div>
+  <div class="crit" id="excl-item">
+    <div class="crit-main">
+      <div class="crit-name">Alternative causes reasonably excluded (infectious, structural, metabolic, toxic, prion)</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      The following should be evaluated before initiating immunotherapy:<br><br>
+      • <strong>Infectious:</strong> HSV encephalitis (CSF PCR — repeat if negative within 24 h and suspicion remains high), VZV, EBV, HHV-6 (especially in immunocompromised), bacterial meningitis, neurosyphilis, HIV, progressive multifocal leukoencephalopathy<br>
+      • <strong>Neoplastic:</strong> Primary CNS lymphoma (can respond transiently to steroids — brain biopsy if atypical or treatment-refractory), leptomeningeal carcinomatosis<br>
+      • <strong>Metabolic/toxic:</strong> Wernicke encephalopathy (thiamine empirically if at risk), hepatic encephalopathy, uraemia, drug toxicity (lithium, metronidazole, cefepime), hyponatraemia<br>
+      • <strong>Prion disease:</strong> CJD — DWI cortical ribboning/striatal signal; 14-3-3 protein; RT-QuIC on CSF; no fever
+      <div class="cnote cnote-red">Primary CNS lymphoma is a critical mimic — it can present with subacute encephalopathy, show MRI lesions, and transiently respond to corticosteroids (tumour lysis). Steroid response alone does not confirm AE. Brain biopsy may be required in ambiguous cases.</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="pset('excl','yes')" id="excl-yes">✓ Alternative causes reasonably excluded</button>
+      <button class="abtn" onclick="pset('excl','no')"  id="excl-no">✗ Alternative diagnosis more likely</button>
+    </div>
+  </div>
+
+  <div id="a0" class="alrt"></div>
+  <div class="nav-row">
+    <div></div>
+    <button class="nbtn np" id="n0" onclick="go(1)" disabled>Next: Syndrome Recognition →</button>
+  </div>
+</div>
+</div>
+
+
+<!-- ══ SCREEN 1: SYNDROME RECOGNITION ══ -->
+<div class="screen" id="s1">
+<div class="card">
+  <div class="ctitle" style="color:var(--amber);">Step 2 · Syndrome Recognition</div>
+  <div class="csub">Certain clinical syndromes allow classification as probable or definite AE on clinical grounds before antibody results are available. Identify the best-fitting syndrome to direct the evidence pathway. Assess all four syndromes — features may overlap.</div>
+
+  <div class="lbox">
+    <strong>Algorithm principle (Figure 1, Graus 2016):</strong> <span class="lt">Limbic encephalitis, anti-NMDAR encephalitis, ADEM, and Bickerstaff's brainstem encephalitis</span> each have panel criteria allowing probable/definite classification using clinical features, MRI, and CSF alone. If none fit, the patient remains possible AE pending antibody results or Panel 7 criteria. Syndrome recognition should prompt empirical immunotherapy if clinical suspicion is high — early treatment improves outcome (Byrne et al. 2015; Titulaer et al. 2013).
+  </div>
+
+  <!-- LIMBIC ENCEPHALITIS -->
+  <div class="slabel">A · Limbic Encephalitis (Panel 2) <span class="pill pill-t">SYNDROME-BASED</span></div>
+  <div class="crit" id="le-onset-item">
+    <div class="crit-main">
+      <div class="crit-name">Subacute onset (&lt;3 months) of working memory deficit, seizures, or psychiatric symptoms suggesting limbic involvement</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      The hallmark of limbic encephalitis is <strong>subacute short-term memory loss</strong> — often overlooked when behavioural or seizure symptoms dominate. Rapid confusion, mood change, and temporal lobe seizures are characteristic. CSF shows lymphocytic pleocytosis in 60–80% of patients and elevated IgG index or OCBs in ~50%. Notable exception: LGI1 antibody LE has CSF pleocytosis in only 41% and elevated protein in only 47% (Jarius et al. J Neurol Sci 2008) — normal CSF should not redirect the diagnosis.
+      <div class="cnote cnote-blue">Syndrome clues by antibody: LGI1 — faciobrachial dystonic seizures (pathognomonic, may precede LE), hyponatraemia (SIADH), responds well to steroids. GABA-B — refractory seizures, ~50% paraneoplastic (SCLC). AMPA — ~65% paraneoplastic (thymoma/SCLC). Hu/Ma2 — paraneoplastic in &gt;95%, near-universal cancer association.</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="sset('le_onset','yes')" id="le_onset-yes">✓ Present</button>
+      <button class="abtn" onclick="sset('le_onset','no')"  id="le_onset-no">✗ Absent</button>
+    </div>
+  </div>
+
+  <div class="crit" id="le-mri-item">
+    <div class="crit-main">
+      <div class="crit-name">Brain MRI: bilateral T2/FLAIR signal highly restricted to medial temporal lobes (or FDG-PET equivalent)</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      Bilateral medial temporal T2/FLAIR hyperintensity is required for definite LE <em>without</em> antibody data. Unilateral involvement alone requires antibody confirmation. <strong>¹⁸F-FDG-PET</strong> may substitute for MRI — studies from 2008–2015 suggest PET is more sensitive than MRI for demonstrating medial temporal involvement in early disease (Baumgartner et al. J Neurol 2013).
+      <div class="cnote cnote-warn">MRI mimics of LE: (1) HHV-6 encephalitis in immunocompromised — can be radiologically identical; clinical context distinguishes. (2) HSV encephalitis — less restricted, often haemorrhagic, DWI restriction, contrast enhancement. (3) Low-grade glioma — unilateral, mass effect, no restricted diffusion. (4) Status epilepticus — reversible unilateral T2 signal. (5) Transient epileptic amnesia — may be a presenting feature of early LGI1 LE.</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="sset('le_mri','bilateral')"  id="le_mri-bilateral">✓ Bilateral medial temporal</button>
+      <button class="abtn" onclick="sset('le_mri','unilateral')" id="le_mri-unilateral">⚠ Unilateral only</button>
+      <button class="abtn" onclick="sset('le_mri','normal')"     id="le_mri-normal">✗ Normal / non-specific</button>
+    </div>
+  </div>
+
+  <div class="crit" id="le-csf-item">
+    <div class="crit-main">
+      <div class="crit-name">CSF pleocytosis (&gt;5 WBC/mm³) OR EEG: epileptic or slow-wave activity in temporal lobes (≥1 required)</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      Panel 2 Criterion 3 requires at least one of: CSF pleocytosis &gt;5/mm³, or EEG with epileptic or slow-wave activity involving the temporal lobes. Both can be absent in LGI1 antibody LE — in that case, bilateral MRI plus subacute onset plus antibody positivity allows definite classification. If CSF and EEG are both normal and MRI is bilateral, the case is still probable LE if the onset criterion is met; antibody testing confirms.
+      <div class="cnote">If all four Panel 2 criteria are met (onset + bilateral MRI + CSF/EEG + exclusion), definite LE is established even without antibody results — immune-mediated LE can occur without detectable autoantibodies (Graus et al. Neurology 2008; Najjar et al. 2011).</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="sset('le_csf','yes')" id="le_csf-yes">✓ ≥1 present (CSF pleocytosis or temporal EEG changes)</button>
+      <button class="abtn" onclick="sset('le_csf','no')"  id="le_csf-no">✗ Neither present</button>
+    </div>
+  </div>
+
+  <!-- ANTI-NMDAR -->
+  <div class="slabel" style="margin-top:14px;">B · Anti-NMDAR Encephalitis (Panel 4) <span class="pill pill-t">SYNDROME-BASED</span></div>
+  <div class="crit" id="nmdar-item">
+    <div class="crit-main">
+      <div class="crit-name">Rapid onset (&lt;3 months) of ≥4 of 6 major symptom groups, with ≥1 abnormal investigation</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      <strong>6 major symptom groups (Panel 4):</strong><br>
+      (1) Abnormal psychiatric behaviour or cognitive dysfunction<br>
+      (2) Speech dysfunction — pressured speech, verbal reduction, mutism<br>
+      (3) Seizures<br>
+      (4) Movement disorder, dyskinesias, rigidity, or abnormal postures<br>
+      (5) Decreased level of consciousness<br>
+      (6) Autonomic dysfunction or central hypoventilation<br><br>
+      <strong>Required investigation (≥1):</strong> Abnormal EEG (focal/diffuse slow activity, epileptic activity, or extreme delta brush — highly specific); CSF pleocytosis or oligoclonal bands.<br>
+      <strong>Exception:</strong> 3 symptom groups are sufficient if a systemic teratoma is present.
+      <div class="cnote cnote-warn">Titulaer et al. Lancet Neurol 2013 (n=577): 95% &lt;45 y; 37% &lt;18 y; F:M=4:1. Tumour frequency: 0–5% in children, 58% in women &gt;18 y (ovarian teratoma), 23% in adults &gt;45 y (carcinoma). By month 1, 87% of patients had ≥4 symptom groups. Post-HSV NMDAR encephalitis: new choreoathetosis (children) or psychiatric relapse (adults) weeks after HSV encephalitis — occurs in ~20% of HSV cases; test CSF for NMDAR Abs.</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="sset('nmdar','prob')" id="nmdar-prob">✓ ≥4 symptom groups + EEG/CSF (or ≥3 + teratoma)</button>
+      <button class="abtn" onclick="sset('nmdar','part')" id="nmdar-part">⚠ Partial features — some criteria present</button>
+      <button class="abtn" onclick="sset('nmdar','no')"   id="nmdar-no">✗ Does not fit NMDAR syndrome</button>
+    </div>
+  </div>
+
+  <!-- ADEM -->
+  <div class="slabel" style="margin-top:14px;">C · ADEM (Panel 3) <span class="pill pill-t">SYNDROME-BASED</span></div>
+  <div class="crit" id="adem-item">
+    <div class="crit-main">
+      <div class="crit-name">First multifocal CNS demyelinating event + encephalopathy + large MRI T2 lesions</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      <strong>Panel 3 — 5 criteria (all required for definite ADEM):</strong><br>
+      (1) First multifocal CNS event of presumed inflammatory demyelinating cause<br>
+      (2) Encephalopathy not explained by fever<br>
+      (3) Brain MRI: diffuse, poorly demarcated large (&gt;1–2 cm) T2/FLAIR lesions predominantly in white matter ± deep grey matter (thalamus/BG)<br>
+      (4) No new clinical or MRI findings after 3 months — <em>cannot be confirmed at onset; treat meeting criteria 1–3+5 as probable ADEM</em><br>
+      (5) Reasonable exclusion of alternatives<br><br>
+      CSF: mild pleocytosis &lt;50/mm³; OCBs uncommon (&lt;7%). MOG Abs transiently present in ~50% of children with ADEM (Brilot et al. Ann Neurol 2009).
+      <div class="cnote cnote-warn">Susac syndrome — critical ADEM mimic: autoimmune microangiopathy of brain + retina + cochlea. Key MRI finding: snowball/hole lesions in central corpus callosum (distinctly different from ADEM periventricular pattern). Simultaneous triad at onset in only 13% of patients (Dörr et al. Nat Rev Neurol 2013; n=304 cases). Requires fluorescein angiography for branch retinal artery occlusions.</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="sset('adem','yes')" id="adem-yes">✓ Meets probable/definite ADEM criteria</button>
+      <button class="abtn" onclick="sset('adem','no')"  id="adem-no">✗ Does not fit ADEM</button>
+    </div>
+  </div>
+
+  <!-- BICKERSTAFF'S -->
+  <div class="slabel" style="margin-top:14px;">D · Bickerstaff's Brainstem Encephalitis (Panel 5) <span class="pill pill-t">SYNDROME-BASED</span></div>
+  <div class="crit" id="bbs-item">
+    <div class="crit-main">
+      <div class="crit-name">Subacute onset (&lt;4 weeks): decreased consciousness + bilateral ophthalmoplegia + ataxia</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      <strong>Probable BBE (Panel 5):</strong> Subacute onset &lt;4 weeks of all 3 core features — decreased LOC, bilateral external ophthalmoplegia, ataxia — with alternatives excluded. Often preceded by infectious event. Usually monophasic with good outcome. Additional features: pupillary abnormalities, bilateral facial palsy, Babinski sign, bulbar palsy. CSF pleocytosis in 45%; MRI brainstem T2 abnormalities in 23% (Koga et al. J Neurol Neurosurg Psychiatry 2012; n=53 Japanese patients).<br><br>
+      <strong>Definite BBE:</strong> IgG anti-GQ1b antibodies positive — allows diagnosis even if ophthalmoplegia is incomplete or ataxia is unassessable, or if recovery has already occurred within 12 weeks. Up to 32% of BBE patients are GQ1b-seronegative.
+      <div class="cnote cnote-red">Critical mimics: Listeria rhombencephalitis, EV71 brainstem encephalitis (children), CLIPPERS (chronic lymphocytic inflammation with pontine perivascular enhancement — responds to steroids, recurs on tapering), neurosarcoidosis, primary CNS lymphoma, paraneoplastic brainstem encephalitis.</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="sset('bbs','prob')" id="bbs-prob">✓ Probable BBE — full clinical triad present</button>
+      <button class="abtn" onclick="sset('bbs','part')" id="bbs-part">⚠ Partial features only</button>
+      <button class="abtn" onclick="sset('bbs','no')"   id="bbs-no">✗ Does not fit BBE</button>
+    </div>
+  </div>
+
+  <div id="a1" class="alrt"></div>
+  <div class="nav-row">
+    <button class="nbtn ns" onclick="go(0)">← Back</button>
+    <button class="nbtn np" id="n1" onclick="go(2)" disabled>Next: Work-up →</button>
+  </div>
+</div>
+</div>
+
+
+<!-- ══ SCREEN 2: WORK-UP ══ -->
+<div class="screen" id="s2">
+<div class="card">
+  <div class="ctitle" style="color:var(--blue);">Step 3 · Ancillary Work-up</div>
+  <div class="csub">Complete regardless of which syndrome is suspected. Paraneoplastic tumour screening is mandatory in all cases. For patients without a clear syndrome, Panel 6 (Hashimoto's) and Panel 7 (antibody-negative probable AE) criteria are applied here.</div>
+
+  <div class="lbox">
+    <strong>Paraneoplastic risk stratification:</strong> Tumour association varies dramatically by antibody — from &gt;95% with Hu/Ma2 to 0% with MOG/AQP4. Age- and sex-appropriate tumour screening is mandatory: CT chest/abdomen/pelvis and ovarian ultrasound/CT pelvis in women with suspected NMDAR encephalitis. PET-CT has higher sensitivity for occult SCLC and lymphoma than CT alone. If initial imaging is negative and paraneoplastic risk is high, repeat at 3–6 months.
+  </div>
+
+  <div class="slabel">A · Paraneoplastic Tumour Screening <span class="pill pill-a">MANDATORY ALL CASES</span></div>
+  <div class="crit" id="tumour-item">
+    <div class="crit-main">
+      <div class="crit-name">Tumour workup performed (CT chest/abdomen/pelvis ± PET-CT ± ovarian imaging)</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      <strong>Tumour frequencies by antibody (Graus 2016, Table):</strong><br>
+      • Hu/ANNA1: &gt;95% — SCLC<br>
+      • Ma2: &gt;95% — testicular seminoma (young men)<br>
+      • CV2/CRMP5: &gt;95% — SCLC<br>
+      • AMPA receptor: 65% — thymoma, SCLC, breast<br>
+      • GABA-B receptor: 50% — SCLC<br>
+      • CASPR2: 20–50% — thymoma (Morvan's &gt; LE)<br>
+      • mGluR5: 70% — Hodgkin's lymphoma (Ophelia syndrome)<br>
+      • NMDAR: varies — 0–5% in children, 58% in women &gt;18 y (ovarian teratoma), 23% in adults &gt;45 y<br>
+      • LGI1: 5–10% — thymoma<br>
+      • GABA-A: &lt;5% — thymoma<br>
+      • MOG / AQP4 / GQ1b: 0%
+      <div class="cnote cnote-warn">GAD antibodies in LE: cancer risk is preferentially higher in patients &gt;50 y or with concomitant GABA-B receptor Abs. In GAD-LE, median age is 23 y with predominantly young women; seizures are the main symptom and cancer is uncommon (Ariño et al. JAMA Neurol 2015).</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="wset('tumour','done_neg')"  id="tumour-done_neg">✓ Completed — no tumour identified</button>
+      <button class="abtn" onclick="wset('tumour','done_pos')"  id="tumour-done_pos">⚠ Tumour identified</button>
+      <button class="abtn" onclick="wset('tumour','pending')"   id="tumour-pending">— Pending / not yet done</button>
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:14px;">B · Hashimoto's Encephalopathy / SREAT (Panel 6) <span class="pill pill-b">IF NO CLEAR SYNDROME</span></div>
+  <div class="crit" id="hash-item">
+    <div class="crit-main">
+      <div class="crit-name">Anti-thyroid antibodies (TPO / thyroglobulin) + thyroid disease + encephalopathy, no well-characterised neuronal Abs</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      <strong>Panel 6 — all 6 required:</strong> (1) Encephalopathy with seizures, myoclonus, hallucinations, or stroke-like episodes; (2) Subclinical or mild overt thyroid disease (usually hypothyroidism); (3) Normal or non-specific brain MRI; (4) Serum anti-thyroid Abs (TPO or TG); (5) Absence of well-characterised neuronal Abs in serum and CSF; (6) Reasonable exclusion of alternatives.<br><br>
+      <strong>Critical caveats:</strong> Anti-thyroid Abs present in 13% of healthy individuals (27% in white women &gt;60 y) — not diagnostic in isolation. Renamed SREAT in 2006. In a review of 85 patients, 56 had seizures and 66/69 treated with corticosteroids improved — but this outcome is expected by definition (Chong et al. Arch Neurol 2003). Classification remains <em>probable</em> AE given unclear pathophysiology.
+      <div class="cnote">α-enolase Abs found in up to 68% of Hashimoto's encephalopathy patients (Yoneda et al. 2007) but also in healthy individuals and other autoimmune disorders — cannot serve as a disease biomarker.</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="wset('hash','yes')" id="hash-yes">✓ Panel 6 criteria met — probable SREAT</button>
+      <button class="abtn" onclick="wset('hash','no')"  id="hash-no">✗ Does not meet Panel 6</button>
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:14px;">C · Antibody-Negative Probable AE (Panel 7) <span class="pill pill-b">IF NO SYNDROME AND NO Ab</span></div>
+  <div class="crit" id="p7-item">
+    <div class="crit-main">
+      <div class="crit-name">No well-characterised Abs; ≥2 of: suggestive MRI / CSF inflammation / brain biopsy inflammation</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      <strong>Panel 7 — all 4 required:</strong><br>
+      (1) Rapid progression &lt;3 months of memory deficit, altered mental status, or psychiatric symptoms<br>
+      (2) Exclusion of well-defined AE syndromes (LE, BBE, ADEM)<br>
+      (3) Absence of well-characterised Abs in serum and CSF, AND ≥2 of: (a) MRI abnormalities suggestive of AE; (b) CSF pleocytosis, oligoclonal bands, or elevated IgG index; (c) brain biopsy showing inflammatory infiltrates excluding tumour<br>
+      (4) Reasonable exclusion of alternatives<br><br>
+      59% of LGI1 Ab patients lack CSF pleocytosis — normal routine CSF does not exclude AE. Brain biopsy shows inflammation but cannot establish autoimmune cause alone; detection of CSF Abs against cell-surface antigens (even unknown ones) in a research lab is more informative.
+      <div class="cnote cnote-warn">In children: genetic disorders, mitochondrial diseases, and leukodystrophies can present with symmetric MRI lesions, CSF pleocytosis, and steroid responsiveness mimicking AE — maintain broad differential especially in paediatric patients.</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="wset('p7','yes')" id="p7-yes">✓ Panel 7 criteria met</button>
+      <button class="abtn" onclick="wset('p7','no')"  id="p7-no">✗ Does not meet Panel 7</button>
+    </div>
+  </div>
+
+  <div id="a2" class="alrt"></div>
+  <div class="nav-row">
+    <button class="nbtn ns" onclick="go(1)">← Back</button>
+    <button class="nbtn np" id="n2" onclick="go(3)" disabled>Next: Antibody Results →</button>
+  </div>
+</div>
+</div>
+
+
+<!-- ══ SCREEN 3: ANTIBODIES ══ -->
+<div class="screen" id="s3">
+<div class="card">
+  <div class="ctitle" style="color:var(--purple);">Step 4 · Antibody Test Results</div>
+  <div class="csub">Antibody results refine classification from probable to definite, identify immunological subtype, guide tumour surveillance, and predict prognosis. Both CSF and serum should be sent simultaneously — do not wait for serum before testing CSF.</div>
+
+  <div class="lbox">
+    <strong>Why CSF is critical (Graus 2016):</strong> Up to 14% of confirmed NMDAR encephalitis cases are serum-negative but CSF-positive (Gresa-Arribas et al. Lancet Neurol 2014). <span class="lr">Serum-only testing risks false-negatives and false-positives</span> — particularly IgM/IgA NMDAR Abs, found in 10% of patients with unrelated disorders and in healthy controls. VGKC-complex Abs that do <em>not</em> target LGI1 or CASPR2 are not syndrome-specific and should not be used as proof of immune-mediated disease (Klein et al. JAMA Neurol 2013; Huda et al. J Neurol 2015).
+  </div>
+
+  <div class="slabel">A · Specimen Collection <span class="pill pill-a">BOTH PREFERRED</span></div>
+  <div class="crit" id="csf-sent-item">
+    <div class="crit-main">
+      <div class="crit-name">CSF and serum sent simultaneously for neuronal antibody testing</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      Send both CSF and serum simultaneously. The strategy of testing serum first and proceeding to CSF only if negative risks delayed diagnosis. The Ab repertoire in CSF and serum can differ in the same patient — CSF Abs generally correlate better with the clinical picture and disease course. For NMDAR encephalitis, CSF Ab titres correlate better with clinical course than serum titres and should guide treatment monitoring.
+      <div class="cnote cnote-warn">Cell-based assays (CBA) are required for most cell-surface Abs — ELISA and immunoblot are inadequate because these antibodies recognise conformational (not linear) epitopes. If serum is positive and CSF is negative, or if the clinical picture is discordant with the antibody identified, request confirmatory testing (live neuron immunocytochemistry or brain tissue immunohistochemistry).</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="abset('csf_sent','both')"     id="csf_sent-both">✓ Both CSF and serum sent</button>
+      <button class="abtn" onclick="abset('csf_sent','csf_only')"  id="csf_sent-csf_only">— CSF only</button>
+      <button class="abtn" onclick="abset('csf_sent','ser_only')"  id="csf_sent-ser_only">⚠ Serum only (suboptimal)</button>
+      <button class="abtn" onclick="abset('csf_sent','pending')"   id="csf_sent-pending">— Pending / not yet sent</button>
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:14px;">B · Cell-Surface / Synaptic IgG Antibody Result <span class="pill pill-t">HIGHEST DIAGNOSTIC YIELD</span></div>
+  <div class="crit" id="ab-surface-item">
+    <div class="crit-main">
+      <div class="crit-name">IgG antibody against cell-surface, synaptic, or ion-channel antigen (NMDAR, LGI1, CASPR2, GABA-B, GABA-A, AMPA, mGluR5, DPPX, D2R, MOG, AQP4)</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      Cell-surface antibodies are pathogenic (demonstrated in neuronal cultures and in-vivo models — Moscato et al. Ann Neurol 2014; Planagumà et al. Brain 2015), recognise conformational epitopes (require CBA), and are detectable in CSF of most patients. A positive <strong>IgG</strong> result in CSF establishes definite AE of the specific subtype.<br><br>
+      <strong>NMDAR-specific caveats:</strong> (1) IgG anti-GluN1 is highly specific — IgM/IgA anti-NMDAR are not; (2) Antibodies against GluN2 (linear epitopes) are found in many disorders with uncertain significance and are not equivalent; (3) Overlapping syndromes: ~4% of NMDAR encephalitis patients develop concurrent MOG or AQP4 demyelinating disease — test for both if atypical features (optic neuritis, myelopathy, prominent demyelination on MRI) are present.
+      <div class="cnote cnote-grn">If serum is positive but CSF is negative: request confirmatory testing (live hippocampal neuron ICC or brain IHC). Contact the laboratory before dismissing a serum-only positive result as false-positive — clinical context is essential. A single positive confirmatory test upgrades to definite AE.</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="abset('ab_surface','pos_csf')"  id="ab_surface-pos_csf">✓ Positive in CSF (IgG)</button>
+      <button class="abtn" onclick="abset('ab_surface','pos_ser')"  id="ab_surface-pos_ser">⚠ Positive in serum only (IgG)</button>
+      <button class="abtn" onclick="abset('ab_surface','negative')" id="ab_surface-negative">✗ Negative in both</button>
+      <button class="abtn" onclick="abset('ab_surface','pending')"  id="ab_surface-pending">— Pending</button>
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:14px;">C · Onconeuronal / GAD Antibodies <span class="pill pill-b">PARANEOPLASTIC MARKER</span></div>
+  <div class="crit" id="ab-oncone-item">
+    <div class="crit-main">
+      <div class="crit-name">Antibodies against intracellular antigens (Hu, Ma2, CV2/CRMP5, amphiphysin, GAD)</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      Onconeuronal Abs (Hu, Ma2, CV2, amphiphysin) target intracellular proteins, are detectable by ELISA/immunoblot (linear epitopes), and are associated with cancer in &gt;95% of cases. They are immune markers of the tumour response, not directly pathogenic — LE with onconeuronal Abs is <strong>much less responsive to immunotherapy</strong> than LE with cell-surface Abs. Treatment of the underlying tumour is the primary intervention.<br><br>
+      <strong>High-titre GAD Abs:</strong> Serum GAD Abs at 100–1000× the level seen in T1DM are associated with limbic encephalitis, stiff person syndrome, and cerebellar ataxia. Low-titre GAD Abs (present in 1% of healthy individuals and 80% of T1DM) have no neurological significance. Specific intrathecal GAD Ab production or CSF OCBs support a neurological association (Saiz et al. Brain 2008).
+      <div class="cnote cnote-red">Hu (ANNA1): &gt;95% SCLC. Ma2: &gt;95% testicular seminoma (young men). Urgent comprehensive tumour search mandatory. Simultaneous oncological treatment and immunotherapy required. Prognosis is significantly worse than for cell-surface Ab AE.</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="abset('ab_onco','pos')"      id="ab_onco-pos">✓ Positive (specify Ab in documentation)</button>
+      <button class="abtn" onclick="abset('ab_onco','negative')"  id="ab_onco-negative">✗ Negative</button>
+      <button class="abtn" onclick="abset('ab_onco','pending')"   id="ab_onco-pending">— Pending</button>
+    </div>
+  </div>
+
+  <div id="a3" class="alrt"></div>
+  <div class="nav-row">
+    <button class="nbtn ns" onclick="go(2)">← Back</button>
+    <button class="nbtn np" id="n3" onclick="go(4)" disabled>Next: APE2 Score →</button>
+  </div>
+</div>
+</div>
+
+
+<!-- ══ SCREEN 4: APE2 SCORE ══ -->
+<div class="screen" id="s4">
+<div class="card">
+  <div class="ctitle" style="color:var(--amber);">Step 5 · APE2 Score</div>
+  <div class="csub">The APE2 (Antibody Prevalence in Epilepsy and Encephalopathy) score estimates the pre-test probability of a neural antibody being detected. Developed and validated by Dubey et al. Score each feature present at time of initial presentation.</div>
+
+  <div class="lbox">
+    <strong>Reference:</strong> Dubey D, Pittock SJ, Kelly CR, et al. Autoimmune encephalitis epidemiology and a comparison to infectious encephalitis. Ann Neurol. 2018;83(1):166–177. Prospective cohort (n=226). <span class="lg">APE2 ≥4: sensitivity 96%, specificity 84%</span> for predicting a positive neural antibody. The score does not replace Graus criteria — it provides a pre-test probability estimate to support decisions about empirical immunotherapy while awaiting antibody results.
+  </div>
+
+  <div class="ape2-scorebox">
+    <div class="ape2-scorebox-left">
+      <strong>Current APE2 Score</strong>
+      Mark each feature present below — score updates automatically.
+    </div>
+    <div class="ape2-scorenum" id="ape2-total">0</div>
+  </div>
+
+  <div class="ape2-grid">
+    <div class="ape2-item" id="ape2-sex-item">
+      <div class="ape2-main"><div class="ape2-pts">+1</div><div class="ape2-label">Female sex</div></div>
+      <div class="ape2-brow">
+        <button class="ape2-btn" onclick="a2set('sex',true)"  id="ape2-sex-y">✓ Yes</button>
+        <button class="ape2-btn" onclick="a2set('sex',false)" id="ape2-sex-n">✗ No</button>
+      </div>
+    </div>
+    <div class="ape2-item" id="ape2-psych-item">
+      <div class="ape2-main"><div class="ape2-pts">+2</div><div class="ape2-label">New-onset psychiatric symptoms</div></div>
+      <div class="ape2-brow">
+        <button class="ape2-btn" onclick="a2set('psych',true)"  id="ape2-psych-y">✓ Yes</button>
+        <button class="ape2-btn" onclick="a2set('psych',false)" id="ape2-psych-n">✗ No</button>
+      </div>
+    </div>
+    <div class="ape2-item" id="ape2-cog-item">
+      <div class="ape2-main"><div class="ape2-pts">+2</div><div class="ape2-label">Cognitive dysfunction (memory, orientation, executive function)</div></div>
+      <div class="ape2-brow">
+        <button class="ape2-btn" onclick="a2set('cog',true)"  id="ape2-cog-y">✓ Yes</button>
+        <button class="ape2-btn" onclick="a2set('cog',false)" id="ape2-cog-n">✗ No</button>
+      </div>
+    </div>
+    <div class="ape2-item" id="ape2-sz-item">
+      <div class="ape2-main"><div class="ape2-pts">+3</div><div class="ape2-label">New-onset seizures (unprovoked or refractory to AED)</div></div>
+      <div class="ape2-brow">
+        <button class="ape2-btn" onclick="a2set('sz',true)"  id="ape2-sz-y">✓ Yes</button>
+        <button class="ape2-btn" onclick="a2set('sz',false)" id="ape2-sz-n">✗ No</button>
+      </div>
+    </div>
+    <div class="ape2-item" id="ape2-mvt-item">
+      <div class="ape2-main"><div class="ape2-pts">+3</div><div class="ape2-label">Movement disorder (dyskinesia, tremor, rigidity, myoclonus, ataxia)</div></div>
+      <div class="ape2-brow">
+        <button class="ape2-btn" onclick="a2set('mvt',true)"  id="ape2-mvt-y">✓ Yes</button>
+        <button class="ape2-btn" onclick="a2set('mvt',false)" id="ape2-mvt-n">✗ No</button>
+      </div>
+    </div>
+    <div class="ape2-item" id="ape2-lp-item">
+      <div class="ape2-main"><div class="ape2-pts">+2</div><div class="ape2-label">CSF pleocytosis (&gt;5 WBC/mm³)</div></div>
+      <div class="ape2-brow">
+        <button class="ape2-btn" onclick="a2set('lp',true)"  id="ape2-lp-y">✓ Yes</button>
+        <button class="ape2-btn" onclick="a2set('lp',false)" id="ape2-lp-n">✗ No</button>
+      </div>
+    </div>
+    <div class="ape2-item" id="ape2-mri-item">
+      <div class="ape2-main"><div class="ape2-pts">+2</div><div class="ape2-label">MRI brain abnormality (temporal / cortical / white matter signal)</div></div>
+      <div class="ape2-brow">
+        <button class="ape2-btn" onclick="a2set('mri',true)"  id="ape2-mri-y">✓ Yes</button>
+        <button class="ape2-btn" onclick="a2set('mri',false)" id="ape2-mri-n">✗ No</button>
+      </div>
+    </div>
+    <div class="ape2-item" id="ape2-vir-item">
+      <div class="ape2-main"><div class="ape2-pts">+2</div><div class="ape2-label">Viral prodrome (fever, URI, GI illness within 5 weeks prior)</div></div>
+      <div class="ape2-brow">
+        <button class="ape2-btn" onclick="a2set('vir',true)"  id="ape2-vir-y">✓ Yes</button>
+        <button class="ape2-btn" onclick="a2set('vir',false)" id="ape2-vir-n">✗ No</button>
+      </div>
+    </div>
+    <div class="ape2-item" id="ape2-aut-item">
+      <div class="ape2-main"><div class="ape2-pts">+3</div><div class="ape2-label">Autonomic dysfunction (tachycardia, BP lability, hyperhidrosis, urinary retention)</div></div>
+      <div class="ape2-brow">
+        <button class="ape2-btn" onclick="a2set('aut',true)"  id="ape2-aut-y">✓ Yes</button>
+        <button class="ape2-btn" onclick="a2set('aut',false)" id="ape2-aut-n">✗ No</button>
+      </div>
+    </div>
+    <div class="ape2-item" id="ape2-sleep-item">
+      <div class="ape2-main"><div class="ape2-pts">+2</div><div class="ape2-label">Sleep disorder (hypersomnia, insomnia, REM sleep behaviour disorder)</div></div>
+      <div class="ape2-brow">
+        <button class="ape2-btn" onclick="a2set('sleep',true)"  id="ape2-sleep-y">✓ Yes</button>
+        <button class="ape2-btn" onclick="a2set('sleep',false)" id="ape2-sleep-n">✗ No</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="nav-row">
+    <button class="nbtn ns" onclick="go(3)">← Back</button>
+    <button class="nbtn np" id="n4" onclick="go(5)">View Verdict →</button>
+  </div>
+</div>
+</div>
+
+
+<!-- ══ SCREEN 5: VERDICT ══ -->
+<div class="screen" id="s5">
+  <div id="vout"></div>
+  <div id="ape2out"></div>
+  <div class="sum-grid" id="sout"></div>
+  <div id="docout"></div>
+</div>
+
+
+</div>
+<script>
+'use strict';
+const S={
+  onset:null,feature:null,excl:null,
+  le_onset:null,le_mri:null,le_csf:null,
+  nmdar:null,adem:null,bbs:null,
+  tumour:null,hash:null,p7:null,
+  csf_sent:null,ab_surface:null,ab_onco:null,
+  ape2:{sex:null,psych:null,cog:null,sz:null,mvt:null,lp:null,mri:null,vir:null,aut:null,sleep:null}
+};
+const APE2_PTS={sex:1,psych:2,cog:2,sz:3,mvt:3,lp:2,mri:2,vir:2,aut:3,sleep:2};
+let cur=0;
+
+function goTab(n){if(n!==cur)go(n);}
+function go(n){
+  document.getElementById('s'+cur).classList.remove('active');
+  document.getElementById('s'+n).classList.add('active');
+  for(let i=0;i<6;i++){
+    const d=document.getElementById('st'+i);
+    d.classList.remove('active','done');
+    if(i<n)d.classList.add('done');
+    else if(i===n)d.classList.add('active');
+  }
+  cur=n;
+  document.getElementById('pf').style.width=((n/5)*100)+'%';
+  if(n===5)rv();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function xp(btn){
+  const d=btn.closest('.crit').querySelector('.crit-detail');
+  if(!d)return;
+  const o=d.classList.toggle('open');
+  btn.textContent=o?'close ▴':'details ▾';
+}
+
+function pset(k,v){
+  S[k]=v;
+  ['yes','no'].forEach(x=>{const b=document.getElementById(k+'-'+x);if(b)b.classList.remove('ay','an');});
+  const ch=document.getElementById(k+'-'+v);if(ch)ch.classList.add(v==='yes'?'ay':'an');
+  const it=document.getElementById(k+'-item');if(it)it.className='crit '+(v==='yes'?'c-yes':'c-no');
+  checkPossible();
+}
+function sset(k,v){
+  S[k]=v;
+  const vm={le_onset:['yes','no'],le_mri:['bilateral','unilateral','normal'],le_csf:['yes','no'],nmdar:['prob','part','no'],adem:['yes','no'],bbs:['prob','part','no']};
+  (vm[k]||[]).forEach(x=>{const b=document.getElementById(k+'-'+x);if(b)b.classList.remove('ay','an','aw');});
+  const ch=document.getElementById(k+'-'+v);
+  if(ch){if(['yes','prob','bilateral'].includes(v))ch.classList.add('ay');else if(v==='no')ch.classList.add('an');else ch.classList.add('aw');}
+  const it=document.getElementById(k+'-item');
+  if(it){if(['yes','prob','bilateral'].includes(v))it.className='crit c-yes';else if(v==='no')it.className='crit c-no';else it.className='crit c-warn';}
+  checkSyndrome();
+}
+function wset(k,v){
+  S[k]=v;
+  const vm={tumour:['done_neg','done_pos','pending'],hash:['yes','no'],p7:['yes','no']};
+  (vm[k]||[]).forEach(x=>{const b=document.getElementById(k+'-'+x);if(b)b.classList.remove('ay','an','aw','ab');});
+  const ch=document.getElementById(k+'-'+v);
+  if(ch){if(['done_neg','no'].includes(v))ch.classList.add('ay');else if(['done_pos','yes'].includes(v))ch.classList.add('aw');else ch.classList.add('ab');}
+  const it=document.getElementById(k+'-item');
+  if(it){if(v==='done_neg')it.className='crit c-yes';else if(['done_pos','yes'].includes(v))it.className='crit c-warn';else it.className='crit c-abs';}
+  checkWorkup();
+}
+function abset(k,v){
+  S[k]=v;
+  const vm={csf_sent:['both','csf_only','ser_only','pending'],ab_surface:['pos_csf','pos_ser','negative','pending'],ab_onco:['pos','negative','pending']};
+  (vm[k]||[]).forEach(x=>{const b=document.getElementById(k+'-'+x);if(b)b.classList.remove('ay','an','aw','ab','at');});
+  const ch=document.getElementById(k+'-'+v);
+  if(ch){if(['both','pos_csf','negative'].includes(v))ch.classList.add('ay');else if(['pos_ser','ser_only','pos'].includes(v))ch.classList.add('aw');else ch.classList.add('ab');}
+  const it=document.getElementById(k+'-item');
+  if(it){if(['pos_csf','both'].includes(v))it.className='crit c-yes';else if(['pos_ser','ser_only','pos'].includes(v))it.className='crit c-warn';else if(v==='negative')it.className='crit c-abs';else it.className='crit c-abs';}
+  checkAntibodies();
+}
+function a2set(k,val){
+  S.ape2[k]=val;
+  const yi=document.getElementById('ape2-'+k+'-y');const ni=document.getElementById('ape2-'+k+'-n');
+  const it=document.getElementById('ape2-'+k+'-item');
+  if(yi){yi.classList.remove('ay','an');if(val)yi.classList.add('ay');}
+  if(ni){ni.classList.remove('ay','an');if(!val)ni.classList.add('an');}
+  if(it)it.className='ape2-item '+(val?'a-yes':'a-no');
+  const score=ape2Score();
+  const el=document.getElementById('ape2-total');if(el)el.textContent=score;
+}
+function ape2Score(){return Object.keys(APE2_PTS).reduce((s,k)=>s+(S.ape2[k]?APE2_PTS[k]:0),0);}
+
+function checkPossible(){
+  const a=document.getElementById('a0');
+  const allSet=S.onset!==null&&S.feature!==null&&S.excl!==null;
+  a.className='alrt';
+  if(!allSet){a.classList.remove('show');document.getElementById('n0').disabled=true;return;}
+  if(S.onset==='no'||S.feature==='no'||S.excl==='no'){
+    a.classList.add('show','aerr');
+    a.innerHTML='⛔ Criteria for Possible AE not met. Consider alternative diagnoses. If the presentation evolves or mimics are excluded, reassess.';
+    document.getElementById('n0').disabled=true;
+  } else {
+    a.classList.add('show','aok');
+    a.innerHTML='✓ All three Panel 1 criteria met — <strong>Possible AE</strong>. Proceed to syndrome recognition. Consider empirical immunotherapy if HSV has been excluded/treated and suspicion is high.';
+    document.getElementById('n0').disabled=false;
+  }
+}
+function checkSyndrome(){
+  const a=document.getElementById('a1');a.className='alrt';
+  const leDef=S.le_onset==='yes'&&S.le_mri==='bilateral'&&S.le_csf==='yes';
+  const leProb=S.le_onset==='yes'&&S.le_mri==='bilateral'&&!leDef;
+  const any=S.le_onset!==null||S.nmdar!==null||S.adem!==null||S.bbs!==null;
+  if(!any){a.classList.remove('show');document.getElementById('n1').disabled=true;return;}
+  document.getElementById('n1').disabled=false;
+  if(leDef){a.classList.add('show','aok');a.innerHTML='✓ <strong>Definite Autoimmune Limbic Encephalitis</strong> — all Panel 2 criteria met. Antibody testing will define immunological subtype and guide tumour screening.';}
+  else if(leProb){a.classList.add('show','ateal');a.innerHTML='◑ <strong>Probable Limbic Encephalitis</strong> — bilateral MRI present; CSF/EEG support pending or absent. Antibody testing may confirm definite LE.';}
+  else if(S.nmdar==='prob'){a.classList.add('show','aok');a.innerHTML='✓ <strong>Probable Anti-NMDAR Encephalitis</strong> — Panel 4 criteria met. Initiate immunotherapy and age/sex-appropriate tumour search. Confirm with CSF IgG anti-GluN1.';}
+  else if(S.adem==='yes'){a.classList.add('show','aok');a.innerHTML='✓ <strong>Probable ADEM</strong> — Panel 3 core criteria met. Initiate IV methylprednisolone. Send MOG Abs (especially in children). Confirm absence of new lesions at 3 months.';}
+  else if(S.bbs==='prob'){a.classList.add('show','aok');a.innerHTML='✓ <strong>Probable Bickerstaff\'s BBE</strong> — Panel 5 criteria met. Send IgG anti-GQ1b Abs. Consider IVIg.';}
+  else{a.classList.add('show','awn');a.innerHTML='⚠ No syndrome criteria fully met at this stage. Classification depends on antibody results and Panel 7 criteria. Proceed to work-up.';}
+}
+function checkWorkup(){
+  const a=document.getElementById('a2');a.className='alrt';
+  const allSet=S.tumour!==null&&S.hash!==null&&S.p7!==null;
+  if(!allSet){a.classList.remove('show');document.getElementById('n2').disabled=true;return;}
+  document.getElementById('n2').disabled=false;a.classList.add('show');
+  if(S.tumour==='done_pos'){a.classList.add('awn');a.innerHTML='⚠ Tumour identified — paraneoplastic workup active. Treat tumour as primary intervention. Send full onconeuronal and cell-surface antibody panel. Prognosis with intracellular antigen Abs is significantly worse than with cell-surface Abs.';}
+  else if(S.tumour==='pending'){a.classList.add('ainf');a.innerHTML='— Tumour workup pending. Proceed to antibody testing; tumour result will modify final classification.';}
+  else{a.classList.add('aok');a.innerHTML='✓ Work-up recorded. Proceed to antibody results.';}
+}
+function checkAntibodies(){
+  const a=document.getElementById('a3');a.className='alrt';
+  const allSet=S.csf_sent!==null&&S.ab_surface!==null&&S.ab_onco!==null;
+  if(!allSet){a.classList.remove('show');document.getElementById('n3').disabled=true;return;}
+  document.getElementById('n3').disabled=false;a.classList.add('show');
+  if(S.ab_surface==='pos_csf'){a.classList.add('aok');a.innerHTML='✓ Cell-surface IgG Ab positive in CSF — <strong>Definite Autoimmune Encephalitis</strong> established. Antibody subtype determines tumour surveillance, prognosis, and treatment escalation.';}
+  else if(S.ab_surface==='pos_ser'){a.classList.add('awn');a.innerHTML='⚠ Positive in serum only — request confirmatory testing (live neurons or brain IHC) and CSF re-testing. Serum-only positivity can be false-positive. Classification remains probable pending confirmation.';}
+  else if(S.ab_onco==='pos'){a.classList.add('awn');a.innerHTML='⚠ Onconeuronal Ab positive — paraneoplastic LE likely. Urgent comprehensive tumour search mandatory. Treatment of underlying tumour is the primary intervention; immunotherapy response is limited with intracellular antigen Abs.';}
+  else if(S.ab_surface==='pending'||S.ab_onco==='pending'){a.classList.add('ainf');a.innerHTML='— Ab results pending. Classification remains at probable level based on clinical criteria. Empirical immunotherapy may be appropriate given clinical picture and APE2 score.';}
+  else{a.classList.add('awn');a.innerHTML='⚠ No well-characterised Abs detected. If Panel 7 criteria are met, classify as antibody-negative probable AE. Consider referral to research laboratory for novel Ab testing using live neurons.';}
+}
+
+function rv(){
+  const score=ape2Score();
+  const leDef=S.le_onset==='yes'&&S.le_mri==='bilateral'&&S.le_csf==='yes';
+  const leProb=S.le_onset==='yes'&&S.le_mri==='bilateral'&&!leDef;
+  const possibleMet=S.onset==='yes'&&S.feature==='yes'&&S.excl==='yes';
+  const abPosCsf=S.ab_surface==='pos_csf';
+  const abPosSer=S.ab_surface==='pos_ser';
+  const abOncoPos=S.ab_onco==='pos';
+  const pendingAb=S.ab_surface==='pending'||S.ab_onco==='pending';
+
+  let v;
+  if(!possibleMet){
+    v={cls:'vn',t:'Possible AE Criteria Not Met',d:'Panel 1 criteria are not fulfilled. Consider alternative diagnoses including infectious (HSV encephalitis), metabolic, structural, toxic, and prion disorders. If the clinical picture evolves or mimics are further excluded, reassess.'};
+  } else if(abPosCsf){
+    v={cls:'ve',t:'Definite Autoimmune Encephalitis',d:'A well-characterised IgG neuronal cell-surface antibody has been detected in the CSF, establishing definite autoimmune encephalitis of the specific immunological subtype. Initiate or escalate immunotherapy. The antibody subtype determines tumour surveillance protocol, relapse risk, and long-term prognosis.'};
+  } else if(leDef){
+    v={cls:'ve',t:'Definite Autoimmune Limbic Encephalitis',d:'All four Panel 2 criteria are satisfied: subacute onset, bilateral medial temporal MRI signal, and CSF or EEG support, with alternative causes excluded. Antibody testing will define the immunological subtype and guide paraneoplastic surveillance. Initiate immunotherapy without delay.'};
+  } else if(abPosSer&&(S.nmdar==='prob'||leProb||S.bbs==='prob')){
+    v={cls:'vt',t:'Probable-to-Definite AE — Confirmatory Ab Testing Needed',d:'Serum antibody is positive but CSF confirmation is pending or outstanding. Clinical syndrome meets probable criteria. Request confirmatory testing (live neurons or brain IHC) and CSF re-testing. Treat as probable AE pending confirmation.'};
+  } else if(S.nmdar==='prob'){
+    v={cls:'vt',t:'Probable Anti-NMDAR Receptor Encephalitis',d:'Panel 4 criteria met (≥4 symptom groups + EEG/CSF abnormality). Initiate immunotherapy (IV methylprednisolone ± IVIg ± PLEX) and age/sex-appropriate tumour search. Confirm with CSF IgG anti-GluN1. Earlier treatment is associated with better outcome (Titulaer et al. Lancet Neurol 2013; Byrne et al. 2015).'};
+  } else if(S.adem==='yes'){
+    v={cls:'vt',t:'Probable ADEM',d:'Panel 3 core criteria met (criterion 4 — no new lesions at 3 months — requires prospective confirmation). Initiate high-dose IV methylprednisolone. Send MOG antibodies, especially in children and young adults. Follow for possible MS conversion.'};
+  } else if(S.bbs==='prob'){
+    v={cls:'vt',t:'Probable Bickerstaff\'s Brainstem Encephalitis',d:'Panel 5 criteria met. IgG anti-GQ1b will confirm definite BBE if positive (up to 32% are seronegative). Consider IVIg. Prognosis is generally good with monophasic course and functional recovery in most patients.'};
+  } else if(S.hash==='yes'){
+    v={cls:'vt',t:'Probable AE — Hashimoto\'s Encephalopathy (SREAT)',d:'Panel 6 criteria met. Initiate a trial of corticosteroids and thyroid hormone replacement if hypothyroid. Ensure all well-characterised neuronal antibodies have been excluded before this diagnosis is accepted. Classification remains probable AE given unclear pathophysiology.'};
+  } else if(S.p7==='yes'){
+    v={cls:'vt',t:'Probable Autoimmune Encephalitis (Antibody-Negative)',d:'Panel 7 criteria met: rapid progression, exclusion of defined syndromes, absent well-characterised antibodies, with ≥2 supporting investigations. Consider empirical immunotherapy. Refer CSF to a research laboratory for novel antibody testing using live neurons — detection of cell-surface reactivity even for unknown antigens strongly supports autoimmune aetiology.'};
+  } else if(abOncoPos){
+    v={cls:'vt',t:'Probable Paraneoplastic Limbic Encephalitis',d:'Onconeuronal or GAD antibody positive with limbic features. Urgent comprehensive tumour search mandatory. Treatment of the underlying tumour is the primary intervention. Immunotherapy response is limited with intracellular antigen antibodies — does not preclude a trial if no tumour is found.'};
+  } else if(pendingAb){
+    v={cls:'va',t:'Classification Pending — Antibody Results Outstanding',d:'Patient meets Possible AE criteria with syndromic features. Final probable/definite classification awaits antibody results. Empirical immunotherapy may be appropriate based on clinical syndrome and APE2 score; weigh against risk of immunosuppression in a patient with unexcluded infection.'};
+  } else if(possibleMet){
+    v={cls:'va',t:'Possible Autoimmune Encephalitis',d:'Panel 1 criteria met but no clinical syndrome and no antibody result upgrades classification to probable or definite. Ensure comprehensive antibody panel has been sent (both CSF and serum). If antibodies negative, reassess Panel 7 criteria and consider research laboratory referral for novel antibody testing.'};
+  } else {
+    v={cls:'va',t:'Assessment Incomplete',d:'Not all evaluation components have been recorded. Review each step.'};
+  }
+
+  let ape2cls,ape2title,ape2desc;
+  if(score>=4){ape2cls='av-hi';ape2title='High Probability of Neural Antibody';ape2desc='APE2 ≥4: Sensitivity 96%, specificity 84% for a positive neural antibody (Dubey et al. Ann Neurol 2018; n=226). Strongly supports comprehensive antibody testing and consideration of empirical immunotherapy while results are pending.';}
+  else if(score>=2){ape2cls='av-mid';ape2title='Intermediate Probability';ape2desc='APE2 2–3: Intermediate pre-test probability of a positive neural antibody. Antibody testing is warranted. Clinical syndrome assessment and Graus criteria should guide treatment decisions while awaiting results.';}
+  else{ape2cls='av-lo';ape2title='Lower Probability of Neural Antibody';ape2desc='APE2 0–1: Lower pre-test probability. A negative APE2 does not exclude AE — it is a probability estimator, not a diagnostic rule-out. Maintain clinical assessment and send antibody panel if syndrome criteria are met.';}
+
+  document.getElementById('vout').innerHTML=`
+    <div class="disclaimer" style="margin-bottom:14px;">
+      <div class="disclaimer-icon">⚠</div>
+      <div class="disclaimer-text"><strong>Educational Use Only</strong>This result is for educational purposes and does not constitute a formal clinical diagnosis. All diagnostic and treatment decisions must be made by qualified clinicians.</div>
+    </div>
+    <div class="vban ${v.cls}">
+      <div class="vlbl">Graus F et al. · Lancet Neurol 2016;15:391–404 · Autoimmune Encephalitis Diagnostic Criteria</div>
+      <div class="vtitle">${v.t}</div>
+      <div class="vdesc">${v.d}</div>
+    </div>`;
+
+  document.getElementById('ape2out').innerHTML=`
+    <div class="ape2-vband ${ape2cls}">
+      <div class="ape2-vnum">${score}</div>
+      <div class="ape2-vtext">
+        <div class="ape2-vtitle">APE2 Score: ${score} / 21 — ${ape2title}</div>
+        <div class="ape2-vdesc">${ape2desc}</div>
+      </div>
+    </div>`;
+
+  // Summary grid
+  let sh='';
+  // Block 1
+  sh+=`<div class="sblock"><div class="sbtitle">Panel 1 — Possible AE</div>`;
+  [{k:'onset',n:'Subacute onset &lt;3 months'},{k:'feature',n:'≥1 supporting feature'},{k:'excl',n:'Alternative causes excluded'}].forEach(({k,n})=>{
+    const v2=S[k];const ok=v2==='yes';
+    sh+=`<div class="srow"><div class="dot ${v2===null?'dgr':ok?'dg':'dr'}"></div><div class="sname">${n}</div><div class="stag ${v2===null?'tgr':ok?'tg':'tr'}">${v2===null?'NOT ASSESSED':ok?'MET':'NOT MET'}</div></div>`;
+  });sh+=`</div>`;
+  // Block 2
+  sh+=`<div class="sblock"><div class="sbtitle">Syndrome Recognition</div>`;
+  const leDef2=S.le_onset==='yes'&&S.le_mri==='bilateral'&&S.le_csf==='yes';
+  const leProb2=S.le_onset==='yes'&&S.le_mri==='bilateral'&&!leDef2;
+  const leStatus=leDef2?'DEFINITE LE':leProb2?'PROBABLE LE':(S.le_onset!==null||S.le_mri!==null)?'PARTIAL':'NOT ASSESSED';
+  const leDot2=leDef2?'dg':leProb2?'dt':(S.le_onset!==null)?'da':'dgr';
+  const leTag2=leDef2?'tg':leProb2?'tt':(S.le_onset!==null)?'ta':'tgr';
+  sh+=`<div class="srow"><div class="dot ${leDot2}"></div><div class="sname">Limbic encephalitis (Panel 2)</div><div class="stag ${leTag2}">${leStatus}</div></div>`;
+  sh+=`<div class="srow"><div class="dot ${S.nmdar==='prob'?'dg':S.nmdar==='part'?'da':'dgr'}"></div><div class="sname">Anti-NMDAR encephalitis (Panel 4)</div><div class="stag ${S.nmdar==='prob'?'tg':S.nmdar==='part'?'ta':'tgr'}">${S.nmdar==='prob'?'PROBABLE':S.nmdar==='part'?'PARTIAL':S.nmdar==='no'?'NOT MET':'NOT ASSESSED'}</div></div>`;
+  sh+=`<div class="srow"><div class="dot ${S.adem==='yes'?'dg':'dgr'}"></div><div class="sname">ADEM (Panel 3)</div><div class="stag ${S.adem==='yes'?'tg':'tgr'}">${S.adem==='yes'?'MET':S.adem==='no'?'NOT MET':'NOT ASSESSED'}</div></div>`;
+  sh+=`<div class="srow"><div class="dot ${S.bbs==='prob'?'dg':S.bbs==='part'?'da':'dgr'}"></div><div class="sname">Bickerstaff's BBE (Panel 5)</div><div class="stag ${S.bbs==='prob'?'tg':S.bbs==='part'?'ta':'tgr'}">${S.bbs==='prob'?'PROBABLE':S.bbs==='part'?'PARTIAL':S.bbs==='no'?'NOT MET':'NOT ASSESSED'}</div></div>`;
+  sh+=`</div>`;
+  // Block 3
+  sh+=`<div class="sblock"><div class="sbtitle">Work-up</div>`;
+  const tL={done_neg:'NEGATIVE',done_pos:'POSITIVE',pending:'PENDING'};
+  const tT={done_neg:'tg',done_pos:'ta',pending:'tgr'};const tD={done_neg:'dg',done_pos:'da',pending:'dgr'};
+  sh+=`<div class="srow"><div class="dot ${S.tumour?tD[S.tumour]:'dgr'}"></div><div class="sname">Tumour screen</div><div class="stag ${S.tumour?tT[S.tumour]:'tgr'}">${S.tumour?tL[S.tumour]:'NOT DONE'}</div></div>`;
+  sh+=`<div class="srow"><div class="dot ${S.hash==='yes'?'da':'dgr'}"></div><div class="sname">Hashimoto's / SREAT (Panel 6)</div><div class="stag ${S.hash==='yes'?'ta':'tgr'}">${S.hash==='yes'?'MET':S.hash==='no'?'NOT MET':'NOT ASSESSED'}</div></div>`;
+  sh+=`<div class="srow"><div class="dot ${S.p7==='yes'?'dt':'dgr'}"></div><div class="sname">Ab-negative probable AE (Panel 7)</div><div class="stag ${S.p7==='yes'?'tt':'tgr'}">${S.p7==='yes'?'MET':S.p7==='no'?'NOT MET':'NOT ASSESSED'}</div></div>`;
+  sh+=`</div>`;
+  // Block 4
+  sh+=`<div class="sblock"><div class="sbtitle">Antibodies &amp; APE2</div>`;
+  const csL={both:'BOTH SENT',csf_only:'CSF ONLY',ser_only:'SERUM ONLY',pending:'PENDING'};
+  const csT={both:'tg',csf_only:'tt',ser_only:'ta',pending:'tgr'};const csD={both:'dg',csf_only:'dt',ser_only:'da',pending:'dgr'};
+  sh+=`<div class="srow"><div class="dot ${S.csf_sent?csD[S.csf_sent]:'dgr'}"></div><div class="sname">Specimen sent</div><div class="stag ${S.csf_sent?csT[S.csf_sent]:'tgr'}">${S.csf_sent?csL[S.csf_sent]:'NOT RECORDED'}</div></div>`;
+  const abL={pos_csf:'POSITIVE (CSF)',pos_ser:'POSITIVE (SER)',negative:'NEGATIVE',pending:'PENDING'};
+  const abT={pos_csf:'tg',pos_ser:'ta',negative:'tgr',pending:'tgr'};const abD={pos_csf:'dg',pos_ser:'da',negative:'dgr',pending:'dgr'};
+  sh+=`<div class="srow"><div class="dot ${S.ab_surface?abD[S.ab_surface]:'dgr'}"></div><div class="sname">Cell-surface Ab (IgG)</div><div class="stag ${S.ab_surface?abT[S.ab_surface]:'tgr'}">${S.ab_surface?abL[S.ab_surface]:'NOT ASSESSED'}</div></div>`;
+  sh+=`<div class="srow"><div class="dot ${S.ab_onco==='pos'?'da':S.ab_onco==='negative'?'dgr':'dgr'}"></div><div class="sname">Onconeuronal / GAD Ab</div><div class="stag ${S.ab_onco==='pos'?'ta':'tgr'}">${S.ab_onco==='pos'?'POSITIVE':S.ab_onco==='negative'?'NEGATIVE':'NOT ASSESSED'}</div></div>`;
+  const aDot2=score>=4?'dg':score>=2?'da':'dr';const aTag2=score>=4?'tg':score>=2?'ta':'tr';
+  sh+=`<div class="srow"><div class="dot ${aDot2}"></div><div class="sname">APE2 Score</div><div class="stag ${aTag2}">${score} / 21 — ${score>=4?'HIGH':score>=2?'INTERMEDIATE':'LOWER'}</div></div>`;
+  sh+=`</div>`;
+  document.getElementById('sout').innerHTML=sh;
+
+  buildDoc(v.t,score);
+}
+
+function buildDoc(verdict,ape2score){
+  const now=new Date().toLocaleDateString();
+  const leDef=S.le_onset==='yes'&&S.le_mri==='bilateral'&&S.le_csf==='yes';
+  let n=`NEUROIMMUNOLOGY CONSULTATION\nAutoimmune Encephalitis Diagnostic Assessment\nGraus F, Titulaer MJ, Balu R, et al. Lancet Neurol. 2016;15(4):391-404.\nDate: ${now}\n\n`;
+  n+=`RESULT: ${verdict}\n\n`;
+  n+=`PANEL 1 - POSSIBLE AE\n`;
+  n+=`  Subacute onset (<3 months): ${S.onset==='yes'?'Present':S.onset==='no'?'ABSENT':'Not assessed'}\n`;
+  n+=`  ≥1 supporting feature: ${S.feature==='yes'?'Present':S.feature==='no'?'ABSENT':'Not assessed'}\n`;
+  n+=`  Alternative causes excluded: ${S.excl==='yes'?'Yes':S.excl==='no'?'NO':'Not assessed'}\n\n`;
+  n+=`SYNDROME RECOGNITION\n`;
+  n+=`  Limbic encephalitis (Panel 2): ${leDef?'DEFINITE':(S.le_onset==='yes'&&S.le_mri==='bilateral')?'PROBABLE':'Not fully met'}\n`;
+  n+=`    Onset criterion: ${S.le_onset==='yes'?'Met':S.le_onset==='no'?'Not met':'Not assessed'}\n`;
+  n+=`    MRI criterion: ${S.le_mri==='bilateral'?'BILATERAL medial temporal - MET':S.le_mri==='unilateral'?'Unilateral only':S.le_mri==='normal'?'Normal/non-specific':'Not assessed'}\n`;
+  n+=`    CSF/EEG criterion: ${S.le_csf==='yes'?'Present':S.le_csf==='no'?'Absent':'Not assessed'}\n`;
+  n+=`  Anti-NMDAR encephalitis (Panel 4): ${S.nmdar==='prob'?'PROBABLE':S.nmdar==='part'?'Partial features':S.nmdar==='no'?'Not met':'Not assessed'}\n`;
+  n+=`  ADEM (Panel 3): ${S.adem==='yes'?'MET - probable/definite':S.adem==='no'?'Not met':'Not assessed'}\n`;
+  n+=`  Bickerstaff BBE (Panel 5): ${S.bbs==='prob'?'PROBABLE':S.bbs==='part'?'Partial features':S.bbs==='no'?'Not met':'Not assessed'}\n\n`;
+  n+=`ANCILLARY WORK-UP\n`;
+  n+=`  Tumour screening: ${S.tumour==='done_neg'?'Completed - negative':S.tumour==='done_pos'?'COMPLETED - TUMOUR IDENTIFIED':S.tumour==='pending'?'Pending':'Not recorded'}\n`;
+  n+=`  Hashimoto's encephalopathy (Panel 6): ${S.hash==='yes'?'Criteria met (SREAT)':S.hash==='no'?'Not met':'Not assessed'}\n`;
+  n+=`  Ab-negative probable AE (Panel 7): ${S.p7==='yes'?'Criteria met':S.p7==='no'?'Not met':'Not assessed'}\n\n`;
+  n+=`ANTIBODY RESULTS\n`;
+  n+=`  Specimens: ${S.csf_sent==='both'?'CSF and serum - both sent':S.csf_sent==='csf_only'?'CSF only':S.csf_sent==='ser_only'?'Serum only (suboptimal)':S.csf_sent==='pending'?'Pending':'Not recorded'}\n`;
+  n+=`  Cell-surface/synaptic IgG Ab: ${S.ab_surface==='pos_csf'?'POSITIVE in CSF':S.ab_surface==='pos_ser'?'Positive in serum (confirmatory testing recommended)':S.ab_surface==='negative'?'Negative':'Pending'}\n`;
+  n+=`  Onconeuronal/GAD Ab: ${S.ab_onco==='pos'?'POSITIVE - paraneoplastic aetiology':S.ab_onco==='negative'?'Negative':'Pending'}\n\n`;
+  n+=`APE2 SCORE\n`;
+  n+=`  Total: ${ape2score} / 21\n`;
+  Object.keys(APE2_PTS).forEach(k=>{
+    const labels={sex:'Female sex (+1)',psych:'Psychiatric symptoms (+2)',cog:'Cognitive dysfunction (+2)',sz:'New seizures (+3)',mvt:'Movement disorder (+3)',lp:'CSF pleocytosis (+2)',mri:'MRI abnormality (+2)',vir:'Viral prodrome (+2)',aut:'Autonomic dysfunction (+3)',sleep:'Sleep disorder (+2)'};
+    n+=`  ${labels[k]}: ${S.ape2[k]===true?'YES':S.ape2[k]===false?'No':'Not assessed'}\n`;
+  });
+  n+=`  Interpretation: ${ape2score>=4?'HIGH probability of neural Ab (sensitivity 96%, specificity 84%)':ape2score>=2?'INTERMEDIATE probability':'LOWER probability'}\n`;
+  n+=`  Reference: Dubey D et al. Ann Neurol. 2018;83(1):166-177.\n\n`;
+  n+=`FINAL CLASSIFICATION (Graus 2016)\n${verdict}\n\n`;
+  n+=`TREATMENT NOTE (outside scope of diagnostic criteria)\n`;
+  n+=`  First-line: IV methylprednisolone, IVIg, plasma exchange\n`;
+  n+=`  Second-line (if no first-line response): Rituximab, cyclophosphamide\n`;
+  n+=`  LGI1 LE: faster/better steroid response vs NMDAR LE; NMDAR LE has better long-term outcome (Titulaer et al. 2013)\n`;
+  n+=`  Paraneoplastic AE (onconeuronal Abs): treat underlying tumour as primary intervention\n`;
+  n+=`  Early immunotherapy improves outcome (Byrne et al. 2015; Titulaer et al. 2013; Ances et al. 2005)\n\n`;
+  n+=`Reference: Graus F, Titulaer MJ, Balu R, et al. A clinical approach to diagnosis of autoimmune encephalitis. Lancet Neurol. 2016;15(4):391-404. doi:10.1016/S1474-4422(15)00401-9`;
+  document.getElementById('docout').innerHTML=`<div class="doc-header"><button class="doc-tog" onclick="toggleDoc()">▼ Documentation Note</button><button class="copy-btn" id="copy-btn" onclick="copyDoc()">⎘ Copy</button></div><div class="doc-body" id="dn">${n}</div>`;
+}
+function toggleDoc(){
+  const body=document.getElementById('dn');const btn=document.getElementById('copy-btn');const tog=document.querySelector('.doc-tog');
+  if(!body)return;const open=body.classList.toggle('open');
+  if(tog)tog.textContent=open?'▲ Documentation Note':'▼ Documentation Note';
+  if(btn)btn.classList.toggle('visible',open);
+}
+function copyDoc(){
+  const body=document.getElementById('dn');const btn=document.getElementById('copy-btn');
+  if(!body)return;
+  const text=body.textContent||body.innerText;
+  navigator.clipboard.writeText(text).then(()=>{if(btn){btn.textContent='✓ Copied';btn.classList.add('copied');setTimeout(()=>{btn.textContent='⎘ Copy';btn.classList.remove('copied');},2000);}}).catch(()=>{
+    const ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);
+    if(btn){btn.textContent='✓ Copied';btn.classList.add('copied');setTimeout(()=>{btn.textContent='⎘ Copy';btn.classList.remove('copied');},2000);}
+  });
+}
+function resetAll(){
+  Object.keys(S).forEach(k=>{if(k==='ape2')Object.keys(S.ape2).forEach(j=>S.ape2[j]=null);else S[k]=null;});
+  document.querySelectorAll('.crit').forEach(el=>el.className='crit');
+  document.querySelectorAll('.ape2-item').forEach(el=>el.className='ape2-item');
+  document.querySelectorAll('.abtn').forEach(b=>b.classList.remove('ay','an','at','aw','ab'));
+  document.querySelectorAll('.ape2-btn').forEach(b=>b.classList.remove('ay','an'));
+  document.querySelectorAll('.crit-detail').forEach(d=>d.classList.remove('open'));
+  document.querySelectorAll('.xbtn').forEach(b=>b.textContent='details ▾');
+  document.querySelectorAll('.alrt').forEach(a=>{a.classList.remove('show');a.className='alrt';});
+  const dn=document.getElementById('dn');if(dn){dn.classList.remove('open');dn.textContent='';}
+  const cb=document.getElementById('copy-btn');if(cb)cb.classList.remove('visible','copied');
+  ['vout','ape2out','sout','docout'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML='';});
+  const at=document.getElementById('ape2-total');if(at)at.textContent='0';
+  ['n0','n1','n2','n3'].forEach(id=>document.getElementById(id).disabled=true);
+  go(0);
+}
+document.getElementById('n0').disabled=true;
+document.getElementById('n1').disabled=true;
+document.getElementById('n2').disabled=true;
+document.getElementById('n3').disabled=true;
+</script>
+</body>
+</html>
