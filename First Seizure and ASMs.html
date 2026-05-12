@@ -1,0 +1,1156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>First-Time Seizure Evaluation · Clinical Workflow</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@300;400;500;600;700&family=Lexend:wght@300;400;500;600&display=swap');
+
+:root {
+  --bg:        #0d1117;
+  --card:      #161b22;
+  --card2:     #1c2330;
+  --border:    #3a4556;
+  --border2:   #4a5f7a;
+  --green:     #3fb950;
+  --green-bg:  rgba(63,185,80,0.10);
+  --green-bd:  rgba(63,185,80,0.35);
+  --red:       #f85149;
+  --red-bg:    rgba(248,81,73,0.10);
+  --red-bd:    rgba(248,81,73,0.35);
+  --amber:     #e3b341;
+  --amber-bg:  rgba(227,179,65,0.10);
+  --amber-bd:  rgba(227,179,65,0.35);
+  --blue:      #58a6ff;
+  --blue-bg:   rgba(88,166,255,0.10);
+  --blue-bd:   rgba(88,166,255,0.35);
+  --purple:    #bc8cff;
+  --purple-bg: rgba(188,140,255,0.10);
+  --purple-bd: rgba(188,140,255,0.35);
+  --teal:      #39d0b0;
+  --teal-bg:   rgba(57,208,176,0.10);
+  --teal-bd:   rgba(57,208,176,0.35);
+  --text:      #e6edf3;
+  --text2:     #aab4c0;
+  --text3:     #6e7f94;
+  --sans: 'Lexend', 'Inter', system-ui, sans-serif;
+  --mono: 'IBM Plex Mono', monospace;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg); color: var(--text); font-family: var(--sans); font-size: 14px; line-height: 1.5; min-height: 100vh; }
+.app { max-width: 900px; margin: 0 auto; padding: 0 20px 80px; }
+
+header { padding: 22px 0 14px; border-bottom: 1px solid var(--border); margin-bottom: 20px; display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+.h-title { font-size: 19px; font-weight: 700; }
+.h-title span { color: var(--teal); }
+.h-sub { font-family: var(--sans); font-size: 11px; color: var(--text3); margin-top: 3px; line-height: 1.6; }
+.h-credit { font-family: var(--sans); font-size: 11px; color: var(--text3); margin-top: 2px; }
+.reset-btn { background: var(--card2); border: 1px solid var(--border); color: var(--text2); font-family: var(--sans); font-size: 12px; padding: 6px 14px; cursor: pointer; border-radius: 4px; transition: all 0.15s; white-space: nowrap; font-weight: 500; flex-shrink: 0; }
+.reset-btn:hover { border-color: var(--teal); color: var(--teal); }
+
+.prog-track { height: 3px; background: var(--border); margin-bottom: 20px; border-radius: 2px; }
+.prog-fill { height: 100%; background: linear-gradient(90deg, var(--teal), #58efd4); border-radius: 2px; transition: width 0.4s ease; box-shadow: 0 0 6px rgba(57,208,176,0.4); }
+
+.steps { display: grid; grid-template-columns: repeat(6, 1fr); border: 1px solid var(--border); border-radius: 8px; margin-bottom: 20px; overflow: hidden; background: var(--card); }
+.stab { padding: 9px 4px 10px; text-align: center; font-family: var(--sans); font-size: 10px; color: var(--text3); border-right: 1px solid var(--border); transition: all 0.2s; cursor: pointer; background: var(--card); line-height: 1.3; }
+.stab:nth-child(6n) { border-right: none; }
+.stab .sn { display: flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 50%; background: var(--card2); border: 1px solid var(--border); font-size: 11px; font-weight: 700; margin: 0 auto 4px; transition: all 0.2s; }
+.stab .slbl { display: block; font-size: 9px; font-weight: 600; letter-spacing: 0; line-height: 1.3; }
+.stab.active { color: var(--teal); background: rgba(57,208,176,0.06); }
+.stab.active .sn { background: var(--teal); color: #0d1117; border-color: var(--teal); }
+.stab.done { color: var(--green); }
+.stab.done .sn { background: var(--green); color: #0d1117; border-color: var(--green); }
+.stab:hover:not(.active) { background: var(--card2); }
+
+.screen { display: none; }
+.screen.active { display: block; animation: fu 0.25s ease; }
+@keyframes fu { from { opacity:0; transform:translateY(5px); } to { opacity:1; transform:translateY(0); } }
+
+.card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 22px; margin-bottom: 12px; }
+.ctitle { font-size: 13px; font-weight: 700; font-family: var(--sans); letter-spacing: 0; text-transform: none; margin-bottom: 3px; }
+.csub { font-size: 12px; color: var(--text2); margin-bottom: 16px; line-height: 1.5; }
+
+.slabel { display: flex; align-items: center; gap: 8px; font-family: var(--sans); font-size: 11px; font-weight: 600; color: var(--text); letter-spacing: 0; text-transform: none; margin-bottom: 9px; padding-bottom: 6px; border-bottom: 1px solid var(--border); }
+.pill { font-size: 9px; padding: 1px 7px; border-radius: 20px; border: 1px solid; margin-left: auto; font-family: var(--sans); letter-spacing: 0.04em; text-transform: uppercase; flex-shrink: 0; }
+.pill-r { border-color: var(--red);    color: var(--red);    background: var(--red-bg); }
+.pill-a { border-color: var(--amber);  color: var(--amber);  background: var(--amber-bg); }
+.pill-t { border-color: var(--teal);   color: var(--teal);   background: var(--teal-bg); }
+.pill-g { border-color: var(--green);  color: var(--green);  background: var(--green-bg); }
+.pill-b { border-color: var(--blue);   color: var(--blue);   background: var(--blue-bg); }
+.pill-p { border-color: var(--purple); color: var(--purple); background: var(--purple-bg); }
+
+.crit { border: 1px solid var(--border); border-radius: 6px; margin-bottom: 5px; overflow: hidden; transition: border-color 0.15s, background 0.15s; }
+.crit.c-yes  { border-color: var(--green-bd);  background: var(--green-bg); }
+.crit.c-no   { border-color: var(--red-bd);    background: var(--red-bg); }
+.crit.c-abs  { border-color: var(--border2);   background: var(--card2); }
+.crit.c-warn { border-color: var(--amber-bd);  background: var(--amber-bg); }
+.crit.c-teal { border-color: var(--teal-bd);   background: var(--teal-bg); }
+.crit-main { display: flex; align-items: center; gap: 10px; padding: 10px 13px; }
+.crit-name { flex: 1; font-size: 13px; font-weight: 500; color: var(--text); line-height: 1.3; }
+.xbtn { background: var(--purple-bg); border: 1px solid var(--purple-bd); color: var(--purple); font-size: 11px; cursor: pointer; padding: 2px 8px; font-family: var(--sans); white-space: nowrap; transition: all 0.15s; flex-shrink: 0; border-radius: 3px; font-weight: 500; }
+.xbtn:hover { background: var(--purple); color: #0d1117; border-color: var(--purple); }
+.crit-detail { display: none; padding: 10px 13px 12px; font-size: 12px; color: var(--text2); line-height: 1.65; border-top: 1px solid var(--border); }
+.crit-detail.open { display: block; }
+.cnote { margin-top: 8px; padding: 8px 11px; background: var(--card2); border-left: 3px solid var(--border2); font-family: var(--sans); font-size: 11px; color: var(--text2); line-height: 1.75; border-radius: 0 3px 3px 0; }
+.cnote strong { color: var(--text); }
+
+.brow { display: flex; border-top: 1px solid var(--border); flex-wrap: wrap; }
+.abtn { flex: 1; min-width: 80px; padding: 9px 10px; background: none; border: none; border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); color: var(--text2); font-family: var(--sans); font-size: 12px; cursor: pointer; transition: all 0.12s; text-transform: none; letter-spacing: 0; font-weight: 400; line-height: 1.4; text-align: left; }
+.abtn:last-child { border-right: none; }
+.abtn:hover { background: var(--card2); color: var(--text); }
+.abtn.ay { background: var(--green-bg);  color: var(--green);  font-weight: 700; }
+.abtn.an { background: var(--red-bg);    color: var(--red);    font-weight: 700; }
+.abtn.at { background: var(--teal-bg);   color: var(--teal);   font-weight: 700; }
+.abtn.ab { background: var(--blue-bg);   color: var(--blue);   font-weight: 700; }
+.abtn.aa { background: var(--card2);     color: var(--text2);  font-weight: 700; }
+.abtn.aw { background: var(--amber-bg);  color: var(--amber);  font-weight: 700; }
+
+.lbox { background: var(--card2); border: 1px solid var(--border); border-radius: 5px; padding: 12px 15px; font-size: 12px; color: var(--text2); line-height: 1.8; margin-bottom: 14px; }
+.lbox strong { color: var(--text); }
+.lt { color: var(--teal);   font-weight: 600; }
+.lg { color: var(--green);  font-weight: 600; }
+.la { color: var(--amber);  font-weight: 600; }
+.lr { color: var(--red);    font-weight: 600; }
+.lb { color: var(--blue);   font-weight: 600; }
+.lp { color: var(--purple); font-weight: 600; }
+
+.alrt { padding: 9px 13px; border-radius: 5px; font-size: 12px; line-height: 1.55; margin-top: 12px; border-left: 3px solid; display: none; }
+.alrt.show { display: block; }
+.aok  { border-color: var(--green);  background: var(--green-bg);  color: #7ee787; }
+.awn  { border-color: var(--amber);  background: var(--amber-bg);  color: var(--amber); }
+.aerr { border-color: var(--red);    background: var(--red-bg);    color: #ff7b72; }
+.ainf { border-color: var(--blue);   background: var(--blue-bg);   color: var(--blue); }
+.ateal{ border-color: var(--teal);   background: var(--teal-bg);   color: var(--teal); }
+
+.nav-row { display: flex; justify-content: space-between; align-items: center; margin-top: 20px; gap: 10px; }
+.nbtn { padding: 9px 22px; border-radius: 5px; font-family: var(--sans); font-size: 13px; letter-spacing: 0; text-transform: none; border: 1px solid; cursor: pointer; font-weight: 600; transition: all 0.15s; }
+.np { background: var(--teal); border-color: var(--teal); color: #0d1117; font-weight: 700; }
+.np:hover { background: #58efd4; border-color: #58efd4; }
+.np:disabled { opacity: 0.3; cursor: not-allowed; }
+.ns { background: transparent; border-color: var(--border2); color: var(--text2); }
+.ns:hover { border-color: var(--text); color: var(--text); }
+
+/* Drug cards */
+.drug-grid { display: flex; flex-direction: column; gap: 8px; margin-bottom: 10px; }
+.drug-card { border: 1px solid var(--border); border-radius: 8px; overflow: hidden; background: var(--card2); transition: border-color 0.2s; }
+.drug-card.selected { border-color: var(--teal-bd); background: var(--teal-bg); }
+.drug-card.contraind { border-color: var(--red-bd); background: var(--red-bg); opacity: 0.7; }
+.drug-header { padding: 12px 16px 10px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px; }
+.drug-name { font-size: 14px; font-weight: 700; color: var(--text); }
+.drug-brand { font-size: 11px; color: var(--text3); margin-top: 1px; }
+.drug-badge { font-size: 9px; font-weight: 600; padding: 1px 7px; border-radius: 3px; border: 1px solid; margin-left: auto; flex-shrink: 0; font-family: var(--sans); }
+.db-first { border-color: var(--teal-bd); color: var(--teal); background: var(--teal-bg); }
+.db-broad { border-color: var(--blue-bd); color: var(--blue); background: var(--blue-bg); }
+.db-caution { border-color: var(--amber-bd); color: var(--amber); background: var(--amber-bg); }
+.drug-body { padding: 10px 14px; display: grid; grid-template-columns: 1fr 1fr; gap: 0 16px; }
+@media (max-width: 600px) { .drug-body { grid-template-columns: 1fr; } }
+.drug-row { display: flex; gap: 8px; padding: 5px 0; border-bottom: 1px solid var(--border); font-size: 11px; line-height: 1.5; align-items: flex-start; }
+.drug-row:last-child { border-bottom: none; }
+.drug-tag { flex-shrink: 0; font-size: 9px; font-weight: 700; padding: 1px 6px; border-radius: 3px; margin-top: 1px; font-family: var(--sans); letter-spacing: 0; }
+.dtag-r { background: var(--red-bg);    color: var(--red);    border: 1px solid var(--red-bd); }
+.dtag-a { background: var(--amber-bg);  color: var(--amber);  border: 1px solid var(--amber-bd); }
+.dtag-b { background: var(--blue-bg);   color: var(--blue);   border: 1px solid var(--blue-bd); }
+.dtag-g { background: var(--green-bg);  color: var(--green);  border: 1px solid var(--green-bd); }
+.dtag-p { background: var(--purple-bg); color: var(--purple); border: 1px solid var(--purple-bd); }
+.drug-text { flex: 1; color: var(--text2); }
+.drug-text strong { color: var(--text); }
+
+/* Checklist tally */
+.tally { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+.chip { display: flex; align-items: center; gap: 5px; padding: 5px 11px; border-radius: 20px; font-family: var(--mono); font-size: 11px; border: 1px solid var(--border); background: var(--card2); color: var(--text2); }
+.chip .n { font-size: 14px; font-weight: 700; }
+.ct { border-color: var(--teal-bd);  background: var(--teal-bg);  color: var(--teal); }
+.cr { border-color: var(--red-bd);   background: var(--red-bg);   color: var(--red); }
+.ca { border-color: var(--amber-bd); background: var(--amber-bg); color: var(--amber); }
+.cg { border-color: var(--green-bd); background: var(--green-bg); color: var(--green); }
+
+/* Verdict banner */
+.vban { border-radius: 8px; padding: 20px 24px; margin-bottom: 16px; border: 2px solid; text-align: center; }
+.vtreat { border-color: var(--teal);  background: var(--teal-bg); }
+.vobserve{ border-color: var(--green); background: var(--green-bg); }
+.vlbl { font-family: var(--mono); font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase; opacity: 0.6; margin-bottom: 5px; }
+.vtitle { font-size: 20px; font-weight: 700; margin-bottom: 6px; }
+.vtreat  .vtitle { color: var(--teal); }
+.vobserve .vtitle { color: var(--green); }
+.vdesc { font-size: 12px; color: var(--text2); line-height: 1.7; max-width: 580px; margin: 0 auto; }
+
+/* Two-col */
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; }
+@media (max-width: 600px) { .two-col { grid-template-columns: 1fr; } }
+
+/* Seizure type selector */
+.sztype-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 12px; }
+@media (max-width: 560px) { .sztype-grid { grid-template-columns: 1fr; } }
+.sztype-btn { padding: 12px 14px; border: 2px solid var(--border); border-radius: 7px; background: var(--card2); cursor: pointer; text-align: left; transition: all 0.2s; }
+.sztype-btn:hover { border-color: var(--border2); background: var(--card); }
+.sztype-btn.sel { border-color: var(--teal-bd); background: var(--teal-bg); }
+.sztype-btn.sel .szt-title { color: var(--teal); }
+.szt-title { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 3px; }
+.szt-desc { font-size: 11px; color: var(--text2); line-height: 1.4; }
+
+/* Summary block */
+.sblock { background: var(--card); border: 1px solid var(--border); border-radius: 6px; overflow: hidden; margin-bottom: 12px; }
+.sbtitle { font-family: var(--sans); font-size: 11px; font-weight: 600; letter-spacing: 0; text-transform: none; padding: 7px 11px; border-bottom: 1px solid var(--border); color: var(--text); background: var(--card2); }
+.srow { display: flex; align-items: flex-start; gap: 8px; padding: 6px 11px; border-bottom: 1px solid var(--border); font-size: 12px; }
+.srow:last-child { border-bottom: none; }
+.dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; margin-top: 4px; }
+.dg { background: var(--green); } .dr { background: var(--red); }
+.dt { background: var(--teal); }  .da { background: var(--amber); }
+.dgr { background: var(--text3); }
+.sname { flex: 1; color: var(--text); line-height: 1.4; }
+.stag { font-family: var(--sans); font-size: 9px; padding: 1px 7px; border-radius: 10px; border: 1px solid; white-space: nowrap; }
+.tg { border-color: var(--green-bd); color: var(--green); }
+.tr { border-color: var(--red-bd);   color: var(--red); }
+.tt { border-color: var(--teal-bd);  color: var(--teal); }
+.ta { border-color: var(--amber-bd); color: var(--amber); }
+.tgr{ border-color: var(--border2);  color: var(--text3); }
+
+/* Warning box */
+.warn-box { background: var(--red-bg); border: 1px solid var(--red-bd); border-radius: 5px; padding: 10px 13px; font-size: 12px; color: #ff7b72; line-height: 1.65; margin-bottom: 10px; }
+.warn-box strong { color: var(--red); }
+.info-box { background: var(--amber-bg); border: 1px solid var(--amber-bd); border-radius: 5px; padding: 10px 13px; font-size: 12px; color: var(--amber); line-height: 1.65; margin-bottom: 10px; }
+.info-box strong { color: var(--amber); }
+</style>
+</head>
+<body>
+<div class="app">
+
+<header>
+  <div>
+    <div class="h-title">First-Time Seizure <span>Evaluation &amp; Treatment</span></div>
+    <div class="h-sub">ILAE / AAN Guidelines · For educator use only</div>
+    <div class="h-credit">Designed by neurology resident physicians Daniel Short, MD and Jenny Abdulkarim, MD</div>
+  </div>
+  <button class="reset-btn" onclick="resetAll()">↺ Reset</button>
+</header>
+
+<div class="prog-track"><div class="prog-fill" id="pf" style="width:0%"></div></div>
+
+<div class="steps">
+  <div class="stab active" id="st0" onclick="goTab(0)" title="Go to step 1"><span class="sn">1</span><span class="slbl">Seizure?</span></div>
+  <div class="stab" id="st1" onclick="goTab(1)" title="Go to step 2"><span class="sn">2</span><span class="slbl">Stable?</span></div>
+  <div class="stab" id="st2" onclick="goTab(2)" title="Go to step 3"><span class="sn">3</span><span class="slbl">Provoked?</span></div>
+  <div class="stab" id="st3" onclick="goTab(3)" title="Go to step 4"><span class="sn">4</span><span class="slbl">Workup</span></div>
+  <div class="stab" id="st4" onclick="goTab(4)" title="Go to step 5"><span class="sn">5</span><span class="slbl">Treat?</span></div>
+  <div class="stab" id="st5" onclick="goTab(5)" title="Go to step 6"><span class="sn">6</span><span class="slbl">ASM Choice</span></div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     SCREEN 0 — IS THIS A SEIZURE?
+══════════════════════════════════════════════ -->
+<div class="screen active" id="s0">
+<div class="card">
+  <div class="ctitle" style="color:var(--teal);">Step 1 · Is This a Seizure?</div>
+  <div class="csub">Obtain detailed history, eyewitness account, and review prior medical records. The history is the most important diagnostic tool.</div>
+
+  <div class="slabel">Features Favoring Seizure <span class="pill pill-t">Select All Present</span></div>
+  <div class="two-col" id="fav-seizure">
+    <div class="crit" id="fs-tc"><div class="crit-main"><div class="crit-name">Witnessed tonic-clonic movements or unresponsiveness</div><button class="xbtn" onclick="xp(this)">details ▾</button></div><div class="crit-detail">Generalized tonic-clonic activity with bilateral limb involvement; may include stiffening followed by rhythmic jerking. Unresponsiveness during and after the episode is strongly suggestive.</div><div class="brow"><button class="abtn" onclick="setToggle('fs-tc','yes')">✓ Present</button><button class="abtn" onclick="setToggle('fs-tc','no')">✗ Absent</button></div></div>
+    <div class="crit" id="fs-bite"><div class="crit-main"><div class="crit-name">Lateral tongue biting</div><button class="xbtn" onclick="xp(this)">details ▾</button></div><div class="crit-detail">Lateral tongue biting is highly specific for tonic-clonic seizure (specificity ~99.6%, sensitivity ~45%; Benbadis & Wolgamuth, Neurology 1995). Tip-of-tongue biting is less specific and may occur in syncope. Cheek biting also favors seizure.<div class="cnote"><strong>Key point:</strong> Lateral tongue biting is one of the most specific clinical features distinguishing seizure from syncope.</div></div><div class="brow"><button class="abtn" onclick="setToggle('fs-bite','yes')">✓ Present</button><button class="abtn" onclick="setToggle('fs-bite','no')">✗ Absent</button></div></div>
+    <div class="crit" id="fs-incon"><div class="crit-main"><div class="crit-name">Urinary or bowel incontinence</div></div><div class="brow"><button class="abtn" onclick="setToggle('fs-incon','yes')">✓ Present</button><button class="abtn" onclick="setToggle('fs-incon','no')">✗ Absent</button></div></div>
+    <div class="crit" id="fs-post"><div class="crit-main"><div class="crit-name">Postictal confusion or amnesia</div><button class="xbtn" onclick="xp(this)">details ▾</button></div><div class="crit-detail">Postictal state typically lasts minutes to hours. Patient may be confused, combative, or aphasic. Amnesia for the event is common and supports seizure over psychogenic event.</div><div class="brow"><button class="abtn" onclick="setToggle('fs-post','yes')">✓ Present</button><button class="abtn" onclick="setToggle('fs-post','no')">✗ Absent</button></div></div>
+    <div class="crit" id="fs-aura"><div class="crit-main"><div class="crit-name">Prodromal aura (déjà vu, epigastric rising, olfactory, autonomic)</div><button class="xbtn" onclick="xp(this)">details ▾</button></div><div class="crit-detail">Auras represent focal seizure onset before secondarily generalized spread. Common auras: déjà vu, jamais vu, epigastric rising sensation, fear, gustatory/olfactory hallucinations, visual phenomena, visceral sensations, "impending doom." Aura implies focal-onset seizure.</div><div class="brow"><button class="abtn" onclick="setToggle('fs-aura','yes')">✓ Present</button><button class="abtn" onclick="setToggle('fs-aura','no')">✗ Absent</button></div></div>
+    <div class="crit" id="fs-todd"><div class="crit-main"><div class="crit-name">Todd's paralysis (focal weakness after event)</div><button class="xbtn" onclick="xp(this)">details ▾</button></div><div class="crit-detail">Transient focal neurological deficit after a seizure (typically minutes to hours, rarely up to 48h). Present in ~13% of complex partial or generalized tonic-clonic seizures. When present, strongly suggests focal-onset seizure — particularly consider structural etiology and proceed urgently to MRI (Kellinghaus et al. 2004). Consider urgent MRI.</div><div class="brow"><button class="abtn" onclick="setToggle('fs-todd','yes')">✓ Present</button><button class="abtn" onclick="setToggle('fs-todd','no')">✗ Absent</button></div></div>
+  </div>
+
+  <div class="slabel" style="margin-top:14px;">Features Favoring Seizure Mimic <span class="pill pill-r">Red Flags — Consider Alternative Diagnosis</span></div>
+  <div class="two-col">
+    <div class="crit" id="fm-syncope"><div class="crit-main"><div class="crit-name">Chest pain, lightheadedness, tunnel vision, palpitations before event</div><button class="xbtn" onclick="xp(this)">details ▾</button></div><div class="crit-detail">These prodromal symptoms suggest vasovagal or cardiac syncope. Note: brief convulsive movements (myoclonic jerks) can occur in syncope due to brief cerebral hypoperfusion — this is "convulsive syncope" and does NOT indicate epilepsy. Obtain orthostatic BP, ECG, and cardiac monitoring as appropriate.<div class="cnote"><strong>Action:</strong> Obtain 12-lead ECG, orthostatic vital signs, Holter monitor. Refer to cardiology if indicated.</div></div><div class="brow"><button class="abtn" onclick="setToggle('fm-syncope','yes')">✓ Present — consider syncope</button><button class="abtn" onclick="setToggle('fm-syncope','no')">✗ Absent</button></div></div>
+    <div class="crit" id="fm-pnee"><div class="crit-main"><div class="crit-name">Fluctuating course, eyes closed, alternating movements, no postictal state</div><button class="xbtn" onclick="xp(this)">details ▾</button></div><div class="crit-detail">Features suggesting psychogenic nonepileptic episodes (PNEE): eyes closed during the event, side-to-side head movements, pelvic thrusting, ictal crying, alternating limb movements, gradual onset/offset, rapid recovery without postictal confusion, recall of the event. PNEE is not epilepsy — it requires psychiatric management, not ASMs.<div class="cnote"><strong>Gold standard for diagnosis:</strong> Video-EEG monitoring capturing a typical episode without ictal correlate.</div></div><div class="brow"><button class="abtn" onclick="setToggle('fm-pnee','yes')">✓ Present — consider PNEE</button><button class="abtn" onclick="setToggle('fm-pnee','no')">✗ Absent</button></div></div>
+  </div>
+
+  <div id="a0" class="alrt"></div>
+  <div class="nav-row">
+    <div></div>
+    <button class="nbtn np" onclick="go(1)">Next: Patient Stability →</button>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     SCREEN 1 — IS THE PATIENT STABLE?
+══════════════════════════════════════════════ -->
+<div class="screen" id="s1">
+<div class="card">
+  <div class="ctitle" style="color:var(--teal);">Step 2 · Is the Patient Stable?</div>
+  <div class="csub">Assess whether the patient has returned to their neurologic baseline. Active or recent seizures with persistent AMS require urgent evaluation before routine workup.</div>
+
+  <div class="slabel">Neurologic Status <span class="pill pill-r">Critical Branch Point</span></div>
+
+  <div class="crit" id="stable-yn">
+    <div class="crit-main"><div class="crit-name">Has the patient returned to neurologic baseline?</div></div>
+    <div class="brow">
+      <button class="abtn" onclick="setStable('yes')">✓ Yes — back to baseline; proceed to routine workup</button>
+      <button class="abtn" onclick="setStable('no')">✗ No — still altered, confused, or actively seizing</button>
+    </div>
+  </div>
+
+  <div id="unstable-panel" style="display:none; margin-top:10px;">
+    <div class="warn-box">
+      <strong>⚠ Urgent Evaluation Required</strong><br>
+      Patient has not returned to baseline. Initiate urgent workup simultaneously.
+    </div>
+    <div class="slabel" style="margin-top:12px;">Urgent Workup Checklist <span class="pill pill-r">Initiate Immediately</span></div>
+    <div class="crit" id="u-abc"><div class="crit-main"><div class="crit-name">ABCs — airway, breathing, circulation; IV access; fingerstick glucose</div></div><div class="brow"><button class="abtn" onclick="setToggle('u-abc','yes')">✓ Done</button><button class="abtn" onclick="setToggle('u-abc','no')">Pending</button></div></div>
+    <div class="crit" id="u-ct"><div class="crit-main"><div class="crit-name">Emergent CT head non-contrast — rule out hemorrhage, mass, herniation</div><button class="xbtn" onclick="xp(this)">details ▾</button></div><div class="crit-detail">CT head without contrast is the first-line urgent imaging. Identifies: intracranial hemorrhage, large space-occupying lesions, hydrocephalus, herniation. MRI is more sensitive for epileptogenic lesions but CT is faster in the acute setting.</div><div class="brow"><button class="abtn" onclick="setToggle('u-ct','yes')">✓ Ordered</button><button class="abtn" onclick="setToggle('u-ct','no')">Pending</button></div></div>
+    <div class="crit" id="u-labs"><div class="crit-main"><div class="crit-name">Stat labs: BMP (Na, Ca, Mg, glucose), CBC, LFTs, ammonia, tox screen, BAL</div></div><div class="brow"><button class="abtn" onclick="setToggle('u-labs','yes')">✓ Ordered</button><button class="abtn" onclick="setToggle('u-labs','no')">Pending</button></div></div>
+    <div class="crit" id="u-lp"><div class="crit-main"><div class="crit-name">Consider LP if fever, immunocompromise, meningismus, or persistent AMS</div><button class="xbtn" onclick="xp(this)">details ▾</button></div><div class="crit-detail">LP indications after first seizure: fever + seizure (meningitis/encephalitis), HIV/immunocompromised, meningismus on exam, persistent AMS unexplained by imaging or metabolic workup, CSF-VGKC or NMDAR antibodies suspected. Always obtain CT first to rule out mass effect if any concern.</div><div class="brow"><button class="abtn" onclick="setToggle('u-lp','yes')">✓ Indicated — ordered</button><button class="abtn" onclick="setToggle('u-lp','no')">✗ Not indicated</button><button class="abtn" onclick="setToggle('u-lp','nd')">— Considered / pending CT results</button></div></div>
+    <div class="crit" id="u-se"><div class="crit-main"><div class="crit-name">Ongoing seizure activity assessment</div><button class="xbtn" onclick="xp(this)">details ▾</button></div><div class="crit-detail">Status epilepticus: seizure lasting ≥5 minutes or ≥2 seizures without return to baseline between events. First-line: IV/IM benzodiazepine (lorazepam 0.1 mg/kg IV or midazolam 10 mg IM). If refractory, escalate per SE protocol.<br><br><strong>Altered mentation without clinical seizure:</strong> Consider nonconvulsive status epilepticus (NCSE) — obtain LTM video EEG urgently. NCSE can present as subtle eye deviation, automatisms, fluctuating AMS, or unexplained encephalopathy. Diagnosis requires EEG correlation.<br><br><strong>Low suspicion:</strong> Patient is postictal with expected gradual improvement — no ongoing seizure activity, monitoring appropriate.</div><div class="brow"><button class="abtn" onclick="setToggle('u-se','seizing')">⚠ Clinically seizing — initiate SE protocol immediately</button><button class="abtn" onclick="setToggle('u-se','altered')">~ Not clinically seizing but altered mentation — obtain LTM vEEG urgently to rule out NCSE</button><button class="abtn" onclick="setToggle('u-se','low')">✓ Low suspicion of ongoing seizure — postictal, improving</button></div></div>
+  </div>
+
+  <div id="a1" class="alrt"></div>
+  <div class="nav-row">
+    <button class="nbtn ns" onclick="go(0)">← Back</button>
+    <button class="nbtn np" id="btn-s1-next" onclick="go(2)" disabled>Next: Provoked vs. Unprovoked →</button>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     SCREEN 2 — PROVOKED vs. UNPROVOKED
+══════════════════════════════════════════════ -->
+<div class="screen" id="s2">
+<div class="card">
+  <div class="ctitle" style="color:var(--teal);">Step 3 · Provoked vs. Unprovoked?</div>
+  <div class="csub">Approximately 25–40% of first seizures are associated with a provoking factor. Identifying and treating the precipitating cause is the primary intervention for provoked seizures. (AAFP 2022; Hauser WA et al., BMJ 2004)</div>
+
+  <div class="slabel">Common Provoking Factors — Identify and Address <span class="pill pill-a">~25–40% of First Seizures</span></div>
+
+  <div class="lbox">
+    <strong>Metabolic:</strong> Hyponatremia, hypoglycemia, hypocalcemia, hypomagnesemia, uremia, hepatic encephalopathy — reversible; very low subsequent unprovoked seizure risk once corrected (≤3%, Hauser BMJ 2004)<br>
+    <strong>Toxic:</strong> <span class="lr">Alcohol withdrawal</span>, benzodiazepine withdrawal, cocaine, amphetamines<br>
+    <strong>Medications:</strong> Tramadol, bupropion (dose-dependent), fluoroquinolones, theophylline, isoniazid (always give pyridoxine)<br>
+    <strong>Structural (acute):</strong> Ischemic stroke, hemorrhagic stroke, TBI, CNS infection, tumor<br>
+    <strong>Systemic:</strong> Eclampsia (if pregnant), hypertensive encephalopathy (PRES), sepsis, autoimmune encephalitis
+  </div>
+
+  <div class="crit" id="prov-yn">
+    <div class="crit-main"><div class="crit-name">Is a clear provoking factor identified and addressable?</div><button class="xbtn" onclick="xp(this)">details ▾</button></div>
+    <div class="crit-detail">
+      <strong>Provoked seizure (acute symptomatic seizure):</strong> A seizure occurring in close temporal relationship with an acute CNS insult or systemic provoking factor. Long-term ASM therapy is generally NOT required once the provoking factor is treated. A first seizure caused by an acute disturbance of brain function is unlikely to recur as an unprovoked event: recurrence risk as an unprovoked seizure is ≤3% for truly reversible metabolic/toxic causes (Hauser WA et al., BMJ 2004). Patients with acute symptomatic seizures due to reversible causes have an ~80% decreased likelihood of subsequent unprovoked seizure compared to remote symptomatic seizures (Rizvi et al. 2017). However, this low recurrence applies only when the provoking factor is fully corrected.<br><br>
+      <strong>Exception — structural lesions:</strong> Even if the seizure appears "provoked" by an acute structural event (e.g., stroke, TBI), a chronic structural lesion confers ongoing epileptogenesis risk. These patients may require ASM therapy even after the acute event is treated — reclassify as high-risk and consider treatment per Step 5.<br><br>
+      <strong>Unprovoked seizure:</strong> No identifiable correctable precipitating factor. 2-year recurrence risk 21–45%.
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setProv('prov')">✓ Provoked — clear correctable cause identified</button>
+      <button class="abtn" onclick="setProv('struct')">⚠ Structural lesion present — treat cause but consider ASM</button>
+      <button class="abtn" onclick="setProv('unprov')">✗ Not clearly provoked — no correctable cause identified or etiology uncertain</button>
+    </div>
+  </div>
+
+  <div id="prov-panel" style="display:none; margin-top:10px;">
+    <div class="alrt aok show">
+      Provoked seizure — treat the underlying cause. Long-term ASM therapy is generally NOT indicated. Recurrence risk is low once the provoking factor is corrected. Schedule outpatient neurology follow-up for reassessment.
+    </div>
+  </div>
+
+  <div id="struct-panel" style="display:none; margin-top:10px;">
+    <div class="alrt awn show">
+      ⚠ Structural lesion identified — treat the acute cause AND proceed to risk stratification (Step 5). Structural lesions confer ongoing epileptogenesis risk that may warrant ASM therapy even after the acute event resolves.
+    </div>
+  </div>
+
+  <div id="a2" class="alrt"></div>
+  <div class="nav-row">
+    <button class="nbtn ns" onclick="go(1)">← Back</button>
+    <button class="nbtn np" id="btn-s2-next" onclick="go(3)" disabled>Next: Diagnostic Workup →</button>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     SCREEN 3 — DIAGNOSTIC WORKUP
+══════════════════════════════════════════════ -->
+<div class="screen" id="s3">
+<div class="card">
+  <div class="ctitle" style="color:var(--teal);">Step 4 · Diagnostic Workup</div>
+  <div class="csub">Order the following for all patients with a first unprovoked seizure. These results directly inform treatment decisions in Steps 5 and 6.</div>
+
+  <div class="slabel">Essential Studies — All Patients <span class="pill pill-r">Required</span></div>
+  <div class="crit" id="w-ecg"><div class="crit-main"><div class="crit-name">12-lead ECG</div><button class="xbtn" onclick="xp(this)">details ▾</button></div><div class="crit-detail">Essential for two reasons: (1) Rule out cardiac arrhythmia as a seizure mimic; (2) Obtain baseline PR interval, QRS duration, and QTc before starting ASMs — many ASMs affect cardiac conduction.<div class="cnote"><strong>Key intervals:</strong> PR prolongation is relevant for lamotrigine and lacosamide. QTc prolongation relevant if considering any ASM with cardiac effects.</div></div><div class="brow"><button class="abtn" onclick="setToggle('w-ecg','yes')">✓ Ordered / done</button><button class="abtn" onclick="setToggle('w-ecg','nd')">— Pending</button></div></div>
+  <div class="crit" id="w-eeg"><div class="crit-main"><div class="crit-name">EEG — routine EEG if back at baseline; LTM video EEG if not at baseline</div><button class="xbtn" onclick="xp(this)">details ▾</button></div><div class="crit-detail"><strong>Routine EEG</strong> — when patient has returned to neurologic baseline. Ideally within 24 hours of the seizure (yield declines over days). Epileptiform abnormalities significantly increase recurrence risk: ILAE/IFCN meta-analysis (2024, PMC12605794) — pooled OR 2.32 (95% CI 1.69–3.17); adults OR 1.55 (95% CI 1.08–2.21); children OR 3.24 (95% CI 2.19–4.79). Overall recurrence probability 60% with IEDs vs. 40% without. If initial routine EEG is normal, consider sleep-deprived EEG or ambulatory EEG within 7 days — recording yield increases with sleep deprivation and prolonged recording duration.<br><br>
+      <strong>Long-term monitoring (LTM) video EEG</strong> — when patient has NOT returned to baseline, or when NCSE must be excluded. Video EEG allows correlation of clinical behavior with electrographic activity. Nonconvulsive status epilepticus (NCSE) can present as subtle motor activity, eye deviation, or unexplained prolonged AMS — EMU/LTM vEEG is the gold standard for diagnosis.<div class="cnote"><strong>Result interpretation:</strong> Generalized spike-wave → generalized epilepsy syndrome. Focal discharges → focal-onset epilepsy. Normal EEG does not exclude epilepsy — sensitivity of routine EEG for epileptiform discharges is ~50%; repeat or prolonged recording increases yield.</div></div><div class="brow"><button class="abtn" onclick="setWEEG('normal')">✓ Normal EEG (routine or LTM)</button><button class="abtn" onclick="setWEEG('abnormal')">⚠ Epileptiform abnormalities on EEG</button><button class="abtn" onclick="setWEEG('nd')">— Pending / ordered</button></div></div>
+  <div class="crit" id="w-mri"><div class="crit-main"><div class="crit-name">MRI brain without contrast, seizure protocol — add contrast only if neoplasia or infection suspected</div><button class="xbtn" onclick="xp(this)">details ▾</button></div><div class="crit-detail">MRI with seizure protocol is significantly more sensitive than CT for epileptogenic lesions (mesial temporal sclerosis, cortical dysplasia, cavernomas, gliosis) — 12% of patients with normal CT had an epileptogenic lesion on subsequent MRI (PMC5765827, Neuroimaging of first-ever seizure, 2018).<br><br>
+      <strong>On contrast:</strong> Gadolinium is NOT routinely needed. Nelson et al. (J Neuroimaging 2021) found that 100% of epileptogenic lesions in patients without suspected neoplasia or infection were detected on non-contrast sequences alone — contrast added no additional diagnostic yield. ACR Appropriateness Criteria (2020) rate MRI without contrast as "usually appropriate" for new-onset seizure; with-and-without contrast is only "may be appropriate." Reserve contrast for: (1) known or suspected CNS neoplasia, (2) suspected CNS infection/encephalitis, (3) immunocompromised patient, (4) prior brain tumor history.<br><br>
+      Dedicated seizure protocol: thin-cut coronal T2/FLAIR through hippocampi, T2*, DWI, FLAIR. CT first if emergent; follow with MRI electively for all first unprovoked seizures.</div><div class="brow"><button class="abtn" onclick="setWMRI('normal')">✓ Normal MRI</button><button class="abtn" onclick="setWMRI('lesion')">⚠ Structural lesion identified</button><button class="abtn" onclick="setWMRI('nd')">— Pending</button></div></div>
+  <div class="crit" id="w-labs"><div class="crit-main"><div class="crit-name">Baseline labs: BMP, CBC, LFTs, albumin, renal function</div><button class="xbtn" onclick="xp(this)">details ▾</button></div><div class="crit-detail">Albumin and renal function are critical before ASM selection — many ASMs are protein-bound (affected by hypoalbuminemia) or renally cleared (requiring dose adjustment). LFTs guide selection of hepatically-metabolized agents. CBC baseline before carbamazepine or valproate.</div><div class="brow"><button class="abtn" onclick="setToggle('w-labs','yes')">✓ Ordered / done</button><button class="abtn" onclick="setToggle('w-labs','nd')">— Pending</button></div></div>
+
+  <div class="slabel" style="margin-top:14px;">Context-Specific Studies <span class="pill pill-a">Order as Clinically Indicated</span></div>
+  <div class="crit" id="w-hla"><div class="crit-main"><div class="crit-name">HLA-B*15:02 testing — patients of Asian descent</div><button class="xbtn" onclick="xp(this)">details ▾</button></div><div class="crit-detail"><strong>REQUIRED before prescribing carbamazepine, oxcarbazepine, eslicarbazepine, phenytoin, or lamotrigine in patients of Asian descent</strong> (especially Han Chinese, Southeast Asian). HLA-B*15:02 allele is strongly associated with Stevens-Johnson syndrome/TEN with aromatic AEDs. Prevalence ~6–8% in Han Chinese, lower in other populations. If positive: AVOID all implicated agents.</div><div class="brow"><button class="abtn" onclick="setToggle('w-hla','positive')">⚠ HLA-B*15:02 positive — avoid carbamazepine, oxcarbazepine, phenytoin, lamotrigine</button><button class="abtn" onclick="setToggle('w-hla','negative')">✓ HLA-B*15:02 negative</button><button class="abtn" onclick="setToggle('w-hla','na')">— Not indicated (non-Asian ancestry)</button><button class="abtn" onclick="setToggle('w-hla','nd')">— Pending</button></div></div>
+  <div class="crit" id="w-preg"><div class="crit-main"><div class="crit-name">Pregnancy test — women of childbearing potential</div><button class="xbtn" onclick="xp(this)">details ▾</button></div><div class="crit-detail">If positive: AVOID valproate (up to 10% major congenital malformations, up to 40% neurodevelopmental delay). Preferred agents in pregnancy: levetiracetam (lowest teratogenic risk data), lamotrigine (monitor levels — decrease in pregnancy). First-line for generalized epilepsy in women of childbearing potential: levetiracetam.</div><div class="brow"><button class="abtn" onclick="setWPreg('pregnant')">⚠ Pregnant / trying to conceive — AVOID valproate</button><button class="abtn" onclick="setWPreg('no')">✗ Not pregnant / not applicable</button><button class="abtn" onclick="setWPreg('nd')">— Pending</button></div></div>
+  <div class="crit" id="w-tox"><div class="crit-main"><div class="crit-name">Toxicology screen — if substance use suspected</div></div><div class="brow"><button class="abtn" onclick="setToggle('w-tox','yes')">✓ Ordered</button><button class="abtn" onclick="setToggle('w-tox','na')">— Not indicated</button></div></div>
+  <div class="crit" id="w-renal"><div class="crit-main"><div class="crit-name">Creatinine clearance — if renal impairment suspected</div><button class="xbtn" onclick="xp(this)">details ▾</button></div><div class="crit-detail">Levetiracetam requires dose adjustment if CrCl &lt;80 mL/min. Topiramate, gabapentin, and pregabalin also require renal dose adjustment. Valproate, lamotrigine, and carbamazepine are primarily hepatically metabolized and generally safe in renal disease.</div><div class="brow"><button class="abtn" onclick="setWRenal('impaired')">⚠ Renal impairment — affects ASM dosing</button><button class="abtn" onclick="setWRenal('normal')">✓ Normal renal function</button><button class="abtn" onclick="setWRenal('nd')">— Pending</button></div></div>
+
+  <div id="a3" class="alrt"></div>
+  <div class="nav-row">
+    <button class="nbtn ns" onclick="go(2)">← Back</button>
+    <button class="nbtn np" onclick="go(4)">Next: Risk Stratification →</button>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     SCREEN 4 — RISK STRATIFICATION
+══════════════════════════════════════════════ -->
+<div class="screen" id="s4">
+<div class="card">
+  <div class="ctitle" style="color:var(--teal);">Step 5 · Risk Stratification — To Treat or Not?</div>
+  <div class="csub">2-year recurrence risk after a single unprovoked seizure is 21–47% (Hauser et al. 1998; Marson et al. MESS 2005). Immediate ASM therapy reduces recurrence by ~30% relative risk in the first 2 years (MESS, Lancet 2005: HR 1.4, 95% CI 1.2–1.7) but does NOT improve long-term remission — no difference in seizure-free rates between years 3–5 (MESS; FIRST Group, Neurology 1997 &amp; 2006).</div>
+
+  <div class="lbox">
+    <strong>Counseling points for shared decision-making:</strong><br>
+    <span class="lt">Recurrence reduction:</span> MESS trial (Marson et al., Lancet 2005; n=1,847): immediate ASM reduced risk of first seizure (HR 1.4, 95% CI 1.2–1.7) and second seizure (HR 1.3, 95% CI 1.1–1.6) compared to deferred treatment. Absolute difference modest — not elimination of risk.<br>
+    <span class="la">Long-term prognosis:</span> MESS trial: no evidence of effect on long-term remission rates — no difference in seizure-free rates between years 3–5 regardless of when treatment was started (Marson et al. 2006, Lancet Neurol). FIRST Group (Musicco et al., Neurology 1997; Leone et al., Neurology 2006): treatment of first tonic-clonic seizure does not affect long-term remission.<br>
+    <span class="lr">ASM adverse effects:</span> Occur in 7–31% of patients in clinical trials, mostly mild and reversible. MESS quality-of-life analysis: benefits of reduced recurrence were offset by adverse events and stigma in low-risk patients (Kim et al. 2006). Weigh against patient-specific consequences of seizure recurrence (driving, employment, falls, SUDEP).<br>
+    <span class="lt">Patient-specific factors:</span> Risk of seizure recurrence vs. risk of medication side effects; occupation, driving status, social context.
+  </div>
+
+  <div class="slabel">High-Risk Features — Consider Starting ASM <span class="pill pill-r">Any Present → Favor Treatment</span></div>
+  <div class="two-col">
+    <div class="crit" id="r-eeg"><div class="crit-main"><div class="crit-name">Epileptiform abnormalities on EEG <span style="font-size:10px;color:var(--text3);font-weight:400;">(OR 2.32 for recurrence; ILAE/IFCN meta-analysis 2024)</span></div></div><div class="brow"><button class="abtn" onclick="setRisk('r-eeg','yes')">✓ Present</button><button class="abtn" onclick="setRisk('r-eeg','no')">✗ Absent</button></div></div>
+    <div class="crit" id="r-mri"><div class="crit-main"><div class="crit-name">Structural brain lesion on MRI <span style="font-size:10px;color:var(--text3);font-weight:400;">(remote symptomatic: recurrence up to 48% at 5 years, Hauser 1998)</span></div></div><div class="brow"><button class="abtn" onclick="setRisk('r-mri','yes')">✓ Present</button><button class="abtn" onclick="setRisk('r-mri','no')">✗ Absent</button></div></div>
+    <div class="crit" id="r-prior"><div class="crit-main"><div class="crit-name">Prior brain insult (stroke, TBI, CNS infection)</div></div><div class="brow"><button class="abtn" onclick="setRisk('r-prior','yes')">✓ Present</button><button class="abtn" onclick="setRisk('r-prior','no')">✗ Absent</button></div></div>
+    <div class="crit" id="r-noct"><div class="crit-main"><div class="crit-name">Nocturnal seizure <span style="font-size:10px;color:var(--text3);font-weight:400;">(independent predictor of recurrence; Berg & Shinnar meta-analysis)</span></div></div><div class="brow"><button class="abtn" onclick="setRisk('r-noct','yes')">✓ Present</button><button class="abtn" onclick="setRisk('r-noct','no')">✗ Absent</button></div></div>
+    <div class="crit" id="r-focal"><div class="crit-main"><div class="crit-name">Focal neurologic findings on examination</div></div><div class="brow"><button class="abtn" onclick="setRisk('r-focal','yes')">✓ Present</button><button class="abtn" onclick="setRisk('r-focal','no')">✗ Absent</button></div></div>
+    <div class="crit" id="r-fhx"><div class="crit-main"><div class="crit-name">Family history of epilepsy</div></div><div class="brow"><button class="abtn" onclick="setRisk('r-fhx','yes')">✓ Present</button><button class="abtn" onclick="setRisk('r-fhx','no')">✗ Absent</button></div></div>
+  </div>
+
+  <div class="slabel" style="margin-top:14px;">Workflow Suspicion of Seizure Onset Type <span class="pill pill-a">Derived from Clinical Features</span></div>
+  <div id="onset-inference-box" class="lbox" style="margin-bottom:10px;display:none;"></div>
+  <div class="slabel" style="margin-top:10px;">Clinician Confirmation of Seizure Onset Suspicion <span class="pill pill-t">Required — Pre-Populates Step 6</span></div>
+  <div class="csub" style="margin-bottom:8px;">The workflow derives a suspicion based on the clinical features from Step 1. Confirm or override below. This is your clinical suspicion, not a confirmed classification — EEG and imaging will refine this.</div>
+  <div class="crit" id="onset-susp-crit">
+    <div class="crit-main"><div class="crit-name">Confirm your suspicion of seizure onset type for this patient</div></div>
+    <div class="brow">
+      <button class="abtn" onclick="setOnset('focal')">Focal-onset — aura, Todd's paralysis, or unilateral features suggest focal origin</button>
+      <button class="abtn" onclick="setOnset('gen')">Generalized-onset — symmetric onset, no aura, loss of consciousness from the start</button>
+      <button class="abtn" onclick="setOnset('myo')">Myoclonic — brief shock-like jerks, especially on waking</button>
+      <button class="abtn" onclick="setOnset('unc')">Unknown / unclassified — onset could not be determined from available history</button>
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:14px;">Evidence-Based Treatment Recommendation <span class="pill pill-t">Auto-Generated from Entered Data</span></div>
+  <div id="verdict-box" style="margin-bottom:12px;"></div>
+  <div id="verdict-rationale" class="lbox" style="display:none; margin-bottom:12px;"></div>
+
+  <div id="observe-panel" style="display:none; margin-top:2px;">
+    <div class="slabel" style="margin-top:10px;">Safety Counseling Checklist <span class="pill pill-g">Complete Before Discharge</span></div>
+    <div class="crit" id="c-drive"><div class="crit-main"><div class="crit-name">Driving restrictions — state-specific (typically 6–12 months seizure-free; varies by jurisdiction)</div></div><div class="brow"><button class="abtn" onclick="setToggle('c-drive','yes')">✓ Counseled</button><button class="abtn" onclick="setToggle('c-drive','no')">Pending</button></div></div>
+    <div class="crit" id="c-bath"><div class="crit-main"><div class="crit-name">Water safety — shower preferred over unsupervised bath; no unsupervised swimming</div></div><div class="brow"><button class="abtn" onclick="setToggle('c-bath','yes')">✓ Counseled</button><button class="abtn" onclick="setToggle('c-bath','no')">Pending</button></div></div>
+    <div class="crit" id="c-sudep"><div class="crit-main"><div class="crit-name">SUDEP risk discussed — particularly relevant if treatment is deferred</div></div><div class="brow"><button class="abtn" onclick="setToggle('c-sudep','yes')">✓ Discussed</button><button class="abtn" onclick="setToggle('c-sudep','no')">Pending</button></div></div>
+    <div class="crit" id="c-fu"><div class="crit-main"><div class="crit-name">Neurology outpatient follow-up arranged (within 1–4 weeks)</div></div><div class="brow"><button class="abtn" onclick="setToggle('c-fu','yes')">✓ Arranged</button><button class="abtn" onclick="setToggle('c-fu','no')">Pending</button></div></div>
+  </div>
+  <div id="treat-counsel-panel" style="display:none; margin-top:2px;">
+    <div class="slabel" style="margin-top:10px;">Pre-Treatment Counseling Checklist <span class="pill pill-t">Complete Before Prescribing</span></div>
+    <div class="crit" id="c-drive-t"><div class="crit-main"><div class="crit-name">Driving restrictions counseled</div></div><div class="brow"><button class="abtn" onclick="setToggle('c-drive-t','yes')">✓ Counseled</button><button class="abtn" onclick="setToggle('c-drive-t','no')">Pending</button></div></div>
+    <div class="crit" id="c-sdm"><div class="crit-main"><div class="crit-name">Shared decision-making discussion completed — patient understands ASM reduces 2-year recurrence but not long-term prognosis</div></div><div class="brow"><button class="abtn" onclick="setToggle('c-sdm','yes')">✓ Discussed</button><button class="abtn" onclick="setToggle('c-sdm','no')">Pending</button></div></div>
+    <div class="crit" id="c-baseline-ecg"><div class="crit-main"><div class="crit-name">Baseline ECG obtained before starting ASM (mandatory — many ASMs affect cardiac conduction)</div></div><div class="brow"><button class="abtn" onclick="setToggle('c-baseline-ecg','yes')">✓ Done</button><button class="abtn" onclick="setToggle('c-baseline-ecg','no')">Pending</button></div></div>
+  </div>
+
+  <div id="a4" class="alrt"></div>
+  <div class="nav-row">
+    <button class="nbtn ns" onclick="go(3)">← Back</button>
+    <button class="nbtn np" id="btn-s4-next" onclick="go(5)" disabled>Next: ASM Selection →</button>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     SCREEN 5 — ASM SELECTION
+══════════════════════════════════════════════ -->
+<div class="screen" id="s5">
+<div class="card">
+  <div class="ctitle" style="color:var(--teal);">Step 6 · Antiseizure Medication Selection</div>
+  <div class="csub">Select seizure type to see first-line options, then review drug-specific contraindications based on the patient's profile from the workup steps.</div>
+
+  <div class="slabel">Seizure Type <span class="pill pill-r">Required — Determines First-Line Choice</span></div>
+  <div id="sz-preselect-note" class="lbox" style="display:none;margin-bottom:8px;"></div>
+  <div class="sztype-grid">
+    <div class="sztype-btn" id="sz-focal" onclick="setSzType('focal')">
+      <div class="szt-title">Focal-Onset Seizure</div>
+      <div class="szt-desc">Begins in one hemisphere; may secondarily generalize. EEG shows focal discharges. Includes focal aware, focal impaired awareness, focal to bilateral tonic-clonic.</div>
+    </div>
+    <div class="sztype-btn" id="sz-gen" onclick="setSzType('gen')">
+      <div class="szt-title">Generalized-Onset Seizure</div>
+      <div class="szt-desc">Involves both hemispheres simultaneously from onset. Includes generalized tonic-clonic, absence, myoclonic, atonic. EEG shows generalized discharges.</div>
+    </div>
+    <div class="sztype-btn" id="sz-myo" onclick="setSzType('myo')">
+      <div class="szt-title">Myoclonic Seizure</div>
+      <div class="szt-desc">Brief, shock-like muscle jerks (single or repetitive). Often occurs on waking. May be part of juvenile myoclonic epilepsy (JME) or other generalized syndrome.</div>
+    </div>
+    <div class="sztype-btn" id="sz-unc" onclick="setSzType('unc')">
+      <div class="szt-title">Unclassified / Unknown Onset</div>
+      <div class="szt-desc">Onset could not be determined from history/EEG. Use a broad-spectrum agent effective for both focal and generalized epilepsies.</div>
+    </div>
+  </div>
+
+  <div id="sz-recs" style="display:none;">
+    <!-- Workflow + clinician suspicion display -->
+    <div id="sz-suspicion-banner" class="lbox" style="margin-bottom:12px;display:none;"></div>
+
+    <div id="sz-rec-label-wrap">
+      <div class="slabel" id="sz-rec-label" style="margin-top:4px;"></div>
+    </div>
+
+    <div id="myoclonic-warn" style="display:none;">
+      <div class="warn-box"><strong>⚠ Avoid in Myoclonic Seizures:</strong> Carbamazepine, oxcarbazepine, phenytoin, gabapentin, and pregabalin can worsen myoclonic and absence seizures.</div>
+    </div>
+
+    <!-- Tiered ASM recommendations -->
+    <div id="asm-tiers" style="margin-bottom:12px;"></div>
+
+    <!-- Patient flags from workup -->
+    <div class="slabel" style="margin-top:4px;">Drug-Specific Contraindications and Precautions <span class="pill pill-r">Review All Agents</span></div>
+    <div id="patient-flags" style="margin-bottom:12px;"></div>
+
+    <div class="drug-grid">
+
+      <!-- LEVETIRACETAM -->
+      <div class="drug-card" id="dc-lev">
+        <div class="drug-header">
+          <div><div class="drug-name">Levetiracetam</div><div class="drug-brand">Keppra</div></div>
+          <span class="drug-badge db-first">First-Line Inpatient</span>
+        </div>
+        <div class="drug-body">
+          <div class="drug-row"><span class="drug-tag dtag-g">✓ IV</span><span class="drug-text"><strong>IV formulation available — can be loaded rapidly (1,500–3,000 mg IV over 15 min).</strong> Preferred inpatient agent due to immediate dose escalation. No titration schedule required.</span></div>
+          <div class="drug-row"><span class="drug-tag dtag-r">⚠ PSYCH</span><span class="drug-text">Behavioral abnormalities in ~13% (irritability, aggression, depression, psychosis). Levetiracetam was significantly more likely than lamotrigine to fail due to adverse reactions (HR 0.53, 95% CI 0.35–0.79; SANAD II). Caution with pre-existing psychiatric illness.</span></div>
+          <div class="drug-row"><span class="drug-tag dtag-b">RENAL</span><span class="drug-text">Renally excreted — dose adjustment required for CrCl &lt;80 mL/min.</span></div>
+          <div class="drug-row"><span class="drug-tag dtag-g">✓ ADV</span><span class="drug-text">No hepatic metabolism, minimal drug interactions, low teratogenicity (2.4–2.8%), safe in liver disease. Preferred in pregnancy and women of childbearing potential. Best long-term treatment failure rate makes it suitable for JME (levetiracetam superior to lamotrigine in JME; PMC10546294).</span></div>
+        </div>
+      </div>
+
+      <!-- LACOSAMIDE -->
+      <div class="drug-card" id="dc-lac">
+        <div class="drug-header">
+          <div><div class="drug-name">Lacosamide</div><div class="drug-brand">Vimpat</div></div>
+          <span class="drug-badge db-first">First-Line Inpatient (Focal)</span>
+        </div>
+        <div class="drug-body">
+          <div class="drug-row"><span class="drug-tag dtag-g">✓ IV</span><span class="drug-text"><strong>IV formulation available — can be loaded 200–400 mg IV over 15–60 min.</strong> Loading dose ≥200 mg achieves 87–89% response in seizure clusters (PMC3726085; Seizure 2016). 400 mg load associated with higher early response rate in refractory SE (Epilepsia 2013). Ideal for focal-onset inpatient initiation.</span></div>
+          <div class="drug-row"><span class="drug-tag dtag-r">⚠ CARDIAC</span><span class="drug-text"><strong>Dose-dependent PR interval prolongation.</strong> Obtain baseline ECG. Avoid/use caution with conduction abnormalities, AV block, or concomitant PR-prolonging drugs.</span></div>
+          <div class="drug-row"><span class="drug-tag dtag-g">✓ ADV</span><span class="drug-text">Minimal hepatic metabolism, no significant drug-drug interactions, well-tolerated. Approved monotherapy for focal epilepsy. Inpatient loading allows same-day therapeutic levels.</span></div>
+        </div>
+      </div>
+
+      <!-- LAMOTRIGINE -->
+      <div class="drug-card" id="dc-lam">
+        <div class="drug-header">
+          <div><div class="drug-name">Lamotrigine</div><div class="drug-brand">Lamictal</div></div>
+          <span class="drug-badge db-broad">First-Line Outpatient (Focal)</span>
+        </div>
+        <div class="drug-body">
+          <div class="drug-row"><span class="drug-tag dtag-a">⚠ TITRATION</span><span class="drug-text"><strong>Inpatient use uncommon — slow titration required (4–6 weeks to reach therapeutic dose).</strong> No IV formulation. NICE guideline notes: levetiracetam preferred when rapid therapeutic dosing is needed (shorter titration time; NBK581152). SANAD II: lamotrigine first-line for focal epilepsy outpatient (superior treatment failure rate vs. levetiracetam, Lancet 2021).</span></div>
+          <div class="drug-row"><span class="drug-tag dtag-r">⚠ RASH</span><span class="drug-text">Rash requiring discontinuation ~3.5–10%; serious SJS/TEN ~0.3–1%. Risk higher with rapid titration and co-administration of valproic acid. (Guberman et al. Epilepsia 1999)</span></div>
+          <div class="drug-row"><span class="drug-tag dtag-r">⚠ CARDIAC</span><span class="drug-text">FDA warning — Class IB antiarrhythmic properties; potential QRS widening in structural/functional heart disease or Brugada syndrome. Obtain baseline ECG.</span></div>
+          <div class="drug-row"><span class="drug-tag dtag-a">HLA</span><span class="drug-text">Test HLA-B*15:02 in patients of Asian descent before prescribing — risk of SJS/TEN.</span></div>
+          <div class="drug-row"><span class="drug-tag dtag-b">PREG</span><span class="drug-text">Low teratogenicity (2.9%); levels decrease during pregnancy — monitor and dose-adjust.</span></div>
+        </div>
+      </div>
+
+      <!-- VALPROIC ACID -->
+      <div class="drug-card" id="dc-vpa">
+        <div class="drug-header">
+          <div><div class="drug-name">Valproic Acid</div><div class="drug-brand">Depakote / Depakene</div></div>
+          <span class="drug-badge db-first">First-Line (Generalized)</span>
+        </div>
+        <div class="drug-body">
+          <div class="drug-row"><span class="drug-tag dtag-g">✓ IV</span><span class="drug-text">IV formulation available — can be loaded 20–40 mg/kg IV. Broad-spectrum including absence and myoclonic. SANAD II: valproic acid superior to levetiracetam for generalized and unclassified epilepsy for 12-month remission and treatment failure.</span></div>
+          <div class="drug-row"><span class="drug-tag dtag-r">⚠ PREG</span><span class="drug-text"><strong>AVOID in women of childbearing potential.</strong> Major congenital malformations 6.7–10.3% (EURAP; Tomson et al. Lancet Neurol 2018). Neurodevelopmental delay 30–40% (Meador et al. NEJM 2009). Dose-dependent — avoid &gt;800 mg/day if must use.</span></div>
+          <div class="drug-row"><span class="drug-tag dtag-r">⚠ HEPATIC</span><span class="drug-text">Contraindicated in liver disease and POLG1/Alpers syndrome. Monitor LFTs and ammonia if encephalopathy develops.</span></div>
+          <div class="drug-row"><span class="drug-tag dtag-a">DDI</span><span class="drug-text">Enzyme inhibitor — increases lamotrigine levels ~2-fold; interacts with warfarin. Thrombocytopenia — monitor CBC.</span></div>
+        </div>
+      </div>
+
+      <!-- CARBAMAZEPINE -->
+      <div class="drug-card" id="dc-cbz">
+        <div class="drug-header">
+          <div><div class="drug-name">Carbamazepine</div><div class="drug-brand">Tegretol</div></div>
+          <span class="drug-badge db-caution">Use with Caution</span>
+        </div>
+        <div class="drug-body">
+          <div class="drug-row"><span class="drug-tag dtag-r">⚠ CARDIAC</span><span class="drug-text">Can cause AV block and aggravate sick sinus syndrome. <strong>AVOID in conduction disease or prolonged PR interval.</strong></span></div>
+          <div class="drug-row"><span class="drug-tag dtag-r">⚠ HLA</span><span class="drug-text"><strong>MANDATORY HLA-B*15:02 testing in patients of Asian descent.</strong> High risk of SJS/TEN.</span></div>
+          <div class="drug-row"><span class="drug-tag dtag-a">Na⁺</span><span class="drug-text">Causes SIADH — avoid in hyponatremia or patients at risk (elderly, diuretics).</span></div>
+          <div class="drug-row"><span class="drug-tag dtag-p">DDI</span><span class="drug-text"><strong>Potent enzyme inducer</strong> — reduces efficacy of oral contraceptives, warfarin, chemotherapy, antiretrovirals. 5.5% major congenital malformation rate (EURAP).</span></div>
+        </div>
+      </div>
+
+      <!-- TOPIRAMATE -->
+      <div class="drug-card" id="dc-tpm">
+        <div class="drug-header">
+          <div><div class="drug-name">Topiramate</div><div class="drug-brand">Topamax</div></div>
+          <span class="drug-badge db-broad">Broad Spectrum</span>
+        </div>
+        <div class="drug-body">
+          <div class="drug-row"><span class="drug-tag dtag-r">⚠ RENAL</span><span class="drug-text"><strong>Contraindicated with nephrolithiasis history</strong> (carbonic anhydrase inhibitor — promotes stone formation).</span></div>
+          <div class="drug-row"><span class="drug-tag dtag-a">COGN</span><span class="drug-text">Word-finding difficulty and cognitive slowing ("Dopamax") — titrate slowly. Monitor serum bicarbonate (metabolic acidosis). Acute angle-closure glaucoma possible.</span></div>
+          <div class="drug-row"><span class="drug-tag dtag-r">PREG</span><span class="drug-text">4.2% major congenital malformations; orofacial clefts 1.4% (~11× general population risk; Margulis et al. Neurology 2012).</span></div>
+        </div>
+      </div>
+
+    </div><!-- end drug-grid -->
+  </div><!-- end sz-recs -->
+
+  <div id="a5" class="alrt"></div>
+  <div class="nav-row">
+    <button class="nbtn ns" onclick="go(4)">← Back</button>
+  </div>
+</div>
+</div>
+
+</div><!-- end app -->
+<script>
+var cur = 0;
+var S = {
+  // Step 1
+  'fs-tc':null,'fs-bite':null,'fs-incon':null,'fs-post':null,'fs-aura':null,'fs-todd':null,
+  'fm-syncope':null,'fm-pnee':null,
+  // Step 2
+  stable: null,
+  'u-abc':null,'u-ct':null,'u-labs':null,'u-lp':null,'u-se':null,
+  // Step 3
+  provoked: null,
+  // Step 4
+  'w-ecg':null,'w-eeg':null,'w-mri':null,'w-labs':null,
+  'w-hla':null,'w-preg':null,'w-tox':null,'w-renal':null,
+  // Step 5
+  'r-eeg':null,'r-mri':null,'r-prior':null,'r-noct':null,'r-focal':null,'r-fhx':null,
+  treatDec: null,
+  'c-drive':null,'c-bath':null,'c-sudep':null,'c-fu':null,
+  // Step 5 onset suspicion
+  onsetSusp: null,
+  // Step 6
+  szType: null
+};
+
+function goTab(n) { if (n === cur) return; go(n); }
+
+function go(n) {
+  document.getElementById('s'+cur).classList.remove('active');
+  document.getElementById('s'+n).classList.add('active');
+  for (var i = 0; i < 6; i++) {
+    var t = document.getElementById('st'+i);
+    if (!t) continue;
+    t.classList.remove('active','done');
+    if (i < n) t.classList.add('done');
+    else if (i === n) t.classList.add('active');
+  }
+  cur = n;
+  document.getElementById('pf').style.width = ((n/5)*100)+'%';
+  window.scrollTo({top:0,behavior:'smooth'});
+  if (n===5) showSzPreselect();
+  ui();
+}
+
+function xp(btn) {
+  var d = btn.closest('.crit').querySelector('.crit-detail');
+  if (!d) return;
+  d.classList.toggle('open');
+  btn.textContent = d.classList.contains('open') ? 'details ▴' : 'details ▾';
+}
+
+function setToggle(key, val) {
+  S[key] = val;
+  var item = document.getElementById(key);
+  if (!item) return;
+  item.querySelectorAll('.abtn').forEach(function(b) {
+    b.classList.remove('ay','an','at','ab','aa','aw');
+  });
+  var onclick = "setToggle('"+key+"','"+val+"')";
+  item.querySelectorAll('.abtn').forEach(function(b) {
+    if (b.getAttribute('onclick') === onclick) {
+      var cls = (val==='yes'||val==='ordered'||val==='done'||val==='negative'||val==='normal'||val==='low') ? 'ay' :
+                (val==='no') ? 'an' :
+                (val==='seizing') ? 'an' :
+                (val==='altered') ? 'aw' :
+                (val==='positive'||val==='impaired'||val==='pregnant') ? 'aw' :
+                (val==='nd'||val==='na') ? 'aa' : 'at';
+      b.classList.add(cls);
+    }
+  });
+  var cc = (val==='yes'||val==='negative'||val==='normal') ? 'c-yes' :
+           (val==='no') ? 'c-yes' :
+           (val==='positive'||val==='impaired') ? 'c-warn' :
+           'c-abs';
+  item.className = 'crit ' + cc;
+  ui();
+}
+
+function setStable(val) {
+  S.stable = val;
+  var item = document.getElementById('stable-yn');
+  item.querySelectorAll('.abtn').forEach(function(b) { b.classList.remove('ay','an'); });
+  item.querySelectorAll('.abtn').forEach(function(b) {
+    if (b.getAttribute('onclick') === "setStable('"+val+"')") b.classList.add(val==='yes'?'ay':'an');
+  });
+  document.getElementById('unstable-panel').style.display = (val==='no') ? 'block' : 'none';
+  document.getElementById('btn-s1-next').disabled = false;
+  ui();
+}
+
+function setProv(val) {
+  S.provoked = val;
+  var item = document.getElementById('prov-yn');
+  item.querySelectorAll('.abtn').forEach(function(b) { b.classList.remove('ay','an','aw'); });
+  item.querySelectorAll('.abtn').forEach(function(b) {
+    if (b.getAttribute('onclick') === "setProv('"+val+"')") {
+      b.classList.add(val==='prov'?'ay':val==='struct'?'aw':'an');
+    }
+  });
+  document.getElementById('prov-panel').style.display   = (val==='prov')   ? 'block' : 'none';
+  document.getElementById('struct-panel').style.display = (val==='struct') ? 'block' : 'none';
+  document.getElementById('btn-s2-next').disabled = false;
+  ui();
+  buildVerdict();
+}
+
+function setWEEG(val) {
+  S['w-eeg'] = val;
+  var item = document.getElementById('w-eeg');
+  item.querySelectorAll('.abtn').forEach(function(b) { b.classList.remove('ay','aw','aa'); });
+  item.querySelectorAll('.abtn').forEach(function(b) {
+    if (b.getAttribute('onclick') === "setWEEG('"+val+"')") {
+      b.classList.add(val==='normal'?'ay':val==='abnormal'?'aw':'aa');
+    }
+  });
+  item.className = 'crit ' + (val==='abnormal'?'c-warn':val==='normal'?'c-yes':'c-abs');
+  ui();
+  buildVerdict();
+}
+
+function setWMRI(val) {
+  S['w-mri'] = val;
+  var item = document.getElementById('w-mri');
+  item.querySelectorAll('.abtn').forEach(function(b) { b.classList.remove('ay','aw','aa'); });
+  item.querySelectorAll('.abtn').forEach(function(b) {
+    if (b.getAttribute('onclick') === "setWMRI('"+val+"')") {
+      b.classList.add(val==='normal'?'ay':val==='lesion'?'aw':'aa');
+    }
+  });
+  item.className = 'crit ' + (val==='lesion'?'c-warn':val==='normal'?'c-yes':'c-abs');
+  ui();
+  buildVerdict();
+}
+
+function setWPreg(val) {
+  S['w-preg'] = val;
+  var item = document.getElementById('w-preg');
+  item.querySelectorAll('.abtn').forEach(function(b) { b.classList.remove('ay','aw','aa'); });
+  item.querySelectorAll('.abtn').forEach(function(b) {
+    if (b.getAttribute('onclick') === "setWPreg('"+val+"')") {
+      b.classList.add(val==='pregnant'?'aw':val==='no'?'ay':'aa');
+    }
+  });
+  item.className = 'crit ' + (val==='pregnant'?'c-warn':val==='no'?'c-yes':'c-abs');
+  ui();
+}
+
+function setWRenal(val) {
+  S['w-renal'] = val;
+  var item = document.getElementById('w-renal');
+  item.querySelectorAll('.abtn').forEach(function(b) { b.classList.remove('ay','aw','aa'); });
+  item.querySelectorAll('.abtn').forEach(function(b) {
+    if (b.getAttribute('onclick') === "setWRenal('"+val+"')") {
+      b.classList.add(val==='impaired'?'aw':val==='normal'?'ay':'aa');
+    }
+  });
+  item.className = 'crit ' + (val==='impaired'?'c-warn':val==='normal'?'c-yes':'c-abs');
+  ui();
+}
+
+function setRisk(key, val) {
+  S[key] = val;
+  var item = document.getElementById(key);
+  if (!item) return;
+  item.querySelectorAll('.abtn').forEach(function(b) { b.classList.remove('ay','an'); });
+  item.querySelectorAll('.abtn').forEach(function(b) {
+    if (b.getAttribute('onclick') === "setRisk('"+key+"','"+val+"')") b.classList.add(val==='yes'?'aw':'an');
+  });
+  item.className = 'crit ' + (val==='yes'?'c-warn':'c-yes');
+  ui();
+}
+
+function inferOnset() {
+  // Infer likely onset from step 1 clinical features
+  var hasFocalFeatures = S['fs-aura']==='yes' || S['fs-todd']==='yes';
+  var hasTC = S['fs-tc']==='yes';
+  var hasBite = S['fs-bite']==='yes';
+  var hasIncon = S['fs-incon']==='yes';
+  var hasPost = S['fs-post']==='yes';
+
+  var box = document.getElementById('onset-inference-box');
+  if (!box) return;
+
+  var msg = '';
+  var sugg = '';
+
+  if (hasFocalFeatures && hasTC) {
+    sugg = 'focal';
+    msg = '<strong style="color:var(--amber)">Likely focal-onset (secondarily generalized):</strong> '
+      + (S['fs-aura']==='yes' ? 'Aura present — auras represent focal seizure onset before secondary generalization. ' : '')
+      + (S['fs-todd']==='yes' ? "Todd's paralysis present — strongly suggests focal-onset with contralateral hemisphere origin. " : '')
+      + 'Focal-to-bilateral tonic-clonic is the most likely classification. Focal-onset agents (lamotrigine, levetiracetam) are appropriate; avoid narrow-spectrum agents until type confirmed.';
+  } else if (hasFocalFeatures && !hasTC) {
+    sugg = 'focal';
+    msg = '<strong style="color:var(--amber)">Focal-onset likely:</strong> '
+      + (S['fs-aura']==='yes' ? 'Prodromal aura documented — highly specific for focal seizure origin. ' : '')
+      + (S['fs-todd']==='yes' ? "Todd's paralysis documented — contralateral hemisphere focus likely. " : '')
+      + 'Consider focal-aware or focal with impaired awareness seizure. MRI and EEG are essential to characterize the epileptogenic zone.';
+  } else if (!hasFocalFeatures && hasTC && (hasBite || hasIncon || hasPost)) {
+    sugg = 'gen';
+    msg = '<strong style="color:var(--blue)">Likely generalized-onset:</strong> Bilateral tonic-clonic without preceding aura'
+      + (hasBite ? ', lateral tongue biting' : '')
+      + (hasIncon ? ', incontinence' : '')
+      + (hasPost ? ', postictal confusion' : '')
+      + '. Symmetric onset without focal features suggests a primary generalized epilepsy syndrome. Valproate (first-line for generalized, except women of childbearing potential) or levetiracetam are appropriate.';
+  } else if (!hasFocalFeatures && !hasTC) {
+    sugg = 'unc';
+    msg = '<strong style="color:var(--text2)">Onset unclear from available history:</strong> Insufficient features entered to infer onset type. A broad-spectrum agent (lamotrigine, levetiracetam) is appropriate until the seizure type is characterized by EEG.';
+  } else {
+    sugg = 'unc';
+    msg = '<strong style="color:var(--text2)">Mixed or uncertain features:</strong> Clinical picture does not clearly favor focal or generalized onset. Use a broad-spectrum agent until EEG classification is available.';
+  }
+
+  if (msg) {
+    box.innerHTML = msg;
+    box.style.display = 'block';
+  } else {
+    box.style.display = 'none';
+  }
+
+  // Auto-suggest but don't force — highlight the inferred button softly
+  var crit = document.getElementById('onset-susp-crit');
+  if (crit && S.onsetSusp === null && sugg) {
+    // Show subtle suggestion via a note
+    var note = document.getElementById('onset-sugg-note');
+    if (!note) {
+      note = document.createElement('div');
+      note.id = 'onset-sugg-note';
+      note.style.cssText = 'font-size:10px;color:var(--text3);padding:4px 13px 6px;font-family:var(--sans);';
+      crit.appendChild(note);
+    }
+    var labels = {focal:'Focal-onset',gen:'Generalized-onset',myo:'Myoclonic',unc:'Unknown/unclassified'};
+    note.textContent = '↑ Suggested based on clinical features: ' + (labels[sugg]||sugg) + ' — confirm below';
+  }
+}
+
+function setOnset(val) {
+  S.onsetSusp = val;
+  // Visual feedback on buttons
+  var crit = document.getElementById('onset-susp-crit');
+  if (crit) {
+    crit.querySelectorAll('.abtn').forEach(function(b) { b.classList.remove('ay','an','at','ab','aa','aw'); });
+    crit.querySelectorAll('.abtn').forEach(function(b) {
+      if (b.getAttribute('onclick') === "setOnset('"+val+"')") b.classList.add('at');
+    });
+    crit.className = 'crit c-teal';
+  }
+  // Pre-select matching seizure type in Step 6
+  S.szType = val;
+  ['focal','gen','myo','unc'].forEach(function(t) {
+    var el = document.getElementById('sz-'+t);
+    if (el) el.classList.toggle('sel', t===val);
+  });
+  // Show the sz-recs section with the inferred type
+  document.getElementById('sz-recs').style.display = 'block';
+  if (typeof setSzType === 'function') {
+    var recs = document.getElementById('sz-recs');
+    recs.style.display='block';
+    document.getElementById('myoclonic-warn').style.display = (val==='myo')?'block':'none';
+    renderAsmTiers(val);
+    showSzPreselect();
+    updateDrugFlags();
+  }
+  ui();
+}
+
+function buildVerdict() {
+  var highRiskKeys = ['r-eeg','r-mri','r-prior','r-noct','r-focal','r-fhx'];
+  var nHigh = highRiskKeys.filter(function(k){return S[k]==='yes';}).length;
+  var nAnswered = highRiskKeys.filter(function(k){return S[k]!==null;}).length;
+  var eegAbn = S['w-eeg']==='abnormal';
+  var mriLesion = S['w-mri']==='lesion';
+  var pregnant = S['w-preg']==='pregnant';
+  var provoked = S.provoked==='prov';
+
+  var box = document.getElementById('verdict-box');
+  var rat = document.getElementById('verdict-rationale');
+  var obsPanel = document.getElementById('observe-panel');
+  var treatPanel = document.getElementById('treat-counsel-panel');
+
+  if (nAnswered === 0) {
+    box.innerHTML = '<div class="alrt ainf show" style="margin-top:0;">Complete the high-risk feature assessment above to generate a recommendation.</div>';
+    rat.style.display='none'; obsPanel.style.display='none'; treatPanel.style.display='none';
+    document.getElementById('btn-s4-next').disabled = true;
+    S.treatDec = null;
+    return;
+  }
+
+  if (provoked) {
+    box.innerHTML = '<div class="vban vobserve"><div class="vlbl">Recommendation</div><div class="vtitle">Observation — Treat Underlying Cause</div><div class="vdesc">Provoked seizure: recurrence risk as an unprovoked event is ≤3% once the provoking factor is corrected (Hauser BMJ 2004). Long-term ASM therapy is generally not indicated.</div></div>';
+    rat.innerHTML = '<strong>Rationale:</strong> A provoked (acute symptomatic) seizure due to a reversible cause does not confer the same recurrence risk as an unprovoked seizure. The primary intervention is correction of the precipitating factor. Follow-up with neurology is still appropriate to confirm the diagnosis.';
+    rat.style.display='block';
+    obsPanel.style.display='block'; treatPanel.style.display='none';
+    S.treatDec='observe';
+    document.getElementById('btn-s4-next').disabled = true;
+    return;
+  }
+
+  var rec, ratText, color;
+
+  if (nHigh >= 2 || eegAbn || mriLesion) {
+    rec = 'Treat — Start ASM';
+    color = 'vtreat';
+    var reasons = [];
+    if (nHigh >= 2) reasons.push(nHigh+' high-risk features present');
+    if (eegAbn && !S['r-eeg']) reasons.push('epileptiform abnormalities on EEG (OR 2.32 for recurrence)');
+    if (mriLesion && !S['r-mri']) reasons.push('structural lesion on MRI');
+    ratText = '<strong>Evidence basis for treating:</strong> ' + reasons.join('; ') + '. '
+      + 'AAN 2015 guideline (Level B): immediate ASM should be offered when recurrence risk is high. '
+      + 'MESS trial (Lancet 2005): ASM reduces 2-year recurrence risk (HR 1.4, 95% CI 1.2–1.7). '
+      + 'Proceed to Step 6 to select the appropriate agent based on seizure type and patient profile.';
+    obsPanel.style.display='none'; treatPanel.style.display='block';
+    S.treatDec='treat';
+    document.getElementById('btn-s4-next').disabled = false;
+  } else if (nHigh === 1) {
+    rec = 'Consider Treatment — Shared Decision-Making';
+    color = 'vtreat';
+    ratText = '<strong>Evidence basis:</strong> 1 high-risk feature present — recurrence risk elevated above the 21–26% baseline (Hauser et al. 1998). '
+      + 'AAN 2015 guideline (Level B): immediate ASM may be offered, taking into account patient preferences and circumstances. '
+      + 'MESS quality-of-life analysis: benefit of ASM offset by side effects and stigma in low-to-medium risk patients. '
+      + '<span class="lr">Discuss with patient: consequences of seizure recurrence (driving, occupation, safety) vs. medication side effects (7–31% experience adverse effects, mostly mild).</span>';
+    obsPanel.style.display='none'; treatPanel.style.display='block';
+    S.treatDec='treat';
+    document.getElementById('btn-s4-next').disabled = false;
+  } else {
+    rec = 'Observation — Low Recurrence Risk';
+    color = 'vobserve';
+    ratText = '<strong>Evidence basis for observation:</strong> No high-risk features identified. '
+      + '2-year recurrence risk ~21–26% without risk factors (Hauser et al. 1998; MESS prognostic model). '
+      + 'AAN 2015 guideline (Level B): immediate ASM does not need to be offered for patients with low recurrence risk, given that early treatment does not improve long-term remission (FIRST Group, Neurology 1997 &amp; 2006; MESS, Lancet Neurol 2006). '
+      + 'Ensure safety counseling and arrange neurology follow-up.';
+    obsPanel.style.display='block'; treatPanel.style.display='none';
+    S.treatDec='observe';
+    document.getElementById('btn-s4-next').disabled = true;
+  }
+
+  box.innerHTML = '<div class="vban '+color+'"><div class="vlbl">Evidence-Based Recommendation</div><div class="vtitle">'+rec+'</div></div>';
+  rat.innerHTML = ratText;
+  rat.style.display='block';
+}
+
+function setTreatDec(val) {
+  // Keep for backward compat — verdict is now auto-generated
+  S.treatDec = val;
+  ui();
+}
+
+function showSzPreselect() {
+  // Update the suspicion banner at top of Step 6
+  var banner = document.getElementById('sz-suspicion-banner');
+  if (!banner) return;
+  var labels = {focal:'Focal-onset',gen:'Generalized-onset',myo:'Myoclonic',unc:'Unknown / unclassified'};
+  if (S.onsetSusp || S.szType) {
+    var wfSusp = S.onsetSusp ? (labels[S.onsetSusp]||S.onsetSusp) : 'Not determined';
+    var clinSusp = S.szType ? (labels[S.szType]||S.szType) : 'Not yet confirmed';
+    var match = S.onsetSusp && S.szType && S.onsetSusp === S.szType;
+    var conflict = S.onsetSusp && S.szType && S.onsetSusp !== S.szType;
+    banner.style.display='block';
+    banner.innerHTML = '<strong>Seizure onset suspicion:</strong><br>'
+      + '<span class="la">Workflow suspicion (from Step 1 features):</span> ' + wfSusp + '<br>'
+      + '<span class="lt">Clinician confirmed suspicion (from Step 5):</span> ' + clinSusp
+      + (conflict ? '<br><span class="lr">⚠ Note: workflow and clinician suspicion differ — recommendations below are based on your confirmed clinical suspicion.</span>' : '')
+      + (match ? '<br><span class="lg">✓ Workflow and clinician suspicion agree.</span>' : '');
+  } else {
+    banner.style.display='none';
+  }
+  // Update tiered recommendations
+  renderAsmTiers(S.szType || S.onsetSusp || 'unc');
+  updateDrugFlags();
+}
+
+function setSzType(val) {
+  S.szType = val;
+  ['focal','gen','myo','unc'].forEach(function(t) {
+    document.getElementById('sz-'+t).classList.toggle('sel', t===val);
+  });
+  document.getElementById('sz-recs').style.display = 'block';
+  document.getElementById('myoclonic-warn').style.display = (val==='myo') ? 'block' : 'none';
+  showSzPreselect();
+  ui();
+}
+
+function renderAsmTiers(val) {
+  var label = document.getElementById('sz-rec-label');
+  var tiers = document.getElementById('asm-tiers');
+  if (!tiers || !label) return;
+  var pregnant = S['w-preg']==='pregnant';
+
+  if (val==='focal') {
+    label.innerHTML = 'Tiered Recommendations — Focal-Onset Seizure <span class="pill pill-t">SANAD II / NICE / AAN</span>';
+    tiers.innerHTML =
+      '<div class="sblock"><div class="sbtitle">Inpatient First-Line (IV available — rapid loading)</div>'
+      + '<div class="srow"><span class="dot dt"></span><span class="sname"><strong>Levetiracetam 1,500–3,000 mg IV</strong> — preferred inpatient first-line. No titration required; can reach therapeutic levels immediately. NICE guideline: preferred when rapid dosing needed (shorter titration time vs. lamotrigine; NBK581152). Behavioral AEs in ~13%; caution with psychiatric history.</span><span class="stag tt">1st IV</span></div>'
+      + '<div class="srow"><span class="dot dt"></span><span class="sname"><strong>Lacosamide 200–400 mg IV</strong> — excellent inpatient option for focal-onset. Load ≥200 mg: 87–89% response in seizure clusters (PMC3726085; Seizure 2016). 400 mg load: higher early response rate in RSE (Epilepsia 2013). Approved monotherapy for focal epilepsy. <strong>Obtain ECG before use</strong> — PR prolongation risk.</span><span class="stag tt">1st IV</span></div>'
+      + '</div>'
+      + '<div class="sblock" style="margin-top:8px;"><div class="sbtitle">Outpatient First-Line (best long-term evidence)</div>'
+      + '<div class="srow"><span class="dot dt"></span><span class="sname"><strong>Lamotrigine</strong> — best outpatient long-term evidence for focal epilepsy. SANAD II (Lancet 2021, n=990): lamotrigine superior to levetiracetam for time to treatment failure — levetiracetam significantly more likely to fail due to adverse reactions (HR 0.53, 95% CI 0.35–0.79). Requires 4–6 week titration; <strong>not suitable for inpatient initiation.</strong> No IV formulation.</span><span class="stag tt">1st Outpt</span></div>'
+      + '<div class="srow"><span class="dot dt"></span><span class="sname"><strong>Levetiracetam</strong> — acceptable outpatient first-line when faster titration needed or psychiatric history makes lamotrigine behavioral risk more acceptable. Similar seizure remission rates to lamotrigine (SANAD II) but higher long-term treatment failure.</span><span class="stag tt">Alt Outpt</span></div>'
+      + '</div>'
+      + '<div class="sblock" style="margin-top:8px;"><div class="sbtitle">Second-Line / Alternative</div>'
+      + '<div class="srow"><span class="dot da"></span><span class="sname">Carbamazepine — ILAE first-line for focal but enzyme inducer with significant drug interactions and cardiac/SIADH risks. Avoid if HLA-B*15:02 positive.</span><span class="stag ta">2nd</span></div>'
+      + '<div class="srow"><span class="dot da"></span><span class="sname">Oxcarbazepine — lower DDI burden than carbamazepine. SIADH risk. Avoid if HLA-B*15:02 positive.</span><span class="stag ta">2nd</span></div>'
+      + '</div>';
+  } else if (val==='gen') {
+    label.innerHTML = 'Tiered Recommendations — Generalized-Onset Seizure <span class="pill pill-t">SANAD II / ILAE</span>';
+    tiers.innerHTML =
+      '<div class="sblock"><div class="sbtitle">First-Line — Women of Childbearing Potential</div>'
+      + '<div class="srow"><span class="dot dt"></span><span class="sname"><strong>Levetiracetam</strong> — preferred in women of childbearing potential. Lowest teratogenicity (2.4–2.8%). IV loading available inpatient. Superior to lamotrigine in JME effectiveness and retention (JAMA Neurol 2023, PMC10546294).</span><span class="stag tt">1st (Childbearing potential)</span></div>'
+      + '<div class="srow"><span class="dot dt"></span><span class="sname"><strong>Lamotrigine</strong> — acceptable alternative; low teratogenicity (2.9%). Slow 4–6 week titration — not suitable inpatient. Note: may worsen absence seizures at sub-therapeutic doses during titration.</span><span class="stag tt">Alt (Childbearing potential)</span></div>'
+      + '</div>'
+      + '<div class="sblock" style="margin-top:8px;"><div class="sbtitle">First-Line — Men / Postmenopausal Women</div>'
+      + '<div class="srow"><span class="dot dt"></span><span class="sname"><strong>Valproic Acid</strong> — broadest spectrum; first-line for all generalized subtypes (GTC, absence, myoclonic, atonic). SANAD II: VPA superior to levetiracetam for 12-month remission and time to treatment failure in generalized/unclassified epilepsy. IV available inpatient (20–40 mg/kg IV load).</span><span class="stag tt">1st (Male / Non-childbearing)</span></div>'
+      + '<div class="srow"><span class="dot dt"></span><span class="sname"><strong>Levetiracetam IV</strong> — use inpatient while awaiting long-term plan; transition to valproic acid or lamotrigine if appropriate once stable.</span><span class="stag tt">Inpatient bridge</span></div>'
+      + '</div>'
+      + '<div class="sblock" style="margin-top:8px;"><div class="sbtitle">Second-Line</div>'
+      + '<div class="srow"><span class="dot da"></span><span class="sname">Topiramate — broad-spectrum; avoid if nephrolithiasis history. Cognitive side effects. 4.2% MCM.</span><span class="stag ta">2nd</span></div>'
+      + '<div class="srow"><span class="dot dr"></span><span class="sname"><strong>AVOID: Carbamazepine, oxcarbazepine, phenytoin</strong> — may worsen absence or myoclonic seizures if present within the generalized syndrome.</span><span class="stag tr">Avoid</span></div>'
+      + '</div>';
+  } else if (val==='myo') {
+    label.innerHTML = 'Tiered Recommendations — Myoclonic Seizure <span class="pill pill-t">ILAE / AAN</span>';
+    tiers.innerHTML =
+      '<div class="sblock"><div class="sbtitle">First-Line</div>'
+      + '<div class="srow"><span class="dot dt"></span><span class="sname"><strong>Levetiracetam</strong> — preferred, especially in JME (most common myoclonic syndrome). Superior to lamotrigine in effectiveness and retention in JME (JAMA Neurol 2023). IV loading available inpatient.</span><span class="stag tt">1st</span></div>'
+      + '<div class="srow"><span class="dot dt"></span><span class="sname"><strong>Valproic Acid</strong> — highly effective for myoclonic seizures; first-line if not a woman of childbearing potential. IV loading available inpatient (20–40 mg/kg).</span><span class="stag tt">1st (Male / Non-childbearing)</span></div>'
+      + '</div>'
+      + '<div class="sblock" style="margin-top:8px;"><div class="sbtitle">Alternative</div>'
+      + '<div class="srow"><span class="dot da"></span><span class="sname">Zonisamide — alternative for myoclonic seizures; evidence in JME. Twice-daily dosing.</span><span class="stag ta">Alt</span></div>'
+      + '</div>'
+      + '<div class="sblock" style="margin-top:8px;"><div class="sbtitle">Contraindicated — May Worsen Myoclonic Seizures</div>'
+      + '<div class="srow"><span class="dot dr"></span><span class="sname"><strong>AVOID: Carbamazepine, oxcarbazepine, phenytoin, gabapentin, pregabalin</strong> — sodium-channel blockers and GABAergic agents can exacerbate myoclonic and absence seizures. Absolute contraindication in myoclonic epilepsy.</span><span class="stag tr">Avoid</span></div>'
+      + '</div>';
+  } else {
+    label.innerHTML = 'Tiered Recommendations — Unknown / Unclassified Onset <span class="pill pill-t">Broad-Spectrum First</span>';
+    tiers.innerHTML =
+      '<div class="sblock"><div class="sbtitle">Inpatient First-Line (IV, rapid loading; broad-spectrum)</div>'
+      + '<div class="srow"><span class="dot dt"></span><span class="sname"><strong>Levetiracetam 1,500–3,000 mg IV</strong> — preferred inpatient agent for unclassified onset; effective for both focal and generalized seizures. Use while awaiting EEG classification.</span><span class="stag tt">1st IV</span></div>'
+      + '<div class="srow"><span class="dot dt"></span><span class="sname"><strong>Lacosamide 200–400 mg IV</strong> — reasonable choice if focal features are suspected pending classification. Obtain ECG. IV load 87–89% response for seizure clusters (PMC3726085).</span><span class="stag tt">Alt IV (focal susp.)</span></div>'
+      + '</div>'
+      + '<div class="sblock" style="margin-top:8px;"><div class="sbtitle">Outpatient — Initiate After EEG Classification</div>'
+      + '<div class="srow"><span class="dot dt"></span><span class="sname"><strong>Lamotrigine</strong> — effective for both focal and generalized; safe long-term option. Initiate outpatient once EEG classification is available. 4–6 week titration.</span><span class="stag tt">Outpt</span></div>'
+      + '<div class="srow"><span class="dot dt"></span><span class="sname"><strong>Valproic Acid</strong> — broadest spectrum option; consider in men/postmenopausal women if rapid oral control needed and onset remains unclassified. Avoid in women of childbearing potential.</span><span class="stag tt">Outpt (Male / Non-childbearing)</span></div>'
+      + '</div>'
+      + '<div class="sblock" style="margin-top:8px;"><div class="sbtitle">Hold Until EEG Classifies</div>'
+      + '<div class="srow"><span class="dot dr"></span><span class="sname"><strong>Carbamazepine, oxcarbazepine</strong> — narrow-spectrum focal agents. Do not start until EEG has confirmed focal onset; risk of worsening generalized or myoclonic seizures if onset type is misclassified.</span><span class="stag tr">Hold</span></div>'
+      + '</div>';
+  }
+}
+
+function updateDrugFlags() {
+  var flags = [];
+  if (S['w-preg']==='pregnant') flags.push('<div class="warn-box"><strong>⚠ Pregnant / Childbearing Potential:</strong> Valproate is contraindicated. Preferred: Levetiracetam. Lamotrigine acceptable — monitor levels (decrease in pregnancy).</div>');
+  if (S['w-hla']==='positive') flags.push('<div class="warn-box"><strong>⚠ HLA-B*15:02 Positive:</strong> Avoid carbamazepine, oxcarbazepine, eslicarbazepine, phenytoin, and lamotrigine. Safe alternatives: levetiracetam, valproate, lacosamide, topiramate.</div>');
+  if (S['w-renal']==='impaired') flags.push('<div class="info-box"><strong>⚠ Renal Impairment:</strong> Levetiracetam requires dose reduction if CrCl &lt;80 mL/min. Topiramate, gabapentin, and pregabalin also require adjustment. Valproate and lamotrigine are generally safe.</div>');
+  if (S['w-eeg']==='abnormal') flags.push('<div class="info-box"><strong>EEG: Epileptiform abnormalities identified</strong> — nearly doubles recurrence risk. This supports initiating ASM therapy.</div>');
+  if (S['w-mri']==='lesion') flags.push('<div class="info-box"><strong>MRI: Structural lesion identified</strong> — high recurrence risk. Ensure ASM choice is appropriate for structural epilepsy (avoid under-treating).</div>');
+  document.getElementById('patient-flags').innerHTML = flags.join('');
+
+  // Highlight/grey drug cards based on patient profile
+  var hlaPos = S['w-hla']==='positive';
+  var pregnant = S['w-preg']==='pregnant';
+
+  // Carbamazepine: contraindicated if HLA+ or myoclonic
+  var cbzContra = hlaPos || S.szType==='myo';
+  document.getElementById('dc-cbz').className = 'drug-card' + (cbzContra?' contraind':'');
+
+  // Valproate: contraindicated if pregnant
+  var vpaContra = pregnant;
+  document.getElementById('dc-vpa').className = 'drug-card' + (vpaContra?' contraind':'');
+
+  // Lamotrigine: caution if HLA+
+  document.getElementById('dc-lam').className = 'drug-card' + (hlaPos?' contraind':'');
+}
+
+function ui() {
+  // Step 1 alert
+  var a0 = document.getElementById('a0');
+  var mimics = (S['fm-syncope']==='yes') || (S['fm-pnee']==='yes');
+  var seizureFeatures = ['fs-tc','fs-bite','fs-incon','fs-post','fs-aura','fs-todd'].filter(function(k){return S[k]==='yes';}).length;
+  if (S['fm-syncope']==='yes' && seizureFeatures < 2) {
+    a0.className='alrt awn show'; a0.innerHTML='⚠ Syncope features present with limited seizure features — obtain ECG, orthostatic vitals, and cardiac evaluation before attributing to seizure.';
+  } else if (S['fm-pnee']==='yes' && seizureFeatures < 2) {
+    a0.className='alrt awn show'; a0.innerHTML='PNEE features present — consider video EEG monitoring to capture a typical episode before starting ASM.';
+  } else if (seizureFeatures >= 2) {
+    a0.className='alrt aok show'; a0.innerHTML='Multiple seizure features present — clinical picture supports epileptic seizure.';
+  } else { a0.className='alrt'; a0.innerHTML=''; }
+
+  // Step 3 alert
+  var a2 = document.getElementById('a2');
+  if (S.provoked==='prov') {
+    a2.className='alrt aok show'; a2.innerHTML='Provoked seizure identified — treat the underlying cause. Arrange outpatient neurology follow-up. ASM not required long-term if provoking factor corrected.';
+  } else if (S.provoked==='struct') {
+    a2.className='alrt awn show'; a2.innerHTML='⚠ Structural lesion present — proceed to full workup and risk stratification. Structural epilepsy may require long-term ASM.';
+  } else { a2.className='alrt'; a2.innerHTML=''; }
+
+  // Step 4 workup flags
+  var a3 = document.getElementById('a3');
+  var flags3 = [];
+  if (S['w-eeg']==='abnormal') flags3.push('EEG epileptiform abnormalities — doubles recurrence risk');
+  if (S['w-mri']==='lesion') flags3.push('Structural lesion on MRI — high recurrence risk');
+  if (S['w-preg']==='pregnant') flags3.push('Pregnancy confirmed — AVOID valproate');
+  if (S['w-hla']==='positive') flags3.push('HLA-B*15:02 positive — avoid aromatic AEDs');
+  if (flags3.length > 0) {
+    a3.className='alrt awn show'; a3.innerHTML='⚠ Critical findings: ' + flags3.join(' · ');
+  } else { a3.className='alrt'; a3.innerHTML=''; }
+
+  // Step 5 risk tally
+  var highRiskKeys = ['r-eeg','r-mri','r-prior','r-noct','r-focal','r-fhx'];
+  var nHigh = highRiskKeys.filter(function(k){return S[k]==='yes';}).length;
+  var a4 = document.getElementById('a4');
+  if (nHigh >= 2) {
+    a4.className='alrt aerr show'; a4.innerHTML='⚠ '+nHigh+' high-risk features present — recurrence risk is substantially elevated (up to 47–57% at 2–5 years with ≥1 risk factor; Hauser et al. 1998, 10-year prospective cohort 2024). Starting ASM is strongly recommended.';
+  } else if (nHigh === 1) {
+    a4.className='alrt awn show'; a4.innerHTML='1 high-risk feature present — recurrence risk elevated above baseline 21–35% (Hauser et al. 1998). Discuss with patient; ASM initiation is reasonable.';
+  } else if (nHigh === 0 && highRiskKeys.some(function(k){return S[k]!==null;})) {
+    a4.className='alrt aok show'; a4.innerHTML='No high-risk features identified — 2-year recurrence risk ~21–26% without risk factors (Hauser et al. 1998; MESS prognostic model). Observation without ASM is reasonable; shared decision-making with patient.';
+  } else { a4.className='alrt'; a4.innerHTML=''; }
+
+  // Drug flags update if on step 6
+  if (S.szType) updateDrugFlags();
+  // Rebuild verdict and onset inference on step 5
+  if (cur === 4) { buildVerdict(); inferOnset(); }
+}
+
+function resetAll() {
+  Object.keys(S).forEach(function(k){ S[k] = null; });
+  document.querySelectorAll('.abtn').forEach(function(b){ b.classList.remove('ay','an','at','ab','aa','aw'); });
+  document.querySelectorAll('.crit').forEach(function(c){ c.className = 'crit'; });
+  document.querySelectorAll('.crit-detail').forEach(function(d){ d.classList.remove('open'); });
+  document.querySelectorAll('.xbtn').forEach(function(b){ b.textContent = 'details ▾'; });
+  ['unstable-panel','prov-panel','struct-panel','observe-panel','sz-recs','myoclonic-warn'].forEach(function(id){
+    var el = document.getElementById(id); if(el) el.style.display = 'none';
+  });
+  ['focal','gen','myo','unc'].forEach(function(t){ var el = document.getElementById('sz-'+t); if(el) el.classList.remove('sel'); });
+  document.getElementById('btn-s1-next').disabled = true;
+  document.getElementById('btn-s2-next').disabled = true;
+  document.getElementById('btn-s4-next').disabled = true;
+  document.getElementById('patient-flags').innerHTML = '';
+  ['dc-cbz','dc-vpa','dc-lam','dc-lac','dc-lev','dc-tpm'].forEach(function(id){
+    var el = document.getElementById(id); if(el) el.className='drug-card';
+  });
+  // Clear onset crit
+  var oc = document.getElementById('onset-susp-crit');
+  if(oc){ oc.className='crit'; oc.querySelectorAll('.abtn').forEach(function(b){b.classList.remove('ay','an','at','ab','aa','aw');}); }
+  var ob = document.getElementById('onset-inference-box'); if(ob) ob.innerHTML='';
+  var on = document.getElementById('onset-sugg-note'); if(on) on.textContent='';
+  go(0);
+  ui();
+  buildVerdict();
+}
+
+ui();
+</script>
+</body>
+</html>
