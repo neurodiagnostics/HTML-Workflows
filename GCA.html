@@ -1,0 +1,952 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2022 ACR/EULAR GCA Criteria · Classification Navigator</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@300;400;500;600;700&family=Lexend:wght@300;400;500;600&display=swap');
+
+:root {
+  --bg:        #0d1117;
+  --card:      #161b22;
+  --card2:     #1c2330;
+  --border:    #3a4556;
+  --border2:   #4a5f7a;
+  --green:     #3fb950;
+  --green-bg:  rgba(63,185,80,0.10);
+  --green-bd:  rgba(63,185,80,0.35);
+  --red:       #f85149;
+  --red-bg:    rgba(248,81,73,0.10);
+  --red-bd:    rgba(248,81,73,0.35);
+  --amber:     #e3b341;
+  --amber-bg:  rgba(227,179,65,0.10);
+  --amber-bd:  rgba(227,179,65,0.35);
+  --blue:      #58a6ff;
+  --blue-bg:   rgba(88,166,255,0.10);
+  --blue-bd:   rgba(88,166,255,0.35);
+  --teal:      #39d0c8;
+  --teal-bg:   rgba(57,208,200,0.10);
+  --teal-bd:   rgba(57,208,200,0.35);
+  --text:      #e6edf3;
+  --text2:     #aab4c0;
+  --text3:     #6e7f94;
+  --sans:  'Lexend', 'Inter', system-ui, sans-serif;
+  --mono:  'IBM Plex Mono', monospace;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg); color: var(--text); font-family: var(--sans); font-size: 14px; line-height: 1.5; min-height: 100vh; }
+.app { max-width: 960px; margin: 0 auto; padding: 0 20px 80px; }
+
+header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+.h-title { font-size: 19px; font-weight: 700; }
+.h-title span { color: var(--teal); }
+.h-sub { font-family: var(--sans); font-size: 11px; color: var(--text3); margin-top: 3px; line-height: 1.6; }
+.h-credit { font-family: var(--sans); font-size: 11px; color: var(--text3); margin-top: 2px; }
+.reset-btn { background: var(--card2); border: 1px solid var(--border); color: var(--text2); font-family: var(--sans); font-size: 12px; padding: 6px 14px; cursor: pointer; border-radius: 4px; transition: all 0.15s; white-space: nowrap; font-weight: 500; }
+.reset-btn:hover { border-color: var(--teal); color: var(--teal); }
+
+.prog-track { height: 3px; background: var(--border); margin-bottom: 20px; border-radius: 2px; }
+.prog-fill { height: 100%; background: linear-gradient(90deg, var(--teal), #9ffffa); border-radius: 2px; transition: width 0.4s ease; box-shadow: 0 0 6px rgba(57,208,200,0.4); }
+
+.steps { display: grid; grid-template-columns: repeat(7, 1fr); border: 1px solid var(--border); border-radius: 8px; margin-bottom: 20px; overflow: hidden; background: var(--card); }
+.stab { padding: 8px 3px 9px; text-align: center; font-family: var(--sans); font-size: 10px; color: var(--text3); border-right: 1px solid var(--border); transition: all 0.2s; cursor: pointer; background: var(--card); line-height: 1.3; }
+.stab:nth-child(7n) { border-right: none; }
+.stab .sn { display: flex; align-items: center; justify-content: center; width: 20px; height: 20px; border-radius: 50%; background: var(--card2); border: 1px solid var(--border); font-size: 10px; font-weight: 700; margin: 0 auto 3px; transition: all 0.2s; }
+.stab .slbl { display: block; font-size: 9px; font-weight: 600; line-height: 1.3; }
+.stab.active { color: var(--teal); background: rgba(57,208,200,0.06); }
+.stab.active .sn { background: var(--teal); color: #0d1117; border-color: var(--teal); }
+.stab.done { color: var(--green); }
+.stab.done .sn { background: var(--green); color: #0d1117; border-color: var(--green); }
+.stab:hover:not(.active) { background: var(--card2); }
+
+/* SCORE COUNTER */
+.score-bar { display: flex; align-items: center; gap: 14px; background: var(--card2); border: 1px solid var(--border); border-radius: 8px; padding: 12px 18px; margin-bottom: 14px; }
+.score-num { font-family: var(--mono); font-size: 32px; font-weight: 700; min-width: 48px; text-align: center; transition: color 0.3s; }
+.score-label { font-size: 11px; color: var(--text2); line-height: 1.5; }
+.score-label strong { display: block; font-size: 13px; color: var(--text); }
+.score-thresh { font-family: var(--mono); font-size: 10px; padding: 3px 10px; border-radius: 20px; margin-left: auto; white-space: nowrap; border: 1px solid; }
+.st-no   { border-color: var(--red-bd);    background: var(--red-bg);    color: var(--red); }
+.st-yes  { border-color: var(--green-bd);  background: var(--green-bg);  color: var(--green); }
+.st-near { border-color: var(--amber-bd);  background: var(--amber-bg);  color: var(--amber); }
+.st-none { border-color: var(--border2);   background: var(--card2);     color: var(--text3); }
+
+.card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 22px; margin-bottom: 12px; }
+.ctitle { font-size: 13px; font-weight: 700; font-family: var(--sans); margin-bottom: 3px; }
+.csub { font-size: 12px; color: var(--text2); margin-bottom: 16px; line-height: 1.5; }
+
+.slabel { display: flex; align-items: center; gap: 8px; font-family: var(--sans); font-size: 11px; font-weight: 600; color: var(--text); margin-bottom: 9px; padding-bottom: 6px; border-bottom: 1px solid var(--border); }
+.pill { font-size: 9px; padding: 1px 7px; border-radius: 20px; border: 1px solid; margin-left: auto; font-family: var(--sans); letter-spacing: 0.04em; text-transform: uppercase; }
+.pill-r { border-color: var(--red);   color: var(--red);   background: var(--red-bg); }
+.pill-a { border-color: var(--amber); color: var(--amber); background: var(--amber-bg); }
+.pill-t { border-color: var(--teal);  color: var(--teal);  background: var(--teal-bg); }
+.pill-g { border-color: var(--green); color: var(--green); background: var(--green-bg); }
+
+.score-chip { font-family: var(--mono); font-size: 11px; font-weight: 700; padding: 1px 8px; border-radius: 4px; margin-left: 6px; border: 1px solid; }
+.sc-5 { border-color: var(--green-bd); background: var(--green-bg); color: var(--green); }
+.sc-3 { border-color: var(--teal-bd);  background: var(--teal-bg);  color: var(--teal); }
+.sc-2 { border-color: var(--blue-bd);  background: var(--blue-bg);  color: var(--blue); }
+
+.crit { border: 1px solid var(--border); border-radius: 6px; margin-bottom: 5px; overflow: hidden; transition: border-color 0.15s, background 0.15s; }
+.crit.c-yes  { border-color: var(--green-bd); background: var(--green-bg); }
+.crit.c-no   { border-color: var(--border2);  background: var(--card2); }
+.crit.c-abs  { border-color: var(--red-bd);   background: var(--red-bg); }
+.crit.c-part { border-color: var(--amber-bd); background: var(--amber-bg); }
+.crit.c-blue { border-color: var(--blue-bd);  background: var(--blue-bg); }
+
+.crit-main { display: flex; align-items: center; gap: 10px; padding: 10px 13px; }
+.crit-name { flex: 1; font-size: 13px; font-weight: 500; color: var(--text); line-height: 1.3; }
+.xbtn { background: rgba(188,140,255,0.10); border: 1px solid rgba(188,140,255,0.35); color: #bc8cff; font-size: 11px; cursor: pointer; padding: 2px 8px; font-family: var(--sans); white-space: nowrap; transition: all 0.15s; flex-shrink: 0; border-radius: 3px; font-weight: 500; }
+.xbtn:hover { background: #bc8cff; color: #0d1117; border-color: #bc8cff; }
+
+.crit-detail { display: none; padding: 10px 13px 12px; font-size: 12px; color: var(--text); line-height: 1.65; border-top: 1px solid var(--border); font-family: var(--sans); }
+.crit-detail.open { display: block; }
+.cnote { margin-top: 8px; padding: 8px 11px; background: var(--card2); border-left: 3px solid var(--border2); font-family: var(--mono); font-size: 10px; color: var(--text2); line-height: 1.75; border-radius: 0 3px 3px 0; }
+.cnote strong { color: var(--text); }
+.prose-note { margin-top: 8px; padding: 8px 11px; background: var(--card2); border-left: 3px solid var(--border2); font-family: var(--sans); font-size: 11px; color: var(--text2); line-height: 1.75; border-radius: 0 3px 3px 0; }
+.prose-note strong { color: var(--text); }
+
+.brow { display: flex; flex-wrap: wrap; border-top: 1px solid var(--border); }
+.abtn { flex: 1; min-width: 120px; padding: 9px 10px; background: none; border: none; border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); color: var(--text2); font-family: var(--sans); font-size: 12px; cursor: pointer; transition: all 0.12s; font-weight: 400; line-height: 1.4; text-align: left; }
+.abtn:last-child { border-right: none; }
+.abtn:hover { background: var(--card2); color: var(--text); }
+.abtn.ay { background: var(--green-bg);  color: var(--green);  font-weight: 700; }
+.abtn.an { background: var(--card2);     color: var(--text2);  font-weight: 700; }
+.abtn.at { background: var(--teal-bg);   color: var(--teal);   font-weight: 700; }
+.abtn.ab { background: var(--blue-bg);   color: var(--blue);   font-weight: 700; }
+.abtn.aw { background: var(--amber-bg);  color: var(--amber);  font-weight: 700; }
+.abtn.ar { background: var(--red-bg);    color: var(--red);    font-weight: 700; }
+
+.alrt { padding: 9px 13px; border-radius: 5px; font-size: 12px; line-height: 1.55; margin-top: 12px; border-left: 3px solid; display: none; font-family: var(--sans); }
+.alrt.show { display: block; }
+.aok   { border-color: var(--green);  background: var(--green-bg);  color: #7ee787; }
+.awn   { border-color: var(--amber);  background: var(--amber-bg);  color: var(--amber); }
+.aerr  { border-color: var(--red);    background: var(--red-bg);    color: #ff7b72; }
+.ainf  { border-color: var(--blue);   background: var(--blue-bg);   color: var(--blue); }
+.ateal { border-color: var(--teal);   background: var(--teal-bg);   color: var(--teal); }
+
+.lbox { background: var(--card2); border: 1px solid var(--border); border-radius: 5px; padding: 12px 15px; font-size: 12px; color: var(--text2); line-height: 1.75; margin-bottom: 14px; font-family: var(--sans); }
+.lbox strong { color: var(--text); }
+.lt { color: var(--teal);  font-weight: 600; }
+.lg { color: var(--green); font-weight: 600; }
+.la { color: var(--amber); font-weight: 600; }
+.lr { color: var(--red);   font-weight: 600; }
+.lb { color: var(--blue);  font-weight: 600; }
+
+.nav-row { display: flex; justify-content: space-between; align-items: center; margin-top: 20px; gap: 10px; }
+.nbtn { padding: 9px 22px; border-radius: 5px; font-family: var(--sans); font-size: 13px; border: 1px solid; cursor: pointer; font-weight: 600; transition: all 0.15s; }
+.np { background: var(--teal); border-color: var(--teal); color: #0d1117; font-weight: 700; }
+.np:hover { background: #9ffffa; border-color: #9ffffa; }
+.np:disabled { opacity: 0.3; cursor: not-allowed; }
+.ns { background: transparent; border-color: var(--border2); color: var(--text2); }
+.ns:hover { border-color: var(--text); color: var(--text); }
+
+.screen { display: none; }
+.screen.active { display: block; animation: fu 0.25s ease; }
+@keyframes fu { from { opacity:0; transform:translateY(5px); } to { opacity:1; transform:translateY(0); } }
+
+/* VERDICT */
+.vban { border-radius: 8px; padding: 22px 26px; margin-bottom: 16px; border: 2px solid; }
+.vpos  { border-color: var(--teal);  background: var(--teal-bg); }
+.vneg  { border-color: var(--red);   background: var(--red-bg); }
+.vund  { border-color: var(--amber); background: var(--amber-bg); }
+.vban-head { text-align: center; margin-bottom: 14px; }
+.vlbl { font-family: var(--mono); font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase; opacity: 0.6; margin-bottom: 5px; }
+.vtitle { font-size: 22px; font-weight: 700; margin-bottom: 6px; }
+.vpos .vtitle { color: var(--teal); }
+.vneg .vtitle { color: var(--red); }
+.vund .vtitle { color: var(--amber); }
+.vdesc { font-size: 12px; color: var(--text2); line-height: 1.7; max-width: 620px; margin: 0 auto; font-family: var(--sans); }
+
+/* SCORE BREAKDOWN */
+.score-breakdown { background: var(--card2); border: 1px solid var(--border); border-radius: 6px; overflow: hidden; margin-bottom: 12px; }
+.sbtitle { font-family: var(--sans); font-size: 11px; font-weight: 600; padding: 7px 11px; border-bottom: 1px solid var(--border); color: var(--text); background: var(--card2); }
+.sb-row { display: flex; align-items: center; gap: 8px; padding: 6px 11px; border-bottom: 1px solid var(--border); font-size: 12px; font-family: var(--sans); }
+.sb-row:last-child { border-bottom: none; }
+.sb-name { flex: 1; color: var(--text2); line-height: 1.4; }
+.sb-pts { font-family: var(--mono); font-size: 12px; font-weight: 700; min-width: 32px; text-align: right; }
+.pts-g { color: var(--green); }
+.pts-t { color: var(--teal); }
+.pts-0 { color: var(--text3); }
+
+.sum-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+@media (max-width: 580px) { .sum-grid { grid-template-columns: 1fr; } }
+.sblock { background: var(--card); border: 1px solid var(--border); border-radius: 6px; overflow: hidden; }
+.srow { display: flex; align-items: flex-start; gap: 8px; padding: 6px 11px; border-bottom: 1px solid var(--border); font-size: 12px; font-family: var(--sans); }
+.srow:last-child { border-bottom: none; }
+.dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; margin-top: 4px; }
+.dg { background: var(--green); } .dr { background: var(--red); }
+.dt { background: var(--teal); }  .db { background: var(--blue); }
+.da { background: var(--amber); } .dgr{ background: var(--text3); }
+.sname { flex: 1; color: var(--text); line-height: 1.4; }
+.stag { font-family: var(--mono); font-size: 9px; padding: 1px 7px; border-radius: 10px; border: 1px solid; white-space: nowrap; }
+.tg { border-color: var(--green-bd); color: var(--green); }
+.tr { border-color: var(--red-bd);   color: var(--red); }
+.tt { border-color: var(--teal-bd);  color: var(--teal); }
+.tb { border-color: var(--blue-bd);  color: var(--blue); }
+.ta { border-color: var(--amber-bd); color: var(--amber); }
+.tgr{ border-color: var(--border2);  color: var(--text3); }
+
+/* RED FLAGS */
+.redflag-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 14px; }
+@media (max-width: 600px) { .redflag-grid { grid-template-columns: 1fr; } }
+.redflag-item { border: 1px solid var(--border); border-radius: 5px; padding: 11px 13px; font-size: 13px; color: var(--text2); line-height: 1.55; cursor: pointer; transition: all 0.15s; display: flex; align-items: flex-start; gap: 12px; font-family: var(--sans); }
+.redflag-item:hover { border-color: var(--border2); color: var(--text); }
+.redflag-item.rf-checked { border-color: var(--red-bd); background: var(--red-bg); color: var(--red); }
+.rf-checkbox { width: 18px; height: 18px; min-width: 18px; border: 2px solid var(--border2); border-radius: 3px; background: var(--card2); transition: all 0.15s; display: flex; align-items: center; justify-content: center; margin-top: 1px; font-size: 11px; font-weight: 700; color: transparent; }
+.redflag-item.rf-checked .rf-checkbox { border-color: var(--red); background: var(--red-bg); color: var(--red); }
+.rf-content { flex: 1; }
+.rf-label { font-weight: 600; font-size: 13px; margin-bottom: 4px; color: var(--text); font-family: var(--sans); }
+.redflag-item.rf-checked .rf-label { color: var(--red); }
+
+/* DOC */
+.doc-header { display: flex; align-items: center; gap: 8px; margin-bottom: 5px; }
+.doc-tog { flex: 1; text-align: left; background: var(--card2); border: 1px solid var(--border2); border-radius: 5px; color: var(--text2); font-family: var(--sans); font-size: 13px; padding: 8px 13px; cursor: pointer; transition: all 0.15s; }
+.doc-tog:hover { border-color: var(--teal); color: var(--teal); }
+.copy-btn { background: var(--card2); border: 1px solid var(--border2); border-radius: 5px; color: var(--text2); font-family: var(--sans); font-size: 12px; padding: 8px 14px; cursor: pointer; white-space: nowrap; transition: all 0.15s; display: none; }
+.copy-btn.visible { display: block; }
+.copy-btn:hover { border-color: var(--green); color: var(--green); }
+.copy-btn.copied { border-color: var(--green); color: var(--green); background: var(--green-bg); }
+.doc-body { display: none; background: var(--card2); border: 1px solid var(--border2); border-radius: 5px; padding: 13px 15px; font-family: var(--mono); font-size: 11px; color: var(--text2); line-height: 1.85; white-space: pre-wrap; margin-bottom: 12px; }
+.doc-body.open { display: block; }
+</style>
+</head>
+<body>
+<div class="app">
+
+<header>
+  <div>
+    <div class="h-title">2022 ACR/EULAR <span>Giant Cell Arteritis Classification Criteria</span></div>
+    <div class="h-sub">Ponte C et al. · Ann Rheum Dis 2022;81:1647–1653 · ACR/EULAR DCVAS Study Group · For educator use only</div>
+    <div class="h-credit">Designed by neurology resident physician Daniel Short, MD</div>
+  </div>
+  <button class="reset-btn" onclick="resetAll()">↺ Reset</button>
+</header>
+
+<div class="prog-track"><div class="prog-fill" id="pf" style="width:0%"></div></div>
+
+<div class="steps">
+  <div class="stab active" id="st0" onclick="goTab(0)"><span class="sn">1</span><span class="slbl">Context</span></div>
+  <div class="stab" id="st1" onclick="goTab(1)"><span class="sn">2</span><span class="slbl">Age &amp; Labs</span></div>
+  <div class="stab" id="st2" onclick="goTab(2)"><span class="sn">3</span><span class="slbl">Symptoms</span></div>
+  <div class="stab" id="st3" onclick="goTab(3)"><span class="sn">4</span><span class="slbl">Exam</span></div>
+  <div class="stab" id="st4" onclick="goTab(4)"><span class="sn">5</span><span class="slbl">Imaging</span></div>
+  <div class="stab" id="st5" onclick="goTab(5)"><span class="sn">6</span><span class="slbl">Mimics</span></div>
+  <div class="stab" id="st6" onclick="goTab(6)"><span class="sn">7</span><span class="slbl">Verdict</span></div>
+</div>
+
+<!-- ══ SCREEN 0: CONTEXT ══ -->
+<div class="screen active" id="s0">
+<div class="card">
+  <div class="ctitle" style="color:var(--teal);">Step 1 · Critical Context — Classification vs. Diagnosis</div>
+  <div class="csub">The 2022 ACR/EULAR criteria are classification criteria for research, not diagnostic criteria. They must only be applied after a clinical diagnosis of large-vessel or medium-vessel vasculitis has been made and mimics have been excluded.</div>
+
+  <div class="lbox">
+    <strong>Key principles before applying these criteria (Figure 1, Ponte et al. 2022):</strong><br>
+    <span class="lt">Classification ≠ Diagnosis:</span> These criteria classify confirmed vasculitis cases into GCA for research purposes. They perform poorly as diagnostic tools when vasculitis mimics have not been excluded (Ann Intern Med 1998).<br>
+    <span class="lt">Prerequisites:</span> (1) A diagnosis of medium-vessel or large-vessel vasculitis must have been made; (2) Alternate diagnoses mimicking vasculitis (infection, malignancy, atherosclerosis) must have been excluded<br>
+    <span class="lt">Validated performance (DCVAS study, n=756 GCA, n=749 comparators):</span> Sensitivity 87.0% (95% CI 82.0–91.0%), specificity 94.8% (95% CI 91.0–97.4%), AUC 0.91 (95% CI 0.88–0.94)<br>
+    <span class="lt">Subtype note:</span> Biopsy-proven GCA: sensitivity 100% (95% CI 99.0–100.0%). Large-vessel GCA (without positive TAB): sensitivity only 55.7% (95% CI 46.5–64.6%) — a known limitation<br><br>
+    <strong>Comparator group used to derive criteria:</strong> TAK (33.5%), other vasculitides mimicking GCA (33.4%), non-vasculitis LVV mimics (33.1%)
+  </div>
+
+  <div class="slabel">Prerequisite confirmation <span class="pill pill-r">REQUIRED before scoring</span></div>
+  <div class="crit" id="prereq-item">
+    <div class="crit-main">
+      <div class="crit-name">Has a diagnosis of LVV or medium-vessel vasculitis been made AND have vasculitis mimics been excluded?</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      <strong>Vasculitis mimics to exclude before applying criteria include:</strong><br>
+      Infection (bacterial endocarditis, fungal/TB arteritis), malignancy (lymphoma, paraneoplastic), atherosclerosis and fibromuscular dysplasia, amyloidosis, IgG4-related disease, primary CNS vasculitis, sarcoidosis, other inflammatory conditions causing elevated acute-phase reactants (RA, PMR without GCA).<br><br>
+      <strong>On the 1990 ACR criteria vs 2022:</strong> The 1990 criteria applied to the DCVAS validation set showed sensitivity 80.3% (95% CI 74.6–85.1%) and specificity 92.5% (95% CI 88.1–95.7%). Crucially, sensitivity for large-vessel GCA under 1990 criteria was only 37.1% (95% CI 28.6–46.2%), vs 55.7% under 2022 criteria — a major improvement.
+      <div class="prose-note">
+        <strong>GCA epidemiology:</strong> Most common form of systemic vasculitis in patients ≥50 years. Mean age at diagnosis 72.2 years (DCVAS cohort). Female predominance: 67.6% of GCA cases. Defined by granulomatous arteritis of large- and medium-sized vessels with predisposition for cranial arteries and aorta/primary branches. PMR coexists in up to 40–50% of patients.
+      </div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setPrereq('yes')" id="prereq-yes">✓ Yes — vasculitis diagnosis made, mimics excluded</button>
+      <button class="abtn" onclick="setPrereq('partial')" id="prereq-partial">⚠ Work-up in progress — not all mimics excluded yet</button>
+      <button class="abtn" onclick="setPrereq('no')"  id="prereq-no">✗ No — criteria should not yet be applied</button>
+    </div>
+  </div>
+
+  <div id="a0" class="alrt"></div>
+  <div class="nav-row"><div></div><button class="nbtn np" id="n0" onclick="go(1)" disabled>Next: Age &amp; Labs →</button></div>
+</div>
+</div>
+
+<!-- ══ SCREEN 1: AGE + LABS ══ -->
+<div class="screen" id="s1">
+<div class="card">
+  <div class="ctitle" style="color:var(--teal);">Step 2 · Absolute Requirement + Inflammatory Markers</div>
+  <div class="csub">Age ≥50 years at diagnosis is an absolute requirement — if not met, GCA cannot be classified. Inflammatory markers contribute +3 points if elevated above threshold.</div>
+
+  <div id="scorebar1" class="score-bar">
+    <div class="score-num" id="sn1" style="color:var(--text3)">0</div>
+    <div class="score-label"><strong>Running Score</strong>Threshold for classification: ≥6 points</div>
+    <div class="score-thresh st-none" id="sb1">0 / 6</div>
+  </div>
+
+  <div class="slabel">Absolute requirement <span class="pill pill-r">DISQUALIFYING IF NOT MET</span></div>
+  <div class="crit" id="age-item">
+    <div class="crit-main">
+      <div class="crit-name">Age ≥50 years at time of diagnosis</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      Of 942 confirmed GCA cases in the DCVAS dataset, only 7 (&lt;1%) were diagnosed before age 50. Therefore, age ≥50 years at diagnosis is an absolute requirement — not a scored criterion. Failure to meet this requirement means GCA cannot be classified regardless of score. Note: the TAK criteria require age ≤60 years at diagnosis. The 50–60 year overlap zone requires careful clinical and imaging evaluation: in the DCVAS cohort, of 70 patients with GCA diagnosed ages 50–60, 62.9% met GCA criteria, 12.9% met TAK criteria, and only 2.9% met both.
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setAge('yes')" id="age-yes">✓ Age ≥50 years</button>
+      <button class="abtn" onclick="setAge('no')"  id="age-no">✗ Age &lt;50 years — GCA cannot be classified</button>
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:14px;">Inflammatory markers <span class="score-chip sc-3">+3 points</span></div>
+  <div class="crit" id="esr-crp-item">
+    <div class="crit-main">
+      <div class="crit-name">Maximum ESR ≥50 mm/hour OR maximum CRP ≥10 mg/L</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      <strong>Values must be from prior to initiation of treatment for vasculitis</strong> — these are the maximum values obtained during diagnostic work-up, not values on therapy. In the DCVAS cohort: ESR ≥50 mm/hr was present in 73.8% of GCA cases vs 38.9% of comparators; CRP ≥10 mg/L in 90.3% of GCA cases vs 59.4% of comparators.<br><br>
+      <strong>Critical caution (tocilizumab patients):</strong> Tocilizumab (IL-6 receptor blocker) suppresses CRP and ESR even in the presence of active vascular inflammation — inflammatory markers cannot be used to monitor disease activity in patients on tocilizumab. This is a recognised limitation for monitoring GCA after treatment initiation.
+      <div class="cnote">
+        <strong>Combined criterion:</strong> ESR and CRP were combined into a single item during criteria development because they represent the same biological process (acute-phase response driven by IL-6). This combined item was given +3 points based on its discriminatory value in lasso logistic regression.
+      </div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setCrit('esrcrp','yes')" id="esrcrp-yes">✓ ESR ≥50 mm/hr or CRP ≥10 mg/L (+3)</button>
+      <button class="abtn" onclick="setCrit('esrcrp','no')"  id="esrcrp-no">✗ Both below threshold (0)</button>
+      <button class="abtn" onclick="setCrit('esrcrp','na')"  id="esrcrp-na">— Not tested / on treatment already</button>
+    </div>
+  </div>
+
+  <div id="a1" class="alrt"></div>
+  <div class="nav-row">
+    <button class="nbtn ns" onclick="go(0)">← Back</button>
+    <button class="nbtn np" onclick="go(2)">Next: Symptoms →</button>
+  </div>
+</div>
+</div>
+
+<!-- ══ SCREEN 2: SYMPTOMS ══ -->
+<div class="screen" id="s2">
+<div class="card">
+  <div class="ctitle" style="color:var(--teal);">Step 3 · Clinical Symptoms (+2 or +3 each)</div>
+  <div class="csub">Scored clinical features from history. Each item contributes independently. Select all that are present based on history at the time of diagnosis.</div>
+
+  <div id="scorebar2" class="score-bar">
+    <div class="score-num" id="sn2" style="color:var(--text3)">0</div>
+    <div class="score-label"><strong>Running Score</strong>Threshold for classification: ≥6 points</div>
+    <div class="score-thresh st-none" id="sb2">0 / 6</div>
+  </div>
+
+  <div class="slabel">Sudden visual loss <span class="score-chip sc-3">+3 points</span></div>
+  <div class="crit" id="vision-item">
+    <div class="crit-main">
+      <div class="crit-name">Sudden visual loss (diplopia, amaurosis fugax, or permanent visual loss)</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      Present in 13.5% of GCA cases (102/756) vs 3.9% of comparators (29/749) in the DCVAS cohort (p&lt;0.001). Sudden visual loss is the most feared complication of GCA — ischaemic optic neuropathy (anterior or posterior) is most common. Once visual loss occurs, recovery is rare. Ophthalmic emergency: high-dose glucocorticoids should be initiated immediately when GCA with visual involvement is suspected — do not wait for biopsy results. Note: IV methylprednisolone (e.g. 500 mg–1 g/day × 3 days) is preferred over oral prednisone alone in acute visual loss to maximise chance of preventing fellow eye involvement.
+      <div class="prose-note">
+        <strong>Important:</strong> Use of IV glucocorticoids was an exclusion criterion in the GiACTA trial, meaning patients with visual loss were systematically excluded from the main tocilizumab evidence base. Clinical management decisions for GCA with visual involvement must account for this evidence gap.
+      </div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setCrit('vision','yes')" id="vision-yes">✓ Present (+3)</button>
+      <button class="abtn" onclick="setCrit('vision','no')"  id="vision-no">✗ Absent (0)</button>
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:14px;">Morning stiffness <span class="score-chip sc-2">+2 points</span></div>
+  <div class="crit" id="stiffness-item">
+    <div class="crit-main">
+      <div class="crit-name">Morning stiffness in shoulders or neck</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      Present in 23.0% of GCA cases (174/756) vs 3.1% of comparators (23/749) in DCVAS (p&lt;0.001). Morning stiffness in shoulders/arms was selected over stiffness in neck/torso (which was present in only 11.6% of GCA cases) as the more discriminatory item. This feature overlaps with polymyalgia rheumatica (PMR), which coexists in GCA in up to 40–50% of patients. Shoulder/neck stiffness is a PMR-type feature within GCA.
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setCrit('stiffness','yes')" id="stiffness-yes">✓ Present (+2)</button>
+      <button class="abtn" onclick="setCrit('stiffness','no')"  id="stiffness-no">✗ Absent (0)</button>
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:14px;">Jaw or tongue claudication <span class="score-chip sc-2">+2 points</span></div>
+  <div class="crit" id="jaw-item">
+    <div class="crit-main">
+      <div class="crit-name">Jaw claudication or tongue claudication (fatigue/pain with mastication or tongue use)</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      Jaw claudication was present in 47.1% of GCA cases vs 2.5% of comparators — among the most discriminating individual features in the dataset. Tongue claudication was present in only 2.8% of GCA cases, so both were combined into a single item (+2). The combination reflects ischaemia of the external carotid artery territory (maxillary artery, lingual artery). Tongue or jaw necrosis, though rare, represents a severe manifestation of GCA.
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setCrit('jaw','yes')" id="jaw-yes">✓ Present (+2)</button>
+      <button class="abtn" onclick="setCrit('jaw','no')"  id="jaw-no">✗ Absent (0)</button>
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:14px;">New temporal headache <span class="score-chip sc-2">+2 points</span></div>
+  <div class="crit" id="headache-item">
+    <div class="crit-main">
+      <div class="crit-name">New persistent temporal headache</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      Present in 62.8% of GCA cases vs 12.0% of comparators in DCVAS. Temporal headache is the most common presenting symptom of GCA. The item 'new persistent headache, occipital or cervical' showed statistical significance but decreased overall specificity of the model when tested against comparators and was therefore removed from the final criteria. Only <strong>new temporal</strong> headache is scored. Pre-existing or non-temporal headache does not qualify.
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setCrit('headache','yes')" id="headache-yes">✓ Present (+2)</button>
+      <button class="abtn" onclick="setCrit('headache','no')"  id="headache-no">✗ Absent (0)</button>
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:14px;">Scalp tenderness <span class="score-chip sc-2">+2 points</span></div>
+  <div class="crit" id="scalp-item">
+    <div class="crit-main">
+      <div class="crit-name">Scalp tenderness</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      Present in 34.4% of GCA cases vs 3.3% of comparators in DCVAS (p&lt;0.001). Scalp tenderness typically reflects ischaemia in the territory of the superficial temporal and occipital arteries. May be associated with scalp necrosis in severe cases. Often reported by patients as pain while combing hair or wearing a hat. Assessed on clinical examination.
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setCrit('scalp','yes')" id="scalp-yes">✓ Present (+2)</button>
+      <button class="abtn" onclick="setCrit('scalp','no')"  id="scalp-no">✗ Absent (0)</button>
+    </div>
+  </div>
+
+  <div id="a2" class="alrt"></div>
+  <div class="nav-row">
+    <button class="nbtn ns" onclick="go(1)">← Back</button>
+    <button class="nbtn np" onclick="go(3)">Next: Physical Examination →</button>
+  </div>
+</div>
+</div>
+
+<!-- ══ SCREEN 3: EXAM ══ -->
+<div class="screen" id="s3">
+<div class="card">
+  <div class="ctitle" style="color:var(--teal);">Step 4 · Physical Examination (+2 points)</div>
+  <div class="csub">Vascular examination of the temporal arteries is a scored criterion. This should be performed in all patients with suspected GCA.</div>
+
+  <div id="scorebar3" class="score-bar">
+    <div class="score-num" id="sn3" style="color:var(--text3)">0</div>
+    <div class="score-label"><strong>Running Score</strong>Threshold for classification: ≥6 points</div>
+    <div class="score-thresh st-none" id="sb3">0 / 6</div>
+  </div>
+
+  <div class="slabel">Temporal artery vascular examination <span class="score-chip sc-2">+2 points</span></div>
+  <div class="crit" id="exam-item">
+    <div class="crit-main">
+      <div class="crit-name">Temporal artery abnormality on vascular examination</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      <strong>Examination criteria (footnote 1, Figure 1):</strong> Any ONE of the following:<br>
+      — Absent or diminished temporal artery pulse<br>
+      — Temporal artery tenderness on palpation<br>
+      — Hard 'cord-like' appearance of the temporal artery<br><br>
+      Present in 46.8% of GCA cases (354/756) vs 4.7% of comparators (35/749) in DCVAS (p&lt;0.001). Vascular examination of the temporal arteries should include bilateral palpation of the superficial temporal arteries and their frontal and parietal branches. If ultrasound shows a halo sign on the temporal artery, physical examination findings should be correlated. A nodular, hard, or pulseless temporal artery strongly increases clinical suspicion.
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setCrit('exam','yes')" id="exam-yes">✓ Present — absent/diminished pulse, tenderness, or cord-like (+2)</button>
+      <button class="abtn" onclick="setCrit('exam','no')"  id="exam-no">✗ Normal temporal artery examination (0)</button>
+    </div>
+  </div>
+
+  <div id="a3" class="alrt"></div>
+  <div class="nav-row">
+    <button class="nbtn ns" onclick="go(2)">← Back</button>
+    <button class="nbtn np" onclick="go(4)">Next: Imaging &amp; Biopsy →</button>
+  </div>
+</div>
+</div>
+
+<!-- ══ SCREEN 4: IMAGING + BIOPSY ══ -->
+<div class="screen" id="s4">
+<div class="card">
+  <div class="ctitle" style="color:var(--teal);">Step 5 · Imaging and Biopsy Criteria</div>
+  <div class="csub">Positive TAB or temporal artery halo sign carries the highest score (+5). Bilateral axillary involvement and FDG-PET activity throughout the aorta each contribute +2. Multiple items can be scored independently.</div>
+
+  <div id="scorebar4" class="score-bar">
+    <div class="score-num" id="sn4" style="color:var(--text3)">0</div>
+    <div class="score-label"><strong>Running Score</strong>Threshold for classification: ≥6 points</div>
+    <div class="score-thresh st-none" id="sb4">0 / 6</div>
+  </div>
+
+  <div class="slabel">Temporal artery biopsy or halo sign <span class="score-chip sc-5">+5 points</span></div>
+  <div class="crit" id="tab-item">
+    <div class="crit-main">
+      <div class="crit-name">Positive temporal artery biopsy (TAB) OR halo sign on temporal artery ultrasound</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      These two items were combined into a single +5 criterion because during model derivation, both TAB positivity and temporal artery halo sign individually dominated the model as near-perfect predictors of GCA. Combining them maintains face validity while allowing the other criteria to have discriminatory value.<br><br>
+      <strong>TAB (footnote 3):</strong> Definite vasculitis defined by submitting physician. No specific histopathological criteria required — but presence of giant cells, mononuclear leukocyte infiltration, and fragmentation of internal elastic lamina were independently associated with histopathological interpretation of definitive vasculitis in DCVAS. ~20% of 'definitive vasculitis on TAB' cases did not have specific histopathological findings. Positive TAB in 44.3% of GCA cases vs 0.1% of comparators.<br><br>
+      <strong>Ultrasound halo sign (footnote 3):</strong> Defined as presence of homogenous, hypoechoic wall thickening on ultrasound (OMERACT definition). Halo sign on temporal artery ultrasound in 27.9% of GCA cases vs 0.1% of comparators. Depending on clinical setting, a non-compressible halo sign of a temporal ± axillary artery may replace the need for TAB.
+      <div class="cnote">
+        <strong>TAB yield considerations:</strong> Skip lesions can cause false-negative TAB. A minimum biopsy length of ≥1–2 cm is recommended. Contralateral biopsy adds ~5% yield. Glucocorticoids reduce biopsy yield but positive biopsy results can be obtained up to 2–4 weeks after treatment initiation in most cases. Temporal artery ultrasound should ideally be performed before glucocorticoid initiation (halo sign resolves quickly with treatment).
+      </div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setCrit('tab','yes')"     id="tab-yes">✓ Positive TAB or halo sign on temporal artery US (+5)</button>
+      <button class="abtn" onclick="setCrit('tab','pending')" id="tab-pending">⚠ TAB/US pending or planned (0 until confirmed)</button>
+      <button class="abtn" onclick="setCrit('tab','no')"      id="tab-no">✗ Negative TAB and negative/absent US (0)</button>
+      <button class="abtn" onclick="setCrit('tab','nd')"      id="tab-nd">— Not performed (0)</button>
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:14px;">Bilateral axillary involvement <span class="score-chip sc-2">+2 points</span></div>
+  <div class="crit" id="axillary-item">
+    <div class="crit-main">
+      <div class="crit-name">Bilateral axillary involvement on imaging</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      <strong>Definition (footnote 4):</strong> Luminal damage — stenosis, occlusion, or aneurysm — on angiography (CT, MR, or catheter-based) or ultrasound; OR halo sign on ultrasound; OR abnormal FDG uptake on PET. Bilateral involvement required for this criterion.<br><br>
+      Present in 7.5% of GCA cases vs 1.6% of comparators in DCVAS (p&lt;0.001). Identified via K-means cluster analysis as a specific GCA imaging pattern distinct from TAK. Axillary artery involvement reflects the predilection of GCA for the subclavian/axillary territory in the large-vessel GCA phenotype. Bilateral involvement greatly increases specificity for GCA over TAK.
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setCrit('axillary','yes')" id="axillary-yes">✓ Bilateral axillary involvement on imaging (+2)</button>
+      <button class="abtn" onclick="setCrit('axillary','no')"  id="axillary-no">✗ Unilateral or absent (0)</button>
+      <button class="abtn" onclick="setCrit('axillary','nd')"  id="axillary-nd">— Not imaged (0)</button>
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:14px;">FDG-PET activity throughout the aorta <span class="score-chip sc-2">+2 points</span></div>
+  <div class="crit" id="pet-item">
+    <div class="crit-main">
+      <div class="crit-name">FDG-PET activity throughout the aorta (descending thoracic + abdominal)</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      <strong>Definition (footnote 5):</strong> Abnormal FDG (18F-fluorodeoxyglucose) uptake in the arterial wall (greater than liver uptake by visual inspection) throughout the descending thoracic and abdominal aorta on PET.<br><br>
+      Present in 6.9% of GCA cases vs 1.2% of comparators in DCVAS. Identified via K-means cluster analysis as a specific GCA imaging pattern. PET was not available in many centres treating LVV patients in DCVAS — this criterion may be underutilised and its performance in real-world practice depends on PET availability and expertise.<br><br>
+      <strong>GCA aortic involvement:</strong> Aortic involvement occurs in 30–50% of GCA patients and is associated with increased risk of aortic aneurysm, dissection, and aortic insufficiency in long-term follow-up. PET has superior sensitivity for detecting active aortic inflammation compared to CT and MR angiography. FDG-PET should be performed before glucocorticoid initiation or early in treatment for optimal sensitivity.
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setCrit('pet','yes')" id="pet-yes">✓ FDG-PET activity throughout descending thoracic + abdominal aorta (+2)</button>
+      <button class="abtn" onclick="setCrit('pet','no')"  id="pet-no">✗ Normal or not involving full aorta (0)</button>
+      <button class="abtn" onclick="setCrit('pet','nd')"  id="pet-nd">— Not performed (0)</button>
+    </div>
+  </div>
+
+  <div id="a4" class="alrt"></div>
+  <div class="nav-row">
+    <button class="nbtn ns" onclick="go(3)">← Back</button>
+    <button class="nbtn np" onclick="go(5)">Next: Mimics &amp; Treatment →</button>
+  </div>
+</div>
+</div>
+
+<!-- ══ SCREEN 5: MIMICS + TREATMENT ══ -->
+<div class="screen" id="s5">
+<div class="card">
+  <div class="ctitle" style="color:var(--teal);">Step 6 · Differential Diagnosis &amp; Treatment Planning</div>
+  <div class="csub">Identify any features that suggest an alternative diagnosis. Also document treatment intent — the evidence base has expanded significantly since tocilizumab (2017) and upadacitinib (2025) FDA approvals.</div>
+
+  <div class="slabel">Mimics and red flags — check all that are present</div>
+  <div class="redflag-grid">
+    <div class="redflag-item" id="rf0" onclick="toggleRF(0)">
+      <div class="rf-checkbox" id="rfc0">✕</div>
+      <div class="rf-content"><div class="rf-label">Age &lt;50 years</div>GCA almost never occurs before 50 — consider TAK, primary CNS vasculitis, or other vasculitides</div>
+    </div>
+    <div class="redflag-item" id="rf1" onclick="toggleRF(1)">
+      <div class="rf-checkbox" id="rfc1">✕</div>
+      <div class="rf-content"><div class="rf-label">Upper extremity BP discrepancy or limb claudication in younger patient</div>Consider Takayasu arteritis (TAK) — especially if age ≤60</div>
+    </div>
+    <div class="redflag-item" id="rf2" onclick="toggleRF(2)">
+      <div class="rf-checkbox" id="rfc2">✕</div>
+      <div class="rf-content"><div class="rf-label">Fever of unknown origin / constitutional symptoms dominating</div>Consider infection (bacterial endocarditis, TB) or lymphoma before attributing to GCA</div>
+    </div>
+    <div class="redflag-item" id="rf3" onclick="toggleRF(3)">
+      <div class="rf-checkbox" id="rfc3">✕</div>
+      <div class="rf-content"><div class="rf-label">No response to glucocorticoids within 2–3 weeks</div>Typical GCA responds rapidly to prednisone — non-response raises alternative diagnoses</div>
+    </div>
+    <div class="redflag-item" id="rf4" onclick="toggleRF(4)">
+      <div class="rf-checkbox" id="rfc4">✕</div>
+      <div class="rf-content"><div class="rf-label">Multiorgan involvement suggesting IgG4-RD or sarcoidosis</div>Peri-aortic mass, salivary gland enlargement, uveitis, pulmonary nodules, hypercalcaemia</div>
+    </div>
+    <div class="redflag-item" id="rf5" onclick="toggleRF(5)">
+      <div class="rf-checkbox" id="rfc5">✕</div>
+      <div class="rf-content"><div class="rf-label">ANCA positivity or renal involvement</div>Suggests AAV (GPA, EGPA, MPA) — not typical of GCA</div>
+    </div>
+    <div class="redflag-item" id="rf6" onclick="toggleRF(6)">
+      <div class="rf-checkbox" id="rfc6">✕</div>
+      <div class="rf-content"><div class="rf-label">Unilateral/focal axillary or carotid involvement without cranial features</div>Consider isolated aortitis or focal LVV rather than typical GCA</div>
+    </div>
+    <div class="redflag-item" id="rf7" onclick="toggleRF(7)">
+      <div class="rf-checkbox" id="rfc7">✕</div>
+      <div class="rf-content"><div class="rf-label">B symptoms + lymphadenopathy + elevated LDH</div>Consider lymphoma — can mimic GCA with elevated ESR/CRP and constitutional symptoms</div>
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:14px;">Treatment planning <span class="pill pill-t">CLINICAL MANAGEMENT</span></div>
+  <div class="crit" id="treatment-item">
+    <div class="crit-main">
+      <div class="crit-name">Intended initial treatment approach</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      <strong>Glucocorticoids (first-line — all patients):</strong><br>
+      Oral prednisone 40–60 mg/day (1 mg/kg/day, max 60 mg) for initial treatment. For visual involvement or imminent visual loss: IV methylprednisolone 500 mg–1 g/day × 3 days before oral prednisone (not studied in RCTs, based on expert consensus). Taper over 12–18 months targeting prednisone discontinuation; rapid tapering increases relapse risk. Relapse occurs in ~40–50% of GCA patients despite glucocorticoids.<br><br>
+      <strong>Tocilizumab (IL-6R blocker) — FDA-approved May 2017 for GCA:</strong><br>
+      GiACTA trial (Stone et al. NEJM 2017, n=250): TCZ 162 mg SC weekly + 26-week prednisone taper → 56% sustained glucocorticoid-free remission at 52 weeks vs 14% placebo + 26-week taper (p&lt;0.001). Every-other-week TCZ: 53% vs 18% placebo + 52-week taper (p&lt;0.001). Cumulative median prednisone dose: 1862 mg in TCZ groups vs 3296 mg in placebo. Strong evidence for glucocorticoid-sparing. ACR/EULAR guidelines suggest 12 months TCZ + 6 months GC as preferred first-line for newly diagnosed GCA.<br><br>
+      <strong>Upadacitinib (JAK1 inhibitor, oral) — FDA-approved 2025 for GCA:</strong><br>
+      SELECT-GCA trial (Blockmans et al. EULAR 2024; NEJM 2025, n=428): UPA 15 mg once daily + 26-week prednisone taper → 46% sustained remission weeks 12–52 vs 29% placebo + 52-week taper (p=0.0019). 100 sites across 24 countries. 9/11 secondary endpoints also positive. First oral JAK inhibitor approved for GCA. FDA boxed warnings: MACE, VTE, malignancy — cardiovascular risk factors and prior malignancy must be assessed. Oral route advantageous vs SC tocilizumab for some patients; no head-to-head comparison.
+      <div class="prose-note">
+        <strong>Monitoring note:</strong> Both tocilizumab and upadacitinib suppress CRP and ESR, masking inflammatory flares. Clinical and imaging-based monitoring (PET, MRI/CTA) is essential on targeted therapies. Methotrexate (MTX) has shown inconsistent efficacy as a GC-sparing agent (3 small RCTs); the ACR/EULAR guidelines list it as an alternative to tocilizumab, not first-line. TNF inhibitors are not effective in GCA (multiple studies).
+      </div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setTx('gc')"      id="tx-gc">Glucocorticoids alone (oral prednisone ± IV MP)</button>
+      <button class="abtn" onclick="setTx('toc')"     id="tx-toc">GC + Tocilizumab (IL-6R, FDA 2017)</button>
+      <button class="abtn" onclick="setTx('upa')"     id="tx-upa">GC + Upadacitinib (JAK1, FDA 2025)</button>
+      <button class="abtn" onclick="setTx('mtx')"     id="tx-mtx">GC + Methotrexate (alternative)</button>
+      <button class="abtn" onclick="setTx('nd')"      id="tx-nd">— Not yet determined</button>
+    </div>
+  </div>
+
+  <div id="a5" class="alrt"></div>
+  <div class="nav-row">
+    <button class="nbtn ns" onclick="go(4)">← Back</button>
+    <button class="nbtn np" onclick="go(6)">Generate Verdict →</button>
+  </div>
+</div>
+</div>
+
+<!-- ══ SCREEN 6: VERDICT ══ -->
+<div class="screen" id="s6">
+  <div id="vout"></div>
+  <div class="doc-header">
+    <button class="doc-tog" onclick="toggleDoc()">▼ Documentation Note</button>
+    <button class="copy-btn" id="copy-btn" onclick="copyDoc()">⎘ Copy</button>
+  </div>
+  <div class="doc-body" id="dn"></div>
+  <div class="nav-row">
+    <button class="nbtn ns" onclick="go(5)">← Back</button>
+    <button class="nbtn np" onclick="resetAll()">↺ New Evaluation</button>
+  </div>
+</div>
+
+</div><!-- /app -->
+<script>
+const S = {
+  prereq: null, age: null,
+  esrcrp: null,
+  vision: null, stiffness: null, jaw: null, headache: null, scalp: null,
+  exam: null,
+  tab: null, axillary: null, pet: null,
+  rf: [false,false,false,false,false,false,false,false],
+  tx: null
+};
+let cur = 0;
+
+const SCORES = {
+  esrcrp:   { yes:3, no:0, na:0 },
+  vision:   { yes:3, no:0 },
+  stiffness:{ yes:2, no:0 },
+  jaw:      { yes:2, no:0 },
+  headache: { yes:2, no:0 },
+  scalp:    { yes:2, no:0 },
+  exam:     { yes:2, no:0 },
+  tab:      { yes:5, pending:0, no:0, nd:0 },
+  axillary: { yes:2, no:0, nd:0 },
+  pet:      { yes:2, no:0, nd:0 }
+};
+
+function calcScore() {
+  let total = 0;
+  Object.entries(SCORES).forEach(([k, map]) => {
+    const v = S[k];
+    if(v && map[v] !== undefined) total += map[v];
+  });
+  return total;
+}
+
+function updateScoreBars() {
+  const score = calcScore();
+  const ageOk = S.age === 'yes';
+  const prereqOk = S.prereq === 'yes' || S.prereq === 'partial';
+
+  for(let i = 1; i <= 4; i++) {
+    const sn = document.getElementById('sn'+i);
+    const st = document.getElementById('sb'+i);
+    if(!sn || !st) continue;
+    sn.textContent = score;
+    st.textContent = score + ' / 6';
+    st.className = 'score-thresh';
+    sn.style.color = score >= 6 ? 'var(--teal)' : score >= 4 ? 'var(--amber)' : 'var(--text3)';
+    if(!ageOk && S.age) { st.classList.add('st-no'); st.textContent = 'Age req. NOT met'; }
+    else if(score >= 6) st.classList.add('st-yes');
+    else if(score >= 4) st.classList.add('st-near');
+    else st.classList.add('st-none');
+  }
+}
+
+function setPrereq(v) {
+  S.prereq = v;
+  ['yes','partial','no'].forEach(x => { const b=document.getElementById('prereq-'+x); if(b) b.classList.remove('ay','an','at','aw','ab','ar'); });
+  const map = { yes:'ay', partial:'aw', no:'ar' };
+  const b = document.getElementById('prereq-'+v); if(b) b.classList.add(map[v]);
+  const item = document.getElementById('prereq-item');
+  if(item) { item.className='crit'; if(v==='yes') item.classList.add('c-yes'); else if(v==='no') item.classList.add('c-abs'); else item.classList.add('c-part'); }
+  const n0 = document.getElementById('n0'); if(n0) n0.disabled = false;
+  const a0 = document.getElementById('a0');
+  if(a0) {
+    a0.className='alrt';
+    if(v==='no') { a0.classList.add('show','aerr'); a0.textContent='✗ These criteria should not yet be applied. Classification criteria are intended for use AFTER a vasculitis diagnosis has been established and mimics have been excluded. Applying them before this point will lead to unreliable results (as validated in Ann Intern Med 1998).'; }
+    else if(v==='partial') { a0.classList.add('show','awn'); a0.textContent='⚠ Work-up in progress. Scores can be calculated but classification should not be finalised until all vasculitis mimics (infection, malignancy, IgG4-RD, atherosclerosis) have been appropriately excluded.'; }
+    else { a0.classList.add('show','aok'); a0.textContent='✓ Prerequisites confirmed. Proceed to apply the 2022 ACR/EULAR GCA classification criteria (threshold: ≥6 points from 10 scored items, plus age ≥50 years absolute requirement).'; }
+  }
+}
+
+function setAge(v) {
+  S.age = v;
+  ['yes','no'].forEach(x => { const b=document.getElementById('age-'+x); if(b) b.classList.remove('ay','an','at','aw','ab','ar'); });
+  const b = document.getElementById('age-'+v); if(b) b.classList.add(v==='yes'?'ay':'ar');
+  const item = document.getElementById('age-item');
+  if(item) { item.className='crit'; item.classList.add(v==='yes'?'c-yes':'c-abs'); }
+  updateScoreBars();
+  const a1 = document.getElementById('a1');
+  if(a1 && v==='no') { a1.className='alrt show aerr'; a1.textContent='✗ Age <50 years: GCA cannot be classified under the 2022 ACR/EULAR criteria. This is an absolute requirement. Consider Takayasu arteritis (TAK) if age ≤60 or another form of large-vessel vasculitis.'; }
+  else if(a1 && v==='yes') { a1.className='alrt'; }
+}
+
+function setCrit(k, v) {
+  S[k] = v;
+  const opts = Object.keys(SCORES[k] || {});
+  opts.forEach(x => { const b=document.getElementById(k+'-'+x); if(b) b.classList.remove('ay','an','at','aw','ab','ar'); });
+  const pts = (SCORES[k]||{})[v] || 0;
+  const clsMap = { 5:'ay', 3:'at', 2:'ab', 0:'an' };
+  const btnCls = pts > 0 ? (clsMap[pts]||'ay') : (v==='nd'||v==='na'||v==='pending'?'aw':'an');
+  const b = document.getElementById(k+'-'+v); if(b) b.classList.add(btnCls);
+  const item = document.getElementById(k+'-item');
+  if(item) { item.className='crit'; if(pts>0) item.classList.add('c-yes'); else if(v==='nd'||v==='na'||v==='pending') item.classList.add('c-part'); else item.classList.add('c-no'); }
+  updateScoreBars();
+}
+
+function toggleRF(i) {
+  S.rf[i] = !S.rf[i];
+  const el = document.getElementById('rf'+i);
+  if(el) { el.classList.remove('rf-checked'); if(S.rf[i]) el.classList.add('rf-checked'); }
+}
+
+function setTx(v) {
+  S.tx = v;
+  ['gc','toc','upa','mtx','nd'].forEach(x => { const b=document.getElementById('tx-'+x); if(b) b.classList.remove('ay','an','at','aw','ab','ar'); });
+  const map = { gc:'aw', toc:'ay', upa:'at', mtx:'ab', nd:'an' };
+  const b = document.getElementById('tx-'+v); if(b) b.classList.add(map[v]||'an');
+  const item = document.getElementById('treatment-item');
+  if(item) { item.className='crit'; if(v==='toc'||v==='upa') item.classList.add('c-yes'); else if(v==='gc'||v==='mtx') item.classList.add('c-part'); else item.classList.add('c-no'); }
+}
+
+function rfCount() { return S.rf.filter(Boolean).length; }
+
+function rv() {
+  const score = calcScore();
+  const ageOk = S.age === 'yes';
+  const prereqOk = S.prereq === 'yes' || S.prereq === 'partial';
+  const rfs = rfCount();
+  const rfNames = ['Age <50 years (disqualifying)','Upper extremity BP discrepancy / limb claudication (consider TAK)','Fever dominating / constitutional (consider infection or lymphoma)','No response to glucocorticoids within 2–3 weeks','Multiorgan features suggesting IgG4-RD or sarcoidosis','ANCA positivity or renal involvement (suggests AAV)','Unilateral/focal involvement without cranial features','B symptoms + lymphadenopathy + elevated LDH (consider lymphoma)'];
+  const presentRF = S.rf.map((v,i) => v ? rfNames[i] : null).filter(Boolean);
+
+  let verdict, vClass, vDesc;
+  if(!ageOk && S.age) {
+    verdict = 'GCA Cannot Be Classified — Age <50 Years'; vClass = 'vneg';
+    vDesc = 'Age ≥50 years at diagnosis is an absolute requirement for the 2022 ACR/EULAR GCA classification criteria. Of 942 confirmed GCA cases in the DCVAS dataset, only 7 (<1%) were diagnosed before age 50. Consider Takayasu arteritis (age ≤60 requirement) or other forms of large-vessel or medium-vessel vasculitis.';
+  } else if(!prereqOk && S.prereq) {
+    verdict = 'Prerequisites Not Met — Do Not Apply Criteria Yet'; vClass = 'vneg';
+    vDesc = 'These classification criteria should only be applied when a diagnosis of LVV or medium-vessel vasculitis has been made and vasculitis mimics have been excluded. Applying them prematurely will produce unreliable results.';
+  } else if(score >= 6 && ageOk && prereqOk) {
+    verdict = `Meets 2022 ACR/EULAR GCA Classification Criteria — Score ${score}/21`; vClass = 'vpos';
+    vDesc = `Cumulative score of ${score} points (threshold ≥6) with age ≥50 years confirmed and prerequisites met. ${rfs > 0 ? rfs + ' red flag(s) present — review for alternative diagnoses.' : 'No red flags identified.'} Validated performance: sensitivity 87.0% (95% CI 82.0–91.0%), specificity 94.8% (95% CI 91.0–97.4%), AUC 0.91. Note: these are classification criteria for research, not diagnostic criteria.`;
+  } else if(score >= 4 && score < 6 && ageOk) {
+    verdict = `Score ${score}/21 — Does Not Yet Meet Classification Threshold (≥6 required)`; vClass = 'vund';
+    vDesc = `Cumulative score of ${score} is below the ≥6 threshold. Consider whether additional investigations (TAB, temporal artery ultrasound, PET) would yield positive findings that could increase the score. ${score === 5 ? 'One additional +2 or higher item would meet the threshold.' : `${6 - score} more points required.`}`;
+  } else {
+    verdict = score < 4 && S.age ? `Score ${score}/21 — Does Not Meet GCA Classification Criteria` : 'Incomplete — Complete All Steps';
+    vClass = score < 4 && S.age ? 'vneg' : 'vund';
+    vDesc = score < 4 && S.age ? `A score of ${score} is well below the ≥6 threshold. GCA classification is not supported at this time. Re-evaluate the clinical picture and consider alternative diagnoses.` : 'Not all evaluation steps have been completed. Work through each step to generate a complete assessment.';
+  }
+
+  const itemLabels = {
+    esrcrp:   'ESR ≥50 mm/hr or CRP ≥10 mg/L',
+    vision:   'Sudden visual loss',
+    stiffness:'Morning stiffness (shoulders/neck)',
+    jaw:      'Jaw/tongue claudication',
+    headache: 'New temporal headache',
+    scalp:    'Scalp tenderness',
+    exam:     'Temporal artery abnormality (exam)',
+    tab:      'Positive TAB or halo sign on US',
+    axillary: 'Bilateral axillary involvement',
+    pet:      'FDG-PET activity throughout aorta'
+  };
+
+  let html = `<div class="vban ${vClass}"><div class="vban-head"><div class="vlbl">2022 ACR/EULAR — GCA CLASSIFICATION ASSESSMENT</div><div class="vtitle">${verdict}</div><div class="vdesc">${vDesc}</div></div></div>`;
+
+  // Score breakdown
+  html += `<div class="score-breakdown"><div class="sbtitle">Score Breakdown (max 21 points — threshold ≥6)</div>`;
+  Object.entries(SCORES).forEach(([k, map]) => {
+    const v = S[k]; const pts = v && map[v] !== undefined ? map[v] : null;
+    const dot = pts > 0 ? 'dg' : pts === 0 ? 'dt' : 'dgr';
+    const ptsCls = pts > 0 ? 'pts-g' : pts === 0 ? 'pts-0' : 'pts-0';
+    html += `<div class="sb-row"><div class="dot ${dot}" style="margin-top:5px;"></div><div class="sb-name">${itemLabels[k]||k}</div><div class="sb-pts ${ptsCls}">${pts !== null ? (pts > 0 ? '+'+pts : '0') : '—'}</div></div>`;
+  });
+  html += `<div class="sb-row" style="background:var(--card2);"><div class="dot ${score>=6?'dg':score>=4?'da':'dgr'}" style="margin-top:5px;"></div><div class="sb-name" style="font-weight:600;color:var(--text);">Total score</div><div class="sb-pts" style="font-size:16px;color:${score>=6?'var(--green)':score>=4?'var(--amber)':'var(--text3)'};">${score}</div></div>`;
+  html += `</div>`;
+
+  // Summary grid
+  html += `<div class="sum-grid">`;
+  html += `<div class="sblock"><div class="sbtitle">Classification Summary</div>`;
+  html += `<div class="srow"><div class="dot ${ageOk?'dg':'dr'}"></div><div class="sname">Age ≥50 years (absolute req.)</div><div class="stag ${ageOk?'tg':'tr'}">${S.age==='yes'?'Met':'Not met / not entered'}</div></div>`;
+  html += `<div class="srow"><div class="dot ${prereqOk?'dg':S.prereq?'dr':'dgr'}"></div><div class="sname">Prerequisites met</div><div class="stag ${prereqOk?'tg':S.prereq?'tr':'tgr'}">${S.prereq==='yes'?'Confirmed':S.prereq==='partial'?'Partial':S.prereq?'Not met':'—'}</div></div>`;
+  html += `<div class="srow"><div class="dot ${score>=6?'dg':score>=4?'da':'dr'}"></div><div class="sname">Total score</div><div class="stag ${score>=6?'tg':score>=4?'ta':'tr'}">${score}/21 (need ≥6)</div></div>`;
+  html += `<div class="srow"><div class="dot ${S.tab==='yes'?'dg':'dgr'}"></div><div class="sname">TAB / temporal artery US</div><div class="stag ${S.tab==='yes'?'tg':'tgr'}">${S.tab==='yes'?'Positive (+5)':S.tab==='pending'?'Pending':S.tab==='no'?'Negative':S.tab==='nd'?'Not done':'—'}</div></div>`;
+  html += `<div class="srow"><div class="dot ${rfs===0?'dg':rfs<=2?'da':'dr'}"></div><div class="sname">Red flags</div><div class="stag ${rfs===0?'tg':rfs<=2?'ta':'tr'}">${rfs}/8 present</div></div>`;
+  html += `</div>`;
+
+  const txLabel = { gc:'Glucocorticoids alone', toc:'GC + Tocilizumab (FDA 2017)', upa:'GC + Upadacitinib (FDA 2025)', mtx:'GC + Methotrexate', nd:'Not determined' };
+  html += `<div class="sblock"><div class="sbtitle">Clinical Profile &amp; Treatment</div>`;
+  html += `<div class="srow"><div class="dot ${S.esrcrp==='yes'?'dg':'dgr'}"></div><div class="sname">Inflammatory markers</div><div class="stag ${S.esrcrp==='yes'?'tg':'tgr'}">${S.esrcrp==='yes'?'ESR/CRP elevated (+3)':S.esrcrp==='no'?'Below threshold':S.esrcrp==='na'?'Not tested / on tx':'—'}</div></div>`;
+  html += `<div class="srow"><div class="dot ${S.vision==='yes'?'dr':'dgr'}"></div><div class="sname">Visual involvement</div><div class="stag ${S.vision==='yes'?'tr':'tgr'}">${S.vision==='yes'?'Present — ophth. emergency':'Absent / not reported'}</div></div>`;
+  html += `<div class="srow"><div class="dot ${S.tx?'dt':'dgr'}"></div><div class="sname">Treatment plan</div><div class="stag ${S.tx?'tt':'tgr'}" style="white-space:normal;line-height:1.3;font-size:9px;">${txLabel[S.tx]||'—'}</div></div>`;
+  if(presentRF.length > 0) { html += `<div class="srow"><div class="dot dr"></div><div class="sname">Red flags</div><div class="stag tr" style="white-space:normal;line-height:1.3;font-size:9px;">${presentRF.join('; ')}</div></div>`; }
+  html += `</div></div>`;
+
+  // Treatment box if classified
+  if(vClass === 'vpos') {
+    html += `<div class="lbox" style="border-color:var(--teal-bd);">
+      <strong style="color:var(--teal);">Treatment Evidence Summary (ACR/EULAR Guidelines + 2025 FDA Approvals):</strong><br>
+      <span class="lt">Glucocorticoids (all patients):</span> Oral prednisone 40–60 mg/day; IV methylprednisolone for visual involvement. Taper over 12–18 months. Relapse in ~40–50% on GC alone; 90% still on GC at 1 year, 75% at 2 years, 44% at 5 years without steroid-sparing therapy.<br>
+      <span class="lt">Tocilizumab + GC (preferred first-line by ACR/EULAR):</span> GiACTA trial (NEJM 2017, n=250): 56% sustained GC-free remission at 52 weeks vs 14% placebo + 26-wk taper (p&lt;0.001). Cumulative prednisone 1862 mg vs 3296 mg. FDA-approved May 2017. Dose: 162 mg SC weekly. <strong>Suppresses CRP/ESR — do not use to monitor disease activity.</strong><br>
+      <span class="lt">Upadacitinib (oral JAK1) + GC — FDA-approved 2025:</span> SELECT-GCA (NEJM 2025, n=428, 100 sites, 24 countries): 15 mg daily + 26-wk taper → 46% sustained remission vs 29% placebo + 52-wk taper (p=0.0019). 9/11 secondary endpoints positive. First oral option for GCA. <strong>FDA boxed warnings: MACE, VTE, malignancy.</strong>${S.vision==='yes'?'<br><span class="lr">⚠ Visual involvement:</span> IV methylprednisolone preferred acutely. Note: patients with visual loss were excluded from GiACTA — tocilizumab evidence does not directly apply.':''}
+    </div>`;
+  }
+
+  document.getElementById('vout').innerHTML = html;
+  buildDoc(verdict, score, ageOk, prereqOk, presentRF, txLabel, itemLabels);
+}
+
+function buildDoc(verdict, score, ageOk, prereqOk, presentRF, txLabel, itemLabels) {
+  const sMap = { yes:'Present', no:'Absent', nd:'Not performed', na:'Not tested / on treatment', pending:'Pending', positive:'Positive' };
+  let note = `NEUROLOGY / RHEUMATOLOGY CONSULTATION
+2022 ACR/EULAR Classification Criteria for Giant Cell Arteritis
+Ponte C et al. Ann Rheum Dis 2022;81:1647–1653 (DCVAS Study Group)
+Date: ${new Date().toLocaleDateString()}
+
+CLASSIFICATION ASSESSMENT
+  Conclusion: ${verdict}
+  Total score: ${score} / 21 (threshold ≥6 points)
+  Age ≥50 years (absolute requirement): ${ageOk ? 'MET' : S.age === 'no' ? 'NOT MET — GCA cannot be classified' : 'Not entered'}
+  Prerequisites met (vasculitis Dx confirmed, mimics excluded): ${prereqOk ? 'YES' : S.prereq === 'partial' ? 'PARTIAL (work-up in progress)' : S.prereq ? 'NO' : 'Not entered'}
+
+SCORED CRITERIA (10 items, max 21 points)
+  [+3] ESR ≥50 mm/hr or CRP ≥10 mg/L: ${S.esrcrp === 'yes' ? 'PRESENT (+3)' : S.esrcrp === 'no' ? 'Absent (0)' : 'Not assessed'}
+  [+3] Sudden visual loss: ${S.vision === 'yes' ? 'PRESENT (+3)' : S.vision === 'no' ? 'Absent (0)' : 'Not assessed'}
+  [+2] Morning stiffness (shoulders/neck): ${S.stiffness === 'yes' ? 'Present (+2)' : S.stiffness === 'no' ? 'Absent (0)' : 'Not assessed'}
+  [+2] Jaw or tongue claudication: ${S.jaw === 'yes' ? 'Present (+2)' : S.jaw === 'no' ? 'Absent (0)' : 'Not assessed'}
+  [+2] New persistent temporal headache: ${S.headache === 'yes' ? 'Present (+2)' : S.headache === 'no' ? 'Absent (0)' : 'Not assessed'}
+  [+2] Scalp tenderness: ${S.scalp === 'yes' ? 'Present (+2)' : S.scalp === 'no' ? 'Absent (0)' : 'Not assessed'}
+  [+2] Temporal artery abnormality on exam: ${S.exam === 'yes' ? 'Present (+2)' : S.exam === 'no' ? 'Absent (0)' : 'Not assessed'}
+  [+5] Positive TAB or halo sign on temporal artery US: ${S.tab === 'yes' ? 'POSITIVE (+5)' : S.tab === 'pending' ? 'Pending (0 currently)' : S.tab === 'no' ? 'Negative (0)' : 'Not performed'}
+  [+2] Bilateral axillary involvement on imaging: ${S.axillary === 'yes' ? 'Present (+2)' : S.axillary === 'no' ? 'Absent (0)' : 'Not imaged'}
+  [+2] FDG-PET activity throughout aorta: ${S.pet === 'yes' ? 'Present (+2)' : S.pet === 'no' ? 'Absent/partial (0)' : 'Not performed'}
+
+DIFFERENTIAL DIAGNOSIS / RED FLAGS
+  Count: ${rfCount()}/8
+  Present: ${presentRF.length ? presentRF.join('; ') : 'None identified'}
+
+TREATMENT PLAN
+  Approach: ${txLabel[S.tx] || 'Not yet determined'}
+
+TREATMENT EVIDENCE SUMMARY
+  Glucocorticoids: Prednisone 40–60 mg/day; IV MP 500 mg–1 g × 3d for visual involvement
+    Relapse rate: ~40–50% on GC alone; 90% still on GC at 1 yr, 75% at 2 yr, 44% at 5 yr
+  Tocilizumab (FDA May 2017) — IL-6R blocker, SC 162 mg weekly:
+    GiACTA (Stone et al. NEJM 2017, n=250): 56% sustained GC-free remission vs 14% placebo (p<0.001)
+    Cumulative prednisone: 1862 mg (TCZ) vs 3296 mg (placebo). ACR/EULAR preferred first-line.
+    Warning: Suppresses CRP/ESR — do not use inflammatory markers to monitor on-treatment
+  Upadacitinib 15 mg daily (FDA 2025) — oral JAK1 inhibitor:
+    SELECT-GCA (NEJM 2025, n=428, 100 sites/24 countries): 46% sustained remission vs 29% placebo (p=0.0019)
+    9/11 secondary endpoints positive. First oral agent for GCA.
+    FDA boxed warnings: MACE, VTE, malignancy — assess cardiovascular risk before prescribing
+  Methotrexate: Alternative GC-sparing agent (inconsistent RCT evidence; 3 small trials)
+  TNF inhibitors: NOT effective in GCA (multiple studies — do not use)
+
+CRITERIA PERFORMANCE (Ponte et al. 2022 DCVAS validation set, n=451)
+  Sensitivity: 87.0% (95% CI 82.0–91.0%)
+  Specificity: 94.8% (95% CI 91.0–97.4%)
+  AUC: 0.91 (95% CI 0.88–0.94)
+  Biopsy-proven GCA: sensitivity 100% (95% CI 99.0–100.0%)
+  Large-vessel GCA (no TAB): sensitivity 55.7% (95% CI 46.5–64.6%) — known limitation
+  Note: These are CLASSIFICATION criteria for research — not diagnostic criteria.
+    Only apply when LVV/medium-vessel vasculitis has been diagnosed and mimics excluded.
+
+Reference: Ponte C, Grayson PC, Robson JC, et al. 2022 American College of Rheumatology/EULAR classification criteria for giant cell arteritis. Ann Rheum Dis. 2022;81:1647–1653.`;
+
+  document.getElementById('dn').textContent = note;
+}
+
+function goTab(n) { if(n===cur) return; go(n); }
+
+function go(n) {
+  document.getElementById('s'+cur).classList.remove('active');
+  document.getElementById('s'+n).classList.add('active');
+  for(let i=0;i<7;i++){const d=document.getElementById('st'+i);d.classList.remove('active','done');if(i<n)d.classList.add('done');else if(i===n)d.classList.add('active');}
+  cur=n;
+  document.getElementById('pf').style.width=((n/6)*100)+'%';
+  if(n===6) rv();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function xp(btn) {
+  const d=btn.closest('.crit').querySelector('.crit-detail'); if(!d) return;
+  const o=d.classList.toggle('open');
+  btn.textContent=o?'close ▴':'details ▾';
+}
+
+function toggleDoc() {
+  const body=document.getElementById('dn'),btn=document.getElementById('copy-btn'),tog=document.querySelector('.doc-tog');
+  if(!body) return;
+  const open=body.classList.toggle('open');
+  if(tog) tog.textContent=open?'▲ Documentation Note':'▼ Documentation Note';
+  if(btn) btn.classList.toggle('visible',open);
+}
+
+function copyDoc() {
+  const body=document.getElementById('dn'),btn=document.getElementById('copy-btn');
+  if(!body) return;
+  const text=body.textContent||body.innerText;
+  navigator.clipboard.writeText(text).then(()=>{if(btn){btn.textContent='✓ Copied';btn.classList.add('copied');setTimeout(()=>{btn.textContent='⎘ Copy';btn.classList.remove('copied');},2000);}})
+  .catch(()=>{const ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);if(btn){btn.textContent='✓ Copied';btn.classList.add('copied');setTimeout(()=>{btn.textContent='⎘ Copy';btn.classList.remove('copied');},2000);}});
+}
+
+function resetAll() {
+  Object.keys(S).forEach(k => { if(k==='rf') S.rf=[false,false,false,false,false,false,false,false]; else S[k]=null; });
+  document.querySelectorAll('.crit').forEach(el=>el.className='crit');
+  document.querySelectorAll('.abtn').forEach(b=>b.classList.remove('ay','an','at','aw','ab','ar'));
+  document.querySelectorAll('.crit-detail').forEach(d=>d.classList.remove('open'));
+  document.querySelectorAll('.xbtn').forEach(b=>b.textContent='details ▾');
+  document.querySelectorAll('.redflag-item').forEach(el=>el.classList.remove('rf-checked'));
+  ['a0','a1','a2','a3','a4','a5'].forEach(id=>{const el=document.getElementById(id);if(el){el.className='alrt';el.textContent='';}});
+  const dn=document.getElementById('dn');if(dn)dn.classList.remove('open');
+  const cb=document.getElementById('copy-btn');if(cb)cb.classList.remove('visible','copied');
+  const tog=document.querySelector('.doc-tog');if(tog)tog.textContent='▼ Documentation Note';
+  const vout=document.getElementById('vout');if(vout)vout.innerHTML='';
+  for(let i=1;i<=4;i++){const sn=document.getElementById('sn'+i);const st=document.getElementById('sb'+i);if(sn){sn.textContent='0';sn.style.color='var(--text3)';}if(st){st.textContent='0 / 6';st.className='score-thresh st-none';}}
+  go(0);
+  document.getElementById('n0').disabled=true;
+}
+
+document.getElementById('n0').disabled=true;
+</script>
+</body>
+</html>
