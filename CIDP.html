@@ -1,0 +1,1063 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2021 EAN/PNS CIDP Criteria · Diagnostic Navigator</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@300;400;500;600;700&family=Lexend:wght@300;400;500;600&display=swap');
+
+:root {
+  --bg:        #0d1117;
+  --card:      #161b22;
+  --card2:     #1c2330;
+  --border:    #3a4556;
+  --border2:   #4a5f7a;
+  --green:     #3fb950;
+  --green-bg:  rgba(63,185,80,0.10);
+  --green-bd:  rgba(63,185,80,0.35);
+  --red:       #f85149;
+  --red-bg:    rgba(248,81,73,0.10);
+  --red-bd:    rgba(248,81,73,0.35);
+  --amber:     #e3b341;
+  --amber-bg:  rgba(227,179,65,0.10);
+  --amber-bd:  rgba(227,179,65,0.35);
+  --blue:      #58a6ff;
+  --blue-bg:   rgba(88,166,255,0.10);
+  --blue-bd:   rgba(88,166,255,0.35);
+  --yellow:    #f0c040;
+  --yellow-bg: rgba(240,192,64,0.10);
+  --yellow-bd: rgba(240,192,64,0.35);
+  --text:      #e6edf3;
+  --text2:     #aab4c0;
+  --text3:     #6e7f94;
+  --sans:  'Lexend', 'Inter', system-ui, sans-serif;
+  --mono:  'IBM Plex Mono', monospace;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg); color: var(--text); font-family: var(--sans); font-size: 14px; line-height: 1.5; min-height: 100vh; }
+.app { max-width: 960px; margin: 0 auto; padding: 0 20px 80px; }
+
+header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+.h-title { font-size: 19px; font-weight: 700; }
+.h-title span { color: var(--yellow); }
+.h-sub { font-family: var(--sans); font-size: 11px; color: var(--text3); margin-top: 3px; line-height: 1.6; }
+.h-credit { font-family: var(--sans); font-size: 11px; color: var(--text3); margin-top: 2px; }
+.reset-btn { background: var(--card2); border: 1px solid var(--border); color: var(--text2); font-family: var(--sans); font-size: 12px; padding: 6px 14px; cursor: pointer; border-radius: 4px; transition: all 0.15s; white-space: nowrap; font-weight: 500; }
+.reset-btn:hover { border-color: var(--yellow); color: var(--yellow); }
+
+.prog-track { height: 3px; background: var(--border); margin-bottom: 20px; border-radius: 2px; }
+.prog-fill { height: 100%; background: linear-gradient(90deg, var(--yellow), #ffe08a); border-radius: 2px; transition: width 0.4s ease; box-shadow: 0 0 6px rgba(240,192,64,0.4); }
+
+.steps { display: grid; grid-template-columns: repeat(7, 1fr); border: 1px solid var(--border); border-radius: 8px; margin-bottom: 20px; overflow: hidden; background: var(--card); }
+.stab { padding: 8px 3px 9px; text-align: center; font-family: var(--sans); font-size: 10px; color: var(--text3); border-right: 1px solid var(--border); transition: all 0.2s; cursor: pointer; background: var(--card); line-height: 1.3; }
+.stab:nth-child(7n) { border-right: none; }
+.stab .sn { display: flex; align-items: center; justify-content: center; width: 20px; height: 20px; border-radius: 50%; background: var(--card2); border: 1px solid var(--border); font-size: 10px; font-weight: 700; margin: 0 auto 3px; transition: all 0.2s; }
+.stab .slbl { display: block; font-size: 9px; font-weight: 600; line-height: 1.3; }
+.stab.active { color: var(--yellow); background: rgba(240,192,64,0.06); }
+.stab.active .sn { background: var(--yellow); color: #0d1117; border-color: var(--yellow); }
+.stab.done { color: var(--green); }
+.stab.done .sn { background: var(--green); color: #0d1117; border-color: var(--green); }
+.stab:hover:not(.active) { background: var(--card2); }
+
+.card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 22px; margin-bottom: 12px; }
+.ctitle { font-size: 13px; font-weight: 700; font-family: var(--sans); margin-bottom: 3px; }
+.csub { font-size: 12px; color: var(--text2); margin-bottom: 16px; line-height: 1.5; }
+
+.slabel { display: flex; align-items: center; gap: 8px; font-family: var(--sans); font-size: 11px; font-weight: 600; color: var(--text); margin-bottom: 9px; padding-bottom: 6px; border-bottom: 1px solid var(--border); }
+.pill { font-size: 9px; padding: 1px 7px; border-radius: 20px; border: 1px solid; margin-left: auto; font-family: var(--sans); letter-spacing: 0.04em; text-transform: uppercase; }
+.pill-r { border-color: var(--red);    color: var(--red);    background: var(--red-bg); }
+.pill-a { border-color: var(--amber);  color: var(--amber);  background: var(--amber-bg); }
+.pill-y { border-color: var(--yellow); color: var(--yellow); background: var(--yellow-bg); }
+.pill-g { border-color: var(--green);  color: var(--green);  background: var(--green-bg); }
+
+.crit { border: 1px solid var(--border); border-radius: 6px; margin-bottom: 5px; overflow: hidden; transition: border-color 0.15s, background 0.15s; }
+.crit.c-yes  { border-color: var(--green-bd);  background: var(--green-bg); }
+.crit.c-no   { border-color: var(--red-bd);    background: var(--red-bg); }
+.crit.c-pres { border-color: var(--yellow-bd); background: var(--yellow-bg); }
+.crit.c-abs  { border-color: var(--border2);   background: var(--card2); }
+.crit.c-part { border-color: var(--amber-bd);  background: var(--amber-bg); }
+.crit.c-blue { border-color: var(--blue-bd);   background: var(--blue-bg); }
+
+.crit-main { display: flex; align-items: center; gap: 10px; padding: 10px 13px; }
+.crit-name { flex: 1; font-size: 13px; font-weight: 500; color: var(--text); line-height: 1.3; }
+.xbtn { background: rgba(188,140,255,0.10); border: 1px solid rgba(188,140,255,0.35); color: #bc8cff; font-size: 11px; cursor: pointer; padding: 2px 8px; font-family: var(--sans); white-space: nowrap; transition: all 0.15s; flex-shrink: 0; border-radius: 3px; font-weight: 500; }
+.xbtn:hover { background: #bc8cff; color: #0d1117; border-color: #bc8cff; }
+
+.crit-detail { display: none; padding: 10px 13px 12px; font-size: 12px; color: var(--text); line-height: 1.65; border-top: 1px solid var(--border); font-family: var(--sans); }
+.crit-detail.open { display: block; }
+.cnote { margin-top: 8px; padding: 8px 11px; background: var(--card2); border-left: 3px solid var(--border2); font-family: var(--mono); font-size: 10px; color: var(--text2); line-height: 1.75; border-radius: 0 3px 3px 0; }
+.cnote strong { color: var(--text); }
+.prose-note { margin-top: 8px; padding: 8px 11px; background: var(--card2); border-left: 3px solid var(--border2); font-family: var(--sans); font-size: 11px; color: var(--text2); line-height: 1.75; border-radius: 0 3px 3px 0; }
+.prose-note strong { color: var(--text); }
+
+.brow { display: flex; flex-wrap: wrap; border-top: 1px solid var(--border); }
+.abtn { flex: 1; min-width: 120px; padding: 9px 10px; background: none; border: none; border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); color: var(--text2); font-family: var(--sans); font-size: 12px; cursor: pointer; transition: all 0.12s; font-weight: 400; line-height: 1.4; text-align: left; }
+.abtn:last-child { border-right: none; }
+.abtn:hover { background: var(--card2); color: var(--text); }
+.abtn.ay  { background: var(--green-bg);  color: var(--green);  font-weight: 700; }
+.abtn.an  { background: var(--red-bg);    color: var(--red);    font-weight: 700; }
+.abtn.ap  { background: var(--yellow-bg); color: var(--yellow); font-weight: 700; }
+.abtn.ab  { background: var(--blue-bg);   color: var(--blue);   font-weight: 700; }
+.abtn.aa  { background: var(--card2);     color: var(--text2);  font-weight: 700; }
+.abtn.aw  { background: var(--amber-bg);  color: var(--amber);  font-weight: 700; }
+
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; }
+@media (max-width: 600px) { .two-col { grid-template-columns: 1fr; } }
+
+.alrt { padding: 9px 13px; border-radius: 5px; font-size: 12px; line-height: 1.55; margin-top: 12px; border-left: 3px solid; display: none; font-family: var(--sans); }
+.alrt.show { display: block; }
+.aok   { border-color: var(--green);  background: var(--green-bg);  color: #7ee787; }
+.awn   { border-color: var(--amber);  background: var(--amber-bg);  color: var(--amber); }
+.aerr  { border-color: var(--red);    background: var(--red-bg);    color: #ff7b72; }
+.ainf  { border-color: var(--blue);   background: var(--blue-bg);   color: var(--blue); }
+.ayel  { border-color: var(--yellow); background: var(--yellow-bg); color: var(--yellow); }
+
+.lbox { background: var(--card2); border: 1px solid var(--border); border-radius: 5px; padding: 12px 15px; font-size: 12px; color: var(--text2); line-height: 1.75; margin-bottom: 14px; font-family: var(--sans); }
+.lbox strong { color: var(--text); }
+.ly { color: var(--yellow); font-weight: 600; }
+.lg { color: var(--green);  font-weight: 600; }
+.la { color: var(--amber);  font-weight: 600; }
+.lr { color: var(--red);    font-weight: 600; }
+.lb { color: var(--blue);   font-weight: 600; }
+
+.nav-row { display: flex; justify-content: space-between; align-items: center; margin-top: 20px; gap: 10px; }
+.nbtn { padding: 9px 22px; border-radius: 5px; font-family: var(--sans); font-size: 13px; border: 1px solid; cursor: pointer; font-weight: 600; transition: all 0.15s; }
+.np { background: var(--yellow); border-color: var(--yellow); color: #0d1117; font-weight: 700; }
+.np:hover { background: #ffe08a; border-color: #ffe08a; }
+.np:disabled { opacity: 0.3; cursor: not-allowed; }
+.ns { background: transparent; border-color: var(--border2); color: var(--text2); }
+.ns:hover { border-color: var(--text); color: var(--text); }
+
+.screen { display: none; }
+.screen.active { display: block; animation: fu 0.25s ease; }
+@keyframes fu { from { opacity:0; transform:translateY(5px); } to { opacity:1; transform:translateY(0); } }
+
+/* VERDICT */
+.vban { border-radius: 8px; padding: 22px 26px; margin-bottom: 16px; border: 2px solid; }
+.vpos  { border-color: var(--yellow); background: var(--yellow-bg); }
+.vneg  { border-color: var(--red);    background: var(--red-bg); }
+.vund  { border-color: var(--amber);  background: var(--amber-bg); }
+.vcaution { border-color: var(--blue); background: var(--blue-bg); }
+.vban-head { text-align: center; margin-bottom: 14px; }
+.vlbl { font-family: var(--mono); font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase; opacity: 0.6; margin-bottom: 5px; }
+.vtitle { font-size: 22px; font-weight: 700; margin-bottom: 6px; }
+.vpos .vtitle  { color: var(--yellow); }
+.vneg .vtitle  { color: var(--red); }
+.vund .vtitle  { color: var(--amber); }
+.vcaution .vtitle { color: var(--blue); }
+.vdesc { font-size: 12px; color: var(--text2); line-height: 1.7; max-width: 620px; margin: 0 auto; font-family: var(--sans); }
+
+/* SUMMARY GRID */
+.sum-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+@media (max-width: 580px) { .sum-grid { grid-template-columns: 1fr; } }
+.sblock { background: var(--card); border: 1px solid var(--border); border-radius: 6px; overflow: hidden; }
+.sbtitle { font-family: var(--sans); font-size: 11px; font-weight: 600; padding: 7px 11px; border-bottom: 1px solid var(--border); color: var(--text); background: var(--card2); }
+.srow { display: flex; align-items: flex-start; gap: 8px; padding: 6px 11px; border-bottom: 1px solid var(--border); font-size: 12px; font-family: var(--sans); }
+.srow:last-child { border-bottom: none; }
+.dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; margin-top: 4px; }
+.dg { background: var(--green); } .dr { background: var(--red); }
+.dy { background: var(--yellow); } .db { background: var(--blue); }
+.da { background: var(--amber); } .dgr{ background: var(--text3); }
+.sname { flex: 1; color: var(--text); line-height: 1.4; }
+.stag { font-family: var(--mono); font-size: 9px; padding: 1px 7px; border-radius: 10px; border: 1px solid; white-space: nowrap; }
+.tg { border-color: var(--green-bd);  color: var(--green); }
+.tr { border-color: var(--red-bd);    color: var(--red); }
+.ty { border-color: var(--yellow-bd); color: var(--yellow); }
+.tb { border-color: var(--blue-bd);   color: var(--blue); }
+.ta { border-color: var(--amber-bd);  color: var(--amber); }
+.tgr{ border-color: var(--border2);   color: var(--text3); }
+
+/* RED FLAGS (checkbox style) */
+.redflag-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 14px; }
+@media (max-width: 600px) { .redflag-grid { grid-template-columns: 1fr; } }
+.redflag-item { border: 1px solid var(--border); border-radius: 5px; padding: 11px 13px; font-size: 13px; color: var(--text2); line-height: 1.55; cursor: pointer; transition: all 0.15s; display: flex; align-items: flex-start; gap: 12px; font-family: var(--sans); }
+.redflag-item:hover { border-color: var(--border2); color: var(--text); }
+.redflag-item.rf-checked { border-color: var(--red-bd); background: var(--red-bg); color: var(--red); }
+.rf-checkbox { width: 18px; height: 18px; min-width: 18px; border: 2px solid var(--border2); border-radius: 3px; background: var(--card2); transition: all 0.15s; display: flex; align-items: center; justify-content: center; margin-top: 1px; font-size: 11px; font-weight: 700; color: transparent; }
+.redflag-item.rf-checked .rf-checkbox { border-color: var(--red); background: var(--red-bg); color: var(--red); }
+.rf-content { flex: 1; }
+.rf-label { font-weight: 600; font-size: 13px; margin-bottom: 4px; color: var(--text); font-family: var(--sans); }
+.redflag-item.rf-checked .rf-label { color: var(--red); }
+
+/* DOC NOTE */
+.doc-header { display: flex; align-items: center; gap: 8px; margin-bottom: 5px; }
+.doc-tog { flex: 1; text-align: left; background: var(--card2); border: 1px solid var(--border2); border-radius: 5px; color: var(--text2); font-family: var(--sans); font-size: 13px; padding: 8px 13px; cursor: pointer; transition: all 0.15s; }
+.doc-tog:hover { border-color: var(--yellow); color: var(--yellow); }
+.copy-btn { background: var(--card2); border: 1px solid var(--border2); border-radius: 5px; color: var(--text2); font-family: var(--sans); font-size: 12px; padding: 8px 14px; cursor: pointer; white-space: nowrap; transition: all 0.15s; display: none; }
+.copy-btn.visible { display: block; }
+.copy-btn:hover { border-color: var(--green); color: var(--green); }
+.copy-btn.copied { border-color: var(--green); color: var(--green); background: var(--green-bg); }
+.doc-body { display: none; background: var(--card2); border: 1px solid var(--border2); border-radius: 5px; padding: 13px 15px; font-family: var(--mono); font-size: 11px; color: var(--text2); line-height: 1.85; white-space: pre-wrap; margin-bottom: 12px; }
+.doc-body.open { display: block; }
+</style>
+</head>
+<body>
+<div class="app">
+
+<header>
+  <div>
+    <div class="h-title">2021 EAN/PNS <span>CIDP Diagnostic Criteria &amp; Treatment</span></div>
+    <div class="h-sub">Van den Bergh PYK et al. · Eur J Neurol 2021;28:3556–3583 · EAN/PNS Joint Task Force · For educator use only</div>
+    <div class="h-credit">Designed by neurology resident physician Daniel Short, MD</div>
+  </div>
+  <button class="reset-btn" onclick="resetAll()">↺ Reset</button>
+</header>
+
+<div class="prog-track"><div class="prog-fill" id="pf" style="width:0%"></div></div>
+
+<div class="steps">
+  <div class="stab active" id="st0" onclick="goTab(0)"><span class="sn">1</span><span class="slbl">Context</span></div>
+  <div class="stab" id="st1" onclick="goTab(1)"><span class="sn">2</span><span class="slbl">Clinical</span></div>
+  <div class="stab" id="st2" onclick="goTab(2)"><span class="sn">3</span><span class="slbl">EDx</span></div>
+  <div class="stab" id="st3" onclick="goTab(3)"><span class="sn">4</span><span class="slbl">Supportive</span></div>
+  <div class="stab" id="st4" onclick="goTab(4)"><span class="sn">5</span><span class="slbl">Serology</span></div>
+  <div class="stab" id="st5" onclick="goTab(5)"><span class="sn">6</span><span class="slbl">Red Flags</span></div>
+  <div class="stab" id="st6" onclick="goTab(6)"><span class="sn">7</span><span class="slbl">Verdict</span></div>
+</div>
+
+<!-- ══ SCREEN 0: CONTEXT ══ -->
+<div class="screen active" id="s0">
+<div class="card">
+  <div class="ctitle" style="color:var(--yellow);">Step 1 · Clinical Context and Suspected Presentation</div>
+  <div class="csub">CIDP is a chronic autoimmune demyelinating polyradiculoneuropathy. Diagnosis rests on a combination of clinical, electrodiagnostic, and laboratory features with exclusions. Select the presentation type before proceeding.</div>
+
+  <div class="lbox">
+    <strong>Background (Van den Bergh et al. 2021):</strong><br>
+    <span class="ly">Key 2021 revision changes from 2010:</span> "Atypical CIDP" replaced by "CIDP variants" (well-characterised entities); diagnostic certainty levels reduced from three (definite/probable/possible) to two (CIDP/possible CIDP) — sensitivity/specificity of probable vs. definite did not significantly differ; sensory nerve conduction studies now mandatory; autoimmune nodopathies reclassified as a distinct separate disease<br><br>
+    <span class="ly">2021 criteria performance:</span> Sensitivity 77–83%, specificity 94–98% across validation cohorts. Up to 20% of patients with clinically typical CIDP may not fulfil minimal electrodiagnostic criteria and require supportive criteria<br><br>
+    <strong>Key principle:</strong> Misdiagnosis in CIDP is common, particularly in variants. The criteria aim to improve specificity. Patients fulfilling criteria based on correctly interpreted results may still not have CIDP.
+  </div>
+
+  <div class="slabel">Presentation type <span class="pill pill-r">REQUIRED</span></div>
+  <div class="crit" id="ctx-item">
+    <div class="crit-main">
+      <div class="crit-name">Which presentation pattern best fits this patient?</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      <strong>Typical CIDP:</strong> Progressive or relapsing, symmetric, proximal AND distal muscle weakness of upper and lower limbs + sensory involvement ≥2 limbs, developing over ≥8 weeks, absent/reduced tendon reflexes in all limbs.<br><br>
+      <strong>CIDP variants (one of the following):</strong><br>
+      — <strong>Distal CIDP (DADS):</strong> Distal sensory loss + muscle weakness predominantly in lower limbs. ~2/3 have IgM paraproteinaemia. Anti-MAG neuropathy is outside CIDP scope if confirmed.<br>
+      — <strong>Multifocal CIDP (Lewis-Sumner/MADSAM):</strong> Sensory loss + weakness in multifocal asymmetric pattern, upper limb predominant, >1 limb. Cranial nerve involvement more common.<br>
+      — <strong>Focal CIDP:</strong> Sensory loss + weakness in only one limb; usually brachial or lumbosacral plexus.<br>
+      — <strong>Motor CIDP:</strong> Motor symptoms and signs without sensory involvement. May deteriorate with corticosteroids — IVIg preferred as first-line.<br>
+      — <strong>Sensory CIDP:</strong> Sensory symptoms and signs without motor involvement. In ~70% of patients, weakness develops during long-term follow-up.<br><br>
+      <strong>Not CIDP (separate diseases):</strong> Autoimmune nodopathy (anti-NF155, anti-CNTN1, anti-Caspr1, anti-NF140/186) and chronic immune sensory polyradiculopathy (CISP — normal motor and sensory NCS, absent/proximal delayed SSEPs) are both excluded from CIDP classification.
+      <div class="cnote">
+        <strong>Acute-onset CIDP (A-CIDP):</strong> Up to 13% of CIDP patients present acutely within 4 weeks and may initially be diagnosed as GBS. 5% of patients diagnosed with GBS are later reclassified as A-CIDP. Distinguishing features favouring A-CIDP: able to walk independently, less facial weakness, less respiratory/ANS involvement, more sensory signs, continues to deteriorate >8 weeks OR relapses ≥3 times after initial improvement.
+      </div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setCtx('typical')"    id="ctx-typical">Typical CIDP</button>
+      <button class="abtn" onclick="setCtx('distal')"     id="ctx-distal">Distal CIDP (DADS)</button>
+      <button class="abtn" onclick="setCtx('multifocal')" id="ctx-multifocal">Multifocal CIDP (Lewis-Sumner)</button>
+      <button class="abtn" onclick="setCtx('focal')"      id="ctx-focal">Focal CIDP</button>
+      <button class="abtn" onclick="setCtx('motor')"      id="ctx-motor">Motor CIDP</button>
+      <button class="abtn" onclick="setCtx('sensory')"    id="ctx-sensory">Sensory CIDP</button>
+    </div>
+  </div>
+
+  <div id="a0" class="alrt"></div>
+  <div class="nav-row"><div></div><button class="nbtn np" id="n0" onclick="go(1)" disabled>Next: Clinical Criteria →</button></div>
+</div>
+</div>
+
+<!-- ══ SCREEN 1: CLINICAL CRITERIA ══ -->
+<div class="screen" id="s1">
+<div class="card">
+  <div class="ctitle" style="color:var(--yellow);">Step 2 · Clinical Diagnostic Criteria (Table 1)</div>
+  <div class="csub">Clinical criteria are formulated as consensus expert opinion. These are the mandatory clinical features required before electrodiagnostic criteria are applied.</div>
+
+  <div class="lbox">
+    <strong>Clinical criteria (Table 1, Van den Bergh et al. 2021) — requirements differ by variant.</strong><br>
+    <span class="ly">Typical CIDP requires ALL of:</span> (1) Progressive or relapsing, symmetric, proximal and distal muscle weakness of upper and lower limbs + sensory involvement in ≥2 limbs; (2) Developing over ≥8 weeks; (3) Absent or reduced tendon reflexes in ALL limbs<br>
+    <span class="ly">CIDP variants:</span> One of the variant-specific patterns (see Step 1) — otherwise as in typical CIDP, but tendon reflexes may be normal in unaffected limbs
+  </div>
+
+  <div class="slabel">Time course <span class="pill pill-r">REQUIRED</span></div>
+  <div class="crit" id="timecourse-item">
+    <div class="crit-main">
+      <div class="crit-name">Symptom progression: developing over ≥8 weeks (or relapsing-remitting course)</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      The ≥8-week criterion distinguishes CIDP from GBS (which peaks by 4 weeks). A relapsing-remitting course also qualifies. Acute-onset CIDP (A-CIDP) presents within 4 weeks but either continues to worsen beyond 8 weeks OR relapses ≥3 times — the 8-week criterion is therefore ultimately met by these patients. There is no upper limit on disease duration at presentation.
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setClin('time','yes')" id="clin-time-yes">✓ ≥8 weeks or relapsing-remitting</button>
+      <button class="abtn" onclick="setClin('time','no')"  id="clin-time-no">✗ &lt;8 weeks from onset / acute only</button>
+      <button class="abtn" onclick="setClin('time','acuteonset')" id="clin-time-acuteonset">⚠ Acute onset (&lt;4 wks) but continuing to worsen or relapsing (A-CIDP)</button>
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:14px;">Weakness pattern <span class="pill pill-r">REQUIRED</span></div>
+  <div class="crit" id="weakness-item">
+    <div class="crit-main">
+      <div class="crit-name">Weakness pattern consistent with selected phenotype</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      <strong>Typical:</strong> Symmetric proximal + distal weakness in upper and lower limbs with sensory involvement ≥2 limbs<br>
+      <strong>Distal:</strong> Weakness predominantly distal, lower limb > upper limb<br>
+      <strong>Multifocal:</strong> Asymmetric, multifocal, upper limb predominant, >1 limb involved<br>
+      <strong>Focal:</strong> Weakness restricted to one limb (brachial or lumbosacral plexus, or individual peripheral nerve)<br>
+      <strong>Motor:</strong> Symmetric proximal/distal weakness without clinically detectable sensory involvement<br>
+      <strong>Sensory:</strong> Sensory symptoms and signs (vibration, position sense, cutaneous sensation) without motor weakness — gait ataxia common
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setClin('weakness','yes')" id="clin-weakness-yes">✓ Consistent with selected phenotype</button>
+      <button class="abtn" onclick="setClin('weakness','no')"  id="clin-weakness-no">✗ Not consistent</button>
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:14px;">Tendon reflexes <span class="pill pill-r">REQUIRED</span></div>
+  <div class="crit" id="reflexes-item">
+    <div class="crit-main">
+      <div class="crit-name">Absent or reduced tendon reflexes in affected limbs</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      For typical CIDP, reflexes must be absent or reduced in ALL limbs. For CIDP variants, reflexes may be normal in unaffected limbs — reduced reflexes are required only in affected limbs. Normal reflexes throughout in a patient with suspected typical CIDP significantly weakens the diagnosis.
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setClin('reflexes','yes')"  id="clin-reflexes-yes">✓ Absent/reduced (all affected limbs)</button>
+      <button class="abtn" onclick="setClin('reflexes','part')" id="clin-reflexes-part">⚠ Reduced in some but not all limbs</button>
+      <button class="abtn" onclick="setClin('reflexes','no')"   id="clin-reflexes-no">✗ Normal throughout</button>
+    </div>
+  </div>
+
+  <div id="a1" class="alrt"></div>
+  <div class="nav-row">
+    <button class="nbtn ns" onclick="go(0)">← Back</button>
+    <button class="nbtn np" onclick="go(2)">Next: Electrodiagnostic Criteria →</button>
+  </div>
+</div>
+</div>
+
+<!-- ══ SCREEN 2: ELECTRODIAGNOSTIC CRITERIA ══ -->
+<div class="screen" id="s2">
+<div class="card">
+  <div class="ctitle" style="color:var(--yellow);">Step 3 · Electrodiagnostic Criteria (Tables 2 &amp; 3, PICO 1)</div>
+  <div class="csub">The Task Force strongly recommends electrodiagnosis to support the clinical diagnosis. Both motor and sensory NCS are now required. The 2021 criteria define two tiers: CIDP-level and possible CIDP-level electrodiagnostic support.</div>
+
+  <div class="lbox">
+    <strong>Motor conduction criteria — strongly supportive of demyelination (Table 2):</strong> At least one of (a)–(g) in the required number of nerves:<br>
+    (a) Distal motor latency prolongation ≥50% above ULN in ≥2 nerves<br>
+    (b) Motor conduction velocity reduction ≥30% below LLN in ≥2 nerves<br>
+    (c) F-wave latency prolongation ≥20% above ULN in ≥2 nerves (≥50% if distal CMAP &lt;80% LLN)<br>
+    (d) Absent F-waves in ≥2 nerves (if CMAP ≥20% LLN) + ≥1 other demyelinating parameter in ≥1 other nerve<br>
+    (e) Motor conduction block: ≥30% proximal/distal CMAP amplitude reduction in ≥2 nerves (or 1 nerve + ≥1 other parameter)<br>
+    (f) Abnormal temporal dispersion: >30% CMAP duration increase in ≥2 nerves (≥100% in tibial)<br>
+    (g) Distal CMAP duration prolongation in ≥1 nerve + ≥1 other parameter<br><br>
+    <span class="la">Weakly supportive:</span> As above but in only 1 nerve<br>
+    <span class="ly">Key note:</span> Skin temperature ≥33°C palm, ≥30°C lateral malleolus. Carpal tunnel syndrome must be excluded for distal median latency. Study median, ulnar (below elbow), peroneal (below fibular head), and tibial nerves on one side first; extend if criteria unmet.
+  </div>
+
+  <div class="slabel">Motor nerve conduction result <span class="pill pill-r">REQUIRED</span></div>
+  <div class="crit" id="motor-item">
+    <div class="crit-main">
+      <div class="crit-name">Motor NCS demyelination criteria</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      <strong>How many nerves meet motor demyelination criteria (any of a–g)?</strong><br><br>
+      Required for full CIDP-level EDx support (by variant):<br>
+      — Typical, Multifocal, Focal, Motor CIDP: ≥2 nerves meeting criteria<br>
+      — Distal CIDP: ≥2 upper limb nerves (distal CMAP ≥1 mV); criteria in lower limb only → possible distal CIDP only<br>
+      — Sensory CIDP: motor conduction must be NORMAL in ≥4 nerves (median, ulnar, peroneal, tibial)<br><br>
+      For "possible CIDP" level: criteria met in only 1 motor nerve (for most variants)<br><br>
+      <strong>Recommendation 1 (Typical CIDP, PICO 1):</strong> Sensitivity/specificity of 2010 EFNS/PNS electrodiagnostic criteria: 95%/96% (Tackenberg et al.), 81%/96% (Rajabally et al.), 73%/91% (Breiner et al.) across different patient populations.
+      <div class="cnote">
+        <strong>Proximal stimulation guidance:</strong> If criteria not met with standard 4-nerve protocol, extend to contralateral side and/or stimulate ulnar/median at axilla and Erb's point. Between Erb's point and wrist: ≥50% CMAP amplitude reduction required for conduction block. Exclude Martin-Gruber anastomosis for ulnar forearm conduction block.
+      </div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setEdx('motor','cidp')"     id="edx-motor-cidp">✓ ≥2 nerves meeting criteria (CIDP-level)</button>
+      <button class="abtn" onclick="setEdx('motor','possible')" id="edx-motor-possible">⚠ 1 nerve meeting criteria (possible-level)</button>
+      <button class="abtn" onclick="setEdx('motor','normal')"   id="edx-motor-normal">Normal motor conduction (sensory CIDP pathway)</button>
+      <button class="abtn" onclick="setEdx('motor','none')"     id="edx-motor-none">✗ No demyelination criteria met</button>
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:14px;">Sensory nerve conduction result <span class="pill pill-r">REQUIRED</span></div>
+  <div class="crit" id="sensory-item">
+    <div class="crit-main">
+      <div class="crit-name">Sensory NCS result (Table 3)</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      <strong>CIDP-level:</strong> Sensory conduction abnormalities (prolonged distal latency, reduced SNAP amplitude, or slowed conduction velocity outside normal limits) in ≥2 nerves.<br><br>
+      <strong>Possible CIDP:</strong> Same criteria apply in ≥2 nerves.<br><br>
+      <strong>Sensory CIDP with normal motor NCS</strong> additionally requires one of:<br>
+      (a) Sensory NCV &lt;80% LLN (for SNAP &gt;80% LLN) or &lt;70% LLN (for SNAP &lt;80% LLN) in ≥2 nerves (median, ulnar, radial, sural)<br>
+      (b) Sural sparing pattern — abnormal median or radial SNAP with normal sural SNAP (excluding CTS)<br><br>
+      Note: For sural nerve SNAP amplitude, age-dependent reference values should be used after age 60.
+      <div class="cnote">
+        <strong>Important limitation:</strong> Sensory CIDP cannot be more than a "possible" diagnosis based on clinical and electrophysiological criteria alone, because these criteria do not permit identification of normal reference values compatible with sensory nerve demyelination. Sensory CIDP requires supportive criteria to approach diagnostic certainty.
+      </div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setEdx('sensory','cidp')"     id="edx-sensory-cidp">✓ Abnormal in ≥2 nerves (CIDP/possible-level)</button>
+      <button class="abtn" onclick="setEdx('sensory','sural_sp')" id="edx-sensory-sural_sp">Sural sparing pattern (abnormal median/radial, normal sural)</button>
+      <button class="abtn" onclick="setEdx('sensory','normal')"   id="edx-sensory-normal">Normal sensory NCS</button>
+    </div>
+  </div>
+
+  <div id="a2" class="alrt"></div>
+  <div class="nav-row">
+    <button class="nbtn ns" onclick="go(1)">← Back</button>
+    <button class="nbtn np" onclick="go(3)">Next: Supportive Criteria →</button>
+  </div>
+</div>
+</div>
+
+<!-- ══ SCREEN 3: SUPPORTIVE CRITERIA ══ -->
+<div class="screen" id="s3">
+<div class="card">
+  <div class="ctitle" style="color:var(--yellow);">Step 4 · Supportive Criteria (PICOs 2–4, 6)</div>
+  <div class="csub">Supportive criteria upgrade a possible CIDP diagnosis to CIDP when combined with clinical criteria. Two supportive criteria are required to upgrade. They may also support the diagnosis in uncertain cases.</div>
+
+  <div class="lbox">
+    <strong>When are supportive criteria required?</strong><br>
+    <span class="lg">CIDP (motor criteria met in ≥2 nerves):</span> No supportive criteria required<br>
+    <span class="la">Possible CIDP (criteria met in 1 nerve):</span> ≥2 supportive criteria required to upgrade to CIDP diagnosis<br>
+    <span class="la">Special case:</span> Motor conduction abnormalities not meeting demyelination criteria + sensory abnormalities in ≥2 nerves → possible CIDP only if also objective response to treatment + 1 other supportive criterion<br><br>
+    Supportive criteria include: (a) response to treatment, (b) ultrasound, (c) MRI, (d) CSF protein, (e) nerve biopsy
+  </div>
+
+  <div class="slabel">Treatment response (PICO 2)</div>
+  <div class="crit" id="sup-treatment-item">
+    <div class="crit-main">
+      <div class="crit-name">Objective response to immunomodulatory therapy (IVIg, plasma exchange, or corticosteroids)</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      <strong>Objective response requires improvement on ≥1 disability AND ≥1 impairment scale.</strong> A positive response is not specific for CIDP. Up to 32% non-responders to first-line therapy may still have CIDP. Uncontrolled studies report positive response in 68–99% of patients (Viala et al., Cocito et al., Chan et al.).<br><br>
+      Validated improvement thresholds (from clinical trials):<br>
+      — I-RODS: +≥4 centile points | INCAT disability scale: −≥1 point<br>
+      — mISS: −≥2 points | MRC sum score (0–60): +≥2 to 4 points<br>
+      — Grip strength (Martin Vigorimeter): +≥8 to 14 kPa | Jamar dynamometer: +≥10% (averaged over 3 consecutive days)
+      <div class="prose-note">
+        <strong>Caution:</strong> Lack of improvement does not exclude CIDP. Current immunomodulatory treatments are not CIDP-specific — other autoimmune conditions may also respond. Treatment response must be interpreted in the clinical and electrophysiological context to avoid over-diagnosis.
+      </div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setSup('treatment','yes')"     id="sup-treatment-yes">✓ Objective improvement on disability + impairment scale</button>
+      <button class="abtn" onclick="setSup('treatment','subjective')" id="sup-treatment-subjective">⚠ Subjective improvement only</button>
+      <button class="abtn" onclick="setSup('treatment','no')"      id="sup-treatment-no">✗ No improvement / not yet treated</button>
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:14px;">Nerve ultrasound (PICO 3)</div>
+  <div class="crit" id="sup-us-item">
+    <div class="crit-main">
+      <div class="crit-name">Nerve ultrasound — enlargement at ≥2 proximal sites (adult patients only)</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      The Task Force suggested ultrasound in adult patients fulfilling possible CIDP but not CIDP criteria. Validated cut-offs for nerve enlargement in CIDP:<br>
+      — Median nerve: &gt;10 mm² at forearm; &gt;13 mm² upper arm; &gt;9 mm² interscalene (trunks)<br>
+      — Nerve roots: &gt;12 mm² cross-sectional area<br><br>
+      Enlargement mainly of proximal nerve segments in arm nerves and spinal nerve roots is the most characteristic CIDP finding. A prospective multicentre validation study (Herraets et al. 2020, Neurology) confirmed the yield of a brachial plexus + proximal median nerve bilateral protocol.<br><br>
+      Before concluding ultrasound abnormalities support CIDP, exclude: MMN, CMT1, IgM paraproteinaemic neuropathy (anti-MAG), POEMS syndrome, diabetic radiculoplexus neuropathy, amyloid neuropathy, neuralgic amyotrophy, leprosy, neurofibromatosis, neurolymphomatosis.
+      <div class="cnote">
+        <strong>Paediatric caution:</strong> No evidence supports ultrasound in paediatric CIDP. Inherited demyelinating neuropathies are more prevalent in children, rater experience is limited, and validated cut-offs based on disease controls are lacking. Not recommended in children.
+      </div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setSup('us','yes')" id="sup-us-yes">✓ Enlargement at ≥2 proximal sites (above cut-offs)</button>
+      <button class="abtn" onclick="setSup('us','no')"  id="sup-us-no">✗ Normal or not performed</button>
+      <button class="abtn" onclick="setSup('us','nd')"  id="sup-us-nd">— Not applicable (paediatric)</button>
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:14px;">MRI nerve roots / plexus (PICO 3)</div>
+  <div class="crit" id="sup-mri-item">
+    <div class="crit-main">
+      <div class="crit-name">MRI — enlargement and/or T2 signal increase of spinal nerve roots (adult patients only)</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      MRI preferred for nerve root assessment when ultrasound is unavailable or non-contributory. T2-weighted sequences (DIXON/STIR, coronal + sagittal planes). Preferred quantitative cut-off: nerve root diameter (measured next to ganglion, coronal plane) &gt;5 mm. Two studies found low inter-rater reliability in chronic inflammatory neuropathies even among experienced raters — low reproducibility and absence of validated cut-offs limit routine use. High cost also limits utility. MRI is NOT recommended as routine first-line investigation.
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setSup('mri','yes')" id="sup-mri-yes">✓ Enlargement/T2 signal in nerve roots (using validated criteria)</button>
+      <button class="abtn" onclick="setSup('mri','no')"  id="sup-mri-no">✗ Normal / not performed</button>
+      <button class="abtn" onclick="setSup('mri','nd')"  id="sup-mri-nd">— Not applicable (paediatric)</button>
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:14px;">CSF analysis (PICO 4)</div>
+  <div class="crit" id="sup-csf-item">
+    <div class="crit-main">
+      <div class="crit-name">CSF protein elevation (without cellular pleocytosis)</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      CSF protein is often elevated in CIDP (sensitivity 42–77%, specificity uncertain). The Task Force suggests NOT performing CSF if diagnostic criteria for CIDP are already met. Consider CSF when: (1) possible CIDP but not CIDP criteria, (2) acute/subacute onset, (3) infectious/malignant aetiology suspected.<br><br>
+      <strong>Age-adjusted cut-offs:</strong> ≥0.5 g/L under age 50; &gt;0.6 g/L over age 50 (sensitivity 68% in one study). Interpret cautiously with diabetes or prior spinal surgery. Risk of misdiagnosis if electrodiagnosis is non-confirmatory and only CSF protein is elevated.
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setSup('csf','yes')" id="sup-csf-yes">✓ Elevated protein (&gt;0.45 g/L under 50; &gt;0.6 g/L over 50)</button>
+      <button class="abtn" onclick="setSup('csf','no')"  id="sup-csf-no">✗ Normal / not performed</button>
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:14px;">Nerve biopsy (PICO 6)</div>
+  <div class="crit" id="sup-biopsy-item">
+    <div class="crit-main">
+      <div class="crit-name">Nerve biopsy — supportive pathological features (only when all other investigations non-diagnostic)</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      NOT recommended as routine. Reserve for: (1) suspected CIDP not confirmable by other means; (2) little/no response to treatment and alternative diagnosis (CMT, amyloidosis, sarcoidosis, nerve sheath tumour) under consideration.<br><br>
+      Supporting pathological features for CIDP: thinly myelinated axons and small onion bulbs; thinly myelinated or demyelinated internodes on teased fibre analysis; perivascular macrophage clusters; supportive demyelination features on electron microscopy.<br><br>
+      Sensitivity and specificity are poor. Most often sural or superficial peroneal nerve biopsied; biopsy of a clinically affected nerve is preferred. Sural nerve biopsy is associated with numbness, acute pain, allodynia, chronic pain, dysaesthesia, neuroma formation, infection, and wound dehiscence.
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setSup('biopsy','yes')" id="sup-biopsy-yes">✓ Pathological features supportive of CIDP</button>
+      <button class="abtn" onclick="setSup('biopsy','no')"  id="sup-biopsy-no">✗ Non-supportive / not performed</button>
+    </div>
+  </div>
+
+  <div id="a3" class="alrt"></div>
+  <div class="nav-row">
+    <button class="nbtn ns" onclick="go(2)">← Back</button>
+    <button class="nbtn np" onclick="go(4)">Next: Serology / Antibodies →</button>
+  </div>
+</div>
+</div>
+
+<!-- ══ SCREEN 4: SEROLOGY ══ -->
+<div class="screen" id="s4">
+<div class="card">
+  <div class="ctitle" style="color:var(--yellow);">Step 5 · Serological Testing (PICOs 5 &amp; 7)</div>
+  <div class="csub">Monoclonal protein testing is mandatory in all adults with suspected CIDP. Nodal-paranodal antibody testing should be considered when specific clinical features are present or when there is poor treatment response.</div>
+
+  <div class="lbox">
+    <strong>Monoclonal gammopathy testing (PICO 7) — strongly advised in all adult patients:</strong><br>
+    Testing should include serum protein electrophoresis + immunofixation + spot urine immunofixation for Bence Jones protein ± serum free light chains (SFLC).<br>
+    <span class="ly">If IgM paraprotein found:</span> Test anti-MAG antibodies (Bühlmann ELISA or locally validated assay). Anti-MAG titre &gt;7000 BTU strongly implies a different diagnosis than CIDP — anti-MAG neuropathy is outside CIDP scope.<br>
+    <span class="ly">If POEMS syndrome suspected</span> (distal + painful CIDP + lambda IgA/IgG paraprotein): Test serum VEGF levels.<br>
+    <span class="la">If distal CIDP and no IgM paraprotein found:</span> Consider repeat testing.
+  </div>
+
+  <div class="slabel">Monoclonal protein screen <span class="pill pill-r">REQUIRED in adults</span></div>
+  <div class="crit" id="mgus-item">
+    <div class="crit-main">
+      <div class="crit-name">Serum/urine immunofixation result</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      Monoclonal gammopathies may mimic CIDP (anti-MAG IgM neuropathy, POEMS syndrome, multiple myeloma, AL-amyloidosis). CIDP associated with IgG/IgA MGUS may behave like typical CIDP. The independent diagnostic significance of a monoclonal gammopathy on CIDP diagnosis is limited — the gammopathy itself requires haematology-oncology consultation if found.
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setSerol('mgus','none')" id="mgus-none">✓ No monoclonal protein detected</button>
+      <button class="abtn" onclick="setSerol('mgus','igg_iga')" id="mgus-igg_iga">IgG or IgA paraprotein (MGUS — behaves like CIDP)</button>
+      <button class="abtn" onclick="setSerol('mgus','igm')" id="mgus-igm">IgM paraprotein (test anti-MAG antibodies)</button>
+      <button class="abtn" onclick="setSerol('mgus','other')" id="mgus-other">Myeloma / AL-amyloid / POEMS features</button>
+      <button class="abtn" onclick="setSerol('mgus','nd')" id="mgus-nd">— Not tested (paediatric)</button>
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:14px;">Anti-MAG antibodies (if IgM paraprotein present)</div>
+  <div class="crit" id="antimag-item">
+    <div class="crit-main">
+      <div class="crit-name">Anti-MAG antibody titre (Bühlmann ELISA)</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      Only relevant if IgM paraprotein is present. Anti-MAG neuropathy has specific electrodiagnostic and pathologic findings, predominantly does not respond to IVIg or corticosteroids, and is outside the scope of CIDP. High titre (&gt;7000 BTU) strongly implies a different diagnosis. Low titre requires careful clinical interpretation. ~2/3 of patients with distal CIDP phenotype have IgM paraproteinaemic neuropathy.
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setSerol('antimag','neg')"  id="antimag-neg">Negative / low titre (&lt;7000 BTU)</button>
+      <button class="abtn" onclick="setSerol('antimag','high')" id="antimag-high">✗ High titre (&gt;7000 BTU) — anti-MAG neuropathy (not CIDP)</button>
+      <button class="abtn" onclick="setSerol('antimag','na')"   id="antimag-na">— N/A (no IgM paraprotein)</button>
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:14px;">Nodal-paranodal antibody testing (PICO 5)</div>
+  <div class="crit" id="nodal-item">
+    <div class="crit-main">
+      <div class="crit-name">Anti-NF155, anti-CNTN1, anti-Caspr1, anti-NF140/186 (cell-based assay + confirmatory ELISA)</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      <strong>Strongly consider testing when ANY of the following are present:</strong><br>
+      — Resistance to standard IVIg + corticosteroids<br>
+      — Acute/subacute aggressive onset; previous GBS or A-CIDP diagnosis<br>
+      — Low-frequency tremor, ataxia disproportionate to sensory involvement, other cerebellar features<br>
+      — Predominantly distal weakness<br>
+      — Respiratory failure + cranial nerve involvement<br>
+      — Associated nephrotic syndrome<br>
+      — Very high CSF protein<br><br>
+      <strong>Antibody-specific features:</strong> Anti-CNTN1 → acute/subacute onset, motor/ataxic, poor IVIg response. Anti-NF155 → younger onset, distal weakness, ataxia, tremor, poor IVIg response. Anti-Caspr1 → ataxia, neuropathic pain, cranial nerve involvement, poor IVIg response. Anti-NF140/186 → severe phenotype, especially IgG3 isotype.<br><br>
+      <strong>If positive → Autoimmune Nodopathy diagnosis (NOT CIDP).</strong> Rituximab may be effective (anecdotal evidence from independent cohorts), particularly for anti-NF155 and anti-CNTN1 IgG4 antibodies which target memory B cells/CD20+ short-lived plasma cells.
+      <div class="cnote">
+        <strong>Testing method:</strong> Cell-based assay using mammalian expression vectors encoding human NF155, CNTN1, NF186/NF140, and Caspr1. Avoid N-terminal tags; avoid GFP-tagged vectors for CNTN1. Confirm positive results with ELISA (human recombinant proteins) or teased-nerve immunohistochemistry. Apply confirmatory testing for low titre sera or dubious staining to avoid false positives.
+      </div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setSerol('nodal','neg')"  id="nodal-neg">✓ Negative — CIDP pathway continues</button>
+      <button class="abtn" onclick="setSerol('nodal','pos')"  id="nodal-pos">✗ Positive — Autoimmune Nodopathy (not CIDP)</button>
+      <button class="abtn" onclick="setSerol('nodal','nd')"   id="nodal-nd">— Not tested / not indicated</button>
+    </div>
+  </div>
+
+  <div id="a4" class="alrt"></div>
+  <div class="nav-row">
+    <button class="nbtn ns" onclick="go(3)">← Back</button>
+    <button class="nbtn np" onclick="go(5)">Next: Red Flags →</button>
+  </div>
+</div>
+</div>
+
+<!-- ══ SCREEN 5: RED FLAGS ══ -->
+<div class="screen" id="s5">
+<div class="card">
+  <div class="ctitle" style="color:var(--yellow);">Step 6 · Red Flags Against CIDP (Flowchart 2)</div>
+  <div class="csub">Red flags should prompt reconsideration and investigation of alternative diagnoses before confirming a CIDP diagnosis. Also document treatment plan — new FDA-approved therapies are available since the 2021 guideline.</div>
+
+  <div class="lbox">
+    <strong>Red flags that suggest a diagnosis other than CIDP (Flowchart 2, Van den Bergh et al. 2021):</strong> Any of the following should trigger consideration of alternative diagnoses from Tables 4 and 5. Multiple red flags make CIDP diagnosis substantially less likely.
+  </div>
+
+  <div class="slabel">Red flags — check all that are present</div>
+  <div class="redflag-grid">
+    <div class="redflag-item" id="rf0" onclick="toggleRF(0)">
+      <div class="rf-checkbox" id="rfc0">✕</div>
+      <div class="rf-content"><div class="rf-label">Family history of neuropathy</div>Suggests hereditary neuropathy (CMT1, CMTX1, CMT4, HNPP, ATTRv, etc.)</div>
+    </div>
+    <div class="redflag-item" id="rf1" onclick="toggleRF(1)">
+      <div class="rf-checkbox" id="rfc1">✕</div>
+      <div class="rf-content"><div class="rf-label">Subacute onset with low-frequency tremor or ataxia</div>Consider autoimmune nodopathy (anti-NF155, anti-CNTN1) or POEMS syndrome</div>
+    </div>
+    <div class="redflag-item" id="rf2" onclick="toggleRF(2)">
+      <div class="rf-checkbox" id="rfc2">✕</div>
+      <div class="rf-content"><div class="rf-label">Autonomic features / respiratory failure</div>Atypical for CIDP; consider GBS, ATTRv polyneuropathy, or vasculitic neuropathy</div>
+    </div>
+    <div class="redflag-item" id="rf3" onclick="toggleRF(3)">
+      <div class="rf-checkbox" id="rfc3">✕</div>
+      <div class="rf-content"><div class="rf-label">Prominent asymmetry with distal-predominant weakness</div>Consider MMN (upper limb) or hereditary motor neuropathy</div>
+    </div>
+    <div class="redflag-item" id="rf4" onclick="toggleRF(4)">
+      <div class="rf-checkbox" id="rfc4">✕</div>
+      <div class="rf-content"><div class="rf-label">IgM paraprotein + IgA/IgG paraprotein with organomegaly/skin changes</div>Anti-MAG neuropathy or POEMS syndrome; both are outside CIDP scope</div>
+    </div>
+    <div class="redflag-item" id="rf5" onclick="toggleRF(5)">
+      <div class="rf-checkbox" id="rfc5">✕</div>
+      <div class="rf-content"><div class="rf-label">No response to any of three proven first-line treatments</div>Consider misdiagnosis — investigate for alternative diagnoses (Table 4) before second-line immunosuppression</div>
+    </div>
+    <div class="redflag-item" id="rf6" onclick="toggleRF(6)">
+      <div class="rf-checkbox" id="rfc6">✕</div>
+      <div class="rf-content"><div class="rf-label">Prominent pain or known diabetes / systemic disease</div>Consider diabetic radiculoplexopathy, vasculitic neuropathy, AL-amyloidosis</div>
+    </div>
+    <div class="redflag-item" id="rf7" onclick="toggleRF(7)">
+      <div class="rf-checkbox" id="rfc7">✕</div>
+      <div class="rf-content"><div class="rf-label">Motor neurone disease features or bulbar involvement</div>Dysphagia/dysarthria/fasciculations — consider MND, hereditary motor neuropathy</div>
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:14px;">Treatment plan (first-line) <span class="pill pill-a">CLINICAL MANAGEMENT</span></div>
+  <div class="crit" id="treatment-item">
+    <div class="crit-main">
+      <div class="crit-name">Intended first-line induction treatment</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      <strong>Strong recommendations (Van den Bergh et al. 2021):</strong><br>
+      — IVIg or corticosteroids: strongly recommended (IVIg induction: 2 g/kg over 2–5 days; ICE trial showed 94% response to 2 g/kg induction + two 1 g/kg treatments at 3-week intervals, n=117 treated)<br>
+      — Plasma exchange: strongly recommended if IVIg and corticosteroids ineffective (moderate certainty evidence, 2 trials, 59 participants: twice-weekly PE vs. sham)<br>
+      — SCIg: strongly recommended for maintenance (PATH trial: high certainty evidence, n=172)<br>
+      — IVIg weakly preferred over PE for ease of administration<br>
+      — Motor CIDP: IVIg should be considered as initial treatment (corticosteroids may worsen motor CIDP)<br><br>
+      <strong>FDA-approved novel therapy (June 2024):</strong> Efgartigimod alfa + hyaluronidase-qvfc (Vyvgart Hytrulo; Argenx) — first FcRn blocker approved for CIDP. Mechanism: reduces circulating IgG including pathogenic autoantibodies by blocking neonatal Fc receptor recycling. Dose: 1000 mg SC weekly. ADHERE trial (n=322): 66.5% of patients responded in open-label Stage A; in randomised Stage B, efgartigimod reduced relapse risk by 61% vs. placebo (HR 0.39; 95% CI 0.25–0.61; p=0.000039). 99% of eligible patients enrolled in open-label extension. First novel mechanism in CIDP in 30 years. Also EMA-approved.
+      <div class="prose-note">
+        <strong>Treatments to avoid:</strong> Interferon beta-1a (2 RCTs, n=87: no benefit, possible serious adverse events — strongly recommended against). Fingolimod (1 RCT, n=106: no benefit, moderate certainty — weakly recommended against). MS disease-modifying therapies are generally ineffective in CIDP. Methotrexate (1 RCT, n=60: primary endpoint not met — weakly recommended against).
+      </div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setTreat('ivig')"   id="treat-ivig">IVIg (first-line)</button>
+      <button class="abtn" onclick="setTreat('cs')"     id="treat-cs">Corticosteroids (first-line)</button>
+      <button class="abtn" onclick="setTreat('pe')"     id="treat-pe">Plasma exchange (if IVIg/CS failed)</button>
+      <button class="abtn" onclick="setTreat('efgart')" id="treat-efgart">Efgartigimod (FcRn blocker — FDA-approved 2024)</button>
+      <button class="abtn" onclick="setTreat('nd')"     id="treat-nd">— Not yet determined / deferred</button>
+    </div>
+  </div>
+
+  <div id="a5" class="alrt"></div>
+  <div class="nav-row">
+    <button class="nbtn ns" onclick="go(4)">← Back</button>
+    <button class="nbtn np" onclick="go(6)">Generate Verdict →</button>
+  </div>
+</div>
+</div>
+
+<!-- ══ SCREEN 6: VERDICT ══ -->
+<div class="screen" id="s6">
+  <div id="vout"></div>
+  <div class="doc-header">
+    <button class="doc-tog" onclick="toggleDoc()">▼ Documentation Note</button>
+    <button class="copy-btn" id="copy-btn" onclick="copyDoc()">⎘ Copy</button>
+  </div>
+  <div class="doc-body" id="dn"></div>
+  <div class="nav-row">
+    <button class="nbtn ns" onclick="go(5)">← Back</button>
+    <button class="nbtn np" onclick="resetAll()">↺ New Evaluation</button>
+  </div>
+</div>
+
+</div><!-- /app -->
+<script>
+const S = {
+  ctx: null,
+  clin: { time: null, weakness: null, reflexes: null },
+  edx:  { motor: null, sensory: null },
+  sup:  { treatment: null, us: null, mri: null, csf: null, biopsy: null },
+  serol: { mgus: null, antimag: null, nodal: null },
+  rf: [false,false,false,false,false,false,false,false],
+  treatment: null
+};
+let cur = 0;
+
+function setCtx(v) {
+  S.ctx = v;
+  ['typical','distal','multifocal','focal','motor','sensory'].forEach(x=>{
+    const b=document.getElementById('ctx-'+x);if(b)b.classList.remove('ay','an','ap','aw','ab','aa');
+  });
+  const b=document.getElementById('ctx-'+v);if(b)b.classList.add('ay');
+  const item=document.getElementById('ctx-item');
+  if(item){item.className='crit c-yes';}
+  const n0=document.getElementById('n0');if(n0)n0.disabled=false;
+  const a0=document.getElementById('a0');
+  const labels={typical:'Typical CIDP',distal:'Distal CIDP (DADS)',multifocal:'Multifocal CIDP (Lewis-Sumner)',focal:'Focal CIDP',motor:'Motor CIDP',sensory:'Sensory CIDP'};
+  if(a0){
+    a0.className='alrt show ayel';
+    let msg = `✓ Phenotype selected: ${labels[v]}. `;
+    if(v==='motor') msg+='Remember: IVIg is preferred over corticosteroids as first-line in motor CIDP — corticosteroids may cause deterioration.';
+    else if(v==='sensory') msg+='Sensory CIDP cannot exceed "possible" diagnosis based on clinical/electrophysiological criteria alone — supportive criteria are essential.';
+    else if(v==='distal') msg+='Check for IgM paraprotein and anti-MAG antibodies. ~2/3 of distal CIDP patients have IgM paraproteinaemia.';
+    a0.textContent=msg;
+  }
+}
+
+function setClin(k,v){
+  S.clin[k]=v;
+  ['yes','no','part','acuteonset'].forEach(x=>{const b=document.getElementById('clin-'+k+'-'+x);if(b)b.classList.remove('ay','an','ap','aw','ab','aa');});
+  const map={yes:'ay',no:'an',part:'aw',acuteonset:'aw'};
+  const b=document.getElementById('clin-'+k+'-'+v);if(b)b.classList.add(map[v]||'aa');
+  const item=document.getElementById(k+'-item')||document.getElementById(k+'es-item');
+  const lookup={'time':'timecourse','weakness':'weakness','reflexes':'reflexes'};
+  const el=document.getElementById(lookup[k]+'-item');
+  if(el){el.className='crit';if(['yes','acuteonset'].includes(v))el.classList.add('c-yes');else if(v==='no')el.classList.add('c-no');else el.classList.add('c-part');}
+}
+
+function setEdx(k,v){
+  S.edx[k]=v;
+  ['cidp','possible','normal','none','sural_sp'].forEach(x=>{const b=document.getElementById('edx-'+k+'-'+x);if(b)b.classList.remove('ay','an','ap','aw','ab','aa');});
+  const map={cidp:'ay',possible:'aw',normal:'ab',none:'an',sural_sp:'aw'};
+  const b=document.getElementById('edx-'+k+'-'+v);if(b)b.classList.add(map[v]||'aa');
+  const el=document.getElementById(k+'-item');
+  if(el){el.className='crit';if(v==='cidp'||v==='sural_sp')el.classList.add('c-yes');else if(v==='none')el.classList.add('c-no');else if(v==='normal')el.classList.add('c-blue');else el.classList.add('c-part');}
+  updateEdxAlert();
+}
+
+function updateEdxAlert(){
+  const a2=document.getElementById('a2');if(!a2)return;
+  a2.className='alrt';
+  const m=S.edx.motor, s=S.edx.sensory;
+  if(m==='cidp'&&s==='cidp'){a2.classList.add('show','aok');a2.textContent='✓ Full CIDP-level electrodiagnostic support: motor criteria in ≥2 nerves + sensory abnormalities in ≥2 nerves. No supportive criteria are required for diagnosis (though clinical criteria must also be met).';}
+  else if((m==='possible'||m==='cidp')&&(s==='cidp'||s==='sural_sp')){a2.classList.add('show','awn');a2.textContent='⚠ Possible CIDP-level electrodiagnostic support. ≥2 supportive criteria are required to upgrade to a CIDP diagnosis.';}
+  else if(m==='normal'&&S.ctx==='sensory'){a2.classList.add('show','ainf');a2.textContent='ⓘ Sensory CIDP pathway: normal motor NCS in ≥4 nerves confirmed. Sensory conduction criteria required. Cannot exceed possible diagnosis by EDx alone — supportive criteria essential.';}
+  else if(m==='none'&&!s){a2.classList.add('show','aerr');a2.textContent='✗ No motor demyelination criteria met. Consider if clinical criteria are truly met and whether more extensive testing (contralateral nerves, proximal stimulation) has been performed.';}
+}
+
+function setSup(k,v){
+  S.sup[k]=v;
+  ['yes','no','nd','subjective'].forEach(x=>{const b=document.getElementById('sup-'+k+'-'+x);if(b)b.classList.remove('ay','an','ap','aw','ab','aa');});
+  const map={yes:'ay',no:'an',nd:'aa',subjective:'aw'};
+  const b=document.getElementById('sup-'+k+'-'+v);if(b)b.classList.add(map[v]||'aa');
+  const el=document.getElementById('sup-'+k+'-item');
+  if(el){el.className='crit';if(v==='yes')el.classList.add('c-yes');else if(v==='no')el.classList.add('c-no');else if(v==='subjective')el.classList.add('c-part');else el.classList.add('c-abs');}
+  updateSupAlert();
+}
+
+function updateSupAlert(){
+  const a3=document.getElementById('a3');if(!a3)return;
+  a3.className='alrt';
+  const count=Object.values(S.sup).filter(v=>v==='yes').length;
+  const needsUpgrade = S.edx.motor==='possible'||S.ctx==='sensory';
+  if(needsUpgrade){
+    if(count>=2){a3.classList.add('show','aok');a3.textContent=`✓ ${count} supportive criterion/criteria confirmed. Requirement of ≥2 to upgrade possible CIDP → CIDP is met.`;}
+    else{a3.classList.add('show','awn');a3.textContent=`⚠ ${count}/2 supportive criteria confirmed. ${2-count} more required to upgrade possible CIDP to CIDP.`;}
+  }
+}
+
+function setSerol(k,v){
+  S.serol[k]=v;
+  ['none','igg_iga','igm','other','nd','neg','high','na','pos'].forEach(x=>{const b=document.getElementById(k+'-'+x);if(b)b.classList.remove('ay','an','ap','aw','ab','aa');});
+  const map={none:'ay',igg_iga:'aw',igm:'aw',other:'an',nd:'aa',neg:'ay',high:'an',na:'aa',pos:'an'};
+  const b=document.getElementById(k+'-'+v);if(b)b.classList.add(map[v]||'aa');
+  const el=document.getElementById(k+'-item');
+  if(el){el.className='crit';
+    if(['none','neg'].includes(v))el.classList.add('c-yes');
+    else if(['other','high','pos'].includes(v))el.classList.add('c-no');
+    else if(['igg_iga','igm'].includes(v))el.classList.add('c-part');
+    else el.classList.add('c-abs');
+  }
+  const a4=document.getElementById('a4');
+  if(a4){a4.className='alrt';
+    if(v==='high'){a4.classList.add('show','aerr');a4.textContent='✗ High-titre anti-MAG antibodies (>7000 BTU): anti-MAG neuropathy is outside the scope of CIDP. Most patients do not respond to IVIg or corticosteroids. Do not diagnose as CIDP.';}
+    else if(v==='pos'){a4.classList.add('show','aerr');a4.textContent='✗ Positive nodal-paranodal antibody: this patient has Autoimmune Nodopathy — a distinct disease from CIDP. Standard CIDP treatments (especially IVIg) have poor response. Consider rituximab. Do not diagnose as CIDP.';}
+    else if(v==='other'){a4.classList.add('show','aerr');a4.textContent='✗ POEMS syndrome, myeloma, or AL-amyloidosis features present: these are CIDP mimics requiring specialist haematology/oncology evaluation. Treatment differs substantially from CIDP.';}
+    else if(v==='igm'){a4.classList.add('show','awn');a4.textContent='⚠ IgM paraprotein detected: anti-MAG antibody testing is mandatory. If anti-MAG titre >7000 BTU, this is anti-MAG neuropathy (not CIDP). Haematology-oncology consultation strongly recommended.';}
+  }
+}
+
+function setTreat(v){
+  S.treatment=v;
+  ['ivig','cs','pe','efgart','nd'].forEach(x=>{const b=document.getElementById('treat-'+x);if(b)b.classList.remove('ay','an','ap','aw','ab','aa');});
+  const map={ivig:'ay',cs:'ay',pe:'aw',efgart:'ab',nd:'aa'};
+  const b=document.getElementById('treat-'+v);if(b)b.classList.add(map[v]||'aa');
+  const el=document.getElementById('treatment-item');
+  if(el){el.className='crit';if(['ivig','cs'].includes(v))el.classList.add('c-yes');else if(v==='pe')el.classList.add('c-part');else if(v==='efgart')el.classList.add('c-blue');else el.classList.add('c-abs');}
+}
+
+function toggleRF(i){
+  S.rf[i]=!S.rf[i];
+  const el=document.getElementById('rf'+i);
+  if(el){el.classList.remove('rf-checked');if(S.rf[i])el.classList.add('rf-checked');}
+}
+
+function rfCount(){return S.rf.filter(Boolean).length;}
+
+function supCount(){return Object.values(S.sup).filter(v=>v==='yes').length;}
+
+function clinMet(){
+  const t=S.clin.time;
+  return (t==='yes'||t==='acuteonset') && S.clin.weakness==='yes' && (S.clin.reflexes==='yes'||S.clin.reflexes==='part');
+}
+
+function rv(){
+  const rfs=rfCount(); const sups=supCount();
+  const motor=S.edx.motor; const sensory=S.edx.sensory;
+  const clin=clinMet();
+  const nodalPos = S.serol.nodal==='pos';
+  const antiMagHigh = S.serol.antimag==='high';
+  const myeloma = S.serol.mgus==='other';
+  let verdict, vClass, vDesc;
+
+  const edxCIDP = (motor==='cidp' && (sensory==='cidp'||sensory==='sural_sp'));
+  const edxPossible = ((motor==='possible'||motor==='cidp') && (sensory==='cidp'||sensory==='sural_sp')) && !edxCIDP;
+  const sensoryPath = (S.ctx==='sensory' && motor==='normal' && (sensory==='cidp'||sensory==='sural_sp'));
+
+  const canUpgrade = (edxPossible||sensoryPath) && sups>=2;
+
+  if(nodalPos){
+    verdict='Autoimmune Nodopathy — NOT CIDP'; vClass='vneg';
+    vDesc='Positive nodal-paranodal antibody (anti-NF155, anti-CNTN1, anti-Caspr1, or anti-NF140/186) defines a diagnosis of Autoimmune Nodopathy — a distinct disease from CIDP per the 2021 EAN/PNS guideline. These patients have distinct clinical features, no overt inflammation or macrophage-mediated demyelination, and poor response to IVIg. Rituximab may be effective, particularly for IgG4 antibody subtypes.';
+  } else if(antiMagHigh){
+    verdict='Anti-MAG Neuropathy — Outside CIDP Scope'; vClass='vneg';
+    vDesc='High-titre anti-MAG antibodies (>7000 BTU) with IgM paraprotein defines anti-MAG neuropathy, which is outside the scope of CIDP. Most patients do not respond to IVIg or corticosteroids and have specific electrodiagnostic and pathological findings. Haematology-oncology consultation is required.';
+  } else if(myeloma){
+    verdict='CIDP Mimic — Specialist Investigation Required'; vClass='vneg';
+    vDesc='Features of myeloma, AL-amyloidosis, or POEMS syndrome are present. These are CIDP mimics that require haematology-oncology evaluation. Treatment differs substantially from idiopathic CIDP. Do not initiate standard CIDP immunotherapy without appropriate haematological work-up.';
+  } else if(!clin){
+    verdict='Clinical Criteria Not Met'; vClass='vneg';
+    vDesc='The mandatory clinical criteria for CIDP or CIDP variants are not fulfilled. Ensure the time course (≥8 weeks), weakness pattern, and tendon reflex findings are consistent with the selected phenotype. Re-evaluate the clinical presentation and consider alternative diagnoses.';
+  } else if(rfs>=3){
+    verdict='Multiple Red Flags — Alternative Diagnosis Likely'; vClass='vcaution';
+    vDesc=`${rfs}/8 red flags are present. Although some clinical and electrodiagnostic features may be present, multiple red flags substantially reduce the probability of CIDP. Investigate for alternative diagnoses (Table 4 of the 2021 EAN/PNS guideline) before committing to a CIDP diagnosis or initiating immunotherapy.`;
+  } else if(clin && edxCIDP){
+    verdict='CIDP Criteria Met — Full Electrodiagnostic Support';
+    vClass='vpos';
+    vDesc=`Clinical criteria are met (${S.ctx} phenotype) and motor demyelination criteria are fulfilled in ≥2 nerves with sensory conduction abnormalities in ≥2 nerves. No supportive criteria are required. ${rfs>0?rfs+' red flag(s) present — review carefully.':'No red flags identified.'} Diagnostic certainty: CIDP (2021 EAN/PNS classification).`;
+  } else if(clin && canUpgrade){
+    verdict='CIDP Criteria Met — Upgraded by Supportive Criteria';
+    vClass='vpos';
+    vDesc=`Possible CIDP-level electrodiagnostic support, upgraded to CIDP by ${sups} supportive criterion/criteria (≥2 required). Clinical criteria for ${S.ctx} phenotype are met. ${rfs>0?rfs+' red flag(s) present — review carefully.':'No red flags identified.'}`;
+  } else if(clin && (edxPossible||sensoryPath)){
+    verdict='Possible CIDP — Insufficient Supportive Criteria';
+    vClass='vund';
+    vDesc=`Clinical criteria are met for ${S.ctx} phenotype and electrodiagnostic criteria allow possible CIDP, but only ${sups}/2 required supportive criteria are confirmed. Obtain additional supportive data (treatment response, ultrasound, MRI, CSF protein, nerve biopsy) to attempt upgrade to CIDP diagnosis.`;
+  } else if(clin && motor==='none'){
+    verdict='Possible CIDP — Electrodiagnostic Criteria Not Met';
+    vClass='vund';
+    vDesc=`Clinical criteria are met but minimal electrodiagnostic criteria are not fulfilled. Consider: (1) more extensive NCS protocol (contralateral nerves, proximal stimulation); (2) repeat NCS at a later date; (3) if clinically strongly suspected, a treatment trial with IVIg/corticosteroids/PE + one additional supportive criterion may allow a possible CIDP diagnosis.`;
+  } else {
+    verdict='Insufficient Data — Complete All Steps';
+    vClass='vund';
+    vDesc='Not all evaluation steps have been completed. Review each step and ensure all relevant data have been entered to generate a complete assessment.';
+  }
+
+  const ctxLabel={typical:'Typical',distal:'Distal (DADS)',multifocal:'Multifocal (Lewis-Sumner)',focal:'Focal',motor:'Motor',sensory:'Sensory'};
+  const treatLabel={ivig:'IVIg (first-line)',cs:'Corticosteroids (first-line)',pe:'Plasma exchange',efgart:'Efgartigimod alfa + hyaluronidase (FcRn blocker, FDA-approved June 2024)',nd:'Not yet determined'};
+  const rfNames=['Family history of neuropathy','Subacute onset with tremor or ataxia','Autonomic features/respiratory failure','Prominent asymmetry + distal-predominant weakness','IgM/IgA/IgG paraprotein + organomegaly or skin changes','No response to any first-line treatment','Prominent pain or systemic disease features','Motor neurone disease or bulbar involvement'];
+  const presentRF=S.rf.map((v,i)=>v?rfNames[i]:null).filter(Boolean);
+  const presentSup=Object.entries(S.sup).filter(([k,v])=>v==='yes').map(([k])=>({treatment:'Treatment response',us:'Ultrasound (≥2 sites)',mri:'MRI nerve roots',csf:'CSF protein elevation',biopsy:'Nerve biopsy'}[k]||k));
+
+  let html=`<div class="vban ${vClass}"><div class="vban-head"><div class="vlbl">2021 EAN/PNS GUIDELINE — CIDP DIAGNOSTIC ASSESSMENT</div><div class="vtitle">${verdict}</div><div class="vdesc">${vDesc}</div></div></div>`;
+
+  html+=`<div class="sum-grid">`;
+  html+=`<div class="sblock"><div class="sbtitle">Diagnostic Summary</div>`;
+  html+=`<div class="srow"><div class="dot ${S.ctx?'dy':'dgr'}"></div><div class="sname">Phenotype</div><div class="stag ${S.ctx?'ty':'tgr'}">${ctxLabel[S.ctx]||'—'}</div></div>`;
+  html+=`<div class="srow"><div class="dot ${clin?'dg':'dr'}"></div><div class="sname">Clinical criteria</div><div class="stag ${clin?'tg':'tr'}">${clin?'Met':'Not met'}</div></div>`;
+  const edxDot=edxCIDP?'dg':edxPossible||sensoryPath?'da':'dr';
+  const edxTag=edxCIDP?'tg':edxPossible||sensoryPath?'ta':'tr';
+  const edxTxt=edxCIDP?'CIDP-level':edxPossible?'Possible CIDP':sensoryPath?'Sensory path':'Not met';
+  html+=`<div class="srow"><div class="dot ${edxDot}"></div><div class="sname">Electrodiagnostic criteria</div><div class="stag ${edxTag}">${edxTxt}</div></div>`;
+  html+=`<div class="srow"><div class="dot ${sups>=2?'dg':sups>=1?'da':'dgr'}"></div><div class="sname">Supportive criteria</div><div class="stag ${sups>=2?'tg':sups>=1?'ta':'tgr'}">${sups}/5 present</div></div>`;
+  html+=`<div class="srow"><div class="dot ${S.serol.nodal==='neg'?'dg':S.serol.nodal==='pos'?'dr':'dgr'}"></div><div class="sname">Nodal antibodies</div><div class="stag ${S.serol.nodal==='neg'?'tg':S.serol.nodal==='pos'?'tr':'tgr'}">${S.serol.nodal==='neg'?'Negative':S.serol.nodal==='pos'?'POSITIVE (nodopathy)':S.serol.nodal==='nd'?'Not tested':'—'}</div></div>`;
+  html+=`<div class="srow"><div class="dot ${rfs===0?'dg':rfs<=2?'da':'dr'}"></div><div class="sname">Red flags</div><div class="stag ${rfs===0?'tg':rfs<=2?'ta':'tr'}">${rfs}/8 present</div></div>`;
+  html+=`</div>`;
+
+  html+=`<div class="sblock"><div class="sbtitle">Clinical &amp; Treatment Profile</div>`;
+  html+=`<div class="srow"><div class="dot ${S.clin.time?'dg':'dgr'}"></div><div class="sname">Time course</div><div class="stag ${S.clin.time?'tg':'tgr'}">${S.clin.time==='yes'?'≥8 weeks':S.clin.time==='acuteonset'?'A-CIDP':S.clin.time==='no'?'<8 weeks':'—'}</div></div>`;
+  html+=`<div class="srow"><div class="dot ${S.edx.motor?'dy':'dgr'}"></div><div class="sname">Motor NCS</div><div class="stag ${S.edx.motor?'ty':'tgr'}">${S.edx.motor||'—'}</div></div>`;
+  html+=`<div class="srow"><div class="dot ${S.edx.sensory?'dy':'dgr'}"></div><div class="sname">Sensory NCS</div><div class="stag ${S.edx.sensory?'ty':'tgr'}">${S.edx.sensory||'—'}</div></div>`;
+  html+=`<div class="srow"><div class="dot ${presentSup.length?'dg':'dgr'}"></div><div class="sname">Supportive criteria met</div><div class="stag ${presentSup.length?'tg':'tgr'}" style="white-space:normal;line-height:1.3;font-size:9px;">${presentSup.length?presentSup.join(', '):'None'}</div></div>`;
+  html+=`<div class="srow"><div class="dot ${S.treatment?'dy':'dgr'}"></div><div class="sname">Planned treatment</div><div class="stag ${S.treatment?'ty':'tgr'}" style="white-space:normal;line-height:1.3;font-size:9px;">${treatLabel[S.treatment]||'—'}</div></div>`;
+  if(presentRF.length>0){html+=`<div class="srow"><div class="dot dr"></div><div class="sname">Red flags present</div><div class="stag tr" style="white-space:normal;line-height:1.3;font-size:9px;">${presentRF.join('; ')}</div></div>`;}
+  html+=`</div></div>`;
+
+  if(vClass==='vpos'){
+    html+=`<div class="lbox" style="border-color:var(--yellow-bd);">
+      <strong style="color:var(--yellow);">Treatment Summary (2021 EAN/PNS + FDA 2024 update):</strong><br>
+      <span class="ly">Induction (strong recommendations):</span> IVIg 2 g/kg over 2–5 days (ICE trial: 94% response rate, n=117) OR corticosteroids (prednisone 60 mg/day tapered over 6–8 months; or pulsed dexamethasone 40 mg ×4 days/month). Plasma exchange if IVIg/corticosteroids ineffective (2 RCTs, n=59: twice-weekly PE significantly improved disability vs. sham).<br>
+      <span class="ly">Maintenance:</span> IVIg (most commonly 1 g/kg every 3 weeks, adjusted individually 0.4–1 g/kg every 2–6 weeks) or SCIg (PATH trial, n=172: high-certainty evidence). Pulsed corticosteroids may achieve higher remission rates.<br>
+      <span class="ly">FDA-approved 2024:</span> Efgartigimod alfa + hyaluronidase (Vyvgart Hytrulo) — 1000 mg SC weekly. ADHERE trial: 66.5% responded in Stage A; 61% relative reduction in relapse risk vs. placebo (HR 0.39, p=0.000039, n=221 randomised). First novel mechanism in 30 years.<br>
+      <span class="lr">Avoid:</span> Interferon beta-1a (2 RCTs: no benefit, possible serious adverse events). Fingolimod (1 RCT, n=106: no benefit). MS DMTs generally ineffective in CIDP.${S.ctx==='motor'?'<br><span class="lr">Motor CIDP:</span> Avoid corticosteroids as first-line — may cause deterioration. Use IVIg.':''}
+    </div>`;
+  }
+
+  document.getElementById('vout').innerHTML=html;
+  buildDoc(verdict, vClass, ctxLabel, treatLabel, rfNames, presentRF, presentSup, edxTxt, sups);
+}
+
+function buildDoc(verdict, vClass, ctxLabel, treatLabel, rfNames, presentRF, presentSup, edxTxt, sups){
+  const timeMap={yes:'≥8 weeks (or relapsing-remitting)',acuteonset:'Acute onset <4 weeks, continuing to worsen or relapsing (A-CIDP)',no:'<8 weeks — does not meet time criterion'};
+  const motorMap={cidp:'≥2 nerves meeting demyelination criteria (CIDP-level)',possible:'1 nerve meeting criteria (possible CIDP-level)',normal:'Normal (sensory CIDP pathway)',none:'No criteria met'};
+  const sensoryMap={cidp:'Abnormal in ≥2 nerves',sural_sp:'Sural sparing pattern (abnormal median/radial, normal sural)',normal:'Normal'};
+  const mgusMap={none:'No monoclonal protein detected',igg_iga:'IgG/IgA paraprotein (MGUS — may behave like CIDP)',igm:'IgM paraprotein — anti-MAG testing indicated',other:'Myeloma/AL-amyloid/POEMS features present — specialist referral required',nd:'Not tested'};
+  const antimagMap={neg:'Negative / low titre (<7000 BTU)',high:'HIGH TITRE (>7000 BTU) — anti-MAG neuropathy, outside CIDP scope',na:'Not applicable (no IgM paraprotein)'};
+  const nodalMap={neg:'Negative',pos:'POSITIVE — Autoimmune Nodopathy diagnosed (not CIDP)',nd:'Not tested / not indicated'};
+
+  let note=`NEUROMUSCULAR CONSULTATION
+2021 EAN/PNS Guideline on Diagnosis and Treatment of CIDP — Second Revision
+Van den Bergh PYK et al. Eur J Neurol. 2021;28:3556–3583
+Date: ${new Date().toLocaleDateString()}
+
+DIAGNOSTIC ASSESSMENT
+  Overall conclusion: ${verdict}
+
+CLINICAL CRITERIA (Table 1)
+  CIDP phenotype: ${ctxLabel[S.ctx]||'Not selected'}
+  Time course: ${timeMap[S.clin.time]||'Not assessed'}
+  Weakness pattern: ${S.clin.weakness==='yes'?'Consistent with selected phenotype':S.clin.weakness==='no'?'Not consistent':'Not assessed'}
+  Tendon reflexes: ${S.clin.reflexes==='yes'?'Absent/reduced in all affected limbs':S.clin.reflexes==='part'?'Reduced in some but not all limbs':S.clin.reflexes==='no'?'Normal throughout — clinically atypical':'Not assessed'}
+  Clinical criteria met: ${clinMet()?'YES':'NO'}
+
+ELECTRODIAGNOSTIC CRITERIA (Tables 2 & 3, PICO 1)
+  Motor NCS: ${motorMap[S.edx.motor]||'Not assessed'}
+  Sensory NCS: ${sensoryMap[S.edx.sensory]||'Not assessed'}
+  Electrodiagnostic level: ${edxTxt}
+  Note: 2021 criteria reduced certainty levels from 3 (definite/probable/possible) to 2 (CIDP/possible CIDP); sensitivity 77–83%, specificity 94–98% in validation cohorts
+
+SUPPORTIVE CRITERIA (PICOs 2–4, 6)
+  Supportive criteria confirmed: ${sups}/5 (≥2 required to upgrade possible CIDP → CIDP)
+  Present: ${presentSup.length?presentSup.join(', '):'None'}
+  Treatment response (PICO 2): ${S.sup.treatment==='yes'?'Objective improvement (disability + impairment scale)':S.sup.treatment==='subjective'?'Subjective only':S.sup.treatment==='no'?'No improvement/not yet treated':'Not assessed'}
+  Nerve ultrasound (PICO 3): ${S.sup.us==='yes'?'Enlargement at ≥2 proximal sites':S.sup.us==='no'?'Normal/not performed':S.sup.us==='nd'?'Not applicable (paediatric)':'Not assessed'}
+  MRI nerve roots (PICO 3): ${S.sup.mri==='yes'?'T2 signal increase / enlargement (validated criteria)':S.sup.mri==='no'?'Normal/not performed':S.sup.mri==='nd'?'Not applicable (paediatric)':'Not assessed'}
+  CSF protein (PICO 4): ${S.sup.csf==='yes'?'Elevated (>0.45 g/L <50 yr; >0.6 g/L >50 yr)':S.sup.csf==='no'?'Normal/not performed':'Not assessed'}
+  Nerve biopsy (PICO 6): ${S.sup.biopsy==='yes'?'Supportive pathological features present':S.sup.biopsy==='no'?'Non-supportive/not performed':'Not assessed'}
+
+SEROLOGICAL TESTING (PICOs 5 & 7)
+  Monoclonal protein screen (PICO 7): ${mgusMap[S.serol.mgus]||'Not assessed'}
+  Anti-MAG antibodies: ${antimagMap[S.serol.antimag]||'Not assessed'}
+  Nodal-paranodal antibodies (PICO 5): ${nodalMap[S.serol.nodal]||'Not assessed'}
+
+RED FLAGS AGAINST CIDP (Flowchart 2)
+  Count: ${rfCount()}/8
+  Present: ${presentRF.length?presentRF.join('; '):'None'}
+
+TREATMENT PLAN
+  First-line treatment: ${treatLabel[S.treatment]||'Not determined'}
+
+TREATMENT EVIDENCE SUMMARY (2021 EAN/PNS + 2024 FDA approval)
+  IVIg induction: High certainty (5 RCTs, n=269); ICE trial 94% responders (n=117)
+  Corticosteroids: Low-very low certainty RCT data, but strong observational/clinical experience
+  Plasma exchange: Moderate certainty (2 RCTs, n=59); strongly recommended if IVIg/CS fail
+  SCIg maintenance: High certainty (PATH trial, n=172); no preference vs. IVIg for maintenance
+  Efgartigimod PH20 (FDA June 2024): Phase 3 ADHERE (n=322); 66.5% response in Stage A;
+    61% reduced relapse risk vs. placebo (HR 0.39; 95% CI 0.25–0.61; p=0.000039) in Stage B
+    First FcRn blocker approved for CIDP; first novel mechanism in 30 years
+  Avoid: IFN-beta-1a (2 RCTs, strongly recommended against); Fingolimod (1 RCT, n=106, against)
+  Motor CIDP: Avoid corticosteroids — may cause deterioration; use IVIg as first-line
+
+Reference: Van den Bergh PYK, van Doorn PA, Hadden RDM, et al. European Academy of Neurology/Peripheral Nerve Society guideline on diagnosis and treatment of chronic inflammatory demyelinating polyradiculoneuropathy: Report of a joint Task Force—Second revision. Eur J Neurol. 2021;28:3556–3583.`;
+
+  document.getElementById('dn').textContent=note;
+}
+
+function goTab(n){if(n===cur)return;go(n);}
+
+function go(n){
+  document.getElementById('s'+cur).classList.remove('active');
+  document.getElementById('s'+n).classList.add('active');
+  for(let i=0;i<7;i++){const d=document.getElementById('st'+i);d.classList.remove('active','done');if(i<n)d.classList.add('done');else if(i===n)d.classList.add('active');}
+  cur=n;
+  document.getElementById('pf').style.width=((n/6)*100)+'%';
+  if(n===6)rv();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function xp(btn){
+  const d=btn.closest('.crit').querySelector('.crit-detail');if(!d)return;
+  const o=d.classList.toggle('open');
+  btn.textContent=o?'close ▴':'details ▾';
+}
+
+function toggleDoc(){
+  const body=document.getElementById('dn'),btn=document.getElementById('copy-btn'),tog=document.querySelector('.doc-tog');
+  if(!body)return;
+  const open=body.classList.toggle('open');
+  if(tog)tog.textContent=open?'▲ Documentation Note':'▼ Documentation Note';
+  if(btn)btn.classList.toggle('visible',open);
+}
+
+function copyDoc(){
+  const body=document.getElementById('dn'),btn=document.getElementById('copy-btn');
+  if(!body)return;
+  const text=body.textContent||body.innerText;
+  navigator.clipboard.writeText(text).then(()=>{if(btn){btn.textContent='✓ Copied';btn.classList.add('copied');setTimeout(()=>{btn.textContent='⎘ Copy';btn.classList.remove('copied');},2000);}})
+  .catch(()=>{const ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);if(btn){btn.textContent='✓ Copied';btn.classList.add('copied');setTimeout(()=>{btn.textContent='⎘ Copy';btn.classList.remove('copied');},2000);}});
+}
+
+function resetAll(){
+  S.ctx=null;S.treatment=null;
+  Object.keys(S.clin).forEach(k=>S.clin[k]=null);
+  Object.keys(S.edx).forEach(k=>S.edx[k]=null);
+  Object.keys(S.sup).forEach(k=>S.sup[k]=null);
+  Object.keys(S.serol).forEach(k=>S.serol[k]=null);
+  S.rf=[false,false,false,false,false,false,false,false];
+  document.querySelectorAll('.crit').forEach(el=>el.className='crit');
+  document.querySelectorAll('.abtn').forEach(b=>b.classList.remove('ay','an','ap','ab','aa','aw'));
+  document.querySelectorAll('.crit-detail').forEach(d=>d.classList.remove('open'));
+  document.querySelectorAll('.xbtn').forEach(b=>b.textContent='details ▾');
+  document.querySelectorAll('.redflag-item').forEach(el=>el.classList.remove('rf-checked'));
+  ['a0','a1','a2','a3','a4','a5'].forEach(id=>{const el=document.getElementById(id);if(el){el.className='alrt';el.textContent='';}});
+  const dn=document.getElementById('dn');if(dn)dn.classList.remove('open');
+  const cb=document.getElementById('copy-btn');if(cb)cb.classList.remove('visible','copied');
+  const tog=document.querySelector('.doc-tog');if(tog)tog.textContent='▼ Documentation Note';
+  const vout=document.getElementById('vout');if(vout)vout.innerHTML='';
+  go(0);
+  document.getElementById('n0').disabled=true;
+}
+
+document.getElementById('n0').disabled=true;
+</script>
+</body>
+</html>
