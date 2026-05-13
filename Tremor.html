@@ -1,0 +1,1037 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IPMDS Tremor Classification Navigator</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@300;400;500;600;700&family=Lexend:wght@300;400;500;600&display=swap');
+
+:root {
+  --bg:       #0d1117;
+  --card:     #161b22;
+  --card2:    #1c2330;
+  --border:   #3a4556;
+  --border2:  #4a5f7a;
+  --green:    #3fb950;
+  --green-bg: rgba(63,185,80,0.10);
+  --green-bd: rgba(63,185,80,0.35);
+  --red:      #f85149;
+  --red-bg:   rgba(248,81,73,0.10);
+  --red-bd:   rgba(248,81,73,0.35);
+  --amber:    #e3b341;
+  --amber-bg: rgba(227,179,65,0.10);
+  --amber-bd: rgba(227,179,65,0.35);
+  --blue:     #58a6ff;
+  --blue-bg:  rgba(88,166,255,0.10);
+  --blue-bd:  rgba(88,166,255,0.35);
+  --gold:     #f5c518;
+  --gold-bg:  rgba(245,197,24,0.10);
+  --gold-bd:  rgba(245,197,24,0.35);
+  --text:     #e6edf3;
+  --text2:    #aab4c0;
+  --text3:    #6e7f94;
+  --sans: 'Lexend', 'Inter', system-ui, sans-serif;
+  --mono: 'IBM Plex Mono', monospace;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg); color: var(--text); font-family: var(--sans); font-size: 14px; line-height: 1.5; min-height: 100vh; }
+.app { max-width: 900px; margin: 0 auto; padding: 0 20px 80px; }
+
+/* HEADER */
+header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.h-title { font-size: 19px; font-weight: 700; }
+.h-title span { color: var(--gold); }
+.h-sub { font-family: var(--sans); font-size: 11px; color: var(--text3); margin-top: 3px; line-height: 1.6; }
+.h-credit { font-family: var(--sans); font-size: 11px; color: var(--text3); margin-top: 2px; }
+.reset-btn { background: var(--card2); border: 1px solid var(--border); color: var(--text2); font-family: var(--sans); font-size: 12px; padding: 6px 14px; cursor: pointer; border-radius: 4px; transition: all 0.15s; white-space: nowrap; font-weight: 500; }
+.reset-btn:hover { border-color: var(--gold); color: var(--gold); }
+
+/* PROGRESS */
+.prog-track { height: 3px; background: var(--border); margin-bottom: 20px; border-radius: 2px; }
+.prog-fill { height: 100%; background: linear-gradient(90deg, var(--gold), #ffe066); border-radius: 2px; transition: width 0.4s ease; }
+
+/* STEP TABS */
+.steps { display: grid; grid-template-columns: repeat(6, 1fr); border: 1px solid var(--border); border-radius: 8px; margin-bottom: 20px; overflow: hidden; background: var(--card); }
+.stab { padding: 9px 4px 10px; text-align: center; font-family: var(--sans); font-size: 10px; color: var(--text3); border-right: 1px solid var(--border); transition: all 0.2s; cursor: pointer; background: var(--card); line-height: 1.3; }
+.stab:nth-child(6n) { border-right: none; }
+.stab .sn { display: flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 50%; background: var(--card2); border: 1px solid var(--border); font-size: 11px; font-weight: 700; margin: 0 auto 4px; transition: all 0.2s; }
+.stab .slbl { display: block; font-size: 9px; font-weight: 600; letter-spacing: 0; line-height: 1.3; }
+.stab.active { color: var(--gold); background: rgba(245,197,24,0.06); }
+.stab.active .sn { background: var(--gold); color: #0d1117; border-color: var(--gold); }
+.stab.done { color: var(--green); }
+.stab.done .sn { background: var(--green); color: #0d1117; border-color: var(--green); }
+.stab:hover:not(.active) { background: var(--card2); }
+
+/* CARD */
+.card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 22px; margin-bottom: 12px; }
+.ctitle { font-size: 13px; font-weight: 700; font-family: var(--sans); letter-spacing: 0; text-transform: none; margin-bottom: 3px; }
+.csub { font-size: 12px; color: var(--text2); margin-bottom: 16px; line-height: 1.45; }
+
+/* SECTION LABEL */
+.slabel { display: flex; align-items: center; gap: 8px; font-family: var(--sans); font-size: 11px; font-weight: 600; color: var(--text); letter-spacing: 0; text-transform: none; margin-bottom: 9px; padding-bottom: 6px; border-bottom: 1px solid var(--border); }
+.pill { font-size: 9px; padding: 1px 7px; border-radius: 20px; border: 1px solid; margin-left: auto; font-family: var(--sans); letter-spacing: 0.04em; text-transform: uppercase; }
+.pill-r { border-color: var(--red);   color: var(--red);   background: var(--red-bg); }
+.pill-a { border-color: var(--amber); color: var(--amber); background: var(--amber-bg); }
+.pill-g { border-color: var(--gold);  color: var(--gold);  background: var(--gold-bg); }
+
+/* CRITERION ROW */
+.crit { border: 1px solid var(--border); border-radius: 6px; margin-bottom: 5px; overflow: hidden; transition: border-color 0.15s, background 0.15s; }
+.crit.c-yes  { border-color: var(--green-bd); background: var(--green-bg); }
+.crit.c-no   { border-color: var(--red-bd);   background: var(--red-bg); }
+.crit.c-pres { border-color: var(--gold-bd);  background: var(--gold-bg); }
+.crit.c-abs  { border-color: var(--border2);  background: var(--card2); }
+
+.crit-main { display: flex; align-items: center; gap: 10px; padding: 10px 13px; }
+.crit-name { flex: 1; font-size: 13px; font-weight: 500; color: var(--text); line-height: 1.3; }
+.xbtn { background: var(--gold-bg); border: 1px solid var(--gold-bd); color: var(--gold); font-size: 11px; cursor: pointer; padding: 2px 8px; font-family: var(--sans); white-space: nowrap; transition: all 0.15s; flex-shrink: 0; border-radius: 3px; font-weight: 500; }
+.xbtn:hover { background: var(--gold); color: #0d1117; border-color: var(--gold); }
+
+.crit-detail { display: none; padding: 10px 13px 12px; font-size: 12px; color: var(--text); line-height: 1.65; border-top: 1px solid var(--border); }
+.crit-detail.open { display: block; }
+.cnote { margin-top: 8px; padding: 7px 10px; background: var(--card2); border-left: 3px solid var(--border2); font-family: var(--mono); font-size: 10px; color: var(--text2); line-height: 1.7; font-style: italic; border-radius: 0 3px 3px 0; }
+
+/* BUTTON ROW */
+.brow { display: flex; border-top: 1px solid var(--border); }
+.abtn { flex: 1; padding: 9px 10px; background: none; border: none; border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); color: var(--text2); font-family: var(--sans); font-size: 12px; cursor: pointer; transition: all 0.12s; text-transform: none; letter-spacing: 0; font-weight: 400; line-height: 1.4; text-align: left; }
+.abtn:last-child { border-right: none; }
+.abtn:hover { background: var(--card2); color: var(--text); }
+.abtn.ay { background: var(--green-bg); color: var(--green); font-weight: 700; }
+.abtn.an { background: var(--red-bg);   color: var(--red);   font-weight: 700; }
+.abtn.ap { background: var(--gold-bg);  color: var(--gold);  font-weight: 700; }
+.abtn.aa { background: var(--card2);    color: var(--text2); font-weight: 700; }
+
+/* TWO-COL */
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; }
+@media (max-width: 600px) { .two-col { grid-template-columns: 1fr; } }
+
+/* ALERT */
+.alrt { padding: 9px 13px; border-radius: 5px; font-size: 12px; line-height: 1.5; margin-top: 12px; border-left: 3px solid; display: none; }
+.alrt.show { display: block; }
+.aok   { border-color: var(--green); background: var(--green-bg); color: #7ee787; }
+.awn   { border-color: var(--amber); background: var(--amber-bg); color: var(--amber); }
+.aerr  { border-color: var(--red);   background: var(--red-bg);   color: #ff7b72; }
+.ainf  { border-color: var(--blue);  background: var(--blue-bg);  color: var(--blue); }
+
+/* LOGIC BOX */
+.lbox { background: var(--card2); border: 1px solid var(--border); border-radius: 5px; padding: 11px 15px; font-size: 12px; color: var(--text2); line-height: 1.7; margin-bottom: 16px; }
+.lbox strong { color: var(--text); }
+.lg { color: var(--green); font-weight: 600; }
+.la { color: var(--gold); font-weight: 600; }
+.lr { color: var(--red);   font-weight: 600; }
+
+/* TALLY */
+.tally { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+.chip { display: flex; align-items: center; gap: 5px; padding: 5px 12px; border-radius: 20px; font-family: var(--mono); font-size: 11px; border: 1px solid var(--border); background: var(--card2); color: var(--text2); }
+.chip .n { font-size: 15px; font-weight: 700; }
+.cg { border-color: var(--green-bd); background: var(--green-bg); color: var(--green); }
+.cr { border-color: var(--red-bd);   background: var(--red-bg);   color: var(--red); }
+.ca { border-color: var(--gold-bd);  background: var(--gold-bg);  color: var(--gold); }
+
+/* NAV */
+.nav-row { display: flex; justify-content: space-between; align-items: center; margin-top: 20px; gap: 10px; }
+.nbtn { padding: 9px 22px; border-radius: 5px; font-family: var(--sans); font-size: 13px; letter-spacing: 0; text-transform: none; border: 1px solid; cursor: pointer; font-weight: 600; transition: all 0.15s; }
+.np { background: var(--gold); border-color: var(--gold); color: #0d1117; }
+.np:hover { background: #ffe066; }
+.np:disabled { opacity: 0.3; cursor: not-allowed; }
+.ns { background: transparent; border-color: var(--border2); color: var(--text2); }
+.ns:hover { border-color: var(--text); color: var(--text); }
+
+/* SCREEN */
+.screen { display: none; }
+.screen.active { display: block; animation: fu 0.25s ease; }
+@keyframes fu { from { opacity:0; transform:translateY(5px); } to { opacity:1; transform:translateY(0); } }
+
+/* VERDICT */
+.vban { border-radius: 8px; padding: 22px 26px; margin-bottom: 16px; text-align: center; border: 2px solid; }
+.ve  { border-color: var(--green); background: var(--green-bg); }
+.vp  { border-color: var(--gold);  background: var(--gold-bg); }
+.vi  { border-color: var(--blue);  background: var(--blue-bg); }
+.vn  { border-color: var(--red);   background: var(--red-bg); }
+.vlbl { font-family: var(--mono); font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase; opacity: 0.6; margin-bottom: 5px; }
+.vtitle { font-size: 22px; font-weight: 700; margin-bottom: 7px; letter-spacing: -0.01em; }
+.ve .vtitle { color: var(--green); }
+.vp .vtitle { color: var(--gold); }
+.vi .vtitle { color: var(--blue); }
+.vn .vtitle { color: var(--red); }
+.vdesc { font-size: 12px; color: var(--text2); line-height: 1.7; max-width: 580px; margin: 0 auto; }
+
+/* SUMMARY */
+.sum-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+@media (max-width: 580px) { .sum-grid { grid-template-columns: 1fr; } }
+.sblock { background: var(--card); border: 1px solid var(--border); border-radius: 6px; overflow: hidden; }
+.sbtitle { font-family: var(--sans); font-size: 11px; font-weight: 600; letter-spacing: 0; text-transform: none; padding: 7px 11px; border-bottom: 1px solid var(--border); color: var(--text); background: var(--card2); }
+.srow { display: flex; align-items: center; gap: 8px; padding: 6px 11px; border-bottom: 1px solid var(--border); font-size: 12px; }
+.srow:last-child { border-bottom: none; }
+.dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+.dg { background: var(--green); } .dr { background: var(--red); } .dgr{ background: var(--text3); } .dy { background: var(--gold); }
+.sname { flex: 1; color: var(--text); }
+.stag { font-family: var(--mono); font-size: 9px; padding: 1px 7px; border-radius: 10px; border: 1px solid; }
+.tg  { border-color: var(--green-bd); color: var(--green); }
+.tr  { border-color: var(--red-bd);   color: var(--red); }
+.ty  { border-color: var(--gold-bd);  color: var(--gold); }
+.tgr { border-color: var(--border2);  color: var(--text3); }
+
+/* DOC NOTE */
+.doc-header { display: flex; align-items: center; gap: 8px; margin-bottom: 5px; }
+.doc-tog { flex: 1; text-align: left; background: var(--card2); border: 1px solid var(--border2); border-radius: 5px; color: var(--text2); font-family: var(--sans); font-size: 13px; padding: 8px 13px; cursor: pointer; transition: all 0.15s; }
+.doc-tog:hover { border-color: var(--gold); color: var(--gold); }
+.copy-btn { background: var(--card2); border: 1px solid var(--border2); border-radius: 5px; color: var(--text2); font-family: var(--sans); font-size: 12px; padding: 8px 14px; cursor: pointer; white-space: nowrap; transition: all 0.15s; display: none; }
+.copy-btn.visible { display: block; }
+.copy-btn:hover { border-color: var(--green); color: var(--green); }
+.copy-btn.copied { border-color: var(--green); color: var(--green); background: var(--green-bg); }
+.doc-body { display: none; background: var(--card2); border: 1px solid var(--border2); border-radius: 5px; padding: 13px 15px; font-family: var(--mono); font-size: 11px; color: var(--text2); line-height: 1.8; white-space: pre-wrap; margin-bottom: 12px; }
+.doc-body.open { display: block; }
+
+/* PROTOCOL */
+.ptog { width: 100%; text-align: left; background: var(--card2); border: 1px solid var(--border); border-radius: 4px; color: var(--text2); font-family: var(--sans); font-size: 12px; padding: 7px 11px; cursor: pointer; margin-bottom: 4px; transition: all 0.15s; }
+.ptog:hover { border-color: var(--blue); color: var(--blue); }
+.pbody { display: none; background: var(--card2); border: 1px solid var(--border); border-radius: 4px; padding: 11px 13px; font-family: var(--mono); font-size: 10px; color: var(--text2); line-height: 1.8; white-space: pre-wrap; margin-bottom: 8px; }
+.pbody.open { display: block; }
+</style>
+</head>
+<body>
+<div class="app">
+
+<header>
+  <div>
+    <div class="h-title">IPMDS Tremor <span>Classification Navigator</span></div>
+    <div class="h-sub">Bhatia KP et al. · Movement Disorders 2018;33(1):75–87 · For educator use only</div>
+    <div class="h-credit">Designed by neurology resident physician Daniel Short, MD</div>
+  </div>
+  <button class="reset-btn" onclick="resetAll()">↺ Reset</button>
+</header>
+
+<div class="prog-track"><div class="prog-fill" id="pf" style="width:0%"></div></div>
+
+<div class="steps">
+  <div class="stab active" id="st0" onclick="goTab(0)"><span class="sn">1</span><span class="slbl">Tremor Confirm</span></div>
+  <div class="stab" id="st1" onclick="goTab(1)"><span class="sn">2</span><span class="slbl">Activation Type</span></div>
+  <div class="stab" id="st2" onclick="goTab(2)"><span class="sn">3</span><span class="slbl">Distribution</span></div>
+  <div class="stab" id="st3" onclick="goTab(3)"><span class="sn">4</span><span class="slbl">Associated Signs</span></div>
+  <div class="stab" id="st4" onclick="goTab(4)"><span class="sn">5</span><span class="slbl">Ancillary Ref</span></div>
+  <div class="stab" id="st5" onclick="goTab(5)"><span class="sn">6</span><span class="slbl">Syndrome</span></div>
+</div>
+
+<!-- ══════════════ SCREEN 0 ══════════════ -->
+<div class="screen active" id="s0">
+<div class="card">
+  <div class="ctitle" style="color:var(--gold);">Step 1 · Confirm Tremor and Assess Frequency</div>
+  <div class="csub">Tremor is defined as an <strong>involuntary, rhythmic, oscillatory movement of a body part</strong>. Confirm tremor is present and differentiate from non-tremor hyperkinesias before proceeding. Document frequency when possible.</div>
+
+  <div class="slabel">A · Tremor Confirmation <span class="pill pill-r">MANDATORY</span></div>
+
+  <div class="crit" id="confirm-item">
+    <div class="crit-main">
+      <div class="crit-name">Rhythmic, oscillatory, involuntary movement confirmed on examination</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      Must be rhythmic and oscillatory — distinguish from: <strong>myoclonus</strong> (arrhythmic, shock-like jerks), <strong>chorea</strong> (irregular, flowing, non-rhythmic), <strong>asterixis</strong> (lapses of sustained posture, not true tremor), <strong>clonus</strong> (requires sustained stretch), and <strong>dystonic movements</strong> (sustained, twisting contractions). Physiological tremor is present in all individuals but is generally not visible or symptomatic unless enhanced.
+      <div class="cnote">IPMDS 2017: Tremor is "an involuntary, rhythmic, oscillatory movement of a body part." Physiological tremor is not pathological — do not record as tremor disorder unless enhanced by fatigue, anxiety, drugs, or metabolic disturbance. Differentiating tremor from dystonic movements may require careful examination and sometimes neurophysiology.</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="set('confirm','yes')" id="confirm-yes">✓ Tremor confirmed</button>
+      <button class="abtn" onclick="set('confirm','no')"  id="confirm-no" >✗ Not tremor — reassess</button>
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:14px;">B · Tremor Frequency <span class="pill pill-a">DOCUMENT</span></div>
+
+  <div class="lbox" style="margin-bottom:10px;">
+    <strong>Frequency guide (most accurately measured with accelerometry or polymyography):</strong><br>
+    <span style="color:var(--red);">&lt;4 Hz</span> — Myorhythmia, some palatal tremors, Holmes tremor<br>
+    <span style="color:var(--gold);">4–8 Hz</span> — Most pathological tremors (PD rest tremor 4–7 Hz; ET postural/kinetic 4–8 Hz)<br>
+    <span style="color:var(--green);">8–12 Hz</span> — Central neurogenic component of physiological tremor; rhythmic cortical myoclonus typically &gt;8 Hz<br>
+    <span style="color:var(--blue);">&gt;13 Hz</span> — Primary orthostatic tremor (<strong>13–18 Hz</strong>, must confirm with EMG)
+  </div>
+
+  <div class="two-col">
+    <div class="crit" id="freq-item">
+      <div class="crit-main">
+        <div class="crit-name">Frequency category (select best estimate)</div>
+        <button class="xbtn" onclick="xp(this)">details ▾</button>
+      </div>
+      <div class="crit-detail">
+        If tremor frequency is in the 13–18 Hz range, primary orthostatic tremor (POT) must be considered and confirmed with EMG. POT may be <em>palpable but not visible</em> in lower limb muscles during standing; the audible "helicopter sign" can be detected by auscultation. The 13–18 Hz high-coherence pattern across affected muscles is pathognomonic.
+        <div class="cnote">Bhatia 2017: "frequency is not very helpful in diagnosis because the frequency of most pathological tremors is 4 to 8 Hz." Exception: myorhythmia/palatal tremors &lt;4 Hz; primary orthostatic tremor 13–18 Hz.</div>
+      </div>
+      <div class="brow" style="flex-wrap:wrap;">
+        <button class="abtn" onclick="set('freq','lt4')"   id="freq-lt4"  style="flex:1 0 40%;">&lt;4 Hz</button>
+        <button class="abtn" onclick="set('freq','4to8')"  id="freq-4to8" style="flex:1 0 40%;">4–8 Hz</button>
+        <button class="abtn" onclick="set('freq','8to12')" id="freq-8to12" style="flex:1 0 40%;">8–12 Hz</button>
+        <button class="abtn" onclick="set('freq','gt13')"  id="freq-gt13"  style="flex:1 0 40%;">&gt;13 Hz</button>
+      </div>
+    </div>
+
+    <div class="crit" id="duration-item">
+      <div class="crit-main">
+        <div class="crit-name">Duration of tremor symptoms</div>
+        <button class="xbtn" onclick="xp(this)">details ▾</button>
+      </div>
+      <div class="crit-detail">
+        Duration is critical for ET classification. The IPMDS 2017 criteria require <strong>at least 3 years</strong> for an essential tremor diagnosis — to reduce the odds of subsequent development of other neurological signs (dystonia, parkinsonism, or ataxia). Tremors meeting ET criteria but lasting &lt;3 years should be labeled <em>indeterminate tremor</em> pending further observation.
+        <div class="cnote">TITAN study (post-2017 criteria): only ~3% of ET/ET-plus patients required the indeterminate label for the 3-year criterion (15/680 in year 1), suggesting this is more theoretical than practical concern in typical practice.</div>
+      </div>
+      <div class="brow" style="flex-wrap:wrap;">
+        <button class="abtn" onclick="set('duration','lt3')"  id="duration-lt3"  style="flex:1 0 45%;">&lt;3 years</button>
+        <button class="abtn" onclick="set('duration','gte3')" id="duration-gte3" style="flex:1 0 45%;">≥3 years</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="a0" class="alrt"></div>
+  <div class="nav-row"><div></div><button class="nbtn np" id="n0" onclick="go(1)" disabled>Next: Activation Type →</button></div>
+</div>
+</div>
+
+<!-- ══════════════ SCREEN 1 ══════════════ -->
+<div class="screen" id="s1">
+<div class="card">
+  <div class="ctitle" style="color:var(--gold);">Step 2 · Activation Conditions</div>
+  <div class="csub">Identify <em>all</em> activation conditions that apply — tremors can coexist across categories. This is the single most important axis for differential diagnosis.</div>
+
+  <div class="slabel">A · Rest vs. Action <span class="pill pill-r">KEY DISTINCTION</span></div>
+
+  <div class="crit" id="rest-item">
+    <div class="crit-main">
+      <div class="crit-name">Rest Tremor — present in a fully supported, voluntarily relaxed body part</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      Assess with adequate support of the body part against gravity (hands resting on lap, head fully supported). In PD, rest tremor amplitude <strong>almost always diminishes or is abolished at least transiently during voluntary movement initiation</strong>, and increases during mental stress (counting backward, Stroop test). Rest tremor may also appear or worsen during walking or movement of another body part.
+      <strong>Re-emergent tremor of PD</strong> (tremor reappearing after brief pause during postural hold) should be classified as an <em>action tremor</em>, not rest tremor, despite similar waveform to rest tremor.
+      <div class="cnote">Rest tremor that does NOT subside during voluntary movements is more consistent with ET plus or dystonic tremor than PD. This distinction has clinical value in separating PD rest tremor from other syndromes (Papengut et al., Parkinsonism Relat Disord 2013;19:693–697).</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="set('rest','yes')" id="rest-yes">✓ Present</button>
+      <button class="abtn" onclick="set('rest','no')"  id="rest-no" >✗ Absent</button>
+    </div>
+  </div>
+
+  <div class="crit" id="restmod-item">
+    <div class="crit-main">
+      <div class="crit-name">Rest tremor — does it subside/pause at movement initiation?</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      This feature separates parkinsonian rest tremor from the rest tremor seen in ET plus. In PD, suppression is expected at least transiently. In ET plus, rest tremor does not reliably subside with movement. In dystonic tremor, suppression may also be absent.
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="set('restmod','yes')" id="restmod-yes">✓ Subsides with movement (PD pattern)</button>
+      <button class="abtn" onclick="set('restmod','no')"  id="restmod-no" >✗ Does not subside (ET plus / dystonic)</button>
+      <button class="abtn" onclick="set('restmod','na')"  id="restmod-na" >— N/A (no rest tremor)</button>
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:14px;">B · Action Tremor Types <span class="pill pill-a">SELECT ALL THAT APPLY</span></div>
+
+  <div class="two-col">
+    <div class="crit" id="postural-item">
+      <div class="crit-main">
+        <div class="crit-name">Postural Tremor — maintaining position against gravity</div>
+        <button class="xbtn" onclick="xp(this)">details ▾</button>
+      </div>
+      <div class="crit-detail">
+        Occurs while voluntarily maintaining a position against gravity (e.g., arms outstretched). Most common in ET and enhanced physiological tremor. Can be position-independent (present in any posture against gravity) or <em>position-specific</em> (only in a particular posture). Orthostatic tremor is a special form — tremor of lower limbs and trunk occurring only during standing.
+      </div>
+      <div class="brow">
+        <button class="abtn" onclick="set('postural','yes')" id="postural-yes">✓ Present</button>
+        <button class="abtn" onclick="set('postural','no')"  id="postural-no" >✗ Absent</button>
+      </div>
+    </div>
+
+    <div class="crit" id="kinetic-item">
+      <div class="crit-main">
+        <div class="crit-name">Simple Kinetic Tremor — during voluntary movement (non-target-directed)</div>
+        <button class="xbtn" onclick="xp(this)">details ▾</button>
+      </div>
+      <div class="crit-detail">
+        Tremor occurring during voluntary movement that is roughly the same amplitude throughout the movement (e.g., waving hands side-to-side at slow speed). This is the most characteristic tremor type in ET. Distinguish from intention tremor, which has a <em>crescendo increase in amplitude</em> as the limb approaches a target.
+      </div>
+      <div class="brow">
+        <button class="abtn" onclick="set('kinetic','yes')" id="kinetic-yes">✓ Present</button>
+        <button class="abtn" onclick="set('kinetic','no')"  id="kinetic-no" >✗ Absent</button>
+      </div>
+    </div>
+
+    <div class="crit" id="intention-item">
+      <div class="crit-main">
+        <div class="crit-name">Intention Tremor — crescendo increase approaching a visual target (&lt;5 Hz)</div>
+        <button class="xbtn" onclick="xp(this)">details ▾</button>
+      </div>
+      <div class="crit-detail">
+        Tremor amplitude increases as the affected limb approaches its target (finger-nose-finger, heel-shin). Usually caused by a lesion in the <strong>cerebellothalamic pathway</strong>. Frequency typically &lt;5 Hz. Can occur in ET (intention tremor is a specific but not sensitive finding for ET: specificity 85%, sensitivity only 45% in one cohort of 210 tremor patients — van der Stouwe et al., Parkinsonism Relat Disord 2016;30:23–28).
+        <div class="cnote">Intention tremor is rarely an isolated tremor syndrome. When focal or unilateral, evaluate for cerebellothalamic pathway pathology. Holmes tremor (rest + postural + intention, &lt;5 Hz) implies brainstem pathology near the red nucleus.</div>
+      </div>
+      <div class="brow">
+        <button class="abtn" onclick="set('intention','yes')" id="intention-yes">✓ Present</button>
+        <button class="abtn" onclick="set('intention','no')"  id="intention-no" >✗ Absent</button>
+      </div>
+    </div>
+
+    <div class="crit" id="taskspec-item">
+      <div class="crit-main">
+        <div class="crit-name">Task-Specific Tremor — only during a specific motor task (e.g., writing)</div>
+        <button class="xbtn" onclick="xp(this)">details ▾</button>
+      </div>
+      <div class="crit-detail">
+        Tremor occurring only during a specific repetitive task. <strong>Primary writing tremor</strong> is the most common form. Task-specific tremors of the hand or mouth also occur in musicians and sportspeople (yips in golfers). There is ongoing debate as to whether these are focal dystonia variants, overuse syndromes, or distinct isolated tremor syndromes. Must be distinguished from writing tremor in writer's cramp (dystonia) or young-onset PD.
+        <div class="cnote">Isolated task-specific tremors are an exclusion criterion for ET and ET plus per IPMDS 2017. If writing tremor only — classify separately, not as ET.</div>
+      </div>
+      <div class="brow">
+        <button class="abtn" onclick="set('taskspec','yes')" id="taskspec-yes">✓ Present</button>
+        <button class="abtn" onclick="set('taskspec','no')"  id="taskspec-no" >✗ Absent</button>
+      </div>
+    </div>
+
+    <div class="crit" id="isometric-item">
+      <div class="crit-main">
+        <div class="crit-name">Isometric Tremor — during muscle contraction against a stationary object</div>
+        <button class="xbtn" onclick="xp(this)">details ▾</button>
+      </div>
+      <div class="crit-detail">
+        Tremor occurring when making a fist, squeezing the examiner's fingers, or gripping a fixed object. Distinct from kinetic tremor. Can be present in ET, PD, and enhanced physiological tremor. Less commonly examined but part of the complete activation condition assessment.
+      </div>
+      <div class="brow">
+        <button class="abtn" onclick="set('isometric','yes')" id="isometric-yes">✓ Present</button>
+        <button class="abtn" onclick="set('isometric','no')"  id="isometric-no" >✗ Absent</button>
+      </div>
+    </div>
+
+    <div class="crit" id="orthostatic-item">
+      <div class="crit-main">
+        <div class="crit-name">Orthostatic Tremor — tremor during standing, lower limbs/trunk</div>
+        <button class="xbtn" onclick="xp(this)">details ▾</button>
+      </div>
+      <div class="crit-detail">
+        Tremor in lower limbs or trunk occurring specifically during standing. Confirm with EMG — primary orthostatic tremor (POT) has a hallmark 13–18 Hz frequency with high coherence across affected muscles. The tremor may be palpable but not visible; the "helicopter sign" (audible hum auscultated over lower limb muscles or via EMG loudspeaker) may be present. Slower frequency tremor during standing (&lt;13 Hz) = pseudo-orthostatic tremor — usually associated with other neurological signs.
+        <div class="cnote">POT diagnosis requires EMG confirmation per IPMDS 2017. POT in combination with PD, dementia, or spinocerebellar ataxia = "primary orthostatic tremor plus." 184-patient series: mean age of onset ~61, 63% female (Hassan et al., Neurology 2016;86:458–464).</div>
+      </div>
+      <div class="brow">
+        <button class="abtn" onclick="set('orthostatic','yes')" id="orthostatic-yes">✓ Present</button>
+        <button class="abtn" onclick="set('orthostatic','no')"  id="orthostatic-no" >✗ Absent</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="a1" class="alrt"></div>
+  <div class="nav-row"><button class="nbtn ns" onclick="go(0)">← Back</button><button class="nbtn np" id="n1" onclick="go(2)">Next: Distribution →</button></div>
+</div>
+</div>
+
+<!-- ══════════════ SCREEN 2 ══════════════ -->
+<div class="screen" id="s2">
+<div class="card">
+  <div class="ctitle" style="color:var(--gold);">Step 3 · Anatomical Distribution</div>
+  <div class="csub">Document all affected body regions. Distribution guides syndromic classification and helps distinguish ET (bilateral upper limb action tremor) from focal, hemibody, or generalized syndromes.</div>
+
+  <div class="slabel">Bilateral Upper Limbs <span class="pill pill-r">ET ANCHOR</span></div>
+  <div class="crit" id="biup-item">
+    <div class="crit-main">
+      <div class="crit-name">Bilateral upper limb action tremor (postural and/or kinetic)</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      This is the <strong>defining criterion for essential tremor</strong>: an isolated tremor syndrome of bilateral upper limb action tremor, ≥3 years' duration, absence of other neurological signs. Onset in the upper limbs was discussed as a possible criterion but was rejected due to insufficient data. Side asymmetry is common and acceptable. Onset of tremor in upper limbs is the most common presentation of ET.
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="set('biup','yes')" id="biup-yes">✓ Present</button>
+      <button class="abtn" onclick="set('biup','no')"  id="biup-no" >✗ Absent</button>
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:14px;">Other Distribution Regions <span class="pill pill-a">DOCUMENT ALL</span></div>
+  <div class="two-col">
+    <div class="crit" id="head-item">
+      <div class="crit-main">
+        <div class="crit-name">Head tremor (yes-yes, no-no, or variable directions)</div>
+        <button class="xbtn" onclick="xp(this)">details ▾</button>
+      </div>
+      <div class="crit-detail">
+        Head tremor is common in the context of ET (does not exclude ET when co-present with arm tremor). <strong>Isolated head tremor</strong> (without arm tremor) is an exclusion for ET/ET plus. Isolated head tremor overlaps significantly with tremulous cervical dystonia — this remains clinically controversial. The geste antagoniste (sensory trick) suggests dystonia. A "null point" where dystonic posture relieves tremor is a dystonic feature.
+        <div class="cnote">Quantified sensory tricks significantly reduced tremor amplitude and frequency in 60 patients with head tremor, supporting dystonic mechanism in some cases (Masuhr et al., Mov Disord 2000;15:960–964).</div>
+      </div>
+      <div class="brow">
+        <button class="abtn" onclick="set('head','yes')" id="head-yes">✓ Present</button>
+        <button class="abtn" onclick="set('head','no')"  id="head-no" >✗ Absent</button>
+      </div>
+    </div>
+
+    <div class="crit" id="voice-item">
+      <div class="crit-main">
+        <div class="crit-name">Voice tremor — visible/audible oscillation of vocal apparatus</div>
+        <button class="xbtn" onclick="xp(this)">details ▾</button>
+      </div>
+      <div class="crit-detail">
+        Isolated voice tremor (no dystonia in vocal apparatus, no tremor/dystonia elsewhere) is an isolated focal tremor syndrome — <strong>excluded from ET/ET plus</strong>. Voice tremor in ET occurs by definition in combination with hand tremor. Vocal cord hyperabduction/adduction, or dystonia elsewhere, indicates dystonic voice tremor. Voice tremor may also be seen in dystonia 6 and ANO3 mutation carriers.
+      </div>
+      <div class="brow">
+        <button class="abtn" onclick="set('voice','yes')" id="voice-yes">✓ Present</button>
+        <button class="abtn" onclick="set('voice','no')"  id="voice-no" >✗ Absent</button>
+      </div>
+    </div>
+
+    <div class="crit" id="lowlimb-item">
+      <div class="crit-main">
+        <div class="crit-name">Lower limb tremor (rest or action, unilateral or bilateral)</div>
+        <button class="xbtn" onclick="xp(this)">details ▾</button>
+      </div>
+      <div class="crit-detail">
+        Lower limb rest tremor should prompt evaluation for parkinsonism (DaTscan if isolated). Lower limb involvement may also be present in ET (does not exclude ET). Orthostatic tremor specifically affects lower limbs during standing. Holmes tremor can involve proximal and distal lower limb muscles.
+      </div>
+      <div class="brow">
+        <button class="abtn" onclick="set('lowlimb','yes')" id="lowlimb-yes">✓ Present</button>
+        <button class="abtn" onclick="set('lowlimb','no')"  id="lowlimb-no" >✗ Absent</button>
+      </div>
+    </div>
+
+    <div class="crit" id="jaw-item">
+      <div class="crit-main">
+        <div class="crit-name">Jaw / chin tremor</div>
+        <button class="xbtn" onclick="xp(this)">details ▾</button>
+      </div>
+      <div class="crit-detail">
+        Jaw tremor associated with dystonia elsewhere is classified as jaw tremor and dystonia syndrome. Jaw tremor can also occur in PD. Isolated jaw tremor (without dystonia) is a rare focal tremor syndrome. Jaw tremor alone does not fulfill criteria for PD parkinsonism per MDS criteria.
+      </div>
+      <div class="brow">
+        <button class="abtn" onclick="set('jaw','yes')" id="jaw-yes">✓ Present</button>
+        <button class="abtn" onclick="set('jaw','no')"  id="jaw-no" >✗ Absent</button>
+      </div>
+    </div>
+
+    <div class="crit" id="palatal-item">
+      <div class="crit-main">
+        <div class="crit-name">Palatal tremor — rhythmic movement of soft palate (0.5–5 Hz)</div>
+        <button class="xbtn" onclick="xp(this)">details ▾</button>
+      </div>
+      <div class="crit-detail">
+        <strong>Essential palatal tremor:</strong> Ear click (tensor veli palatini), normal inferior olive MRI, no other neurological signs — isolated focal tremor syndrome, often idiopathic or functional.<br><br>
+        <strong>Symptomatic palatal tremor:</strong> No ear click, involves levator veli palatini + other brainstem muscles (eye movements, face), typically combined with ataxia; olivary pseudohypertrophy on MRI; caused by dentato-olivary pathway lesions. Combined tremor syndrome.
+        <div class="cnote">Symptomatic palatal tremor has been described with Guillain-Mollaret triangle lesions, GFAP mutations (Alexander disease), POLG1 mutations, neuroferritinopathy, and the PAPT syndrome.</div>
+      </div>
+      <div class="brow">
+        <button class="abtn" onclick="set('palatal','yes')" id="palatal-yes">✓ Present</button>
+        <button class="abtn" onclick="set('palatal','no')"  id="palatal-no" >✗ Absent</button>
+      </div>
+    </div>
+
+    <div class="crit" id="unilateral-item">
+      <div class="crit-main">
+        <div class="crit-name">Unilateral or hemibody predominance</div>
+        <button class="xbtn" onclick="xp(this)">details ▾</button>
+      </div>
+      <div class="crit-detail">
+        Hemitremor (one side of the body affected) strongly suggests PD — especially with accompanying bradykinesia and rigidity. Persistent bilateral symmetry throughout the disease course is a red flag against PD. Asymmetry is compatible with ET (and expected in PD). Unilateral intention tremor raises concern for focal cerebellothalamic pathway pathology.
+      </div>
+      <div class="brow">
+        <button class="abtn" onclick="set('unilateral','yes')" id="unilateral-yes">✓ Predominantly unilateral</button>
+        <button class="abtn" onclick="set('unilateral','no')"  id="unilateral-no" >✗ Bilateral / symmetric</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="nav-row"><button class="nbtn ns" onclick="go(1)">← Back</button><button class="nbtn np" onclick="go(3)">Next: Associated Signs →</button></div>
+</div>
+</div>
+
+<!-- ══════════════ SCREEN 3 ══════════════ -->
+<div class="screen" id="s3">
+<div class="card">
+  <div class="ctitle" style="color:var(--gold);">Step 4 · Associated Neurological Signs</div>
+  <div class="csub">The presence or absence of associated signs determines whether this is an <strong>isolated</strong> or <strong>combined</strong> tremor syndrome, and drives syndromic classification.</div>
+
+  <div class="slabel">A · Parkinsonism Signs <span class="pill pill-r">COMBINED SYNDROME</span></div>
+  <div class="crit" id="parkinsonism-item">
+    <div class="crit-main">
+      <div class="crit-name">Bradykinesia + rigidity (classic parkinsonian tremor pattern)</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      Classic parkinsonian tremor is a <strong>4–7 Hz rest tremor</strong> (pill-rolling) of the hand, lower limb, jaw, tongue, or foot — combined with bradykinesia and rigidity. Typically <strong>asymmetric and unilateral in onset</strong>. Re-emergent postural tremor with same waveform may coexist. Rest tremor is uncommon in MSA, CBD, and PSP. Higher frequencies than 4–7 Hz have been described.
+      <div class="cnote">Rest tremor is uncommon in MSA (&lt;10% of MSA-P), corticobasal degeneration, and PSP (Wenning et al., Lancet Neurol 2013;12:264–274; Armstrong et al., Neurology 2013;80:496–503). Presence of classic rest tremor with parkinsonism therefore favors PD within the parkinsonian syndromes.</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="set('parkinsonism','yes')" id="parkinsonism-yes">✓ Present</button>
+      <button class="abtn" onclick="set('parkinsonism','no')"  id="parkinsonism-no" >✗ Absent</button>
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:14px;">B · Dystonia Signs <span class="pill pill-r">COMBINED SYNDROME</span></div>
+  <div class="crit" id="dystonia-item">
+    <div class="crit-main">
+      <div class="crit-name">Dystonia — in the same body part as tremor (dystonic tremor) or elsewhere</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      <strong>Dystonic tremor:</strong> Tremor in a body part affected by dystonia (e.g., tremulous cervical dystonia = dystonic head tremor).<br>
+      <strong>Tremor associated with dystonia:</strong> Tremor and dystonia in different body parts.<br><br>
+      Clues to dystonia: geste antagoniste (sensory trick), null point relieving tremor, overflow dystonia with movement, action dystonia at movement initiation. The distinction between dystonic tremor and ET with soft signs remains clinically challenging and is an area of active research.
+      <div class="cnote">Sensory tricks have been convincingly demonstrated for cranial and other dystonic tremors (Albanese & Lalli, Mov Disord 2009). The sensitivity/specificity of geste antagoniste and null point for distinguishing dystonic from essential head tremor have not been formally validated.</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="set('dystonia','yes')" id="dystonia-yes">✓ Present</button>
+      <button class="abtn" onclick="set('dystonia','no')"  id="dystonia-no" >✗ Absent</button>
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:14px;">C · Cerebellar / Holmes Signs <span class="pill pill-r">COMBINED SYNDROME</span></div>
+  <div class="crit" id="cerebellar-item">
+    <div class="crit-main">
+      <div class="crit-name">Ataxia, cerebellar oculomotor signs, or other cerebellar features</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      Intention tremor combined with cerebellar ataxia, dysmetria, or oculomotor signs (gaze-evoked nystagmus, saccadic pursuit) indicates a combined tremor syndrome. <strong>Holmes tremor</strong> (rest + postural + intention tremor, &lt;5 Hz, from proximal and distal muscles) usually reflects acquired brainstem pathology near the red nucleus. Look for lesions in the Guillain-Mollaret triangle on MRI.
+      <div class="cnote">Holmes tremor: 29-patient series — delay from lesion to tremor onset was 0–24 months; lesion localization varied but red nucleus/dentato-rubro-thalamic tract was most common (Raina et al., Neurology 2016;86:931–938).</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="set('cerebellar','yes')" id="cerebellar-yes">✓ Present</button>
+      <button class="abtn" onclick="set('cerebellar','no')"  id="cerebellar-no" >✗ Absent</button>
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:14px;">D · Soft Signs / ET Plus Features <span class="pill pill-a">UNCERTAIN SIGNIFICANCE</span></div>
+  <div class="crit" id="softsigns-item">
+    <div class="crit-main">
+      <div class="crit-name">Soft neurological signs — impaired tandem gait, questionable dystonic posturing, mild memory impairment</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      These signs have <em>uncertain significance</em> and do not suffice for an additional syndromic diagnosis. If present alongside ET criteria, classify as <strong>ET plus</strong>. ET with rest tremor (that does not subside with movement) should also be classified as ET plus. The interpretation of soft signs is subjective and left to clinical judgment.
+      <div class="cnote">ET plus does NOT include clearly defined syndromes like dystonic tremor or task-specific tremor. The ET plus category was created to standardize what was previously an inconsistently defined gray zone of "ET with soft signs." Prospective longitudinal studies are needed to clarify the natural history of ET plus.</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="set('softsigns','yes')" id="softsigns-yes">✓ Present (ET plus features)</button>
+      <button class="abtn" onclick="set('softsigns','no')"  id="softsigns-no" >✗ Absent</button>
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:14px;">E · Functional Tremor Features <span class="pill pill-g">POSITIVE SIGNS</span></div>
+  <div class="crit" id="functional-item">
+    <div class="crit-main">
+      <div class="crit-name">Distractibility, frequency entrainment, or antagonist muscle coactivation</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      <strong>Distractibility:</strong> Tremor diminishes or ceases when attention is directed away from the affected body part (counting backward, complex motor task). Sensitivity 92%, specificity 94% for functional tremor (van der Stouwe et al., 2016, n=210).<br><br>
+      <strong>Entrainment:</strong> Tremor frequency shifts to match an externally cued voluntary rhythm performed by the other hand. Sensitivity 91%, specificity 91% (van der Stouwe et al., 2016).<br><br>
+      <strong>Coactivation sign:</strong> Tonic antagonist muscle coactivation detectable at tremor onset on EMG.<br><br>
+      An electrophysiological test battery (EMG + accelerometry, ≥3/10 positive tests) achieves sensitivity 89.5%, specificity 95.9% for functional tremor (Schwingenschuh et al., Mov Disord 2016;31:555–562).
+      <div class="cnote">Additional supporting features: sudden onset; spontaneous remissions; variable amplitude and frequency; inconsistent topographic distribution; other functional neurological signs. Longstanding functional tremor may become resistant to distraction — complex or unexpected tasks may be needed. A positive diagnosis based on these signs is preferred over diagnosis by exclusion alone.</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="set('functional','yes')" id="functional-yes">✓ Present (functional features)</button>
+      <button class="abtn" onclick="set('functional','no')"  id="functional-no" >✗ Absent</button>
+    </div>
+  </div>
+
+  <div class="nav-row"><button class="nbtn ns" onclick="go(2)">← Back</button><button class="nbtn np" onclick="go(4)">Next: Ancillary Reference →</button></div>
+</div>
+</div>
+
+<!-- ══════════════ SCREEN 4 ══════════════ -->
+<div class="screen" id="s4">
+<div class="card">
+  <div class="ctitle" style="color:var(--blue);">Step 5 · Ancillary Testing Reference</div>
+  <div class="csub">This step contains protocol and interpretation guides. Entries for syndromic classification belong in Steps 1–4.</div>
+
+  <div class="lbox">
+    <strong>Key principles:</strong> Most tremor syndromes are clinical diagnoses. Ancillary testing confirms syndromic classification in specific situations. ·
+    <span style="color:var(--gold);">EMG / polymyography</span> → required for primary orthostatic tremor (13–18 Hz confirmation) and functional tremor test battery ·
+    <span style="color:var(--red);">DaTscan</span> → consider for isolated rest tremor with normal exam — excludes dopaminergic deficiency ·
+    <span style="color:var(--green);">MRI brain</span> → indicated for sudden-onset tremor, Holmes tremor, symptomatic palatal tremor
+  </div>
+
+  <button class="ptog" onclick="tp('pdat')">▼ Reference · DaTscan in Tremor — Indications and Interpretation</button>
+  <div class="pbody" id="pdat">Dopamine Transporter (DAT) Imaging in Tremor:
+
+Indications (per IPMDS 2017 principles):
+  · Isolated rest tremor without other parkinsonian signs (monosymptomatic tremor at rest)
+  · Differentiate tremor-dominant PD from ET with rest component (ET plus)
+  · Evaluate indeterminate tremor when clinical diagnosis uncertain after ≥3 years
+
+Interpretation:
+  · Normal DaTscan → essentially excludes nigrostriatal degeneration (PD, MSA-P, PSP, CBD)
+    – Possible diagnoses: ET plus with rest tremor, dystonic tremor, functional tremor,
+      benign tremulous parkinsonism (SWEDD syndrome)
+  · Abnormal (reduced striatal uptake) → supports dopaminergic degeneration
+    – Does NOT differentiate PD from MSA-P, PSP, or CBD
+
+Key caveats:
+  · DaTscan sensitivity ~85–90% for early PD; may be normal in early or benign tremulous PD
+  · SWEDD (scans without evidence of dopaminergic deficit): long-term follow-up
+    suggests many represent dystonic tremor, ET plus, or functional tremor
+  · Does NOT qualify as a supportive criterion for MDS-PD established criteria
+    (only olfactory loss and cardiac MIBG meet the required specificity threshold)
+
+Medications to withhold:
+  · Cocaine and stimulants — 12h
+  · Methylphenidate — 12h
+  · Modafinil — 12h
+  · Bupropion — varies (caution)
+  · Most dopaminergic drugs do NOT significantly affect DaTscan binding</div>
+
+  <button class="ptog" onclick="tp('pemg')" style="margin-top:3px;">▼ Reference · Neurophysiology for Tremor Classification</button>
+  <div class="pbody" id="pemg">Electrophysiological Tests in Tremor (Table 1, Bhatia 2017):
+
+1. Surface EMG (polymyography):
+   · Documents tremor presence and confirms rhythmicity
+   · Measures tremor frequency and EMG burst morphology
+   · Identifies myoclonus (arrhythmic, short burst) and asterixis (silent periods)
+   · Required for PRIMARY ORTHOSTATIC TREMOR diagnosis:
+     – EMG of bilateral lower limbs during standing
+     – 13–18 Hz coherent tremor across affected muscles = diagnostic
+
+2. Accelerometry + weight loading:
+   · Enhanced physiological tremor: frequency DECREASES with loading (specificity 95%, sensitivity 42%)
+   · Functional tremor: amplitude INCREASES with 500g loading (specificity 92%, sensitivity 22%)
+   · Note: amplitude increase >130% on 500g loading = highly suggestive of functional tremor
+   · Mechanical-reflex vs. central neurogenic tremor: loading separates these (resonance shift)
+
+3. Functional tremor battery (Schwingenschuh et al., Mov Disord 2016;31:555–562):
+   · Test components: tonic coactivation at tremor onset, tapping task performance at 3
+     frequencies, frequency shift/suppression/entrainment with tapping, response to
+     ballistic movements, coherence analysis, weight loading amplitude change
+   · Score ≥3 of 10 positive tests = functional tremor
+   · Sensitivity 89.5%, Specificity 95.9% (n=40 functional vs. 72 other tremors)
+
+4. Clinical signs for functional tremor (van der Stouwe et al., Parkinsonism Relat Disord 2016;30:23–28, n=210):
+   · Distractibility:  Sens 92%, Spec 94%
+   · Entrainment:      Sens 91%, Spec 91%
+   · Loading amplitude increase: Sens 22%, Spec 92% (high specificity, low sensitivity)
+   · Intention tremor for ET: Sens 45%, Spec 85%
+   · Frequency decrease on loading (EPT): Sens 42%, Spec 95%
+
+5. Coherence analysis:
+   · Primary orthostatic tremor: uniquely high coherence bilaterally at 13–18 Hz
+   · Functional tremor: coherence between bilateral upper limb tremors (when bilateral)</div>
+
+  <button class="ptog" onclick="tp('pmri')" style="margin-top:3px;">▼ Reference · Structural MRI in Tremor</button>
+  <div class="pbody" id="pmri">MRI Indications and Findings:
+
+WHEN TO OBTAIN MRI:
+  · Sudden-onset tremor (consider vascular, neoplasm, demyelination)
+  · Holmes tremor (rest + postural + intention, low frequency)
+  · Symptomatic palatal tremor (olivary pseudohypertrophy)
+  · Focal/unilateral intention tremor (cerebellothalamic pathway lesion)
+  · Tremor with cerebellar, brainstem, or pyramidal signs
+  · Young-onset tremor (Wilson's disease, SCA, mitochondrial)
+
+KEY MRI FINDINGS:
+
+Holmes Tremor / Rubral Tremor:
+  · Lesions near red nucleus, subthalamic nucleus, or dentatorubrothalamic tract
+  · Thalamic involvement → often with dystonia and abnormal proprioception
+  · Guillain-Mollaret triangle: dentate nucleus → red nucleus → inferior olive
+    (interruption at any level can produce palatal or Holmes tremor)
+
+Symptomatic Palatal Tremor:
+  · Olivary pseudohypertrophy on T2 (pathognomonic when present)
+  · Look for focal lesions in ipsilateral or contralateral brainstem
+
+Atypical Parkinsonism (Parkinsonian tremor differential):
+  · MSA-P/C: putaminal rim sign (T2 hypointensity + hyperintense rim), hot cross bun sign
+  · PSP: midbrain atrophy (hummingbird sign on sagittal T1), SCP atrophy
+  · CBS: asymmetric posterior frontoparietal cortical atrophy
+
+Wilson's Disease (young-onset tremor with wing-beating tremor):
+  · Bilateral T2 hyperintensity putamen/thalamus/brainstem ("face of the giant panda" sign)
+  · Always consider in tremor patients <50 — check serum ceruloplasmin + 24h urine copper</div>
+
+  <button class="ptog" onclick="tp('pgene')" style="margin-top:3px;">▼ Reference · Genetic Testing in Tremor</button>
+  <div class="pbody" id="pgene">When to Consider Genetic Testing:
+
+ESSENTIAL TREMOR GENETICS:
+  · ET is a heterogeneous syndrome — no single gene accounts for most cases
+  · Family history positive in 50–70% of ET cases, suggesting polygenic or autosomal
+    dominant inheritance with variable penetrance
+  · FUS mutations: exome sequencing identified FUS as a rare cause of ET (Merner et al.,
+    Am J Hum Genet 2012;91:313–319), but subsequent studies showed low frequency in
+    European cohorts (Ortega-Cubero et al., Neurobiol Aging 2013)
+  · FXTAS (Fragile X-associated tremor/ataxia syndrome): FMR1 premutation (55–200 CGG
+    repeats) — consider in men >50 with ET-like tremor + ataxia, MCP sign on MRI,
+    family history of fragile X intellectual disability or premature ovarian insufficiency
+
+DYSTONIC TREMOR GENETICS:
+  · ANO3 (anoctamin 3, DYT24): causes focal/segmental dystonia AND isolated
+    bibrachial tremor — can mimic ET. Also associated with voice tremor.
+  · TOR1A (DYT1): early-onset generalized dystonia
+  · THAP1 (DYT6): mixed dystonia; THAP1 mutations can present with voice/laryngeal dystonia
+
+PARKINSONIAN TREMOR GENETICS:
+  · LRRK2 G2019S: most common dominant PD mutation; ~1–2% of all PD
+  · GBA variants: biallelic = Gaucher; heterozygous = 5× increased PD risk
+  · SNCA multiplication, PRKN, PINK1, DJ-1 for early-onset PD
+
+WILSON'S DISEASE:
+  · ATP7B gene sequencing — always test in tremor patients age <50
+  · Wing-beating tremor (Holmes-type) + Kayser-Fleischer rings is pathognomonic
+
+FRAGILE X-ASSOCIATED TREMOR/ATAXIA (FXTAS):
+  · FMR1 premutation carrier status (55–200 CGG repeats) in >50yo males
+  · Revised diagnostic criteria emphasize MCP sign on MRI and clinical features
+    (Apartis et al., Neurology 2012;79:1898–1907)</div>
+
+  <div class="nav-row"><button class="nbtn ns" onclick="go(3)">← Back</button><button class="nbtn np" onclick="go(5)">Generate Syndrome Classification →</button></div>
+</div>
+</div>
+
+<!-- ══════════════ SCREEN 5 ══════════════ -->
+<div class="screen" id="s5">
+  <div id="vout"></div>
+  <div class="doc-header" style="margin-top:12px;">
+    <button class="doc-tog" onclick="toggleDoc()">▼ Documentation Note</button>
+    <button class="copy-btn" id="copy-btn" onclick="copyDoc()">⎘ Copy</button>
+  </div>
+  <div class="doc-body" id="dn"></div>
+  <div class="nav-row"><button class="nbtn ns" onclick="go(4)">← Back</button><button class="nbtn np" onclick="resetAll()">↺ New Evaluation</button></div>
+</div>
+
+</div>
+<script>
+const S={confirm:null,freq:null,duration:null,rest:null,restmod:null,postural:null,kinetic:null,intention:null,taskspec:null,isometric:null,orthostatic:null,biup:null,head:null,voice:null,lowlimb:null,jaw:null,palatal:null,unilateral:null,parkinsonism:null,dystonia:null,cerebellar:null,softsigns:null,functional:null};
+let cur=0;
+
+function set(k,v){
+  S[k]=v;
+  const item=document.getElementById(k+'-item');
+  if(item) item.className='crit';
+  ['yes','no','present','absent','lt4','4to8','8to12','gt13','lt3','gte3','na'].forEach(x=>{const b=document.getElementById(k+'-'+x);if(b)b.classList.remove('ay','an','ap','aa');});
+  if(v==='yes'||v==='gte3'){if(item)item.classList.add('c-yes');const b=document.getElementById(k+'-'+v);if(b)b.classList.add('ay');}
+  if(v==='no'||v==='lt3'){if(item)item.classList.add('c-no');const b=document.getElementById(k+'-'+v);if(b)b.classList.add('an');}
+  if(['lt4','4to8','8to12','gt13','na'].includes(v)){if(item)item.classList.add('c-pres');const b=document.getElementById(k+'-'+v);if(b)b.classList.add('ap');}
+  ui();
+}
+
+function ui(){
+  const a0=document.getElementById('a0'),n0=document.getElementById('n0');
+  if(S.confirm==='no'){sa(a0,'aerr','✕ Tremor not confirmed. Reassess for myoclonus, chorea, asterixis, or dystonic movements before applying tremor criteria.');n0.disabled=true;}
+  else if(S.confirm==='yes'){sa(a0,'aok','✓ Tremor confirmed. Proceed to characterize activation type, distribution, and associated signs.');n0.disabled=false;}
+  else{ha(a0);n0.disabled=true;}
+
+  const a1=document.getElementById('a1'),n1=document.getElementById('n1');
+  if(n1){
+    const anyAction=S.postural==='yes'||S.kinetic==='yes'||S.intention==='yes'||S.taskspec==='yes'||S.isometric==='yes'||S.orthostatic==='yes';
+    if(S.rest==='yes'&&!anyAction){sa(a1,'ainf','ⓘ Isolated rest tremor documented. Evaluate for dopaminergic deficiency — consider DaTscan if no accompanying parkinsonism signs.');n1.disabled=false;}
+    else if(S.orthostatic==='yes'&&S.freq!=='gt13'&&S.freq!==null){sa(a1,'awn','⚠ Orthostatic tremor present — EMG confirmation of 13–18 Hz required for primary orthostatic tremor diagnosis. If <13 Hz, classify as pseudo-orthostatic tremor.');n1.disabled=false;}
+    else if(anyAction||S.rest==='yes'){ha(a1);n1.disabled=false;}
+    else{ha(a1);n1.disabled=false;}
+  }
+}
+
+function syndrome(){
+  const s=S;
+  // Priority-ordered classification logic
+  if(!s.confirm||s.confirm!=='yes') return {cls:'vn',t:'Tremor Not Confirmed',d:'Confirm involuntary, rhythmic, oscillatory movement of a body part before applying IPMDS tremor classification. Rule out myoclonus, chorea, asterixis, dystonic movements, and clonus.'};
+
+  // Functional tremor — positive signs take priority
+  if(s.functional==='yes') return {cls:'vp',t:'Functional Tremor Syndrome',d:'Positive features for functional tremor: distractibility and/or entrainment present. Validated test battery (Schwingenschuh et al. 2016) achieves sensitivity 89.5%, specificity 95.9% with ≥3/10 positive electrophysiological signs. Diagnostic criteria include: sudden onset, spontaneous remissions, variable amplitude/frequency/distribution, other functional neurological signs. Psychiatric evaluation required in all cases. Rule-in diagnosis based on positive signs preferred over diagnosis by exclusion.'};
+
+  // Holmes tremor
+  if(s.rest==='yes'&&s.postural==='yes'&&s.intention==='yes'&&s.cerebellar==='yes') return {cls:'vn',t:'Holmes Tremor Syndrome',d:'Rest + postural + intention tremor combination at <5 Hz arising from proximal and distal muscles. Etiology is typically an acquired lesion near the red nucleus (brainstem). Obtain MRI brain with focus on Guillain-Mollaret triangle. Dystonia and abnormal proprioception may indicate thalamic involvement. Treatment is challenging — levodopa, anticholinergics, and DBS have been reported in small series.'};
+
+  // Parkinsonian tremor
+  if(s.parkinsonism==='yes'&&s.rest==='yes') return {cls:'vp',t:'Tremor Combined with Parkinsonism',d:'Classic parkinsonian tremor: 4–7 Hz rest tremor with bradykinesia and rigidity. Typically asymmetric and unilateral at onset. Rest tremor subsiding during voluntary movement supports PD. Rest tremor that persists during movement is more consistent with ET plus. Apply MDS-PD criteria (Postuma et al. 2015) for diagnostic certainty classification. Consider DaTscan if diagnosis uncertain. Rest tremor is uncommon in MSA (<10%), CBS, and PSP — its presence favors PD.'};
+
+  // Dystonic tremor
+  if(s.dystonia==='yes') return {cls:'vp',t:'Dystonic Tremor Syndrome',d:'Tremor occurring in a body part affected by dystonia (dystonic tremor), or in a body part separate from dystonia (tremor associated with dystonia). Clues: geste antagoniste, null point, task-specific exacerbation, overflow dystonia. Etiologies: idiopathic, familial (ANO3/DYT24, TOR1A, THAP1), or acquired. Sensory tricks reduce tremor in many cranial dystonic tremor patients (Masuhr et al. 2000, n=60). Consider botulinum toxin if isolated focal dystonic tremor.'};
+
+  // Symptomatic palatal tremor
+  if(s.palatal==='yes'&&s.cerebellar==='yes') return {cls:'vn',t:'Symptomatic Palatal Tremor (Combined)',d:'Palatal tremor with ataxia and/or cerebellar signs indicates dentato-olivary pathway pathology. MRI typically shows olivary pseudohypertrophy (T2). Causes include Guillain-Mollaret triangle lesions, GFAP mutations (Alexander disease), POLG1, neuroferritinopathy, and PAPT syndrome. Distinguish from essential palatal tremor (ear click, normal MRI, no neurological signs — isolated focal tremor syndrome).'};
+
+  // Primary orthostatic tremor
+  if(s.orthostatic==='yes'&&(s.freq==='gt13'||(s.parkinsonism!=='yes'&&s.dystonia!=='yes'&&s.cerebellar!=='yes'))) return {cls:'vp',t:'Orthostatic Tremor Syndrome',d:'Tremor during standing affecting lower limbs/trunk. Primary orthostatic tremor (POT) requires EMG confirmation of 13–18 Hz with high bilateral coherence. May be palpable but not visible. "Helicopter sign" may be auscultated over lower limb muscles. POT with additional neurological signs (PD, dementia, SCA) = primary orthostatic tremor plus. Pseudo-orthostatic tremor (<13 Hz) is usually combined with other neurological signs — pursue alternative diagnosis. 184-patient series: mean onset ~61y, 63% female (Hassan et al. 2016).'};
+
+  // ET Plus
+  if(s.biup==='yes'&&s.duration==='gte3'&&s.softsigns==='yes'&&s.parkinsonism!=='yes'&&s.dystonia!=='yes'&&s.cerebellar!=='yes'&&s.functional!=='yes'&&s.taskspec!=='yes'&&s.voice!=='yes'&&(s.head!=='yes'||s.biup==='yes')&&s.orthostatic!=='yes') return {cls:'vp',t:'Essential Tremor Plus (ET Plus)',d:'Bilateral upper limb action tremor ≥3 years with soft neurological signs of uncertain significance (impaired tandem gait, questionable dystonic posturing, mild memory impairment, or ET with rest tremor not subsiding on movement). ET plus does NOT include clearly defined syndromes (dystonic tremor, task-specific tremor). Classification introduced in IPMDS 2017 to replace the heterogeneous "ET with soft signs" category. Longitudinal reassessment required — ET plus may evolve into a more defined combined syndrome.'};
+
+  // Classic Essential Tremor
+  if(s.biup==='yes'&&s.duration==='gte3'&&s.parkinsonism!=='yes'&&s.dystonia!=='yes'&&s.cerebellar!=='yes'&&s.functional!=='yes'&&s.taskspec!=='yes'&&s.voice!=='yes'&&s.orthostatic!=='yes'&&s.softsigns!=='yes') return {cls:'ve',t:'Essential Tremor (ET)',d:'Isolated tremor syndrome: bilateral upper limb action tremor ≥3 years, no additional neurological signs, no exclusion criteria met. With or without head, voice, or lower limb tremor. Isolated focal tremors (head, voice) and task-/position-specific tremors are excluded. Family history positive in 50–70%; alcohol responsiveness variable. ET is an Axis 1 syndrome — may have multiple etiologies (Axis 2). Annual review recommended; development of additional signs would reclassify to ET plus or combined tremor syndrome.'};
+
+  // Isolated rest tremor (without parkinsonism)
+  if(s.rest==='yes'&&s.parkinsonism!=='yes'&&s.biup!=='yes'&&s.intention!=='yes'&&s.functional!=='yes') return {cls:'vi',t:'Isolated Rest Tremor — Further Workup Required',d:'Rest tremor without confirmed parkinsonism. Consider: (1) DaTscan to exclude dopaminergic deficiency — monosymptomatic tremor-at-rest PD patients may lack overt bradykinesia or rigidity; (2) dystonic rest tremor — some cases show dystonia only under challenge; (3) striatal dopaminergic deficiency without nigral degeneration (SWEDD syndrome). Suppression during voluntary movement favors PD pattern; persistence favors ET plus or dystonia. Monitor closely — early PD is a primary concern.'};
+
+  // Isolated focal tremors
+  if(s.biup!=='yes'&&(s.head==='yes'||s.voice==='yes'||s.jaw==='yes'||s.palatal==='yes')&&s.parkinsonism!=='yes'&&s.dystonia!=='yes'&&s.cerebellar!=='yes'&&s.functional!=='yes') return {cls:'vi',t:'Isolated Focal Tremor Syndrome',d:'Tremor confined to a single body region without bilateral upper limb involvement or other neurological signs. Examples: isolated head tremor (yes-yes or no-no), isolated voice tremor, essential palatal tremor, isolated jaw tremor, hereditary geniospasm. Isolated head tremor and isolated voice tremor are excluded from ET/ET plus per IPMDS 2017. The relationship between isolated head tremor and focal tremulous cervical dystonia remains controversial — consider EMG/dystonia evaluation.'};
+
+  // Task-specific
+  if(s.taskspec==='yes'&&s.biup!=='yes'&&s.parkinsonism!=='yes'&&s.dystonia!=='yes') return {cls:'vi',t:'Isolated Task- and Position-Specific Tremor',d:'Tremor occurring only during a specific motor task or posture. Primary writing tremor is the most common form. Also occurs in musicians and sportspeople. Debate exists whether these represent focal dystonia, overuse syndrome, or unique isolated tremor syndromes. Excluded from ET/ET plus criteria. Distinguish from writer\'s cramp (primary dystonia), young-onset PD with dystonia, and musician\'s focal dystonia by careful examination and neurophysiology.'};
+
+  // Duration <3 years — indeterminate
+  if(s.biup==='yes'&&s.duration==='lt3') return {cls:'vi',t:'Indeterminate Tremor — Duration Criterion Not Met',d:'Tremor features are consistent with ET, but duration <3 years. The 3-year criterion is required to reduce the odds of subsequent development of neurological signs (dystonia, parkinsonism, ataxia). Classify as indeterminate tremor during observation period. In the TITAN cohort, only ~3% of ET/ET-plus patients required this label. Reassess at 3 years or sooner if new signs develop.'};
+
+  return {cls:'vi',t:'Indeterminate Tremor Syndrome',d:'Insufficient data to classify into an established IPMDS syndrome, or the combination of features does not fit a defined syndrome. Continue systematic phenotyping and re-examine. Consider ancillary testing (neurophysiology, DaTscan, MRI, genetic testing based on age and family history). Document Axis 1 features in full and review at follow-up.'};
+}
+
+function rv(){
+  const v=syndrome();
+  let h=`<div class="vban ${v.cls}"><div class="vlbl">IPMDS Tremor Classification · Bhatia et al. Movement Disorders 2018;33(1):75–87</div><div class="vtitle">${v.t}</div><div class="vdesc">${v.d}</div></div>`;
+
+  // Summary grid
+  const axis1={
+    'Tremor confirmed': S.confirm==='yes'?'yes':'no',
+    'Duration ≥3 years': S.duration==='gte3'?'yes':(S.duration==='lt3'?'no':null),
+    'Bilateral upper limb action tremor': S.biup,
+    'Rest tremor': S.rest,
+    'Postural tremor': S.postural,
+    'Kinetic tremor': S.kinetic,
+    'Intention tremor': S.intention,
+    'Task-specific tremor': S.taskspec,
+    'Orthostatic tremor': S.orthostatic,
+  };
+  const axis1b={
+    'Head tremor': S.head,
+    'Voice tremor': S.voice,
+    'Lower limb tremor': S.lowlimb,
+    'Palatal tremor': S.palatal,
+    'Parkinsonism': S.parkinsonism,
+    'Dystonia signs': S.dystonia,
+    'Cerebellar signs': S.cerebellar,
+    'Soft signs (ET plus)': S.softsigns,
+    'Functional features': S.functional,
+  };
+
+  h+=`<div class="sum-grid">`;
+  h+=`<div class="sblock"><div class="sbtitle">✦ Axis 1 · Activation & Duration</div>`;
+  Object.entries(axis1).forEach(([k,v2])=>{
+    if(v2===null)return;
+    const pos=v2==='yes';
+    h+=`<div class="srow"><div class="dot ${pos?'dg':'dgr'}"></div><div class="sname">${k}</div><div class="stag ${pos?'tg':'tgr'}">${pos?'YES':'NO'}</div></div>`;
+  });
+  h+=`</div>`;
+  h+=`<div class="sblock"><div class="sbtitle">✦ Axis 1 · Distribution & Signs</div>`;
+  Object.entries(axis1b).forEach(([k,v2])=>{
+    if(v2===null)return;
+    const pos=v2==='yes';
+    const isDanger=(k==='Parkinsonism'||k==='Dystonia signs'||k==='Cerebellar signs')&&pos;
+    const isFn=(k==='Functional features')&&pos;
+    h+=`<div class="srow"><div class="dot ${isDanger?'dr':isFn?'dy':pos?'dg':'dgr'}"></div><div class="sname">${k}</div><div class="stag ${isDanger?'tr':isFn?'ty':pos?'tg':'tgr'}">${pos?'PRESENT':'ABSENT'}</div></div>`;
+  });
+  h+=`</div></div>`;
+
+  document.getElementById('vout').innerHTML=h;
+
+  // Doc note
+  const freq_map={'lt4':'<4 Hz','4to8':'4–8 Hz','8to12':'8–12 Hz','gt13':'>13 Hz'};
+  const dur_map={'lt3':'<3 years','gte3':'≥3 years'};
+  let note=`MOVEMENT DISORDERS CONSULTATION
+IPMDS Tremor Classification Assessment · Bhatia KP et al. Movement Disorders 2018;33(1):75–87
+Date: ${new Date().toLocaleDateString()}
+
+AXIS 1 — CLINICAL FEATURES
+
+TREMOR CONFIRMATION
+  Tremor confirmed: ${S.confirm==='yes'?'Yes':'No / Not assessed'}
+  Estimated frequency: ${S.freq?freq_map[S.freq]:'Not assessed'}
+  Duration: ${S.duration?dur_map[S.duration]:'Not assessed'}
+
+ACTIVATION CONDITIONS
+  Rest tremor: ${S.rest==='yes'?'Present':S.rest==='no'?'Absent':'Not assessed'}
+  Rest tremor subsides with movement: ${S.restmod==='yes'?'Yes (PD pattern)':S.restmod==='no'?'No (ET plus / dystonic)':'Not assessed'}
+  Postural tremor: ${S.postural==='yes'?'Present':S.postural==='no'?'Absent':'Not assessed'}
+  Kinetic tremor: ${S.kinetic==='yes'?'Present':S.kinetic==='no'?'Absent':'Not assessed'}
+  Intention tremor: ${S.intention==='yes'?'Present':S.intention==='no'?'Absent':'Not assessed'}
+  Task-specific tremor: ${S.taskspec==='yes'?'Present':S.taskspec==='no'?'Absent':'Not assessed'}
+  Isometric tremor: ${S.isometric==='yes'?'Present':S.isometric==='no'?'Absent':'Not assessed'}
+  Orthostatic tremor: ${S.orthostatic==='yes'?'Present':S.orthostatic==='no'?'Absent':'Not assessed'}
+
+ANATOMICAL DISTRIBUTION
+  Bilateral upper limbs: ${S.biup==='yes'?'Yes':'No / Not assessed'}
+  Head tremor: ${S.head==='yes'?'Present':S.head==='no'?'Absent':'Not assessed'}
+  Voice tremor: ${S.voice==='yes'?'Present':S.voice==='no'?'Absent':'Not assessed'}
+  Lower limb tremor: ${S.lowlimb==='yes'?'Present':S.lowlimb==='no'?'Absent':'Not assessed'}
+  Jaw tremor: ${S.jaw==='yes'?'Present':S.jaw==='no'?'Absent':'Not assessed'}
+  Palatal tremor: ${S.palatal==='yes'?'Present':S.palatal==='no'?'Absent':'Not assessed'}
+  Predominantly unilateral: ${S.unilateral==='yes'?'Yes':S.unilateral==='no'?'No (bilateral/symmetric)':'Not assessed'}
+
+ASSOCIATED SIGNS (Isolated vs. Combined Tremor Syndrome)
+  Parkinsonism (bradykinesia + rigidity): ${S.parkinsonism==='yes'?'PRESENT — combined syndrome':S.parkinsonism==='no'?'Absent':'Not assessed'}
+  Dystonia: ${S.dystonia==='yes'?'PRESENT — combined syndrome':S.dystonia==='no'?'Absent':'Not assessed'}
+  Cerebellar signs: ${S.cerebellar==='yes'?'PRESENT — combined syndrome':S.cerebellar==='no'?'Absent':'Not assessed'}
+  Soft signs (ET plus features): ${S.softsigns==='yes'?'Present':S.softsigns==='no'?'Absent':'Not assessed'}
+  Functional tremor features: ${S.functional==='yes'?'PRESENT':S.functional==='no'?'Absent':'Not assessed'}
+
+AXIS 1 SYNDROME CLASSIFICATION
+${v.t}
+
+${v.d}
+
+AXIS 2 ETIOLOGY
+  [To be determined — genetic, acquired, or idiopathic]
+  Consider based on clinical syndrome above.
+
+Ref: Bhatia KP, Bain P, Bajaj N, Elble RJ, Hallett M, Louis ED, et al.
+Consensus Statement on the Classification of Tremors. From the Task Force
+on Tremor of the International Parkinson and Movement Disorder Society.
+Movement Disorders. 2018;33(1):75–87. DOI: 10.1002/mds.27121`;
+  document.getElementById('dn').textContent=note;
+}
+
+function goTab(n){if(n===cur)return;go(n);}
+
+function go(n){
+  document.getElementById('s'+cur).classList.remove('active');
+  document.getElementById('s'+n).classList.add('active');
+  for(let i=0;i<6;i++){const d=document.getElementById('st'+i);d.classList.remove('active','done');if(i<n)d.classList.add('done');else if(i===n)d.classList.add('active');}
+  cur=n;
+  document.getElementById('pf').style.width=((n/5)*100)+'%';
+  if(n===5)rv();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function xp(btn){
+  const d=btn.closest('.crit').querySelector('.crit-detail');if(!d)return;
+  const o=d.classList.toggle('open');
+  btn.textContent=o?'close ▴':'details ▾';
+}
+
+function tp(id){const el=document.getElementById(id);if(el)el.classList.toggle('open');}
+
+function toggleDoc(){
+  const body=document.getElementById('dn');
+  const btn=document.getElementById('copy-btn');
+  const tog=document.querySelector('.doc-tog');
+  if(!body)return;
+  const open=body.classList.toggle('open');
+  tog.textContent=open?'▲ Documentation Note':'▼ Documentation Note';
+  if(btn)btn.classList.toggle('visible',open);
+}
+
+function copyDoc(){
+  const body=document.getElementById('dn');
+  const btn=document.getElementById('copy-btn');
+  if(!body)return;
+  const text=body.textContent||body.innerText;
+  navigator.clipboard.writeText(text).then(()=>{
+    if(btn){btn.textContent='✓ Copied';btn.classList.add('copied');setTimeout(()=>{btn.textContent='⎘ Copy';btn.classList.remove('copied');},2000);}
+  }).catch(()=>{
+    const ta=document.createElement('textarea');
+    ta.value=text;ta.style.position='fixed';ta.style.opacity='0';
+    document.body.appendChild(ta);ta.select();document.execCommand('copy');
+    document.body.removeChild(ta);
+    if(btn){btn.textContent='✓ Copied';btn.classList.add('copied');setTimeout(()=>{btn.textContent='⎘ Copy';btn.classList.remove('copied');},2000);}
+  });
+}
+
+function ha(el){if(el)el.classList.remove('show');}
+function sa(el,cls,msg){if(!el)return;el.className='alrt show '+cls;el.innerHTML=msg;}
+
+function resetAll(){
+  Object.keys(S).forEach(k=>S[k]=null);
+  document.querySelectorAll('.crit').forEach(el=>el.className='crit');
+  document.querySelectorAll('.abtn').forEach(b=>b.classList.remove('ay','an','ap','aa'));
+  document.querySelectorAll('.crit-detail').forEach(d=>d.classList.remove('open'));
+  document.querySelectorAll('.xbtn').forEach(b=>b.textContent='details ▾');
+  document.querySelectorAll('.pbody').forEach(b=>b.classList.remove('open'));
+  const dn=document.getElementById('dn');if(dn)dn.classList.remove('open');
+  const cb=document.getElementById('copy-btn');if(cb)cb.classList.remove('visible','copied');
+  const tog=document.querySelector('.doc-tog');if(tog)tog.textContent='▼ Documentation Note';
+  go(0);
+  const n0=document.getElementById('n0');if(n0)n0.disabled=true;
+}
+
+ui();
+</script>
+</body>
+</html>
