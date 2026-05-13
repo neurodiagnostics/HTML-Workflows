@@ -1,0 +1,1094 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>MS DMT Navigator</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap');
+:root{
+  --bg:#0a0e14;--card:#111720;--card2:#171f2b;--card3:#1c2535;--border:#2a3647;--border2:#3d5068;
+  --gold:#f5c842;--gold-bg:rgba(245,200,66,.08);--gold-bd:rgba(245,200,66,.28);
+  --amber:#e3b341;--amber-bg:rgba(227,179,65,.08);--amber-bd:rgba(227,179,65,.3);
+  --green:#3fb950;--green-bg:rgba(63,185,80,.08);--green-bd:rgba(63,185,80,.3);
+  --red:#f85149;--red-bg:rgba(248,81,73,.08);--red-bd:rgba(248,81,73,.3);
+  --blue:#58a6ff;--blue-bg:rgba(88,166,255,.08);--blue-bd:rgba(88,166,255,.3);
+  --purple:#bc8cff;--purple-bg:rgba(188,140,255,.08);--purple-bd:rgba(188,140,255,.3);
+  --teal:#22d3ee;--teal-bg:rgba(34,211,238,.08);--teal-bd:rgba(34,211,238,.3);
+  --orange:#fb923c;--orange-bg:rgba(251,146,60,.08);--orange-bd:rgba(251,146,60,.3);
+  --pink:#f472b6;--pink-bg:rgba(244,114,182,.08);--pink-bd:rgba(244,114,182,.3);
+  --text:#e2eaf4;--text2:#8fa3bc;--text3:#506070;
+  --display:'Lexend',system-ui,sans-serif;--body:'Lexend',system-ui,sans-serif;--mono:'IBM Plex Mono',monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:14px;line-height:1.55;min-height:100vh}
+.app{max-width:1020px;margin:0 auto;padding:0 20px 100px}
+header{padding:28px 0 20px;border-bottom:1px solid var(--border);margin-bottom:22px;display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.h-title{font-family:var(--display);font-size:22px;font-weight:800;letter-spacing:-.03em;line-height:1.1;color:var(--gold)}
+.h-title span{color:var(--text)}
+.h-sub{font-size:11.5px;color:var(--text3);margin-top:5px;line-height:1.65}
+.h-credit{font-size:10.5px;color:var(--gold);margin-top:3px;font-weight:600;opacity:.75}
+.reset-btn{background:var(--card2);border:1px solid var(--border);color:var(--text2);font-size:12px;padding:8px 16px;border-radius:5px;cursor:pointer;font-family:var(--display);font-weight:700;white-space:nowrap;flex-shrink:0;margin-top:4px}
+.reset-btn:hover{border-color:var(--gold);color:var(--gold)}
+.prog-track{height:2px;background:var(--border);border-radius:2px;margin-bottom:18px}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--amber),var(--gold));border-radius:2px;transition:.35s}
+.steps{display:grid;grid-template-columns:repeat(6,1fr);border:1px solid var(--border);border-radius:8px;margin-bottom:22px;overflow:hidden;background:var(--card)}
+.stab{padding:10px 6px 11px;text-align:center;color:var(--text3);border-right:1px solid var(--border);cursor:pointer}
+.stab:last-child{border-right:none}
+.stab .sn{display:flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;background:var(--card2);border:1px solid var(--border);font-size:12px;font-weight:700;margin:0 auto 4px;font-family:var(--display)}
+.stab .slbl{display:block;font-size:10.5px;font-weight:700;line-height:1.2;font-family:var(--display)}
+.stab.active{color:var(--gold);background:rgba(245,200,66,.05)}
+.stab.active .sn{background:var(--gold);color:#0a0e14;border-color:var(--gold)}
+.stab.done{color:var(--green)}
+.stab.done .sn{background:var(--green);color:#0a0e14;border-color:var(--green)}
+.screen{display:none}.screen.active{display:block;animation:fadeUp .2s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:22px;margin-bottom:12px}
+.ctitle{font-family:var(--display);font-size:16px;font-weight:800;margin-bottom:3px;letter-spacing:-.02em;color:var(--gold)}
+.csub{font-size:12px;color:var(--text2);margin-bottom:18px;line-height:1.7}
+.disclaimer{background:var(--red-bg);border:1px solid var(--red-bd);border-left:4px solid var(--red);border-radius:6px;padding:10px 14px;margin-bottom:18px;display:flex;gap:10px}
+.disclaimer-icon{color:var(--red);font-size:15px;flex-shrink:0}
+.disclaimer-text{font-size:11.5px;color:#ffaaa6;line-height:1.65}
+.disclaimer-text strong{display:block;color:var(--red);margin-bottom:2px}
+/* slabel with optional details btn */
+.slabel{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700;font-family:var(--display);color:var(--gold);margin:16px 0 8px;padding-bottom:6px;border-bottom:1px solid var(--gold-bd)}
+.slabel-text{flex:1}
+.pill{font-family:var(--display);font-size:10px;padding:1px 8px;border-radius:20px;border:1px solid;margin-left:auto;font-weight:700}
+.pill-g{border-color:var(--gold-bd);color:var(--gold);background:var(--gold-bg)}
+/* xbtn = purple details button, identical to original */
+.xbtn{background:var(--purple-bg);border:1px solid var(--purple-bd);color:var(--purple);font-family:var(--body);font-size:12px;cursor:pointer;padding:2px 8px;border-radius:3px;font-weight:600;flex-shrink:0}
+.xbtn:hover{background:var(--purple);color:#0a0e14;border-color:var(--purple)}
+.xbtn-inline{background:var(--purple-bg);border:1px solid var(--purple-bd);color:var(--purple);font-family:var(--body);font-size:11px;cursor:pointer;padding:1px 7px;border-radius:3px;font-weight:600;margin-left:8px}
+.xbtn-inline:hover{background:var(--purple);color:#0a0e14}
+/* expandable info panels */
+.info-panel{display:none;margin-top:0;margin-bottom:10px;padding:10px 14px;background:var(--card2);border:1px solid var(--purple-bd);border-top:none;border-radius:0 0 7px 7px;font-size:11.5px;color:var(--text2);line-height:1.75}
+.info-panel.open{display:block}
+.info-panel strong{color:var(--text)}
+.info-panel table{width:100%;border-collapse:collapse;margin-top:8px;font-size:11px}
+.info-panel table th{background:var(--card3);color:var(--gold);padding:5px 8px;text-align:left;font-family:var(--display);font-weight:700;font-size:10px;letter-spacing:.04em}
+.info-panel table td{padding:5px 8px;border-bottom:1px solid var(--border);color:var(--text2)}
+.info-panel table tr:last-child td{border-bottom:none}
+/* opt grid */
+.opt-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.opt-btn{background:var(--card2);border:1px solid var(--border);border-radius:7px;padding:10px 14px;cursor:pointer;text-align:left;color:var(--text2);font-family:var(--body);font-size:12.5px;line-height:1.4;transition:.12s;font-weight:500}
+.opt-btn:hover{border-color:var(--border2);color:var(--text);background:var(--card3)}
+.opt-btn.selected{border-color:var(--gold-bd);background:var(--gold-bg);color:var(--gold);font-weight:700}
+.opt-label{font-size:10px;color:var(--text3);margin-bottom:2px;font-weight:700;letter-spacing:.03em;font-family:var(--display)}
+/* checkbox */
+.checkbox-row{display:flex;align-items:center;gap:10px;padding:9px 12px;background:var(--card2);border:1px solid var(--border);border-radius:6px;cursor:pointer;margin-bottom:6px;transition:.12s;font-size:12.5px;color:var(--text2)}
+.checkbox-row:hover{border-color:var(--border2);color:var(--text)}
+.checkbox-row.checked{border-color:var(--amber-bd);background:var(--amber-bg);color:var(--amber)}
+.checkbox-row.checked-red{border-color:var(--red-bd);background:var(--red-bg);color:var(--red)}
+.chk{width:16px;height:16px;border:2px solid var(--border2);border-radius:3px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:10px}
+.checkbox-row.checked .chk{background:var(--amber);border-color:var(--amber);color:#0a0e14}
+.checkbox-row.checked-red .chk{background:var(--red);border-color:var(--red);color:#0a0e14}
+/* alerts */
+.alrt{display:none;padding:10px 13px;border-radius:6px;font-size:12px;line-height:1.55;margin-top:10px;border-left:3px solid;font-family:var(--display)}
+.alrt.show{display:block}
+.aok{border-color:var(--green);background:var(--green-bg);color:#7ee787}
+.awn{border-color:var(--amber);background:var(--amber-bg);color:var(--amber)}
+.ainf{border-color:var(--blue);background:var(--blue-bg);color:var(--blue)}
+.ard{border-color:var(--red);background:var(--red-bg);color:#ffaaa6}
+/* nav */
+.nav-row{display:flex;justify-content:space-between;align-items:center;margin-top:18px;gap:10px}
+.nbtn{padding:9px 22px;border-radius:6px;font-size:13px;border:1px solid;cursor:pointer;font-weight:700;font-family:var(--display)}
+.np{background:var(--gold);border-color:var(--gold);color:#0a0e14}
+.np:disabled{opacity:.3;cursor:not-allowed}
+.ns{background:transparent;border-color:var(--border2);color:var(--text2)}
+.ns:hover{border-color:var(--text3)}
+/* results */
+.shared-decision-note{background:var(--teal-bg);border:1px solid var(--teal-bd);border-left:4px solid var(--teal);border-radius:7px;padding:12px 15px;margin-bottom:18px;font-size:12px;color:var(--teal);line-height:1.7;font-family:var(--display)}
+.shared-decision-note strong{display:block;color:var(--teal);font-size:13px;margin-bottom:4px}
+.tier-label{font-family:var(--display);font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;padding:4px 10px;border-radius:4px;display:inline-block;margin-bottom:10px}
+.tier-1{background:var(--green-bg);color:var(--green);border:1px solid var(--green-bd)}
+.tier-2{background:var(--gold-bg);color:var(--gold);border:1px solid var(--gold-bd)}
+.tier-3{background:var(--blue-bg);color:var(--blue);border:1px solid var(--blue-bd)}
+.tier-avoid{background:var(--red-bg);color:var(--red);border:1px solid var(--red-bd)}
+.dmt-card{background:var(--card2);border:1px solid var(--border);border-radius:9px;padding:14px 16px;margin-bottom:8px}
+.dmt-card.t1{border-color:var(--green-bd)}
+.dmt-card.t2{border-color:var(--gold-bd)}
+.dmt-card.t3{border-color:var(--blue-bd)}
+.dmt-card.tavoid{border-color:var(--red-bd);opacity:.8}
+.dmt-header{display:flex;align-items:flex-start;gap:10px;flex-wrap:wrap}
+.dmt-name{font-family:var(--display);font-size:14px;font-weight:800;letter-spacing:-.01em;color:var(--gold)}
+.dmt-brand{font-size:11px;color:var(--text2);font-weight:400}
+.dmt-badges{display:flex;gap:5px;flex-wrap:wrap;margin-left:auto}
+.badge{font-family:var(--display);font-size:9px;padding:2px 7px;border-radius:3px;font-weight:700;letter-spacing:.03em;border:1px solid}
+.badge-oral{border-color:var(--blue-bd);color:var(--blue);background:var(--blue-bg)}
+.badge-inject{border-color:var(--amber-bd);color:var(--amber);background:var(--amber-bg)}
+.badge-iv{border-color:var(--red-bd);color:var(--red);background:var(--red-bg)}
+.badge-rrms{border-color:var(--gold-bd);color:var(--gold);background:var(--gold-bg)}
+.badge-spms{border-color:var(--orange-bd);color:var(--orange);background:var(--orange-bg)}
+.badge-ppms{border-color:var(--purple-bd);color:var(--purple);background:var(--purple-bg)}
+.badge-heff{border-color:var(--green-bd);color:var(--green);background:var(--green-bg)}
+.badge-modeff{border-color:var(--teal-bd);color:var(--teal);background:var(--teal-bg)}
+.badge-loweff{border-color:var(--text3);color:var(--text2);background:var(--card3)}
+.dmt-body{margin-top:8px;font-size:11.5px;color:var(--text2);line-height:1.7}
+.dmt-body strong{color:var(--text)}
+.dmt-stats-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px}
+.dmt-stat{text-align:center;background:var(--card);border:1px solid var(--border);border-radius:5px;padding:5px 10px;min-width:80px}
+.dmt-stat .sv{font-family:var(--display);font-size:15px;font-weight:800;color:var(--gold)}
+.dmt-stat .sl{font-size:9.5px;color:var(--text3);line-height:1.3;font-weight:600}
+.dmt-warn{margin-top:8px;padding:6px 10px;background:var(--red-bg);border:1px solid var(--red-bd);border-left:3px solid var(--red);border-radius:4px;font-size:11px;color:#ffaaa6;line-height:1.55;font-family:var(--display)}
+.dmt-caution{margin-top:8px;padding:6px 10px;background:var(--amber-bg);border:1px solid var(--amber-bd);border-left:3px solid var(--amber);border-radius:4px;font-size:11px;color:var(--amber);line-height:1.55;font-family:var(--display)}
+.dmt-good{margin-top:8px;padding:6px 10px;background:var(--green-bg);border:1px solid var(--green-bd);border-left:3px solid var(--green);border-radius:4px;font-size:11px;color:var(--green);line-height:1.55;font-family:var(--display)}
+.monitor-box{margin-top:8px;padding:8px 10px;background:var(--card3);border:1px solid var(--border);border-radius:5px;font-size:11px;color:var(--text2);line-height:1.65}
+.monitor-box strong{color:var(--text);display:block;margin-bottom:3px;font-family:var(--display);font-size:10px;letter-spacing:.04em}
+/* summary */
+.sblock{background:var(--card2);border:1px solid var(--border);border-radius:7px;padding:12px 14px;margin-bottom:10px}
+.sbtitle{font-family:var(--display);font-size:10px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--text3);margin-bottom:8px}
+.srow{display:flex;gap:8px;align-items:flex-start;margin-bottom:5px;font-size:12px;color:var(--text2)}
+.srow:last-child{margin-bottom:0}
+.dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;margin-top:5px}
+.dg{background:var(--gold)}.da{background:var(--amber)}.dr{background:var(--red)}.db{background:var(--blue)}.dgr{background:var(--green)}.dpk{background:var(--purple)}
+/* doc note */
+.doc-toggle{width:100%;background:var(--card2);border:1px solid var(--border);border-radius:6px;padding:9px 14px;cursor:pointer;text-align:left;color:var(--text2);font-size:12px;font-family:var(--body);display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:14px}
+.doc-toggle:hover{border-color:var(--border2);color:var(--text)}
+.doc-body{display:none;margin-top:8px;padding:12px 14px;background:var(--card);border:1px solid var(--border);border-radius:6px;font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:var(--text2);white-space:pre-wrap;line-height:1.65}
+.doc-body.open{display:block}
+.copy-btn{margin-top:7px;background:var(--card2);border:1px solid var(--border);color:var(--text2);font-size:11px;padding:5px 14px;border-radius:4px;cursor:pointer;font-family:var(--body)}
+.copy-btn:hover{border-color:var(--gold);color:var(--gold)}
+.divider{border:none;border-top:1px solid var(--border);margin:16px 0}
+.slabel-row{display:flex;align-items:center;gap:8px;margin:16px 0 0;padding-bottom:6px;border-bottom:1px solid var(--gold-bd)}
+.slabel-row .slabel-text{flex:1;font-size:13px;font-weight:700;font-family:var(--display);color:var(--gold)}
+.slabel-panel{background:var(--card2);border:1px solid var(--purple-bd);border-radius:0 0 7px 7px;padding:10px 14px;font-size:11.5px;color:var(--text2);line-height:1.75;display:none;margin-bottom:8px}
+.slabel-panel.open{display:block}
+.slabel-panel table{width:100%;border-collapse:collapse;margin-top:6px}
+.slabel-panel table th{background:var(--card3);color:var(--gold);padding:5px 8px;text-align:left;font-family:var(--display);font-weight:700;font-size:10px;letter-spacing:.04em;border-bottom:1px solid var(--border)}
+.slabel-panel table td{padding:5px 8px;border-bottom:1px solid var(--border);color:var(--text2);font-size:11px}
+.slabel-panel table tr:last-child td{border-bottom:none}
+</style>
+</head>
+<body>
+<div class="app">
+<header>
+  <div>
+    <div class="h-title"><span>MS Disease-Modifying </span>Therapy Navigator</div>
+    <div class="h-sub">Step-by-step clinical decision support · Educational reference only · Always apply individualized clinical judgment</div>
+    <div class="h-credit">Designed by neurology resident physician Daniel Short, MD</div>
+  </div>
+  <button class="reset-btn" onclick="resetAll()">↺ Reset</button>
+</header>
+
+<div class="prog-track"><div class="prog-fill" id="progBar" style="width:0%"></div></div>
+
+<div class="steps" id="stepTabs">
+  <div class="stab active" id="tab0" onclick="go(0)"><div class="sn">1</div><span class="slbl">MS Type</span></div>
+  <div class="stab" id="tab1" onclick="go(1)"><div class="sn">2</div><span class="slbl">Severity</span></div>
+  <div class="stab" id="tab2" onclick="go(2)"><div class="sn">3</div><span class="slbl">Patient</span></div>
+  <div class="stab" id="tab3" onclick="go(3)"><div class="sn">4</div><span class="slbl">Comorbidities</span></div>
+  <div class="stab" id="tab4" onclick="go(4)"><div class="sn">5</div><span class="slbl">Preferences</span></div>
+  <div class="stab" id="tab5" onclick="go(5)"><div class="sn">6</div><span class="slbl">Results</span></div>
+</div>
+
+<!-- STEP 1: MS TYPE -->
+<div class="screen active" id="s0">
+<div class="card">
+  <div class="ctitle">Step 1 · MS Phenotype</div>
+  <div class="csub">Select the clinically established MS phenotype. This is the most fundamental determinant of DMT eligibility. If the pattern is still unclear, select "Too Early to Tell" — the tool will weight recommendations toward the most statistically likely phenotype (RRMS ~85% of new diagnoses) while flagging uncertainty.</div>
+  <div class="disclaimer">
+    <div class="disclaimer-icon">⚠</div>
+    <div class="disclaimer-text"><strong>Educational Tool Only</strong>This tool is a clinical reference based on labeled indications and published trial data. It does not replace individualized patient assessment, neurology consultation, or current prescribing guidelines. All DMT decisions require formal clinical evaluation.</div>
+  </div>
+
+  <div class="slabel-row" id="mstype-label-row">
+    <div class="slabel-text">MS Phenotype Classification</div>
+    <button class="xbtn" onclick="togglePanel('mstype-panel',this)">details ▾</button>
+  </div>
+  <div class="slabel-panel" id="mstype-panel">
+    <strong>MS Phenotype Frequency at Diagnosis (approximate):</strong>
+    <table>
+      <tr><th>Phenotype</th><th>Frequency</th><th>Key Feature</th><th>DMT Landscape</th></tr>
+      <tr><td>RRMS</td><td>~80–85%</td><td>Discrete relapses with recovery</td><td>Broadest armamentarium; 15+ approved agents</td></tr>
+      <tr><td>CIS</td><td>~10–15% at first event</td><td>First demyelinating event; McDonald criteria not yet met</td><td>IFN-β, glatiramer, DMF have CIS data; early Rx delays conversion to CDMS</td></tr>
+      <tr><td>PPMS</td><td>~10–15%</td><td>Progressive from onset; no relapses</td><td>Ocrelizumab only FDA-approved agent; older age at onset, slight male predominance</td></tr>
+      <tr><td>SPMS</td><td>~30–40% of RRMS convert over 15–20 yrs (untreated)</td><td>Progressive after initial relapsing course</td><td>Very limited; siponimod for active SPMS, cladribine for relapsing forms</td></tr>
+      <tr><td>Too Early to Tell</td><td>—</td><td>Pattern unclear early in disease course</td><td>Recommendations weighted toward RRMS probability; CIS-approved agents highlighted</td></tr>
+    </table>
+    <div style="margin-top:8px;font-size:11px;color:var(--text3)">Sources: Lublin et al., Neurology 2014; Navigating MS 2025, ScienceDirect; Italian MS Register; Johns Hopkins MS Center epidemiologic data</div>
+  </div>
+
+  <div style="margin-top:8px" class="opt-grid" id="ms-type-grid">
+    <button class="opt-btn" onclick="selectMSType('rrms',this)">
+      <div class="opt-label">RRMS</div>
+      Relapsing-Remitting MS<br><span style="font-size:10.5px;color:var(--text3)">~80–85% of diagnoses. Distinct attacks with full or partial recovery</span>
+    </button>
+    <button class="opt-btn" onclick="selectMSType('spms',this)">
+      <div class="opt-label">SPMS</div>
+      Secondary Progressive MS<br><span style="font-size:10.5px;color:var(--text3)">Progressive disability after initial relapsing course; limited DMT options</span>
+    </button>
+    <button class="opt-btn" onclick="selectMSType('ppms',this)">
+      <div class="opt-label">PPMS</div>
+      Primary Progressive MS<br><span style="font-size:10.5px;color:var(--text3)">~10–15%. Progressive from onset; ocrelizumab is primary approved agent</span>
+    </button>
+    <button class="opt-btn" onclick="selectMSType('cis',this)">
+      <div class="opt-label">CIS</div>
+      Clinically Isolated Syndrome<br><span style="font-size:10.5px;color:var(--text3)">First demyelinating event; IFN-β reduces CIS→CDMS conversion by ~50%</span>
+    </button>
+    <button class="opt-btn" onclick="selectMSType('early',this)" style="grid-column:1/-1">
+      <div class="opt-label">TOO EARLY TO TELL</div>
+      Pattern unclear — early disease course or insufficient follow-up to classify<br><span style="font-size:10.5px;color:var(--text3)">RRMS probability ~80–85%; tool will weight toward relapsing-phase agents while noting uncertainty</span>
+    </button>
+  </div>
+  <div id="alrt-type" class="alrt"></div>
+  <div class="nav-row"><div></div><button class="nbtn np" id="n0" onclick="go(1)" disabled>Next: Disease Severity →</button></div>
+</div></div>
+
+<!-- STEP 2: SEVERITY -->
+<div class="screen" id="s1">
+<div class="card">
+  <div class="ctitle">Step 2 · Disease Activity &amp; Severity</div>
+  <div class="csub">Assess disease burden to guide treatment intensity. Highly active disease strongly favors high-efficacy therapy (HET) upfront — the "treat-to-target" or induction approach. Each domain is independent; any single domain meeting "highly active" criteria shifts recommendations toward HET.</div>
+
+  <div class="slabel-row"><div class="slabel-text">Relapse Activity (past 12 months)</div></div>
+  <div style="margin-top:8px" class="opt-grid" id="relapse-grid">
+    <button class="opt-btn" onclick="selectOpt('relapse','none',this,'relapse-grid')"><div class="opt-label">NONE</div>No relapses in the past year</button>
+    <button class="opt-btn" onclick="selectOpt('relapse','one',this,'relapse-grid')"><div class="opt-label">MILD</div>1 relapse, good recovery</button>
+    <button class="opt-btn" onclick="selectOpt('relapse','two',this,'relapse-grid')"><div class="opt-label">MODERATE</div>2 relapses, or 1 with incomplete recovery</button>
+    <button class="opt-btn" onclick="selectOpt('relapse','severe',this,'relapse-grid')"><div class="opt-label">HIGH ACTIVITY</div>≥2 relapses in 1 year, or disabling relapse with incomplete recovery</button>
+  </div>
+
+  <div class="slabel-row" style="margin-top:18px"><div class="slabel-text">MRI Activity</div></div>
+  <div style="margin-top:8px" class="opt-grid" id="mri-grid">
+    <button class="opt-btn" onclick="selectOpt('mri','stable',this,'mri-grid')"><div class="opt-label">STABLE</div>No new/enlarging T2 lesions; no Gd enhancement</button>
+    <button class="opt-btn" onclick="selectOpt('mri','mild',this,'mri-grid')"><div class="opt-label">MILD</div>1–2 new T2 lesions; no Gd+ lesions</button>
+    <button class="opt-btn" onclick="selectOpt('mri','active',this,'mri-grid')"><div class="opt-label">ACTIVE</div>3+ new T2 lesions or ≥1 Gd-enhancing lesion</button>
+    <button class="opt-btn" onclick="selectOpt('mri','highly-active',this,'mri-grid')"><div class="opt-label">HIGHLY ACTIVE</div>Multiple Gd+ lesions; large or rapidly accruing lesion burden</button>
+  </div>
+
+  <div class="slabel-row" style="margin-top:18px">
+    <div class="slabel-text">Disability Level (EDSS)</div>
+    <button class="xbtn" onclick="togglePanel('edss-panel',this)">details ▾</button>
+  </div>
+  <div class="slabel-panel" id="edss-panel">
+    <strong>Expanded Disability Status Scale (EDSS) — Kurtzke 1983</strong><br/>The EDSS ranges from 0 (normal neurological exam) to 10 (death from MS). It is heavily weighted toward ambulation above EDSS 4.0.
+    <table>
+      <tr><th>EDSS</th><th>Description</th></tr>
+      <tr><td>0</td><td>Normal neurological exam; no disability</td></tr>
+      <tr><td>1.0–1.5</td><td>No disability; minimal signs in one or two functional systems</td></tr>
+      <tr><td>2.0–2.5</td><td>Minimal disability in one or two functional systems</td></tr>
+      <tr><td>3.0–3.5</td><td>Moderate disability in one FS, or mild disability in 3–4 FS; fully ambulatory</td></tr>
+      <tr><td>4.0–4.5</td><td>Fully ambulatory without aid; self-sufficient up to 12 hours/day despite disability</td></tr>
+      <tr><td>5.0–5.5</td><td>Ambulatory without aid for ~200m; disability severe enough to impair full daily activities</td></tr>
+      <tr><td>6.0–6.5</td><td>Requires walking aid (unilateral 6.0, bilateral 6.5) to walk ~20m with or without resting</td></tr>
+      <tr><td>7.0–7.5</td><td>Unable to walk beyond ~5m; restricted to wheelchair; transfers independently</td></tr>
+      <tr><td>8.0–8.5</td><td>Essentially restricted to bed/chair; retains self-care functions to varying degree</td></tr>
+      <tr><td>9.0–9.5</td><td>Confined to bed; can communicate and eat</td></tr>
+      <tr><td>10</td><td>Death due to MS</td></tr>
+    </table>
+    <div style="margin-top:6px;font-size:11px;color:var(--text3)">Kurtzke JF. Neurology. 1983;33(11):1444–52.</div>
+  </div>
+  <div style="margin-top:8px" class="opt-grid" id="edss-grid">
+    <button class="opt-btn" onclick="selectOpt('edss','low',this,'edss-grid')"><div class="opt-label">EDSS 0–2</div>Minimal or no disability; normal or near-normal exam</button>
+    <button class="opt-btn" onclick="selectOpt('edss','mod',this,'edss-grid')"><div class="opt-label">EDSS 3–4</div>Moderate disability; fully ambulatory</button>
+    <button class="opt-btn" onclick="selectOpt('edss','high',this,'edss-grid')"><div class="opt-label">EDSS 5–6</div>Significant disability; limited walking distance</button>
+    <button class="opt-btn" onclick="selectOpt('edss','severe',this,'edss-grid')"><div class="opt-label">EDSS 7+</div>Severely disabled; wheelchair dependent or bed-bound</button>
+  </div>
+
+  <div class="slabel-row" style="margin-top:18px"><div class="slabel-text">Prior DMT Failure</div></div>
+  <div style="margin-top:8px" class="opt-grid" id="fail-grid">
+    <button class="opt-btn" onclick="selectOpt('fail','none',this,'fail-grid')"><div class="opt-label">NONE</div>Treatment-naïve</button>
+    <button class="opt-btn" onclick="selectOpt('fail','low',this,'fail-grid')"><div class="opt-label">1 FAILURE</div>Failed one low-to-moderate efficacy DMT (IFN-β, glatiramer, DMF, teriflunomide)</button>
+    <button class="opt-btn" onclick="selectOpt('fail','multi',this,'fail-grid')"><div class="opt-label">MULTIPLE</div>Failed ≥2 DMTs, including at least one moderate-efficacy agent</button>
+    <button class="opt-btn" onclick="selectOpt('fail','het',this,'fail-grid')"><div class="opt-label">HET FAILURE</div>Failed ≥1 high-efficacy therapy (natalizumab, ocrelizumab, fingolimod, etc.)</button>
+  </div>
+
+  <div id="alrt-sev" class="alrt"></div>
+  <div class="nav-row"><button class="nbtn ns" onclick="go(0)">← Back</button><button class="nbtn np" id="n1" onclick="go(2)" disabled>Next: Patient Factors →</button></div>
+</div></div>
+
+<!-- STEP 3: PATIENT FACTORS -->
+<div class="screen" id="s2">
+<div class="card">
+  <div class="ctitle">Step 3 · Patient-Specific Factors</div>
+  <div class="csub">These factors critically affect DMT eligibility and safety. Pregnancy status, reproductive planning, and infectious serology (JCV, VZV) are especially important. Lab results pending? Use the "Anticipating negative" options for planning purposes — always confirm before starting.</div>
+
+  <div class="slabel-row"><div class="slabel-text">Reproductive / Pregnancy Status</div></div>
+  <div style="margin-top:8px" class="opt-grid" id="preg-grid">
+    <button class="opt-btn" onclick="selectOpt('preg','na',this,'preg-grid')">Not applicable / male patient</button>
+    <button class="opt-btn" onclick="selectOpt('preg','none',this,'preg-grid')">Female — not planning pregnancy</button>
+    <button class="opt-btn" onclick="selectOpt('preg','planning',this,'preg-grid')">Female — planning pregnancy within 1–2 years</button>
+    <button class="opt-btn" onclick="selectOpt('preg','pregnant',this,'preg-grid')">Currently pregnant or breastfeeding</button>
+  </div>
+
+  <div class="slabel-row" style="margin-top:16px"><div class="slabel-text">Age Group</div></div>
+  <div style="margin-top:8px" class="opt-grid" id="age-grid">
+    <button class="opt-btn" onclick="selectOpt('age','young',this,'age-grid')">18–35 years</button>
+    <button class="opt-btn" onclick="selectOpt('age','mid',this,'age-grid')">36–55 years</button>
+    <button class="opt-btn" onclick="selectOpt('age','older',this,'age-grid')">56+ years</button>
+  </div>
+
+  <div class="slabel-row" style="margin-top:16px">
+    <div class="slabel-text">JC Virus Antibody Status</div>
+    <button class="xbtn" onclick="togglePanel('jcv-panel',this)">details ▾</button>
+  </div>
+  <div class="slabel-panel" id="jcv-panel">
+    <strong>JCV Antibody and PML Risk (Natalizumab)</strong><br/>
+    Progressive multifocal leukoencephalopathy (PML) is a serious risk with natalizumab, caused by JC virus reactivation. Risk stratification uses:
+    <table>
+      <tr><th>JCV Ab Status</th><th>Duration &lt;24 mo</th><th>Duration &gt;24 mo</th><th>Prior IS use</th></tr>
+      <tr><td>Negative</td><td>~1/10,000</td><td>~1/10,000</td><td>No addl risk</td></tr>
+      <tr><td>Positive, index &lt;0.9</td><td>~1/1,000</td><td>~1/600</td><td>Increased</td></tr>
+      <tr><td>Positive, index ≥0.9</td><td>~1/200</td><td>~1/90</td><td>Significantly increased</td></tr>
+    </table>
+    <div style="margin-top:6px">JCV Ab should be re-tested every 6 months. Seroconversion rate ~2–4%/year. Index ≥0.9 at &gt;24 months of treatment = highest PML risk group. Extended interval dosing (every 6 weeks) may reduce PML risk while maintaining efficacy (NOVA trial).</div>
+    <div style="margin-top:4px;font-size:11px;color:var(--text3)">Tysabri REMS program; Plavina et al., Ann Neurol 2014; Ho et al., Ann Neurol 2017 (NOVA)</div>
+  </div>
+  <div style="margin-top:8px" class="opt-grid" id="jcv-grid">
+    <button class="opt-btn" onclick="selectOpt('jcv','unknown',this,'jcv-grid')">Unknown — labs not yet ordered</button>
+    <button class="opt-btn" onclick="selectOpt('jcv','pending-neg',this,'jcv-grid')">Labs ordered — anticipating negative<br><span style="font-size:10.5px;color:var(--text3)">Planning purposes only; confirm before initiation</span></button>
+    <button class="opt-btn" onclick="selectOpt('jcv','neg',this,'jcv-grid')">JCV Ab confirmed negative</button>
+    <button class="opt-btn" onclick="selectOpt('jcv','pos-low',this,'jcv-grid')">JCV Ab positive — index &lt;0.9 (lower risk)</button>
+    <button class="opt-btn" onclick="selectOpt('jcv','pos-high',this,'jcv-grid')">JCV Ab positive — index ≥0.9 (high PML risk)</button>
+  </div>
+
+  <div class="slabel-row" style="margin-top:16px">
+    <div class="slabel-text">VZV Immunity Status</div>
+    <button class="xbtn" onclick="togglePanel('vzv-panel',this)">details ▾</button>
+  </div>
+  <div class="slabel-panel" id="vzv-panel">
+    <strong>Why VZV Matters for MS DMTs</strong><br/>
+    Several high-efficacy DMTs significantly reduce lymphocyte counts or deplete immune cells, reactivating latent VZV (varicella-zoster virus). VZV encephalitis has been reported with fingolimod, siponimod, cladribine, and alemtuzumab.<br/><br/>
+    <strong>Key recommendation:</strong> VZV IgG should be checked before starting S1P modulators (fingolimod, siponimod, ozanimod), alemtuzumab, and cladribine. If VZV IgG negative (non-immune):
+    <ul style="margin:6px 0 0 16px;line-height:1.8;font-size:11.5px">
+      <li>Vaccinate with live attenuated varicella vaccine (2 doses) <em>before</em> starting DMT</li>
+      <li>Wait ≥4–6 weeks post-vaccination before initiating lymphocyte-depleting therapy</li>
+      <li>Live vaccines contraindicated <em>during</em> treatment with S1P modulators or alemtuzumab</li>
+    </ul>
+    <div style="margin-top:6px;font-size:11px;color:var(--text3)">Gieß et al., Mult Scler 2022; Gilenya prescribing information; Lemtrada REMS</div>
+  </div>
+  <div style="margin-top:8px" class="opt-grid" id="vzv-grid">
+    <button class="opt-btn" onclick="selectOpt('vzv','immune',this,'vzv-grid')">VZV IgG confirmed positive (immune)</button>
+    <button class="opt-btn" onclick="selectOpt('vzv','pending-immune',this,'vzv-grid')">Labs ordered — anticipating positive<br><span style="font-size:10.5px;color:var(--text3)">Most adults with prior varicella or vaccination; confirm before initiation</span></button>
+    <button class="opt-btn" onclick="selectOpt('vzv','nonimmune',this,'vzv-grid')">VZV IgG confirmed negative — vaccination required before S1P/alemtuzumab/cladribine</button>
+    <button class="opt-btn" onclick="selectOpt('vzv','unknown',this,'vzv-grid')">Unknown — not yet tested</button>
+  </div>
+
+  <div id="alrt-pf" class="alrt"></div>
+  <div class="nav-row"><button class="nbtn ns" onclick="go(1)">← Back</button><button class="nbtn np" id="n2" onclick="go(3)" disabled>Next: Comorbidities →</button></div>
+</div></div>
+
+<!-- STEP 4: COMORBIDITIES -->
+<div class="screen" id="s3">
+<div class="card">
+  <div class="ctitle">Step 4 · Comorbidities &amp; Safety Considerations</div>
+  <div class="csub">Select all relevant comorbidities. These directly constrain DMT selection — some represent absolute contraindications. Red-highlighted items indicate the most critical safety interactions.</div>
+
+  <div class="slabel-row"><div class="slabel-text">Cardiac</div></div>
+  <div style="margin-top:8px">
+    <div class="checkbox-row" id="cb-cardiac-bradycardia" onclick="toggleCB(this,'cardiac-bradycardia')"><div class="chk">✓</div><div>Bradycardia, sick sinus syndrome, or significant AV block — <strong>contraindication to all S1P modulators</strong> (fingolimod, siponimod, ozanimod)</div></div>
+    <div class="checkbox-row" id="cb-cardiac-af" onclick="toggleCB(this,'cardiac-af')"><div class="chk">✓</div><div>Atrial fibrillation or Class Ia/III antiarrhythmics — first-dose cardiac monitoring required with S1P modulators; cardiology co-management advised</div></div>
+    <div class="checkbox-row" id="cb-cardiac-hf" onclick="toggleCB(this,'cardiac-hf')"><div class="chk">✓</div><div>Heart failure (EF &lt;50%) — caution with mitoxantrone (cardiotoxic; cumulative dose limit 140 mg/m²; pre-treatment and annual ECHO required)</div></div>
+  </div>
+
+  <div class="slabel-row" style="margin-top:14px"><div class="slabel-text">Hepatic</div></div>
+  <div style="margin-top:8px">
+    <div class="checkbox-row" id="cb-liver-disease" onclick="toggleCB(this,'liver-disease')"><div class="chk">✓</div><div>Active hepatic disease or cirrhosis (ALT/AST &gt;3× ULN) — caution or contraindication with teriflunomide, dimethyl fumarate, IFN-β, glatiramer; LFTs required for most agents</div></div>
+    <div class="checkbox-row" id="cb-liver-hbv" onclick="toggleCB(this,'liver-hbv')"><div class="chk">✓</div><div>Hepatitis B (HBV) — mandatory screening before ocrelizumab and other B-cell depleting agents; risk of HBV reactivation with CD20-directed therapies</div></div>
+  </div>
+
+  <div class="slabel-row" style="margin-top:14px"><div class="slabel-text">Ocular</div></div>
+  <div style="margin-top:8px">
+    <div class="checkbox-row" id="cb-eye-macular" onclick="toggleCB(this,'eye-macular')"><div class="chk">✓</div><div>Macular edema or diabetic retinopathy — contraindication to S1P modulators (fingolimod, siponimod); ophthalmologic screening mandatory before initiation</div></div>
+    <div class="checkbox-row" id="cb-eye-uveitis" onclick="toggleCB(this,'eye-uveitis')"><div class="chk">✓</div><div>Uveitis or inflammatory eye disease — caution with S1P modulators; discuss with ophthalmology before initiation</div></div>
+  </div>
+
+  <div class="slabel-row" style="margin-top:14px"><div class="slabel-text">Hematologic / Immunologic</div></div>
+  <div style="margin-top:8px">
+    <div class="checkbox-row" id="cb-heme-lymphopenia" onclick="toggleCB(this,'heme-lymphopenia')"><div class="chk">✓</div><div>Baseline lymphopenia (&lt;1000/µL) — contraindication to dimethyl fumarate initiation; caution with all lymphocyte-depleting agents</div></div>
+    <div class="checkbox-row" id="cb-heme-autoimmune" onclick="toggleCB(this,'heme-autoimmune')"><div class="chk">✓</div><div>Active non-MS autoimmune disease — caution with alemtuzumab (secondary autoimmune AEs occur in ~30–48% of patients over 5 years; thyroid 36%, ITP 2%, nephropathy 0.3%)</div></div>
+    <div class="checkbox-row" id="cb-heme-hiv" onclick="toggleCB(this,'heme-hiv')"><div class="chk">✓</div><div>HIV or severe immunodeficiency — contraindication to most highly immunosuppressive DMTs; ID and neurology co-management required before any HET</div></div>
+  </div>
+
+  <div class="slabel-row" style="margin-top:14px"><div class="slabel-text">Pulmonary</div></div>
+  <div style="margin-top:8px">
+    <div class="checkbox-row" id="cb-pulm-severe" onclick="toggleCB(this,'pulm-severe')"><div class="chk">✓</div><div>Severe pulmonary disease (FEV₁ &lt;70% predicted) — fingolimod reduces FEV₁ by ~0.1L and FVC by ~1–2% (FREEDOMS trial); use with caution or avoid</div></div>
+  </div>
+
+  <div class="slabel-row" style="margin-top:14px"><div class="slabel-text">Oncologic History</div></div>
+  <div style="margin-top:8px">
+    <div class="checkbox-row" id="cb-onc-active" onclick="toggleCB(this,'onc-active')"><div class="chk">✓</div><div>Active malignancy — alemtuzumab, cladribine, and mitoxantrone carry black-box malignancy warnings; avoid in active cancer</div></div>
+    <div class="checkbox-row" id="cb-onc-breast" onclick="toggleCB(this,'onc-breast')"><div class="chk">✓</div><div>History of breast cancer — breast cancer signal in OPERA I/II trials with ocrelizumab (post-hoc; not causal, but warrants individualized discussion)</div></div>
+  </div>
+
+  <div class="slabel-row" style="margin-top:14px">
+    <div class="slabel-text">CYP2C9 Genotype (for Siponimod only)</div>
+    <button class="xbtn" onclick="togglePanel('cyp-panel',this)">details ▾</button>
+  </div>
+  <div class="slabel-panel" id="cyp-panel">
+    Siponimod (Mayzent) is metabolized by CYP2C9. The CYP2C9 *3/*3 genotype results in markedly elevated drug exposure, and siponimod is <strong>contraindicated in CYP2C9 *3/*3 poor metabolizers</strong>. Genotyping is mandatory before initiation. Approximately 1–2% of European-ancestry patients carry the *3/*3 genotype.
+    <br/><div style="margin-top:4px;font-size:11px;color:var(--text3)">Mayzent prescribing information; Novartis 2019</div>
+  </div>
+  <div style="margin-top:8px" class="opt-grid" id="cyp-grid">
+    <button class="opt-btn" onclick="selectOpt('cyp','unknown',this,'cyp-grid')">Unknown / not tested</button>
+    <button class="opt-btn" onclick="selectOpt('cyp','normal',this,'cyp-grid')">Normal metabolizer (*1/*1 or *1/*2)</button>
+    <button class="opt-btn" onclick="selectOpt('cyp','poor',this,'cyp-grid')">Poor metabolizer (*3/*3) — siponimod contraindicated</button>
+  </div>
+
+  <div id="alrt-cmb" class="alrt"></div>
+  <div class="nav-row"><button class="nbtn ns" onclick="go(2)">← Back</button><button class="nbtn np" onclick="go(4)">Next: Preferences →</button></div>
+</div></div>
+
+<!-- STEP 5: PREFERENCES -->
+<div class="screen" id="s4">
+<div class="card">
+  <div class="ctitle">Step 5 · Route of Administration &amp; Preferences</div>
+  <div class="csub">Route preference and lifestyle factors influence long-term adherence and should be a key part of shared decision-making. There is no universally "correct" choice — patient values and tolerability of adverse effects often drive the final decision more than efficacy rankings alone.</div>
+
+  <div class="slabel-row"><div class="slabel-text">Preferred Route of Administration</div></div>
+  <div style="margin-top:8px" class="opt-grid" id="route-grid">
+    <button class="opt-btn" onclick="selectOpt('route','oral',this,'route-grid')"><div class="opt-label">ORAL</div>Tablet or capsule; no injections; daily to weekly dosing</button>
+    <button class="opt-btn" onclick="selectOpt('route','inject',this,'route-grid')"><div class="opt-label">INJECTABLE</div>Subcutaneous or IM self-injection; comfortable with needles</button>
+    <button class="opt-btn" onclick="selectOpt('route','iv',this,'route-grid')"><div class="opt-label">IV INFUSION</div>Accepts infusion center visits every 4 weeks to 6 months</button>
+    <button class="opt-btn" onclick="selectOpt('route','any',this,'route-grid')"><div class="opt-label">NO PREFERENCE</div>Open to any route; efficacy is the priority</button>
+  </div>
+
+  <div class="slabel-row" style="margin-top:16px"><div class="slabel-text">Monitoring Burden Tolerance</div></div>
+  <div style="margin-top:8px" class="opt-grid" id="monitor-grid">
+    <button class="opt-btn" onclick="selectOpt('monitor','low',this,'monitor-grid')"><div class="opt-label">LOW</div>Prefers minimal labs and follow-up visits</button>
+    <button class="opt-btn" onclick="selectOpt('monitor','moderate',this,'monitor-grid')"><div class="opt-label">MODERATE</div>Accepts q3–6 month bloodwork/monitoring</button>
+    <button class="opt-btn" onclick="selectOpt('monitor','high',this,'monitor-grid')"><div class="opt-label">HIGH</div>Accepts monthly monitoring if required for high efficacy</button>
+  </div>
+
+  <div class="slabel-row" style="margin-top:16px"><div class="slabel-text">Family Planning Priority</div></div>
+  <div style="margin-top:8px" class="opt-grid" id="fp-grid">
+    <button class="opt-btn" onclick="selectOpt('fp','no',this,'fp-grid')">Family planning is not a current concern</button>
+    <button class="opt-btn" onclick="selectOpt('fp','yes',this,'fp-grid')">Family planning is a priority — prefer agents with short washout or favorable pregnancy data</button>
+  </div>
+
+  <div id="alrt-pref" class="alrt"></div>
+  <div class="nav-row"><button class="nbtn ns" onclick="go(3)">← Back</button><button class="nbtn np" onclick="generateResults();go(5)">Generate Recommendations →</button></div>
+</div></div>
+
+<!-- STEP 6: RESULTS -->
+<div class="screen" id="s5">
+<div class="card">
+  <div class="ctitle">Step 6 · DMT Recommendations</div>
+  <div class="csub">Ranked by tier based on MS phenotype, disease activity, patient factors, and comorbidities. Review all tiers — a lower-ranked agent may be optimal for an individual patient.</div>
+  <div class="shared-decision-note">
+    <strong>⚖ Shared Decision-Making Note</strong>
+    In clinical practice, there are often multiple appropriate DMTs within each tier. The final choice is rarely determined by efficacy data alone. <strong>Discussing the adverse effect profiles of each candidate with the patient — and eliciting their values, lifestyle, and risk tolerance — is frequently the most important factor in determining the first-choice agent.</strong> This aligns with ECTRIMS/EAN and AAN guidelines emphasizing individualized, patient-centered DMT selection.
+  </div>
+  <div id="result-output"></div>
+  <hr class="divider"/>
+  <div class="sbtitle" style="margin-bottom:8px;font-family:var(--display);font-size:10px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--text3)">CLINICAL SUMMARY</div>
+  <div id="summary-output"></div>
+  <button class="doc-toggle" onclick="toggleDoc()">📋 Documentation Note <span id="docArrow">▾</span></button>
+  <div class="doc-body" id="docBody"></div>
+  <button class="copy-btn" id="copyBtn" onclick="copyDoc()">Copy note</button>
+  <div class="nav-row"><button class="nbtn ns" onclick="go(4)">← Back</button><button class="nbtn np" onclick="resetAll()">↺ Start Over</button></div>
+</div></div>
+
+</div>
+
+<script>
+const S={msType:null,relapse:null,mri:null,edss:null,fail:null,preg:null,age:null,jcv:null,vzv:null,cyp:null,route:null,monitor:null,fp:null,comorbidities:{}};
+
+function go(n){
+  document.querySelectorAll('.screen').forEach((s,i)=>{s.className='screen'+(i===n?' active':'')});
+  document.querySelectorAll('.stab').forEach((t,i)=>{t.className='stab'+(i===n?' active':i<n?' done':'');});
+  document.getElementById('progBar').style.width=((n/5)*100)+'%';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function togglePanel(id,btn){
+  const p=document.getElementById(id);
+  p.classList.toggle('open');
+  btn.textContent=p.classList.contains('open')?'details ▴':'details ▾';
+}
+
+function selectMSType(type,el){
+  S.msType=type;
+  document.querySelectorAll('#ms-type-grid .opt-btn').forEach(b=>b.classList.remove('selected'));
+  el.classList.add('selected');
+  const a=document.getElementById('alrt-type');
+  const msgs={
+    'rrms':{cls:'aok',txt:'RRMS: Largest DMT armamentarium. Range from IFN-β/glatiramer (low-moderate efficacy, favorable safety) to natalizumab/ocrelizumab/alemtuzumab (high efficacy, greater monitoring burden). Disease activity guides tier selection.'},
+    'spms':{cls:'awn',txt:'SPMS: Very limited approved options. Siponimod (EXPAND: 21% CDP reduction, 55% ARR reduction in active SPMS), cladribine (relapsing forms), mitoxantrone (limited by cumulative cardiotoxicity). Inactive SPMS: no approved DMT shows clear benefit.'},
+    'ppms':{cls:'ard',txt:'PPMS: Ocrelizumab (Ocrevus) is the only FDA-approved DMT — ORATORIO trial showed 24% reduction in 12-week CDP vs placebo. Most other DMTs have no established benefit in PPMS. Mastinib is investigational.'},
+    'cis':{cls:'ainf',txt:'CIS: IFN-β reduces conversion to CDMS by ~50% (CHAMPS trial: OR 0.44 for Avonex at 3 years). Glatiramer, DMF, and diroximel fumarate also have CIS data. Early treatment is supported to delay McDonald criteria fulfillment.'},
+    'early':{cls:'awn',txt:'Too Early to Tell: ~80–85% of new demyelinating presentations will ultimately be RRMS. Recommendations below are weighted toward relapsing-phase agents. CIS-indicated agents are highlighted. Re-evaluate phenotype classification at 3–6 month follow-up with repeat MRI.'}
+  };
+  const m=msgs[type];
+  a.className='alrt show '+m.cls;a.innerHTML=m.txt;
+  document.getElementById('n0').disabled=false;
+}
+
+function selectOpt(key,val,el,gridId){
+  S[key]=val;
+  document.querySelectorAll('#'+gridId+' .opt-btn').forEach(b=>b.classList.remove('selected'));
+  el.classList.add('selected');
+  checkSevReady();checkPFReady();checkPrefReady();
+}
+
+function checkSevReady(){
+  const ok=S.relapse&&S.mri&&S.edss&&S.fail;
+  if(document.getElementById('n1'))document.getElementById('n1').disabled=!ok;
+  if(ok){
+    const high=(S.relapse==='severe'||S.mri==='highly-active'||S.fail==='multi'||S.fail==='het');
+    const a=document.getElementById('alrt-sev');
+    if(high){a.className='alrt show awn';a.innerHTML='⚠ High disease activity profile — HET is strongly favored. Consider natalizumab, ocrelizumab, alemtuzumab, or cladribine (RRMS). Early escalation or induction strategy recommended per ECTRIMS/EAN 2023 guidelines.';}
+    else{a.className='alrt show aok';a.innerHTML='Moderate or stable disease. Both escalation therapy (starting low-moderate, stepping up if needed) and early moderate-high efficacy therapy are appropriate. Patient preference and comorbidities often determine tier.';}
+  }
+}
+
+function checkPFReady(){
+  const ok=S.preg&&S.age&&S.jcv&&S.vzv;
+  if(document.getElementById('n2'))document.getElementById('n2').disabled=!ok;
+  const a=document.getElementById('alrt-pf');
+  if(S.preg==='pregnant'){
+    a.className='alrt show ard';
+    a.innerHTML='⚠ Currently pregnant: Nearly all DMTs should be discontinued. Glatiramer acetate (FDA Class B) has the most favorable pregnancy data and may be continued through pregnancy with specialist guidance. IFN-β (Class C) is generally stopped by first trimester. Consult maternal-fetal medicine.';
+  } else if(S.preg==='planning'){
+    a.className='alrt show awn';
+    a.innerHTML='⚠ Planning pregnancy: Teriflunomide is Class X (absolutely avoid; requires accelerated elimination with cholestyramine even after stopping). Cladribine: contraception required ≥6 months after last dose. Ocrelizumab: ~12-month washout recommended. Natalizumab and glatiramer have most data supporting bridge strategies.';
+  } else if(S.jcv==='pos-high'){
+    a.className='alrt show ard';
+    a.innerHTML='⚠ JCV Ab index ≥0.9: Natalizumab PML risk is ~1 in 90 at >24 months with high-index seropositivity. If using natalizumab, extended interval dosing (q6 weeks, NOVA trial) and MRI monitoring every 3–6 months is strongly advised. Consider switching to ocrelizumab or alemtuzumab with 3-month washout.';
+  } else { a.className='alrt'; }
+}
+
+function checkPrefReady(){
+  // no required fields in step 5 — allow free navigation
+}
+
+function toggleCB(el,key){
+  const isOn=el.classList.contains('checked')||el.classList.contains('checked-red');
+  if(isOn){
+    el.className='checkbox-row';
+    el.querySelector('.chk').style.cssText='';
+    S.comorbidities[key]=false;
+  } else {
+    el.className='checkbox-row checked';
+    el.querySelector('.chk').style.cssText='';
+    S.comorbidities[key]=true;
+  }
+  updateComorbAlert();
+}
+
+function updateComorbAlert(){
+  const a=document.getElementById('alrt-cmb');
+  const warns=[];
+  const C=S.comorbidities;
+  if(C['cardiac-bradycardia'])warns.push('Bradycardia/AV block: S1P modulators (fingolimod, siponimod, ozanimod) are contraindicated. Cardiology clearance required if considering with borderline cardiac findings.');
+  if(C['eye-macular'])warns.push('Macular edema: S1P modulators contraindicated — macular edema occurs in ~0.5–1.3% of patients on fingolimod and may be asymptomatic. Mandatory ophthalmologic pre-screen.');
+  if(C['heme-lymphopenia'])warns.push('Lymphopenia: DMF requires lymphocyte count ≥1000/µL before initiation. Prolonged grade 3 lymphopenia (<500) on DMF requires discontinuation due to PML risk.');
+  if(C['heme-hiv'])warns.push('HIV/Severe immunodeficiency: Most HETs contraindicated or require specialist review. ID and neurology co-management essential.');
+  if(C['liver-hbv'])warns.push('Hepatitis B: Mandatory HBV surface antigen and core antibody screening before ocrelizumab; risk of fatal HBV reactivation with B-cell depletion.');
+  if(C['onc-active'])warns.push('Active malignancy: Alemtuzumab (black-box), cladribine (malignancy warning), and mitoxantrone (leukemia risk ~0.8%) should be avoided.');
+  if(C['cardiac-hf'])warns.push('Heart failure: Mitoxantrone is cardiotoxic; ECHO required before each infusion and annually for life. Maximum cumulative dose 140 mg/m².');
+  if(warns.length){a.className='alrt show ard';a.innerHTML=warns.map(w=>'⚠ '+w).join('<br/><br/>');}
+  else{a.className='alrt';}
+}
+
+// ---- DMT DATABASE (verified trial data) ----
+const DMT_DB={
+  ifnb:{
+    name:'Interferon beta-1a / 1b',brand:'Avonex, Rebif, Plegridy, Betaseron, Extavia',
+    route:'inject',types:['rrms','cis','early'],efficacy:'low-moderate',tier1Types:['cis'],
+    stats:[{v:'~30%',l:'ARR Reduction vs placebo'},{v:'~50%',l:'CIS→CDMS Reduction (CHAMPS)'},{v:'Modest',l:'T2 lesion reduction'}],
+    dose:'Avonex 30 mcg IM qw | Rebif 44 mcg SC TIW | Plegridy 125 mcg SC q2w | Betaseron/Extavia 250 mcg SC EOD',
+    mechanism:'Modulates T- and B-cell function; downregulates proinflammatory cytokines (IFN-γ, TNF-α); reduces BBB disruption',
+    ae:'Flu-like symptoms (most common, often diminish over 3–6 months), injection site reactions, myelosuppression, hepatotoxicity, thyroid dysfunction, depression',
+    monitor:'CBC, LFTs, TSH/free T4 at baseline then periodically; depression screening',
+    washout:'1 month',
+    preg:'FDA Class C — generally discontinued before conception; no teratogenic signal in registry data but not Class B'
+  },
+  glat:{
+    name:'Glatiramer acetate',brand:'Copaxone, Glatopa',
+    route:'inject',types:['rrms','cis','early'],efficacy:'low-moderate',tier1Types:['cis','rrms','early'],
+    stats:[{v:'~29%',l:'ARR Reduction (pivotal trials)'},{v:'Class B',l:'FDA Pregnancy Category'},{v:'No washout',l:'Before conception'}],
+    dose:'20 mg SC daily or 40 mg SC TIW',
+    mechanism:'Th2/Th3 immune modulation; synthetic antigen that may act as altered peptide ligand for MBP-reactive T cells; reduces BBB migration',
+    ae:'Injection site reactions (lipoatrophy, necrosis with prolonged use), immediate post-injection systemic reaction (flushing, chest tightness, palpitations; self-limiting), hepatotoxicity (rare)',
+    monitor:'LFTs periodically; no required baseline labs beyond standard workup',
+    washout:'No washout required before pregnancy',
+    preg:'FDA Class B — best-studied agent in pregnancy; can be continued during pregnancy or bridged through; no teratogenic signal'
+  },
+  fingol:{
+    name:'Fingolimod',brand:'Gilenya',
+    route:'oral',types:['rrms','early'],efficacy:'high',tier1Types:['rrms','early'],
+    stats:[{v:'54%',l:'ARR Reduction (FREEDOMS vs placebo)'},{v:'30%',l:'Disability Progression Reduction'},{v:'82%',l:'Gd+ Lesion Reduction'}],
+    dose:'0.5 mg PO daily',
+    mechanism:'S1P receptor modulator — sequesters naïve and central memory T-lymphocytes in lymph nodes, preventing CNS migration. First oral MS therapy approved (FDA 2010)',
+    ae:'Bradycardia/AV block (first dose), macular edema (0.5–1.3%), PRES, PML (rare), VZV encephalitis, cutaneous malignancy, FEV₁ reduction (~2%), severe MS rebound if abruptly stopped',
+    monitor:'EKG + 6-hour first-dose cardiac monitoring, ophthalmology pre-screen, CBC, LFTs, JCV Ab q6mo, VZV IgG pre-treatment',
+    washout:'2 months before conception; live vaccines contraindicated during treatment',
+    preg:'Contraindicated; teratogenic in animals; 2-month washout before conception'
+  },
+  siponi:{
+    name:'Siponimod',brand:'Mayzent',
+    route:'oral',types:['rrms','spms','early'],efficacy:'high',tier1Types:['spms'],
+    stats:[{v:'55%',l:'ARR Reduction (EXPAND, active SPMS)'},{v:'21%',l:'CDP Reduction vs placebo'},{v:'79%',l:'T2 Lesion Volume Reduction'}],
+    dose:'2 mg PO daily (requires 5-day titration from 0.25 mg to minimize cardiac effects)',
+    mechanism:'Selective S1P1 and S1P5 receptor modulator — spares S1P3 (responsible for cardiac side effects of fingolimod), resulting in reduced bradycardia risk',
+    ae:'Bradycardia/AV block (less than fingolimod due to S1P3 sparing), macular edema, PRES, VZV encephalitis, PML (rare)',
+    monitor:'CYP2C9 genotype mandatory before initiation; CBC, LFTs, EKG, fundus exam; JCV Ab q6mo',
+    washout:'Washout period before conception not fully established; contraindicated in pregnancy',
+    preg:'Contraindicated'
+  },
+  terif:{
+    name:'Teriflunomide',brand:'Aubagio',
+    route:'oral',types:['rrms','early'],efficacy:'low-moderate',tier1Types:[],
+    stats:[{v:'31%',l:'ARR Reduction (TEMSO, 14 mg dose)'},{v:'30%',l:'Disability Progression Reduction'},{v:'67%',l:'T2 Lesion Reduction'}],
+    dose:'14 mg PO daily (7 mg available but less efficacious)',
+    mechanism:'Inhibits dihydro-orotate dehydrogenase (DHODH) — depletes de novo pyrimidine synthesis; disrupts T-cell/APC interaction and proliferation',
+    ae:'Alopecia (reversible, ~13% in TEMSO), hepatotoxicity, diarrhea, nausea, hypertension, teratogenicity; peripheral neuropathy (rare)',
+    monitor:'LFTs at baseline, monthly × 6 months, then periodically; BP each visit; hCG pre-treatment; requires contraception during use',
+    washout:'Prolonged — requires plasma level undetectable (<0.02 mg/L). Spontaneous washout may take up to 2 years. Accelerated elimination with cholestyramine 8g TID × 11 days or activated charcoal.',
+    preg:'FDA Class X — absolutely contraindicated; proven teratogen. Accelerated elimination protocol required even after stopping if pregnancy is planned.'
+  },
+  dmf:{
+    name:'Dimethyl fumarate',brand:'Tecfidera',
+    route:'oral',types:['rrms','cis','spms','early'],efficacy:'moderate',tier1Types:['rrms','cis','early'],
+    stats:[{v:'53%',l:'ARR Reduction (DEFINE trial vs placebo)'},{v:'38%',l:'Disability Progression Reduction'},{v:'85%',l:'T2 Lesion Reduction'}],
+    dose:'120 mg BID × 7 days, then 240 mg BID',
+    mechanism:'Activates Nrf2 antioxidant pathway — promotes antioxidant response element gene expression; induces Th1 → Th2 cytokine shift; mechanism distinct from teriflunomide',
+    ae:'Flushing (40% in DEFINE, often diminishes), GI upset (nausea, diarrhea; take with food), hepatotoxicity, lymphopenia (mean 30% reduction; grade 3 <500 in ~5%), PML with prolonged severe lymphopenia, VZV encephalitis',
+    monitor:'CBC at baseline (lymphocyte count ≥1000/µL required); CBC and JCV Ab q6mo; LFTs periodically',
+    washout:'1 month',
+    preg:'Limited human data; not recommended during pregnancy; animal studies showed adverse effects'
+  },
+  dirf:{
+    name:'Diroximel fumarate',brand:'Vumerity',
+    route:'oral',types:['rrms','cis','spms','early'],efficacy:'moderate',tier1Types:['rrms','cis','early'],
+    stats:[{v:'Same as DMF',l:'Active metabolite (MMF)'},{v:'~50% less',l:'GI AEs vs Tecfidera (EVOLVE-MS-2)'},{v:'53%',l:'ARR Reduction (class effect)'}],
+    dose:'231 mg BID × 7 days, then 462 mg BID',
+    mechanism:'Prodrug converted to same active metabolite as DMF (monomethyl fumarate). Hydroxyethyl succinimide byproduct responsible for reduced GI side effects vs DMF (EVOLVE-MS-2 trial)',
+    ae:'Same as dimethyl fumarate but ~50% fewer GI adverse events; flushing similar; same lymphopenia and PML risk',
+    monitor:'Identical to DMF: CBC (lymphocyte ≥1000 at baseline), JCV Ab q6mo',
+    washout:'1 month',
+    preg:'Same as DMF; limited data; not recommended'
+  },
+  cladrib:{
+    name:'Cladribine',brand:'Mavenclad',
+    route:'oral',types:['rrms','spms','early'],efficacy:'high',tier1Types:['rrms'],
+    stats:[{v:'57%',l:'ARR Reduction (CLARITY, 3.5 mg/kg)'},{v:'33%',l:'Disability Progression Reduction'},{v:'83%',l:'Relapse-Free at 2 years'}],
+    dose:'Two yearly treatment courses: 4–5 days each at months 0 and 1 (year 1), then months 12 and 13 (year 2). Total: 3.5 mg/kg over 2 years.',
+    mechanism:'Purine antimetabolite — incorporates into DNA; depletes B and T lymphocytes selectively (long-term lymphocyte suppression after short-course dosing). Pulsed regimen allows sustained DMT effect with minimal ongoing dosing.',
+    ae:'Lymphopenia (grade 3–4 in 25% at nadir; prophylactic acyclovir if lymphocytes <200), headache, URI, hepatotoxicity, malignancy risk (black box), teratogenicity',
+    monitor:'CBC, LFTs, HIV, TB, hepatitis panel, VZV titer, cancer screening at baseline; CBC and cancer screening q6mo',
+    washout:'6 months minimum before conception after last dose (female); 3 months (male)',
+    preg:'Contraindicated; must avoid conception for ≥6 months after last dose'
+  },
+  natal:{
+    name:'Natalizumab',brand:'Tysabri',
+    route:'iv',types:['rrms','early'],efficacy:'high',tier1Types:['rrms'],
+    stats:[{v:'67%',l:'ARR Reduction (AFFIRM vs placebo)'},{v:'42–54%',l:'Disability Progression Reduction'},{v:'83%',l:'T2 Lesion Reduction'}],
+    dose:'300 mg IV q4 weeks over 1 hour. Extended interval dosing (EID: q6 weeks) may reduce PML risk while maintaining efficacy (NOVA trial, 2023)',
+    mechanism:'Humanized monoclonal antibody against α4-integrin (VLA-4) — blocks VCAM-1/MAdCAM-1 binding; prevents lymphocyte migration across blood–brain barrier',
+    ae:'Infusion reactions (~24%), PML (JCV-dependent — see JCV section), hypersensitivity, hepatotoxicity; severe rebound disease activity on abrupt discontinuation (plan transition carefully)',
+    monitor:'JCV Ab index every 6 months; MRI every 3–6 months if JCV+ and index ≥0.9; LFTs',
+    washout:'3 months — significant rebound MS activity risk; ensure next DMT is started promptly after washout',
+    preg:'Generally discontinued before or early in pregnancy; rebound risk must be considered; some evidence for q6 week dosing in second trimester'
+  },
+  ocreli:{
+    name:'Ocrelizumab',brand:'Ocrevus',
+    route:'iv',types:['rrms','ppms','early'],efficacy:'high',tier1Types:['ppms','rrms'],
+    stats:[{v:'47%',l:'ARR Reduction vs IFN-β-1a (OPERA I/II)'},{v:'24%',l:'CDP Reduction PPMS (ORATORIO)'},{v:'95%',l:'Gd+ Lesion Reduction'}],
+    dose:'300 mg IV × 2 doses (2 weeks apart) → then 600 mg IV q6 months. Pre-medicate: methylprednisolone 100 mg IV + antihistamine + antipyretic',
+    mechanism:'Humanized anti-CD20 monoclonal antibody — selectively depletes CD20+ B cells while preserving CD20- plasma cells (preserving existing antibody immunity) and allowing B-cell reconstitution',
+    ae:'Infusion reactions (most common; reduce with pre-medication), URI (more frequent), breast cancer signal (post-hoc in OPERA; not causal), HBV reactivation, reduced vaccine response; COVID-19 risk (impaired humoral response)',
+    monitor:'HBV surface Ag and core Ab pre-treatment; no live vaccines; IgG levels periodically in long-term use; CBC',
+    washout:'~6 months immunological washout; 12-month washout recommended before conception',
+    preg:'Contraindicated; 12-month washout before conception recommended'
+  },
+  alemtuz:{
+    name:'Alemtuzumab',brand:'Lemtrada',
+    route:'iv',types:['rrms','early'],efficacy:'high',tier1Types:[],
+    stats:[{v:'49%',l:'ARR Reduction vs SC IFN-β-1a (CARE-MS I)'},{v:'42%',l:'ARR Reduction vs SC IFN-β-1a (CARE-MS II)'},{v:'78%',l:'Relapse-Free at 2 years'}],
+    dose:'12 mg IV daily × 5 days, then × 3 days one year later. Premedicate with methylprednisolone 1g IV for first 3 infusions. Available through REMS program only.',
+    mechanism:'Humanized anti-CD52 monoclonal antibody — depletes T cells, B cells, NK cells, and monocytes; followed by immune reconstitution (therapeutic window exploited for long-term remission)',
+    ae:'Infusion reactions (89%); secondary autoimmune AEs (cumulative 48% over 6 years): thyroid disease (36%), ITP (2%), nephropathy (0.3%); cervicocephalic arterial dissection and stroke (rare, peri-infusion); malignancy; VZV/HSV encephalitis',
+    monitor:'CBC, CK, TSH, skin exam, UA with microscopy monthly for 48 months post-last dose; VZV titer pre-treatment; REMS enrollment required',
+    washout:'3–4 months minimum; REMS program manages post-treatment monitoring',
+    preg:'Contraindicated during treatment; 4-month washout before conception'
+  },
+  mitox:{
+    name:'Mitoxantrone',brand:'Novantrone',
+    route:'iv',types:['spms','rrms','early'],efficacy:'high',tier1Types:[],
+    stats:[{v:'67%',l:'ARR Reduction (vs sham treatment)'},{v:'Lifetime limit',l:'140 mg/m² (cardiotoxicity)'},{v:'≤2 years',l:'Typical course duration'}],
+    dose:'12 mg/m² IV q3 months × 2 years (lifetime cumulative dose limit due to cardiotoxicity)',
+    mechanism:'Anthracenedione topoisomerase II inhibitor — broad immunosuppression; kills T cells; inhibits B-cell and macrophage activation',
+    ae:'Cardiotoxicity (dose-dependent dilated cardiomyopathy), therapy-related leukemia (~0.8% at 5 years), blue-green urine/sclera, UTI, amenorrhea, alopecia, nausea',
+    monitor:'CBC + ECHO before each infusion; LVEF must be ≥50% before each dose; ECHO annually for life after completion',
+    washout:'6 months before conception',
+    preg:'Contraindicated; teratogenic. Not used in reproductive-age patients without exceptional circumstances.'
+  }
+};
+
+function generateResults(){
+  const cont=document.getElementById('result-output');
+  const rec={t1:[],t2:[],t3:[],avoid:[]};
+
+  const isHighActivity=(S.relapse==='severe'||S.mri==='highly-active'||S.fail==='multi'||S.fail==='het');
+  const C=S.comorbidities;
+
+  Object.entries(DMT_DB).forEach(([key,d])=>{
+    let score=0;
+    const avoidReasons=[];
+    const cautionReasons=[];
+    const goodReasons=[];
+
+    // MS type eligibility
+    if(!d.types.includes(S.msType)){
+      avoidReasons.push('Not FDA-approved for '+S.msType.toUpperCase()+(S.msType==='early'?' (recommending relapsing-phase appropriate agents)':''));
+    }
+
+    // Special PPMS rules
+    if(S.msType==='ppms'){
+      if(key!=='ocreli'&&key!=='mitox'){
+        if(!avoidReasons.length)
+          avoidReasons.push('No established efficacy in PPMS. Ocrelizumab (Ocrevus) is the only FDA-approved agent for PPMS.');
+      }
+    }
+
+    // Pregnancy
+    if(S.preg==='pregnant'){
+      if(key!=='glat')avoidReasons.push('Discontinue in pregnancy — glatiramer acetate (Class B) is preferred agent if DMT required during pregnancy');
+    }
+    if(S.preg==='planning'){
+      if(key==='terif')avoidReasons.push('Class X teratogen — absolutely contraindicated if planning pregnancy; requires accelerated elimination');
+      if(key==='cladrib')cautionReasons.push('6-month contraception required after last dose before conception; plan timing accordingly');
+      if(key==='ocreli')cautionReasons.push('12-month washout recommended before conception');
+      if(key==='alemtuz')cautionReasons.push('4-month washout before conception; extensive post-treatment monitoring continues for 4 years');
+    }
+    if(S.fp==='yes'){
+      if(key==='glat'){score+=2;goodReasons.push('No washout required; FDA Class B; best pregnancy data of any DMT');}
+      if(key==='natal'){goodReasons.push('Short washout (3 months); some evidence for use in late pregnancy');}
+    }
+
+    // JCV
+    if((S.jcv==='pos-high')&&key==='natal'){
+      cautionReasons.push('JCV Ab index ≥0.9: PML risk ~1:90 at >24 months. Extended interval dosing (q6w) + MRI q3–6mo required. Strongly consider alternative HET.');
+      score-=2;
+    }
+    if((S.jcv==='neg'||S.jcv==='pending-neg')&&key==='natal'){
+      goodReasons.push('JCV Ab negative: PML risk ~1:10,000; natalizumab is favorable in JCV-negative patients');
+      score+=1;
+    }
+
+    // VZV
+    if(S.vzv==='nonimmune'&&['fingol','siponi','cladrib','alemtuz'].includes(key)){
+      cautionReasons.push('VZV non-immune: varicella vaccination (2 doses) required before initiation; wait ≥4–6 weeks post-vaccine');
+    }
+
+    // Comorbidities
+    if(C['cardiac-bradycardia']&&['fingol','siponi'].includes(key))avoidReasons.push('Contraindicated: bradycardia/significant AV block');
+    if(C['eye-macular']&&['fingol','siponi'].includes(key))avoidReasons.push('Contraindicated: macular edema');
+    if(C['heme-lymphopenia']&&['dmf','dirf'].includes(key))avoidReasons.push('Contraindicated: lymphopenia — baseline lymphocyte count <1000/µL');
+    if(C['heme-hiv']&&['natal','alemtuz','cladrib','mitox','ocreli'].includes(key))cautionReasons.push('Severe immunodeficiency: ID consultation required before HET initiation');
+    if(C['liver-hbv']&&key==='ocreli')cautionReasons.push('HBV: mandatory surface Ag + core Ab screening; risk of fatal HBV reactivation');
+    if(C['cardiac-hf']&&key==='mitox')avoidReasons.push('Heart failure (EF <50%): mitoxantrone cardiotoxicity risk; ECHO required');
+    if(C['onc-active']&&['alemtuz','cladrib','mitox'].includes(key))avoidReasons.push('Active malignancy: black-box or malignancy warning; avoid');
+    if(C['onc-breast']&&key==='ocreli')cautionReasons.push('Breast cancer history: post-hoc signal in OPERA trials; individualized discussion warranted');
+    if(C['pulm-severe']&&key==='fingol')cautionReasons.push('Severe pulmonary disease: fingolimod reduces FEV₁ ~0.1L and FVC ~1–2%');
+    if(S.cyp==='poor'&&key==='siponi')avoidReasons.push('CYP2C9 *3/*3 poor metabolizer: siponimod contraindicated');
+
+    // Route & frequency preference scoring
+    // Route categories with verified dosing frequencies:
+    // oral-daily:    fingolimod (qd), siponimod (qd), teriflunomide (qd), dmf (BID), dirf (BID)
+    // oral-pulsed:   cladribine (4-5 days/mo × 2 courses over 2 years — minimal ongoing dosing)
+    // inject-daily:  glat 20mg (qd SC)
+    // inject-3xwk:   glat 40mg (TIW SC), Rebif (TIW SC)
+    // inject-weekly: Avonex (qw IM), Plegridy (q2w SC), Betaseron/Extavia (EOD SC)
+    // iv-q4w:        natalizumab (q4w)
+    // iv-q6mo:       ocrelizumab (q6mo after loading), mitoxantrone (q3mo × 2yr)
+    // iv-annual:     alemtuzumab (5 days yr1, 3 days yr2 — minimal ongoing)
+    const routeFreq={
+      fingol:'oral-daily', siponi:'oral-daily', terif:'oral-daily', dmf:'oral-daily', dirf:'oral-daily',
+      cladrib:'oral-pulsed',
+      glat:'inject-daily-or-3xwk',
+      ifnb:'inject-weekly-or-eod',
+      natal:'iv-q4w',
+      ocreli:'iv-q6mo',
+      mitox:'iv-q3mo',
+      alemtuz:'iv-annual'
+    };
+    const freq=routeFreq[key]||d.route;
+
+    if(S.route==='oral'){
+      if(freq==='oral-daily')score+=3;
+      else if(freq==='oral-pulsed'){score+=2;goodReasons.push('Oral pulsed regimen — only 4–5 days of dosing per course, twice a year; minimal ongoing pill burden');}
+      else if(d.route==='inject'){score-=3;cautionReasons.push('Patient prefers oral; this is a self-injectable agent');}
+      else if(d.route==='iv'){score-=4;cautionReasons.push('Patient prefers oral; this requires IV infusion center visits');}
+    } else if(S.route==='inject'){
+      if(d.route==='inject')score+=3;
+      else if(d.route==='oral'){score-=2;cautionReasons.push('Patient prefers injectable; this is an oral agent');}
+      else if(d.route==='iv'){score-=2;cautionReasons.push('Patient prefers self-injectable; this requires infusion center visits');}
+    } else if(S.route==='iv'){
+      if(d.route==='iv'){
+        score+=3;
+        if(freq==='iv-q6mo')goodReasons.push('Infusion every 6 months — low visit frequency after loading doses');
+        else if(freq==='iv-annual')goodReasons.push('Infusion only 5 days (year 1) and 3 days (year 2) — minimal long-term visits');
+        else if(freq==='iv-q4w')goodReasons.push('Infusion every 4 weeks — predictable monthly schedule');
+        else if(freq==='iv-q3mo')goodReasons.push('Infusion every 3 months × 2 years');
+      }
+      else if(d.route==='oral'){score-=2;cautionReasons.push('Patient prefers IV infusion; this is an oral agent');}
+      else if(d.route==='inject'){score-=2;cautionReasons.push('Patient prefers IV infusion; this is a self-injectable agent');}
+    }
+    // 'any' route: no scoring penalty or bonus
+
+    // Monitoring
+    if(S.monitor==='low'&&['alemtuz','mitox'].includes(key))cautionReasons.push('Heavy monitoring burden: monthly labs for 48 months (alemtuzumab) / annual ECHO for life (mitoxantrone)');
+    if(S.monitor==='low'&&['fingol','siponi'].includes(key))cautionReasons.push('Requires 6-hour first-dose cardiac monitoring + ophthalmologic surveillance');
+
+    if(avoidReasons.length>0){
+      rec.avoid.push({key,d,avoidReasons,cautionReasons,goodReasons,notT1:[],score});
+      return;
+    }
+
+    // --------------------------------------------------------------- — evidence-based clinical framework
+    //
+    // Clinical first-line designation is based on:
+    //   (A) FDA approval for phenotype
+    //   (B) Established efficacy tier for that phenotype
+    //   (C) Absence of specialized-use-only restrictions
+    //   (D) Route/preference alignment (adjusts within tier via score)
+    //
+    // PPMS: ocrelizumab = only FDA-approved first-line; all others t3
+    // SPMS: siponimod = first-line for active SPMS; others t2–t3
+    // RRMS/CIS/early: all approved agents can be first-line unless
+    //   restricted by: (a) alemtuzumab (REMS/≥2 DMT failure label),
+    //   (b) mitoxantrone (cardiotoxicity / cumulative dose limit),
+    //   (c) cladribine (approved for highly active/failed prior DMT)
+    // ---------------------------------------------------------------
+    const notT1=[];
+
+    // --- Alemtuzumab: FDA label is "inadequate response to ≥2 DMTs"; REMS ---
+    if(key==='alemtuz'){
+      notT1.push('FDA labeling restricts use to patients with inadequate response to ≥2 prior DMTs; available only through REMS program due to serious autoimmune risk (thyroid 36%, ITP 2%, nephropathy 0.3% over 5 years)');
+    }
+
+    // --- Mitoxantrone: lifetime dose limit, cardiotoxicity, leukemia risk ---
+    if(key==='mitox'){
+      notT1.push('Rarely used as initial therapy — lifetime cumulative dose limit (140 mg/m²) due to cardiotoxic cardiomyopathy; therapy-related leukemia risk ~0.8%; largely superseded by newer HETs with safer profiles');
+    }
+
+    // --- Cladribine: approved for "highly active" RRMS after ≥1 prior DMT in many guidelines ---
+    if(key==='cladrib'&&S.fail==='none'&&!isHighActivity){
+      notT1.push('Cladribine is typically reserved for highly active disease or patients who have failed another DMT; starting in treatment-naïve patients with moderate disease is an off-label pattern in most guidelines (though some centers use it first-line in highly active RRMS)');
+    }
+
+    // --- Siponimod: evidence base is specifically in active SPMS (EXPAND); off-label for RRMS ---
+    if(key==='siponi'&&(S.msType==='rrms'||S.msType==='cis'||S.msType==='early')){
+      notT1.push('Siponimod\'s pivotal trial (EXPAND) enrolled SPMS patients; it has RRMS approval but is typically second-line for RRMS given fingolimod/ocrelizumab/natalizumab data and CYP2C9 genotyping requirement');
+    }
+
+    // --- Teriflunomide: low-moderate efficacy, Class X, heavy LFT burden ---
+    if(key==='terif'){
+      notT1.push('Low-to-moderate efficacy (~31% ARR reduction); FDA Class X teratogen requiring active contraception and prolonged washout protocol; generally not preferred when higher-efficacy options are available and tolerated');
+    }
+
+    // --- IFN-β: lowest efficacy tier; favorable for CIS/low disease activity ---
+    if(key==='ifnb'&&isHighActivity){
+      notT1.push('Low-to-moderate efficacy (~30% ARR reduction); insufficient for highly active disease — escalation to a higher-efficacy agent is recommended per ECTRIMS/EAN guidelines for high-activity profiles');
+    }
+
+    // --- Glatiramer acetate: lowest efficacy tier; especially not for high activity ---
+    if(key==='glat'&&isHighActivity){
+      notT1.push('Low-to-moderate efficacy (~29% ARR reduction); insufficient for highly active disease — strongly consider high-efficacy therapy per current treat-to-target guidelines');
+    }
+
+    // Efficacy scoring (separate from tier)
+    if(isHighActivity&&d.efficacy==='high')score+=4;
+    if(isHighActivity&&(d.efficacy==='moderate'))score+=2;
+    if(isHighActivity&&d.efficacy==='low-moderate')score-=2;
+    if(!isHighActivity&&d.efficacy==='high')score+=1; // slight bonus but doesn't override preference
+    if(S.fail!=='none'&&d.efficacy==='high')score+=2;
+
+    // Monitoring preference scoring
+    if(S.monitor==='low'){
+      if(['alemtuz','mitox'].includes(key)){score-=2;cautionReasons.push('High monitoring burden: monthly labs for 48 months (alemtuzumab) / ECHO before each dose and annually for life (mitoxantrone)');}
+      if(['fingol','siponi'].includes(key)){score-=1;cautionReasons.push('Requires ophthalmologic pre-screen and 6-hour first-dose cardiac monitoring');}
+      if(d.efficacy==='low-moderate')score+=1; // simpler monitoring
+    }
+    if(S.monitor==='moderate'){
+      // neutral — most DMTs fit moderate monitoring
+    }
+    if(S.monitor==='high'){
+      if(['alemtuz','natal'].includes(key))score+=1; // fine with heavy monitoring
+    }
+
+    // ---------------------------------------------------------------
+    // NOW assign to tier based on the above analysis
+    // Tier 1 = appropriate first-line for this phenotype/activity
+    // Tier 2 = appropriate but not the primary recommendation
+    // Tier 3 = specialized / restricted use in this context
+    // ---------------------------------------------------------------
+
+    // PPMS: only ocrelizumab is T1; everything else that passes avoid goes T3
+    if(S.msType==='ppms'){
+      if(key==='ocreli'){score+=5;rec.t1.push({key,d,avoidReasons,cautionReasons,goodReasons,notT1,score});}
+      else{rec.t3.push({key,d,avoidReasons,cautionReasons,goodReasons,notT1,score});}
+      return;
+    }
+
+    // All other phenotypes
+    const hasT1Restriction=notT1.length>0;
+    const isHET=(d.efficacy==='high');
+    const isMod=(d.efficacy==='moderate');
+    const isLow=(d.efficacy==='low-moderate');
+
+    if(hasT1Restriction){
+      // Alemtuzumab & mitoxantrone always T3 regardless of activity
+      if(['alemtuz','mitox'].includes(key)){
+        rec.t3.push({key,d,avoidReasons,cautionReasons,goodReasons,notT1,score});
+      } else {
+        // cladrib (non-highly-active naive), siponimod in RRMS, terif → T2
+        rec.t2.push({key,d,avoidReasons,cautionReasons,goodReasons,notT1,score});
+      }
+      return;
+    }
+
+    // No T1 restriction — assign by activity level and efficacy
+    if(isHighActivity){
+      // High activity: HETs are T1; moderate-efficacy are T2; low-efficacy are T3
+      if(isHET) rec.t1.push({key,d,avoidReasons,cautionReasons,goodReasons,notT1,score});
+      else if(isMod) rec.t2.push({key,d,avoidReasons,cautionReasons,goodReasons,notT1,score});
+      else rec.t3.push({key,d,avoidReasons,cautionReasons,goodReasons,notT1,score});
+    } else {
+      // Moderate/stable activity: all approved agents with appropriate indication are T1;
+      // Efficacy tier affects sorting within T1 via score, not tier placement
+      // Exception: for SPMS only siponimod+cladribine are meaningfully active
+      if(S.msType==='spms'){
+        if(['siponi','cladrib'].includes(key)) rec.t1.push({key,d,avoidReasons,cautionReasons,goodReasons,notT1,score});
+        else rec.t2.push({key,d,avoidReasons,cautionReasons,goodReasons,notT1,score});
+      } else {
+        // RRMS, CIS, early — all approved eligible agents are T1
+        rec.t1.push({key,d,avoidReasons,cautionReasons,goodReasons,notT1,score});
+      }
+    }
+  });
+
+  ['t1','t2','t3'].forEach(t=>rec[t].sort((a,b)=>b.score-a.score));
+
+  function routeBadge(r){return r==='oral'?'<span class="badge badge-oral">ORAL</span>':r==='inject'?'<span class="badge badge-inject">INJECTABLE</span>':'<span class="badge badge-iv">IV INFUSION</span>';}
+  function effBadge(e){
+    if(e==='high')return '<span class="badge badge-heff">HIGH EFFICACY</span>';
+    if(e==='moderate'||e==='moderate-high')return '<span class="badge badge-modeff">MODERATE EFFICACY</span>';
+    return '<span class="badge badge-loweff">LOW-MOD EFFICACY</span>';
+  }
+  function typeBadge(types){
+    return types.filter(t=>['rrms','spms','ppms','cis'].includes(t)).map(t=>`<span class="badge badge-${t}">${t.toUpperCase()}</span>`).join('');
+  }
+
+  function dmtCardHTML(item,tier){
+    const {key,d,cautionReasons,avoidReasons,goodReasons,notT1}=item;
+    const cls=tier==='t1'?'dmt-card t1':tier==='t2'?'dmt-card t2':tier==='t3'?'dmt-card t3':'dmt-card tavoid';
+    const notFirstLineHTML=(notT1&&notT1.length&&tier!=='t1'&&tier!=='avoid')
+      ?`<div style="margin-top:8px;padding:6px 10px;background:var(--card3);border:1px solid var(--border);border-left:3px solid var(--text3);border-radius:4px;font-size:11px;color:var(--text2);line-height:1.55;font-family:var(--display)"><strong style="color:var(--text3);letter-spacing:.04em;font-size:10px">WHY NOT FIRST-LINE:</strong> ${notT1.join(' ')}</div>`:'';
+    return `<div class="${cls}">
+      <div class="dmt-header">
+        <div>
+          <div class="dmt-name">${d.name} <span class="dmt-brand">(${d.brand})</span></div>
+        </div>
+        <div class="dmt-badges">${routeBadge(d.route)}${effBadge(d.efficacy)}${typeBadge(d.types)}</div>
+      </div>
+      <div class="dmt-stats-row">${d.stats.map(s=>`<div class="dmt-stat"><div class="sv">${s.v}</div><div class="sl">${s.l}</div></div>`).join('')}</div>
+      <div class="dmt-body">
+        <strong>Dose:</strong> ${d.dose}<br/>
+        <strong>Mechanism:</strong> ${d.mechanism}<br/>
+        <strong>Key AEs:</strong> ${d.ae}<br/>
+        <strong>Washout:</strong> ${d.washout}<br/>
+        <strong>Pregnancy:</strong> ${d.preg}
+      </div>
+      ${notFirstLineHTML}
+      ${goodReasons&&goodReasons.length?`<div class="dmt-good">✓ ${goodReasons.join('<br/>✓ ')}</div>`:''}
+      ${cautionReasons&&cautionReasons.length?`<div class="dmt-caution">⚠ ${cautionReasons.join('<br/>⚠ ')}</div>`:''}
+      ${avoidReasons&&avoidReasons.length?`<div class="dmt-warn">✕ ${avoidReasons.join('<br/>✕ ')}</div>`:''}
+      <div class="monitor-box"><strong>MONITORING REQUIREMENTS</strong>${d.monitor}</div>
+    </div>`;
+  }
+
+  const tierDefs={
+    t1:{label:'First-Line / Preferred',cls:'tier-1',desc:isHighActivity
+      ?'High-efficacy agents (HETs) — appropriate as initial therapy given highly active disease profile. Sorted by patient preference match.'
+      :'Agents with established efficacy for this phenotype and activity level. All are appropriate initial options — patient preference, AE profile, and monitoring tolerance determine the best individual choice. Sorted by preference match.'},
+    t2:{label:'Second-Line / Alternative',cls:'tier-2',desc:'Appropriate options that are not the primary recommendation due to restricted FDA labeling, lower efficacy for this activity level, or a patient preference mismatch. See "Why Not First-Line" on each card for the specific reason.'},
+    t3:{label:'Third-Line / Specialized Use',cls:'tier-3',desc:'Reserved for specific scenarios — agents with major labeling restrictions (alemtuzumab: ≥2 prior failures), significant safety limitations (mitoxantrone: lifetime dose cap), or phenotype mismatch. Requires specialist decision.'}
+  };
+
+  let html='';
+  ['t1','t2','t3'].forEach(tier=>{
+    if(!rec[tier].length)return;
+    const td=tierDefs[tier];
+    html+=`<div style="margin-bottom:20px">
+      <div class="tier-label ${td.cls}">${td.label}</div>
+      <div style="font-size:11.5px;color:var(--text2);margin-bottom:10px;font-family:var(--display)">${td.desc}</div>
+      ${rec[tier].map(i=>dmtCardHTML(i,tier)).join('')}
+    </div>`;
+  });
+
+  if(rec.avoid.length){
+    html+=`<div style="margin-bottom:20px">
+      <div class="tier-label tier-avoid">Contraindicated / Not Indicated for This Profile</div>
+      <div style="font-size:11.5px;color:var(--text2);margin-bottom:10px;font-family:var(--display)">These agents are excluded based on MS phenotype, comorbidities, or other patient factors entered above</div>
+      ${rec.avoid.map(i=>dmtCardHTML(i,'avoid')).join('')}
+    </div>`;
+  }
+
+  if(!rec.t1.length&&!rec.t2.length&&!rec.t3.length){
+    html='<div class="alrt show ard">No clearly appropriate DMTs identified given the entered constraints. Please review comorbidities with a neurology specialist — individualized assessment is essential.</div>';
+  }
+
+  cont.innerHTML=html;
+
+  // Summary
+  const prefNames=rec.t1.slice(0,3).map(i=>i.d.name).join(', ')||'See results';
+  const comorbList=Object.entries(S.comorbidities).filter(([k,v])=>v).map(([k])=>k.replace(/-/g,' '));
+  let summHTML=`<div class="sblock"><div class="sbtitle">Clinical Profile</div>
+    <div class="srow"><span class="dot dg"></span><span>MS Type: <strong>${S.msType?S.msType.toUpperCase():'-'}</strong></span></div>
+    <div class="srow"><span class="dot dg"></span><span>Relapse activity: <strong>${S.relapse||'-'}</strong> | MRI: <strong>${S.mri||'-'}</strong> | EDSS: <strong>${S.edss||'-'}</strong></span></div>
+    <div class="srow"><span class="dot dg"></span><span>Prior DMT failure: <strong>${S.fail||'-'}</strong></span></div>
+    <div class="srow"><span class="dot da"></span><span>Activity level: <strong>${isHighActivity?'HIGH — HET preferred':'Moderate/Stable'}</strong></span></div>
+  </div>
+  <div class="sblock"><div class="sbtitle">Patient Factors</div>
+    <div class="srow"><span class="dot db"></span><span>Pregnancy: <strong>${S.preg||'-'}</strong> | JCV: <strong>${S.jcv||'-'}</strong> | VZV: <strong>${S.vzv||'-'}</strong></span></div>
+    <div class="srow"><span class="dot db"></span><span>CYP2C9: <strong>${S.cyp||'-'}</strong> | Route preference: <strong>${S.route||'-'}</strong></span></div>
+    ${comorbList.length?`<div class="srow"><span class="dot dr"></span><span>Comorbidities: <strong>${comorbList.join(', ')}</strong></span></div>`:''}
+  </div>`;
+  document.getElementById('summary-output').innerHTML=summHTML;
+
+  // Documentation note
+  const avoidSummary=rec.avoid.slice(0,5).map(i=>`${i.d.name} — ${i.avoidReasons[0]}`).join('\n  - ')||'None';
+  const note=`MS DMT SELECTION — Clinical Decision Summary\n\nMS Phenotype: ${S.msType?S.msType.toUpperCase():'Not recorded'}\nDisease Activity:\n  Relapses: ${S.relapse||'not recorded'}\n  MRI: ${S.mri||'not recorded'}\n  EDSS: ${S.edss||'not recorded'}\n  Prior DMT failure: ${S.fail||'not recorded'}\n  High Activity Profile: ${isHighActivity?'Yes — HET preferred':'No'}\n\nPatient Factors:\n  Pregnancy: ${S.preg||'not recorded'}\n  JCV Ab: ${S.jcv||'not recorded'}\n  VZV IgG: ${S.vzv||'not recorded'}\n  CYP2C9: ${S.cyp||'not recorded'}\n  Route preference: ${S.route||'not recorded'}\n  Monitoring tolerance: ${S.monitor||'not recorded'}\n  Family planning: ${S.fp||'not recorded'}\n\nComorbidities Flagged:\n  ${comorbList.length?'- '+comorbList.join('\n  - '):'None'}\n\nFIRST-LINE / PREFERRED DMTs:\n  ${prefNames}\n\nCONTRAINDICATED / EXCLUDED:\n  - ${avoidSummary}\n\nKEY MONITORING REMINDERS:\n  - JCV Ab q6mo if on or considering natalizumab\n  - VZV IgG pre-screen before fingolimod, siponimod, alemtuzumab, cladribine\n  - Teriflunomide requires contraception + accelerated elimination if switching\n  - Alemtuzumab: monthly CBC, UA, TSH × 48 months (REMS program)\n  - Ocrelizumab: HBV screen mandatory; no live vaccines\n  - Mitoxantrone: ECHO before each dose and annually for life\n  - DMF/Diroximel: lymphocytes ≥1000 before initiation; stop if prolonged <500\n  - Fingolimod: 6-hour first-dose cardiac monitoring; ophthalmology pre-screen\n  - Siponimod: CYP2C9 genotype mandatory before prescription\n\nShared Decision-Making Note:\nMultiple appropriate DMTs may exist within each tier. Adverse effect profiles, route of administration, monitoring burden, and patient values should be explicitly discussed. The agent with the best efficacy on paper is not always the optimal choice for the individual patient.\n\nData Sources: CHAMPS (IFN-β/CIS); FREEDOMS I/II (fingolimod); EXPAND (siponimod); TEMSO (teriflunomide); DEFINE/CONFIRM (DMF); EVOLVE-MS-2 (diroximel fumarate); CLARITY (cladribine); AFFIRM/NOVA (natalizumab); OPERA I/II and ORATORIO (ocrelizumab); CARE-MS I/II (alemtuzumab).\n\nGenerated by MS DMT Navigator — Educational reference only.\nDesigned by Daniel Short, MD (Neurology Resident)`;
+
+  document.getElementById('docBody').textContent=note;
+}
+
+function toggleDoc(){
+  const b=document.getElementById('docBody');
+  const a=document.getElementById('docArrow');
+  b.classList.toggle('open');
+  a.textContent=b.classList.contains('open')?'▴':'▾';
+}
+function copyDoc(){
+  navigator.clipboard.writeText(document.getElementById('docBody').textContent).then(()=>{
+    const b=document.getElementById('copyBtn');b.textContent='Copied ✓';setTimeout(()=>b.textContent='Copy note',1400);
+  });
+}
+
+function resetAll(){
+  Object.keys(S).forEach(k=>{if(k==='comorbidities')S[k]={};else S[k]=null;});
+  document.querySelectorAll('.opt-btn').forEach(b=>b.classList.remove('selected'));
+  document.querySelectorAll('.checkbox-row').forEach(r=>{
+    r.className='checkbox-row';
+    r.querySelector('.chk').style.cssText='';
+    r.querySelector('.chk').textContent='✓';
+  });
+  document.querySelectorAll('.alrt').forEach(a=>a.className='alrt');
+  document.querySelectorAll('.slabel-panel,.info-panel').forEach(p=>{p.classList.remove('open');});
+  document.querySelectorAll('.xbtn').forEach(b=>{b.textContent='details ▾';});
+  document.getElementById('n0').disabled=true;
+  document.getElementById('n1').disabled=true;
+  document.getElementById('n2').disabled=true;
+  document.getElementById('result-output').innerHTML='';
+  document.getElementById('summary-output').innerHTML='';
+  document.getElementById('docBody').textContent='';
+  document.getElementById('docBody').classList.remove('open');
+  go(0);
+}
+</script>
+</body>
+</html>
