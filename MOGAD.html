@@ -1,0 +1,1078 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2023 MOGAD Criteria · Diagnostic Navigator</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@300;400;500;600;700&family=Lexend:wght@300;400;500;600&display=swap');
+
+:root {
+  --bg:        #0d1117;
+  --card:      #161b22;
+  --card2:     #1c2330;
+  --border:    #3a4556;
+  --border2:   #4a5f7a;
+  --green:     #3fb950;
+  --green-bg:  rgba(63,185,80,0.10);
+  --green-bd:  rgba(63,185,80,0.35);
+  --red:       #f85149;
+  --red-bg:    rgba(248,81,73,0.10);
+  --red-bd:    rgba(248,81,73,0.35);
+  --amber:     #e3b341;
+  --amber-bg:  rgba(227,179,65,0.10);
+  --amber-bd:  rgba(227,179,65,0.35);
+  --blue:      #58a6ff;
+  --blue-bg:   rgba(88,166,255,0.10);
+  --blue-bd:   rgba(88,166,255,0.35);
+  --yellow:    #f0c040;
+  --yellow-bg: rgba(240,192,64,0.10);
+  --yellow-bd: rgba(240,192,64,0.35);
+  --text:      #e6edf3;
+  --text2:     #aab4c0;
+  --text3:     #6e7f94;
+  --sans:  'Lexend', 'Inter', system-ui, sans-serif;
+  --mono:  'IBM Plex Mono', monospace;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg); color: var(--text); font-family: var(--sans); font-size: 14px; line-height: 1.5; min-height: 100vh; }
+.app { max-width: 960px; margin: 0 auto; padding: 0 20px 80px; }
+
+header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+.h-title { font-size: 19px; font-weight: 700; }
+.h-title span { color: var(--yellow); }
+.h-sub { font-family: var(--sans); font-size: 11px; color: var(--text3); margin-top: 3px; line-height: 1.6; }
+.h-credit { font-family: var(--sans); font-size: 11px; color: var(--text3); margin-top: 2px; }
+.reset-btn { background: var(--card2); border: 1px solid var(--border); color: var(--text2); font-family: var(--sans); font-size: 12px; padding: 6px 14px; cursor: pointer; border-radius: 4px; transition: all 0.15s; white-space: nowrap; font-weight: 500; }
+.reset-btn:hover { border-color: var(--yellow); color: var(--yellow); }
+
+.prog-track { height: 3px; background: var(--border); margin-bottom: 20px; border-radius: 2px; }
+.prog-fill { height: 100%; background: linear-gradient(90deg, var(--yellow), #ffe08a); border-radius: 2px; transition: width 0.4s ease; box-shadow: 0 0 6px rgba(240,192,64,0.4); }
+
+.steps { display: grid; grid-template-columns: repeat(7, 1fr); border: 1px solid var(--border); border-radius: 8px; margin-bottom: 20px; overflow: hidden; background: var(--card); }
+.stab { padding: 8px 3px 9px; text-align: center; font-family: var(--sans); font-size: 10px; color: var(--text3); border-right: 1px solid var(--border); transition: all 0.2s; cursor: pointer; background: var(--card); line-height: 1.3; }
+.stab:nth-child(7n) { border-right: none; }
+.stab .sn { display: flex; align-items: center; justify-content: center; width: 20px; height: 20px; border-radius: 50%; background: var(--card2); border: 1px solid var(--border); font-size: 10px; font-weight: 700; margin: 0 auto 3px; transition: all 0.2s; }
+.stab .slbl { display: block; font-size: 9px; font-weight: 600; letter-spacing: 0; line-height: 1.3; }
+.stab.active { color: var(--yellow); background: rgba(240,192,64,0.06); }
+.stab.active .sn { background: var(--yellow); color: #0d1117; border-color: var(--yellow); }
+.stab.done { color: var(--green); }
+.stab.done .sn { background: var(--green); color: #0d1117; border-color: var(--green); }
+.stab:hover:not(.active) { background: var(--card2); }
+
+.card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 22px; margin-bottom: 12px; }
+.ctitle { font-size: 13px; font-weight: 700; font-family: var(--sans); letter-spacing: 0; text-transform: none; margin-bottom: 3px; }
+.csub { font-size: 12px; color: var(--text2); margin-bottom: 16px; line-height: 1.5; }
+
+.slabel { display: flex; align-items: center; gap: 8px; font-family: var(--sans); font-size: 11px; font-weight: 600; color: var(--text); letter-spacing: 0; text-transform: none; margin-bottom: 9px; padding-bottom: 6px; border-bottom: 1px solid var(--border); }
+.pill { font-size: 9px; padding: 1px 7px; border-radius: 20px; border: 1px solid; margin-left: auto; font-family: var(--sans); letter-spacing: 0.04em; text-transform: uppercase; }
+.pill-r { border-color: var(--red);    color: var(--red);    background: var(--red-bg); }
+.pill-a { border-color: var(--amber);  color: var(--amber);  background: var(--amber-bg); }
+.pill-y { border-color: var(--yellow); color: var(--yellow); background: var(--yellow-bg); }
+.pill-g { border-color: var(--green);  color: var(--green);  background: var(--green-bg); }
+
+.crit { border: 1px solid var(--border); border-radius: 6px; margin-bottom: 5px; overflow: hidden; transition: border-color 0.15s, background 0.15s; }
+.crit.c-yes  { border-color: var(--green-bd);  background: var(--green-bg); }
+.crit.c-no   { border-color: var(--red-bd);    background: var(--red-bg); }
+.crit.c-pres { border-color: var(--yellow-bd); background: var(--yellow-bg); }
+.crit.c-abs  { border-color: var(--border2);   background: var(--card2); }
+.crit.c-part { border-color: var(--amber-bd);  background: var(--amber-bg); }
+.crit.c-blue { border-color: var(--blue-bd);   background: var(--blue-bg); }
+
+.crit-main { display: flex; align-items: center; gap: 10px; padding: 10px 13px; }
+.crit-name { flex: 1; font-size: 13px; font-weight: 500; color: var(--text); line-height: 1.3; }
+.xbtn { background: rgba(188,140,255,0.10); border: 1px solid rgba(188,140,255,0.35); color: #bc8cff; font-size: 11px; cursor: pointer; padding: 2px 8px; font-family: var(--sans); white-space: nowrap; transition: all 0.15s; flex-shrink: 0; border-radius: 3px; font-weight: 500; }
+.xbtn:hover { background: #bc8cff; color: #0d1117; border-color: #bc8cff; }
+
+.crit-detail { display: none; padding: 10px 13px 12px; font-size: 12px; color: var(--text); line-height: 1.65; border-top: 1px solid var(--border); }
+.crit-detail.open { display: block; }
+.cnote { margin-top: 8px; padding: 8px 11px; background: var(--card2); border-left: 3px solid var(--border2); font-family: var(--mono); font-size: 10px; color: var(--text2); line-height: 1.75; border-radius: 0 3px 3px 0; }
+.cnote strong { color: var(--text); }
+
+.brow { display: flex; flex-wrap: wrap; border-top: 1px solid var(--border); }
+.abtn { flex: 1; min-width: 120px; padding: 9px 10px; background: none; border: none; border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); color: var(--text2); font-family: var(--sans); font-size: 12px; cursor: pointer; transition: all 0.12s; font-weight: 400; line-height: 1.4; text-align: left; }
+.abtn:last-child { border-right: none; }
+.abtn:hover { background: var(--card2); color: var(--text); }
+.abtn.ay  { background: var(--green-bg);  color: var(--green);  font-weight: 700; }
+.abtn.an  { background: var(--red-bg);    color: var(--red);    font-weight: 700; }
+.abtn.ap  { background: var(--yellow-bg); color: var(--yellow); font-weight: 700; }
+.abtn.ab  { background: var(--blue-bg);   color: var(--blue);   font-weight: 700; }
+.abtn.aa  { background: var(--card2);     color: var(--text2);  font-weight: 700; }
+.abtn.aw  { background: var(--amber-bg);  color: var(--amber);  font-weight: 700; }
+
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; }
+@media (max-width: 600px) { .two-col { grid-template-columns: 1fr; } }
+
+.alrt { padding: 9px 13px; border-radius: 5px; font-size: 12px; line-height: 1.55; margin-top: 12px; border-left: 3px solid; display: none; }
+.alrt.show { display: block; }
+.aok   { border-color: var(--green);  background: var(--green-bg);  color: #7ee787; }
+.awn   { border-color: var(--amber);  background: var(--amber-bg);  color: var(--amber); }
+.aerr  { border-color: var(--red);    background: var(--red-bg);    color: #ff7b72; }
+.ainf  { border-color: var(--blue);   background: var(--blue-bg);   color: var(--blue); }
+.ayel  { border-color: var(--yellow); background: var(--yellow-bg); color: var(--yellow); }
+
+.lbox { background: var(--card2); border: 1px solid var(--border); border-radius: 5px; padding: 12px 15px; font-size: 12px; color: var(--text2); line-height: 1.75; margin-bottom: 14px; }
+.lbox strong { color: var(--text); }
+.ly { color: var(--yellow); font-weight: 600; }
+.lg { color: var(--green);  font-weight: 600; }
+.la { color: var(--amber);  font-weight: 600; }
+.lr { color: var(--red);    font-weight: 600; }
+.lb { color: var(--blue);   font-weight: 600; }
+
+.tally { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+.chip { display: flex; align-items: center; gap: 5px; padding: 5px 11px; border-radius: 20px; font-family: var(--mono); font-size: 11px; border: 1px solid var(--border); background: var(--card2); color: var(--text2); }
+.chip .n { font-size: 14px; font-weight: 700; }
+.cy { border-color: var(--yellow-bd); background: var(--yellow-bg); color: var(--yellow); }
+.cg { border-color: var(--green-bd);  background: var(--green-bg);  color: var(--green); }
+.cb { border-color: var(--blue-bd);   background: var(--blue-bg);   color: var(--blue); }
+.ca { border-color: var(--amber-bd);  background: var(--amber-bg);  color: var(--amber); }
+
+.nav-row { display: flex; justify-content: space-between; align-items: center; margin-top: 20px; gap: 10px; }
+.nbtn { padding: 9px 22px; border-radius: 5px; font-family: var(--sans); font-size: 13px; border: 1px solid; cursor: pointer; font-weight: 600; transition: all 0.15s; }
+.np { background: var(--yellow); border-color: var(--yellow); color: #0d1117; font-weight: 700; }
+.np:hover { background: #ffe08a; border-color: #ffe08a; }
+.np:disabled { opacity: 0.3; cursor: not-allowed; }
+.ns { background: transparent; border-color: var(--border2); color: var(--text2); }
+.ns:hover { border-color: var(--text); color: var(--text); }
+
+.screen { display: none; }
+.screen.active { display: block; animation: fu 0.25s ease; }
+@keyframes fu { from { opacity:0; transform:translateY(5px); } to { opacity:1; transform:translateY(0); } }
+
+.vban { border-radius: 8px; padding: 22px 26px; margin-bottom: 16px; border: 2px solid; }
+.vpos  { border-color: var(--yellow); background: var(--yellow-bg); }
+.vneg  { border-color: var(--red);    background: var(--red-bg); }
+.vund  { border-color: var(--amber);  background: var(--amber-bg); }
+.vcaution { border-color: var(--blue); background: var(--blue-bg); }
+.vban-head { text-align: center; margin-bottom: 14px; }
+.vlbl { font-family: var(--mono); font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase; opacity: 0.6; margin-bottom: 5px; }
+.vtitle { font-size: 22px; font-weight: 700; margin-bottom: 6px; letter-spacing: -0.01em; }
+.vpos  .vtitle { color: var(--yellow); }
+.vneg  .vtitle { color: var(--red); }
+.vund  .vtitle { color: var(--amber); }
+.vcaution .vtitle { color: var(--blue); }
+.vdesc { font-size: 12px; color: var(--text2); line-height: 1.7; max-width: 620px; margin: 0 auto; }
+
+.sum-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+@media (max-width: 580px) { .sum-grid { grid-template-columns: 1fr; } }
+.sblock { background: var(--card); border: 1px solid var(--border); border-radius: 6px; overflow: hidden; }
+.sbtitle { font-family: var(--sans); font-size: 11px; font-weight: 600; padding: 7px 11px; border-bottom: 1px solid var(--border); color: var(--text); background: var(--card2); }
+.srow { display: flex; align-items: flex-start; gap: 8px; padding: 6px 11px; border-bottom: 1px solid var(--border); font-size: 12px; }
+.srow:last-child { border-bottom: none; }
+.dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; margin-top: 4px; }
+.dg { background: var(--green); } .dr { background: var(--red); }
+.dy { background: var(--yellow); } .db { background: var(--blue); }
+.da { background: var(--amber); } .dgr{ background: var(--text3); }
+.sname { flex: 1; color: var(--text); line-height: 1.4; }
+.stag { font-family: var(--mono); font-size: 9px; padding: 1px 7px; border-radius: 10px; border: 1px solid; white-space: nowrap; }
+.tg { border-color: var(--green-bd);  color: var(--green); }
+.tr { border-color: var(--red-bd);    color: var(--red); }
+.ty { border-color: var(--yellow-bd); color: var(--yellow); }
+.tb { border-color: var(--blue-bd);   color: var(--blue); }
+.ta { border-color: var(--amber-bd);  color: var(--amber); }
+.tgr{ border-color: var(--border2);   color: var(--text3); }
+
+.doc-header { display: flex; align-items: center; gap: 8px; margin-bottom: 5px; }
+.doc-tog { flex: 1; text-align: left; background: var(--card2); border: 1px solid var(--border2); border-radius: 5px; color: var(--text2); font-family: var(--sans); font-size: 13px; padding: 8px 13px; cursor: pointer; transition: all 0.15s; }
+.doc-tog:hover { border-color: var(--yellow); color: var(--yellow); }
+.copy-btn { background: var(--card2); border: 1px solid var(--border2); border-radius: 5px; color: var(--text2); font-family: var(--sans); font-size: 12px; padding: 8px 14px; cursor: pointer; white-space: nowrap; transition: all 0.15s; display: none; }
+.copy-btn.visible { display: block; }
+.copy-btn:hover { border-color: var(--green); color: var(--green); }
+.copy-btn.copied { border-color: var(--green); color: var(--green); background: var(--green-bg); }
+.doc-body { display: none; background: var(--card2); border: 1px solid var(--border2); border-radius: 5px; padding: 13px 15px; font-family: var(--mono); font-size: 11px; color: var(--text2); line-height: 1.85; white-space: pre-wrap; margin-bottom: 12px; }
+.doc-body.open { display: block; }
+
+.redflag-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 14px; }
+@media (max-width: 600px) { .redflag-grid { grid-template-columns: 1fr; } }
+.redflag-item { border: 1px solid var(--border); border-radius: 5px; padding: 11px 13px; font-size: 13px; color: var(--text2); line-height: 1.55; cursor: pointer; transition: all 0.15s; display: flex; align-items: flex-start; gap: 12px; }
+.redflag-item:hover { border-color: var(--border2); color: var(--text); }
+.redflag-item.rf-checked { border-color: var(--red-bd); background: var(--red-bg); color: var(--red); }
+.rf-checkbox { width: 18px; height: 18px; min-width: 18px; border: 2px solid var(--border2); border-radius: 3px; background: var(--card2); transition: all 0.15s; display: flex; align-items: center; justify-content: center; margin-top: 1px; font-size: 11px; font-weight: 700; color: transparent; }
+.redflag-item.rf-checked .rf-checkbox { border-color: var(--red); background: var(--red-bg); color: var(--red); }
+.rf-content { flex: 1; }
+.rf-label { font-weight: 600; font-size: 13px; margin-bottom: 4px; color: var(--text); }
+.redflag-item.rf-checked .rf-label { color: var(--red); }
+</style>
+</head>
+<body>
+<div class="app">
+
+<header>
+  <div>
+    <div class="h-title">2023 International Panel <span>MOGAD Diagnostic Criteria</span></div>
+    <div class="h-sub">Banwell B et al. · Lancet Neurol 2023;22:268–282 · International MOGAD Panel · For educator use only</div>
+    <div class="h-credit">Designed by neurology resident physician Daniel Short, MD</div>
+  </div>
+  <button class="reset-btn" onclick="resetAll()">↺ Reset</button>
+</header>
+
+<div class="prog-track"><div class="prog-fill" id="pf" style="width:0%"></div></div>
+
+<div class="steps">
+  <div class="stab active" id="st0" onclick="goTab(0)"><span class="sn">1</span><span class="slbl">Context</span></div>
+  <div class="stab" id="st1" onclick="goTab(1)"><span class="sn">2</span><span class="slbl">MOG-IgG</span></div>
+  <div class="stab" id="st2" onclick="goTab(2)"><span class="sn">3</span><span class="slbl">Core Event</span></div>
+  <div class="stab" id="st3" onclick="goTab(3)"><span class="sn">4</span><span class="slbl">Supp. Feat.</span></div>
+  <div class="stab" id="st4" onclick="goTab(4)"><span class="sn">5</span><span class="slbl">Exclusions</span></div>
+  <div class="stab" id="st5" onclick="goTab(5)"><span class="sn">6</span><span class="slbl">Red Flags</span></div>
+  <div class="stab" id="st6" onclick="goTab(6)"><span class="sn">7</span><span class="slbl">Verdict</span></div>
+</div>
+
+<!-- ══ SCREEN 0: CONTEXT ══ -->
+<div class="screen active" id="s0">
+<div class="card">
+  <div class="ctitle" style="color:var(--yellow);">Step 1 · Clinical Context and Patient Selection</div>
+  <div class="csub">MOGAD is a distinct CNS demyelinating disorder, separate from MS and AQP4-IgG–seropositive NMOSD. Correct patient selection before testing is essential — MOG-IgG is not a screening test for all demyelinating disease.</div>
+
+  <div class="lbox">
+    <strong>Epidemiology (Banwell et al. 2023, Lancet Neurol):</strong><br>
+    <span class="ly">Incidence:</span> 1.6–3.4 per million per year; <span class="ly">Prevalence:</span> ~20 per million (95% CI 11–34)<br>
+    <span class="ly">Age:</span> All ages affected. Paediatric-onset frequent; no marked sex predominance (F=M), unlike MS (F&gt;M) and NMOSD (F&gt;&gt;M)<br>
+    <span class="ly">Disease course:</span> Monophasic OR relapsing — ~27–36% of adults relapse within ~1–2 years of first attack; 4-year relapse risk 31.7%, 8-year risk 36.3% (UK cohort, n=183)<br><br>
+    <strong>Key principle:</strong> MOG-IgG testing should be targeted, not universal. The positive predictive value (PPV) depends heavily on pretest probability — low-prevalence populations yield high false-positive rates.
+  </div>
+
+  <div class="slabel">Patient presentation type <span class="pill pill-r">REQUIRED</span></div>
+
+  <div class="crit" id="context-item">
+    <div class="crit-main">
+      <div class="crit-name">Which presentation has prompted consideration of MOGAD?</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      <strong>High pretest probability (testing strongly recommended):</strong><br>
+      • Children &lt;11 years with optic neuritis or ADEM: MOG-IgG approaches 50% frequency<br>
+      • Adults with optic neuritis + severe disc oedema: MOG-IgG ~39% (vs ~5% in all adult optic neuritis)<br>
+      • AQP4-IgG-seronegative NMOSD features: bilateral optic neuritis, LETM, area postrema syndrome<br>
+      • Recurrent optic neuritis or NMOSD-like phenotype that is AQP4-seronegative<br><br>
+      <strong>Lower pretest probability (interpret with caution):</strong><br>
+      • Adult optic neuritis without features suggestive of MOGAD: MOG-IgG ~5%<br>
+      • MS with clinical/radiological features typical of MS + positive CSF OCBs: MOG-IgG 0.3–2.5% — routine testing NOT recommended<br>
+      <div class="cnote">
+        <strong>PPV formula (Panel 2, Banwell et al.):</strong> PPV = (sensitivity × prevalence) / [(sensitivity × prevalence) + (1−specificity) × (1−prevalence)]. A low-positive titre in a low-prevalence population (e.g., confirmed MS) will produce predominantly false-positive results. Universal MOG-IgG screening in adults with confirmed MS is strongly discouraged.
+      </div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setCtx('high')"    id="ctx-high">High pretest probability presentation</button>
+      <button class="abtn" onclick="setCtx('moderate')" id="ctx-moderate">Moderate pretest probability (e.g., adult optic neuritis, AQP4-neg NMOSD)</button>
+      <button class="abtn" onclick="setCtx('low')"    id="ctx-low">Low pretest probability (typical MS, unexplained)</button>
+    </div>
+  </div>
+
+  <div id="a0" class="alrt"></div>
+  <div class="nav-row"><div></div><button class="nbtn np" id="n0" onclick="go(1)" disabled>Next: MOG-IgG Result →</button></div>
+</div>
+</div>
+
+<!-- ══ SCREEN 1: MOG-IgG RESULT ══ -->
+<div class="screen" id="s1">
+<div class="card">
+  <div class="ctitle" style="color:var(--yellow);">Step 2 · Criterion B — MOG-IgG Test Result</div>
+  <div class="csub">A positive MOG-IgG on cell-based assay (CBA) is the core diagnostic criterion. Serum is the preferred specimen. The distinction between clear positive, low positive, and negative drives the diagnostic pathway and additional requirements.</div>
+
+  <div class="lbox">
+    <strong>Assay methodology (Panel 1, Banwell et al. 2023):</strong><br>
+    <span class="ly">Preferred:</span> Live cell-based assay (CBA) using full-length human MOG — highest specificity<br>
+    <span class="ly">Acceptable alternative:</span> Fixed CBA — lower sensitivity/specificity than live CBA<br>
+    <span class="ly">Not recommended:</span> ELISA — insufficient sensitivity and specificity<br>
+    <span class="ly">Secondary antibody:</span> IgG Fc, IgG1-specific, or IgG heavy+light with external validation<br><br>
+    <strong>Clear positive (live CBA):</strong> ≥2 doubling dilutions above assay cutoff, or above assay-specific titre/flow-cytometry cutoff<br>
+    <strong>Clear positive (fixed CBA):</strong> Titre ≥1:100<br>
+    <strong>Low positive (fixed CBA):</strong> Titre ≥1:10 and &lt;1:100<br><br>
+    An international blinded comparative study of 7 live CBAs from 4 centres showed excellent interlaboratory agreement for clear positives; low-positive samples were more frequently discordant.
+  </div>
+
+  <div class="slabel">Serum MOG-IgG result <span class="pill pill-r">REQUIRED — core criterion</span></div>
+
+  <div class="crit" id="mogiggtiter-item">
+    <div class="crit-main">
+      <div class="crit-name">Serum MOG-IgG on cell-based assay</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      <strong>Testing timing:</strong> Highest yield at the time of an incident clinical attack, ideally before corticosteroids, IVIG, or apheresis (these can reduce detectable MOG-IgG). If tested after acute treatment and negative, repeat testing ≥3 months later is advised.<br><br>
+      <strong>Titre kinetics:</strong> MOG-IgG titres usually decline over time. Persistent seropositivity is associated with a 2–10× increased relapse likelihood, particularly with persistently high titres. Seroconversion from negative to positive is extremely uncommon.<br><br>
+      <strong>CSF testing:</strong> Only 42–62% of serum-positive patients are also CSF-positive. CSF MOG-IgG testing is reserved for seronegative patients with strong clinical/MRI features, especially if serum testing was confounded by acute therapies.
+      <div class="cnote">
+        <strong>Clinical implication of titre:</strong> Positive predictive value for MOGAD-consistent features increases with titre. Low-positive titres (&lt;1:100 on fixed CBA) are less discriminatory and can be found in confirmed MS, other neurological diseases, and healthy individuals. Always confirm low-positive results with a second independent live CBA from a laboratory with MOG-IgG expertise.
+      </div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setTiter('clear')"   id="titer-clear">✓ Clear positive (live CBA above cutoff; or fixed CBA titre ≥1:100)</button>
+      <button class="abtn" onclick="setTiter('low')"     id="titer-low">⚠ Low positive (fixed CBA titre ≥1:10 and &lt;1:100) or reported positive without titre</button>
+      <button class="abtn" onclick="setTiter('csf_pos')" id="titer-csf_pos">CSF positive only (serum negative — fixed or live CBA)</button>
+      <button class="abtn" onclick="setTiter('neg')"     id="titer-neg">✗ Negative (serum and CSF)</button>
+    </div>
+  </div>
+
+  <div id="a1" class="alrt"></div>
+  <div class="nav-row">
+    <button class="nbtn ns" onclick="go(0)">← Back</button>
+    <button class="nbtn np" onclick="go(2)">Next: Core Clinical Event →</button>
+  </div>
+</div>
+</div>
+
+<!-- ══ SCREEN 2: CORE CLINICAL EVENT ══ -->
+<div class="screen" id="s2">
+<div class="card">
+  <div class="ctitle" style="color:var(--yellow);">Step 3 · Criterion A — Core Clinical Demyelinating Event</div>
+  <div class="csub">MOGAD diagnosis requires one of six core clinical event types. Select the primary presentation. Clinical features that help distinguish MOGAD from MS and AQP4-NMOSD are shown for each event type.</div>
+
+  <div class="lbox">
+    <strong>Diagnostic criterion A requires ONE of the following core events (Figure 3, Banwell et al. 2023).</strong> A single event may qualify (monophasic) or a patient may have had multiple events (relapsing). The most current or relevant event should be characterised below.
+  </div>
+
+  <div class="slabel">Core clinical event type <span class="pill pill-r">REQUIRED</span></div>
+
+  <div class="crit" id="coreevent-item">
+    <div class="crit-main">
+      <div class="crit-name">Select the primary core clinical event</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      <strong>Optic neuritis:</strong> Unilateral or bilateral reduced VA developing over hours–days, often with retro-orbital pain (exacerbated by eye movement), colour vision loss, visual field loss. Supported by T2-hyperintense signal or gadolinium enhancement of optic nerve/chiasm. In MOGAD: bilateral simultaneous ON is 31–58% (vs &lt;5% in MS); optic disc oedema is moderate-severe in 45–95%; visual acuity often &lt;6/60 at nadir. Recovery is typically rapid with corticosteroids, but relapses can occur during taper. Relapsing optic neuritis occurs in 30–50% of MOG-IgG patients.<br><br>
+      <strong>Myelitis:</strong> Acute motor, sensory, sphincter, or erectile disturbance developing over hours–days. T2 hyperintensity on spinal MRI. LETM (≥3 vertebral segments) in &gt;60% of cases. Central cord/H-sign in 66–75%; conus lesion characteristic. Moderate-severe EDSS (&gt;4) at nadir in ≥50%. Motor recovery generally good; bladder/bowel/sexual dysfunction can be permanent in up to 30% despite good motor recovery.<br><br>
+      <strong>ADEM:</strong> Acute polyfocal neurological deficits with encephalopathy (not postictal) + multifocal T2 bright lesions. Most common presentation in children &lt;10 years. MOG-IgG found in ~50% of paediatric ADEM. Infectious prodrome (mainly respiratory) preceding in 40–75%. Complete/near-complete clinical and radiological resolution in &gt;70% of children.<br><br>
+      <strong>Cerebral monofocal/polyfocal deficits:</strong> Deficits developing over hours–days referable to T2-hyperintense lesions in middle cerebellar peduncle, periventricular white matter, or cortical/subcortical areas. Juxtacortical/cortical lesions more common than in MS.<br><br>
+      <strong>Brainstem/cerebellar:</strong> Clinical deficits developing over hours–days with T2 lesions in brainstem/cerebellum. Large middle cerebellar peduncle lesions suggest MOGAD (rare in MS and AQP4-NMOSD). Area postrema syndrome less common in MOGAD than AQP4-NMOSD.<br><br>
+      <strong>Cerebral cortical encephalitis with seizures:</strong> Fever, headache, reduced consciousness, seizures or status epilepticus. Cortical FLAIR lesions (FLAMES: FLAIR hyperintense lesions in anti-MOG encephalitis with seizures) with overlying leptomeningeal enhancement. Occurs in ~6.7% (19/285) of MOG-IgG patients. Consider dual antibody testing (NMDA-R in CSF/serum) — 4–7.5% overlap with NMDA-R encephalitis.
+      <div class="cnote">
+        <strong>Cumulative onset data (Banwell et al. 2023, N=1361 combined cohorts):</strong> Optic neuritis ~50%; Transverse myelitis ~20%; ADEM or brain lesions ~15%; ON+TM overlap ~5%; Other/unknown ~10%. In adults (N=377), optic neuritis predominates (~55%). In children (N=176), ADEM/brain lesions are more frequent (~40%).
+      </div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setCE('on')"      id="ce-on">Optic neuritis</button>
+      <button class="abtn" onclick="setCE('myelitis')" id="ce-myelitis">Myelitis (transverse myelitis)</button>
+      <button class="abtn" onclick="setCE('adem')"    id="ce-adem">ADEM</button>
+      <button class="abtn" onclick="setCE('cerebral')" id="ce-cerebral">Cerebral monofocal / polyfocal CNS deficits</button>
+      <button class="abtn" onclick="setCE('brainstem')" id="ce-brainstem">Brainstem or cerebellar deficits</button>
+      <button class="abtn" onclick="setCE('cortical')" id="ce-cortical">Cerebral cortical encephalitis with seizures</button>
+      <button class="abtn" onclick="setCE('none')"    id="ce-none">✗ None of the above / unclear</button>
+    </div>
+  </div>
+
+  <div id="a2" class="alrt"></div>
+  <div class="nav-row">
+    <button class="nbtn ns" onclick="go(1)">← Back</button>
+    <button class="nbtn np" onclick="go(3)">Next: Supporting Features →</button>
+  </div>
+</div>
+</div>
+
+<!-- ══ SCREEN 3: SUPPORTING FEATURES ══ -->
+<div class="screen" id="s3">
+<div class="card">
+  <div class="ctitle" style="color:var(--yellow);">Step 4 · Supporting Clinical and MRI Features</div>
+  <div class="csub">Supporting features are required when MOG-IgG is low positive, reported positive without titre, or CSF-only positive. They are not required for clear positive results. Select all that apply for the patient's presentation.</div>
+
+  <div class="lbox">
+    <strong>When are supporting features required? (Figure 3, Banwell et al. 2023)</strong><br>
+    <span class="lg">Clear positive serum MOG-IgG:</span> No additional supporting features required (proceed directly)<br>
+    <span class="la">Low positive / no titre reported / CSF-only positive:</span> Must be AQP4-IgG seronegative AND have ≥1 supporting clinical or MRI feature from the list below<br><br>
+    Supporting features are organised by presentation type below. Even for clear-positive results, document supporting features — they strengthen diagnostic confidence.
+  </div>
+
+  <div class="slabel">Optic neuritis supporting features</div>
+  <div class="two-col">
+    <div class="crit" id="sf-bilateral-item">
+      <div class="crit-main"><div class="crit-name">Bilateral simultaneous optic neuritis</div></div>
+      <div class="brow">
+        <button class="abtn" onclick="setSF('bilateral','yes')" id="sf-bilateral-yes">✓ Present</button>
+        <button class="abtn" onclick="setSF('bilateral','no')"  id="sf-bilateral-no">✗ Absent</button>
+        <button class="abtn" onclick="setSF('bilateral','na')"  id="sf-bilateral-na">— N/A</button>
+      </div>
+    </div>
+    <div class="crit" id="sf-letm_on-item">
+      <div class="crit-main"><div class="crit-name">Longitudinal optic nerve involvement (&gt;50% nerve length on MRI)</div></div>
+      <div class="brow">
+        <button class="abtn" onclick="setSF('letm_on','yes')" id="sf-letm_on-yes">✓ Present</button>
+        <button class="abtn" onclick="setSF('letm_on','no')"  id="sf-letm_on-no">✗ Absent</button>
+        <button class="abtn" onclick="setSF('letm_on','na')"  id="sf-letm_on-na">— N/A</button>
+      </div>
+    </div>
+    <div class="crit" id="sf-perineuritis-item">
+      <div class="crit-main"><div class="crit-name">Perineural optic sheath enhancement on MRI</div></div>
+      <div class="brow">
+        <button class="abtn" onclick="setSF('perineuritis','yes')" id="sf-perineuritis-yes">✓ Present</button>
+        <button class="abtn" onclick="setSF('perineuritis','no')"  id="sf-perineuritis-no">✗ Absent</button>
+        <button class="abtn" onclick="setSF('perineuritis','na')"  id="sf-perineuritis-na">— N/A</button>
+      </div>
+    </div>
+    <div class="crit" id="sf-discoedema-item">
+      <div class="crit-main"><div class="crit-name">Optic disc oedema on fundoscopy or MRI</div></div>
+      <div class="brow">
+        <button class="abtn" onclick="setSF('discoedema','yes')" id="sf-discoedema-yes">✓ Present</button>
+        <button class="abtn" onclick="setSF('discoedema','no')"  id="sf-discoedema-no">✗ Absent</button>
+        <button class="abtn" onclick="setSF('discoedema','na')"  id="sf-discoedema-na">— N/A</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:14px;">Myelitis supporting features</div>
+  <div class="two-col">
+    <div class="crit" id="sf-letm_sc-item">
+      <div class="crit-main">
+        <div class="crit-name">Longitudinally extensive transverse myelitis (LETM, ≥3 vertebral segments)</div>
+        <button class="xbtn" onclick="xp(this)">details ▾</button>
+      </div>
+      <div class="crit-detail">
+        LETM is present in &gt;60% of MOG-IgG myelitis cases. First-attack LETM rarely occurs in MS. In a population-based study, LETM occurred in only 1.3% (11/863) of MS patients vs. 26% (7/27) of MOG-IgG patients (p&lt;0.001). MRI is normal in up to 10% of spinal attacks.
+      </div>
+      <div class="brow">
+        <button class="abtn" onclick="setSF('letm_sc','yes')" id="sf-letm_sc-yes">✓ Present</button>
+        <button class="abtn" onclick="setSF('letm_sc','no')"  id="sf-letm_sc-no">✗ Absent / short segment</button>
+        <button class="abtn" onclick="setSF('letm_sc','na')"  id="sf-letm_sc-na">— N/A</button>
+      </div>
+    </div>
+    <div class="crit" id="sf-hsign-item">
+      <div class="crit-main">
+        <div class="crit-name">Central cord lesion (H-sign) — axial grey matter involvement</div>
+        <button class="xbtn" onclick="xp(this)">details ▾</button>
+      </div>
+      <div class="crit-detail">
+        T2-hyperintense lesions centrally located in 66–75% of MOG-IgG myelitis. Grey matter restricted (H-sign) in 30–50%. Bright spotty lesion appearance more typical of AQP4-NMOSD. 20–25% of MOG-IgG spinal lesions do not involve grey matter.
+      </div>
+      <div class="brow">
+        <button class="abtn" onclick="setSF('hsign','yes')" id="sf-hsign-yes">✓ Present</button>
+        <button class="abtn" onclick="setSF('hsign','no')"  id="sf-hsign-no">✗ Absent</button>
+        <button class="abtn" onclick="setSF('hsign','na')"  id="sf-hsign-na">— N/A</button>
+      </div>
+    </div>
+    <div class="crit" id="sf-conus-item">
+      <div class="crit-main"><div class="crit-name">Conus lesion</div></div>
+      <div class="brow">
+        <button class="abtn" onclick="setSF('conus','yes')" id="sf-conus-yes">✓ Present</button>
+        <button class="abtn" onclick="setSF('conus','no')"  id="sf-conus-no">✗ Absent</button>
+        <button class="abtn" onclick="setSF('conus','na')"  id="sf-conus-na">— N/A</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:14px;">Brain / brainstem / cerebral supporting features</div>
+  <div class="two-col">
+    <div class="crit" id="sf-illdefined-item">
+      <div class="crit-main">
+        <div class="crit-name">Multiple ill-defined T2-hyperintense lesions (supratentorial ± infratentorial white matter)</div>
+        <button class="xbtn" onclick="xp(this)">details ▾</button>
+      </div>
+      <div class="crit-detail">
+        MOGAD brain lesions tend to be bilateral, ill-defined ("fluffy"), and large — with deep grey matter involvement. In contrast to MS (small, ovoid, well-demarcated juxtacortical/periventricular). Brain T2 lesions are absent in 47–68% of MOGAD patients (especially ON/myelitis presentations).
+      </div>
+      <div class="brow">
+        <button class="abtn" onclick="setSF('illdefined','yes')" id="sf-illdefined-yes">✓ Present</button>
+        <button class="abtn" onclick="setSF('illdefined','no')"  id="sf-illdefined-no">✗ Absent</button>
+        <button class="abtn" onclick="setSF('illdefined','na')"  id="sf-illdefined-na">— N/A</button>
+      </div>
+    </div>
+    <div class="crit" id="sf-deepgrey-item">
+      <div class="crit-main"><div class="crit-name">Deep grey matter involvement (thalami, basal ganglia)</div></div>
+      <div class="brow">
+        <button class="abtn" onclick="setSF('deepgrey','yes')" id="sf-deepgrey-yes">✓ Present</button>
+        <button class="abtn" onclick="setSF('deepgrey','no')"  id="sf-deepgrey-no">✗ Absent</button>
+        <button class="abtn" onclick="setSF('deepgrey','na')"  id="sf-deepgrey-na">— N/A</button>
+      </div>
+    </div>
+    <div class="crit" id="sf-mcp-item">
+      <div class="crit-main">
+        <div class="crit-name">Ill-defined T2 involving pons, middle cerebellar peduncle (MCP), or medulla</div>
+        <button class="xbtn" onclick="xp(this)">details ▾</button>
+      </div>
+      <div class="crit-detail">
+        Large MCP lesions are a characteristic MOGAD pattern — rare in MS and AQP4-NMOSD. In a study of brainstem/cerebellar involvement, large confluent MCP lesions were disproportionately seen in MOGAD. Area postrema and midbrain lesions can cause episodic nausea/vomiting (&gt;48h) in a small proportion of patients.
+      </div>
+      <div class="brow">
+        <button class="abtn" onclick="setSF('mcp','yes')" id="sf-mcp-yes">✓ Present</button>
+        <button class="abtn" onclick="setSF('mcp','no')"  id="sf-mcp-no">✗ Absent</button>
+        <button class="abtn" onclick="setSF('mcp','na')"  id="sf-mcp-na">— N/A</button>
+      </div>
+    </div>
+    <div class="crit" id="sf-cortical-item">
+      <div class="crit-main">
+        <div class="crit-name">Cortical lesion ± leptomeningeal enhancement (FLAMES pattern)</div>
+        <button class="xbtn" onclick="xp(this)">details ▾</button>
+      </div>
+      <div class="crit-detail">
+        FLAMES (FLAIR hyperintense lesions in anti-MOG encephalitis with seizures) are cortical lesions most apparent on FLAIR. Unilateral or bilateral cortical leptomeningeal enhancement (linear pattern) is seen with cerebral cortical encephalitis. This pattern helps distinguish cortical MOGAD from viral encephalitis and MS.
+      </div>
+      <div class="brow">
+        <button class="abtn" onclick="setSF('corticallesion','yes')" id="sf-corticallesion-yes">✓ Present</button>
+        <button class="abtn" onclick="setSF('corticallesion','no')"  id="sf-corticallesion-no">✗ Absent</button>
+        <button class="abtn" onclick="setSF('corticallesion','na')"  id="sf-corticallesion-na">— N/A</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="a3" class="alrt"></div>
+  <div class="nav-row">
+    <button class="nbtn ns" onclick="go(2)">← Back</button>
+    <button class="nbtn np" onclick="go(4)">Next: Exclusions →</button>
+  </div>
+</div>
+</div>
+
+<!-- ══ SCREEN 4: EXCLUSIONS ══ -->
+<div class="screen" id="s4">
+<div class="card">
+  <div class="ctitle" style="color:var(--yellow);">Step 5 · Criterion C — Exclusion of Better Diagnoses</div>
+  <div class="csub">MOGAD must be diagnosed only after other conditions that better explain the clinical picture have been excluded. This is a clinician-judgment step. Key alternative diagnoses are evaluated below.</div>
+
+  <div class="lbox">
+    <strong>Key exclusions required (Criterion C, Figure 3, Banwell et al. 2023):</strong><br>
+    <span class="ly">MS:</span> MOG-IgG frequency in confirmed MS: 0.3–2.5%. A patient with optic neuritis meeting 2024 McDonald criteria for MS + positive CSF OCBs + low-titre MOG-IgG → more appropriately diagnosed as MS<br>
+    <span class="ly">AQP4-IgG–seropositive NMOSD:</span> Dual positivity (AQP4-IgG + MOG-IgG) is very rare; AQP4-IgG nearly always has high titre while MOG-IgG is low. When dual positive, AQP4-IgG is the clinically dominant diagnosis<br>
+    <span class="ly">Other diagnoses:</span> Infectious/para-infectious (viral encephalitis, PML), neoplastic, metabolic, vascular, or genetic demyelinating disorders
+  </div>
+
+  <div class="slabel">Multiple sclerosis exclusion <span class="pill pill-r">REQUIRED</span></div>
+  <div class="crit" id="excl-ms-item">
+    <div class="crit-main">
+      <div class="crit-name">Does the clinical/radiological picture better fit MS (2024 McDonald criteria)?</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      MS features that argue against MOGAD: small ovoid juxtacortical/periventricular T2 lesions (Dawson's fingers, S-shaped U-fibre lesions), frequent CSF oligoclonal bands (&gt;80% in MS vs. infrequent in MOGAD), silent lesion accrual between attacks (&quot;0% of 110 follow-up spinal MRIs in 81 MOGAD patients had new silent lesions&quot; — Banwell et al.), persistent T1-hypointense lesions (frequent in MS, extremely rare in MOGAD), central venule sign, progressive disease course in absence of relapses.
+      <div style="margin-top:8px; padding:8px 11px; background:var(--card2); border-left:3px solid var(--border2); font-family:var(--sans); font-size:11px; color:var(--text2); line-height:1.75; border-radius:0 3px 3px 0;">
+        <strong style="color:var(--text);">Practical guidance:</strong> Although most patients with MOGAD will not meet McDonald criteria for MS, and vice versa, some patients will satisfy both sets of criteria. In this case, clinical judgment — including titre level, imaging character, and longitudinal course — should guide the final diagnosis. Ill-defined ("fluffy") brain lesions with deep grey matter involvement and bilateral optic neuritis with disc oedema strongly favour MOGAD over MS despite meeting McDonald DIS/DIT criteria.
+      </div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setExcl('ms','no')"   id="excl-ms-no">✓ MS excluded — clinical/MRI does not better fit MS</button>
+      <button class="abtn" onclick="setExcl('ms','partial')" id="excl-ms-partial">⚠ Partial overlap — judgment required</button>
+      <button class="abtn" onclick="setExcl('ms','yes')"  id="excl-ms-yes">✗ MS appears more likely — MOGAD diagnosis in question</button>
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:14px;">AQP4-IgG NMOSD exclusion <span class="pill pill-r">REQUIRED</span></div>
+  <div class="crit" id="excl-aqp4-item">
+    <div class="crit-main">
+      <div class="crit-name">AQP4-IgG serostatus</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      Many labs run AQP4-IgG and MOG-IgG concurrently. A clearly positive AQP4-IgG in a patient with NMOSD-like features (optic neuritis, LETM, area postrema syndrome) strongly supports AQP4-IgG–seropositive NMOSD, and MOG-IgG testing is not indicated. Patients presenting with NMOSD features who are AQP4-IgG seronegative should be tested for MOG-IgG. When dual positivity occurs, AQP4-IgG titre is nearly always high and MOG-IgG titre is low; the clinical course follows AQP4-IgG–seropositive NMOSD.
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setExcl('aqp4','neg')"  id="excl-aqp4-neg">✓ AQP4-IgG negative</button>
+      <button class="abtn" onclick="setExcl('aqp4','pos')"  id="excl-aqp4-pos">✗ AQP4-IgG positive — NMOSD more likely</button>
+      <button class="abtn" onclick="setExcl('aqp4','nd')"   id="excl-aqp4-nd">— Not tested</button>
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:14px;">Other alternative diagnoses <span class="pill pill-a">CONSIDER</span></div>
+  <div class="crit" id="excl-other-item">
+    <div class="crit-main">
+      <div class="crit-name">Other diagnoses reasonably excluded (infectious, neoplastic, genetic, metabolic, vascular)?</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      Differential diagnoses to consider in MOGAD (appendix pp 12–15, Banwell et al.):<br>
+      <span style="font-family:var(--sans);">• <strong>Infectious:</strong> Viral encephalitis (HSV, VZV, EBV), PML, HTLV-1 myelopathy</span><br>
+      <span style="font-family:var(--sans);">• <strong>Autoimmune:</strong> NMDA-R encephalitis (4–7.5% overlap with MOG-IgG — test CSF/serum in seizure presentations), CNS vasculitis, sarcoidosis</span><br>
+      <span style="font-family:var(--sans);">• <strong>Neoplastic:</strong> CNS lymphoma, paraneoplastic encephalomyelitis</span><br>
+      <span style="font-family:var(--sans);">• <strong>Genetic:</strong> Leukodystrophies (leukodystrophy-like MRI pattern is a rare MOGAD variant in children — occurs but is atypical)</span><br>
+      <span style="font-family:var(--sans);">• <strong>Vascular:</strong> Compressive or vascular myelopathy, Susac syndrome</span><br>
+      Note: MOGAD and COVID-19 association remains uncertain — high community prevalence makes causal attribution tenuous.
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setExcl('other','cleared')" id="excl-other-cleared">✓ Alternative diagnoses adequately excluded</button>
+      <button class="abtn" onclick="setExcl('other','pending')" id="excl-other-pending">⚠ Work-up pending / incomplete</button>
+      <button class="abtn" onclick="setExcl('other','concern')" id="excl-other-concern">✗ Alternative diagnosis remains a concern</button>
+    </div>
+  </div>
+
+  <div id="a4" class="alrt"></div>
+  <div class="nav-row">
+    <button class="nbtn ns" onclick="go(3)">← Back</button>
+    <button class="nbtn np" onclick="go(5)">Next: Red Flags →</button>
+  </div>
+</div>
+</div>
+
+<!-- ══ SCREEN 5: RED FLAGS ══ -->
+<div class="screen" id="s5">
+<div class="card">
+  <div class="ctitle" style="color:var(--yellow);">Step 6 · Red Flags Against MOGAD &amp; Disease Course</div>
+  <div class="csub">Red flags (Panel 3, Banwell et al.) should prompt reconsideration of the MOGAD diagnosis. Also characterise the current disease course — important for relapse risk stratification and treatment decisions.</div>
+
+  <div class="lbox">
+    <strong>Red flags against MOGAD (Panel 3, Banwell et al. 2023):</strong> Any of the following should prompt clinician reconsideration — especially if multiple are present.
+  </div>
+
+  <div class="slabel">Red flags — check all that are present</div>
+  <div class="redflag-grid">
+    <div class="redflag-item" id="rf0" onclick="toggleRF(0)">
+      <div class="rf-checkbox" id="rfc0">✕</div>
+      <div class="rf-content"><div class="rf-label">Progressive neurological impairment</div>Worsening disability in absence of discrete clinical attacks — not expected in MOGAD</div>
+    </div>
+    <div class="redflag-item" id="rf1" onclick="toggleRF(1)">
+      <div class="rf-checkbox" id="rfc1">✕</div>
+      <div class="rf-content"><div class="rf-label">Rapid onset to nadir (&lt;minutes to hours)</div>Stroke-like onset speeds are atypical for MOGAD demyelination</div>
+    </div>
+    <div class="redflag-item" id="rf2" onclick="toggleRF(2)">
+      <div class="rf-checkbox" id="rfc2">✕</div>
+      <div class="rf-content"><div class="rf-label">No improvement with high-dose corticosteroids</div>Lack of steroid response in an acute attack should raise alternative diagnoses</div>
+    </div>
+    <div class="redflag-item" id="rf3" onclick="toggleRF(3)">
+      <div class="rf-checkbox" id="rfc3">✕</div>
+      <div class="rf-content"><div class="rf-label">Well-circumscribed MS-pattern T2 lesions</div>DIS-pattern lesions + CSF OCBs + silent accrual of new focal T2 lesions = favour MS</div>
+    </div>
+    <div class="redflag-item" id="rf4" onclick="toggleRF(4)">
+      <div class="rf-checkbox" id="rfc4">✕</div>
+      <div class="rf-content"><div class="rf-label">Contrast enhancement persisting ≥6 months</div>Persistent enhancement is atypical for MOGAD; most T2 lesions partially or fully resolve</div>
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:14px;">Disease course characterisation <span class="pill pill-a">CLINICAL MANAGEMENT</span></div>
+
+  <div class="crit" id="course-item">
+    <div class="crit-main">
+      <div class="crit-name">Current disease course classification</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      A relapse is defined as a new clinical attack occurring &gt;30 days following onset of a prior attack. In incident cohort studies: 27–36% of adults relapsed within 10–16 months; 4-year relapse risk 31.7%; 8-year risk 36.3% (UK cohort, n=183, Satukijchai et al.). In paediatric incident cohorts: 17–20% of 200 children relapsed over 1–7 years (median time to first relapse 11 months). Persistent MOG-IgG seropositivity increases relapse likelihood 2–10×.<br><br>
+      <strong>Relapse timing:</strong> Most common in first 6 months; can occur during or after corticosteroid taper. Some patients have early cluster then stability; others have ongoing relapses beyond 12 months. Relapse-free progression (as in MS) does not appear to occur in MOGAD.
+      <div class="cnote">
+        <strong>Treatment evidence:</strong> No completed RCTs. Network meta-analysis (Xian et al. PMC2022): IVIG, oral corticosteroids, MMF, azathioprine, and rituximab all significantly reduced relapse incidence vs. no treatment (ORs 0.075–0.34). DMT (MS-targeted therapies) increased relapse risk (OR 1.3) and should be avoided. Meta-analysis of rituximab (n=238, 13 studies): 55% remained relapse-free (95% CI 0.49–0.61); ARR reduced by 1.36 (95% CI 1.02–1.71, p&lt;0.001). Oral prednisone ≥12.5 mg/day for ≥3 months after first attack was associated with 88% reduced relapse risk (multicentre cohort, n=109). First azathioprine RCT in MOGAD (NCT05349006) is ongoing.
+      </div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setCourse('first')"      id="course-first">First clinical attack (uncertain course)</button>
+      <button class="abtn" onclick="setCourse('monophasic')" id="course-monophasic">Monophasic (single attack, no relapse to date)</button>
+      <button class="abtn" onclick="setCourse('relapsing')"  id="course-relapsing">Relapsing (&gt;1 discrete clinical attack &gt;30 days apart)</button>
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:14px;">MOG-IgG persistence (if serial testing available) <span class="pill pill-a">PROGNOSTIC</span></div>
+  <div class="crit" id="persistence-item">
+    <div class="crit-main">
+      <div class="crit-name">Longitudinal MOG-IgG serostatus (serial testing)</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      Persistent MOG-IgG seropositivity is associated with 2–10× increased relapse likelihood, particularly when titres remain high. Titres usually decline with time but may remain positive for years. Seroconversion from negative to positive at relapse is extremely uncommon. Onset titre does not have strong prognostic value for recovery or relapse — it is the persistence pattern that matters. Standardised definition of persistence and its prospective prognostic significance require further study.
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setPersis('persistent')" id="persis-persistent">Persistently seropositive on follow-up testing</button>
+      <button class="abtn" onclick="setPersis('declining')"  id="persis-declining">Declining or seroconverted to negative</button>
+      <button class="abtn" onclick="setPersis('nd')"         id="persis-nd">— Serial testing not performed</button>
+    </div>
+  </div>
+
+  <div id="a5" class="alrt"></div>
+  <div class="nav-row">
+    <button class="nbtn ns" onclick="go(4)">← Back</button>
+    <button class="nbtn np" onclick="go(6)">Generate Verdict →</button>
+  </div>
+</div>
+</div>
+
+<!-- ══ SCREEN 6: VERDICT ══ -->
+<div class="screen" id="s6">
+  <div id="vout"></div>
+  <div id="sout"></div>
+  <div class="doc-header">
+    <button class="doc-tog" onclick="toggleDoc()">▼ Documentation Note</button>
+    <button class="copy-btn" id="copy-btn" onclick="copyDoc()">⎘ Copy</button>
+  </div>
+  <div class="doc-body" id="dn"></div>
+  <div class="nav-row">
+    <button class="nbtn ns" onclick="go(5)">← Back</button>
+    <button class="nbtn np" onclick="resetAll()">↺ New Evaluation</button>
+  </div>
+</div>
+
+</div><!-- /app -->
+<script>
+const S = {
+  ctx: null,
+  titer: null,
+  ce: null,
+  sf: { bilateral: null, letm_on: null, perineuritis: null, discoedema: null,
+        letm_sc: null, hsign: null, conus: null,
+        illdefined: null, deepgrey: null, mcp: null, corticallesion: null },
+  excl: { ms: null, aqp4: null, other: null },
+  rf: [false, false, false, false, false],
+  course: null,
+  persis: null
+};
+let cur = 0;
+
+function setCtx(v) {
+  S.ctx = v;
+  ['high','moderate','low'].forEach(x => {
+    const b = document.getElementById('ctx-'+x); if(b) b.classList.remove('ay','an','ap','aw','ab','aa');
+  });
+  const map = {high:'ay', moderate:'aw', low:'an'};
+  const b = document.getElementById('ctx-'+v); if(b) b.classList.add(map[v]);
+  const item = document.getElementById('context-item');
+  if(item) { item.className='crit'; if(v==='high') item.classList.add('c-yes'); else if(v==='moderate') item.classList.add('c-part'); else item.classList.add('c-no'); }
+  const n0 = document.getElementById('n0'); if(n0) n0.disabled = false;
+  const a0 = document.getElementById('a0');
+  if(a0) {
+    a0.className='alrt';
+    if(v==='low') { a0.classList.add('show','aerr'); a0.textContent='⚠ Low pretest probability: MOG-IgG results must be interpreted with caution. A positive result (especially low-titre) in this population is more likely to be a false positive. Ensure clinical/radiological features are consistent before proceeding with MOGAD diagnosis.'; }
+    else if(v==='moderate') { a0.classList.add('show','awn'); a0.textContent='ⓘ Moderate pretest probability: Positive results should be confirmed, ideally with a live CBA at a reference laboratory. Clinical context must be carefully considered when interpreting positive results.'; }
+    else { a0.classList.add('show','aok'); a0.textContent='✓ High pretest probability: Targeted MOG-IgG testing is appropriate. A clear positive result in this context has a high positive predictive value.'; }
+  }
+}
+
+function setTiter(v) {
+  S.titer = v;
+  ['clear','low','csf_pos','neg'].forEach(x => {
+    const b = document.getElementById('titer-'+x); if(b) b.classList.remove('ay','an','ap','aw','ab','aa');
+  });
+  const map = {clear:'ay', low:'aw', csf_pos:'ab', neg:'an'};
+  const b = document.getElementById('titer-'+v); if(b) b.classList.add(map[v]);
+  const item = document.getElementById('mogiggtiter-item');
+  if(item) { item.className='crit'; if(v==='clear') item.classList.add('c-yes'); else if(v==='neg') item.classList.add('c-no'); else item.classList.add('c-part'); }
+  const a1 = document.getElementById('a1');
+  if(a1) {
+    a1.className='alrt';
+    if(v==='clear') { a1.classList.add('show','aok'); a1.textContent='✓ Clear positive: No additional supporting features are required from criterion A alone. Proceed to document core clinical event and exclusions.'; }
+    else if(v==='low') { a1.classList.add('show','awn'); a1.textContent='⚠ Low positive or titre not reported: Must be AQP4-IgG seronegative AND have ≥1 supporting clinical/MRI feature to meet diagnostic criteria. Confirm with a second independent live CBA.'; }
+    else if(v==='csf_pos') { a1.classList.add('show','ainf'); a1.textContent='ⓘ CSF-only positive: CSF testing has low sensitivity (42–62% of serum-positive patients are also CSF-positive). Must still have ≥1 supporting clinical/MRI feature and AQP4-IgG seronegative status. This is a valid but less certain diagnostic path.'; }
+    else { a1.classList.add('show','aerr'); a1.textContent='✗ Negative serum and CSF MOG-IgG: MOGAD cannot be diagnosed by these proposed criteria. Consider alternative diagnoses. Note: testing before acute treatment maximises yield — if tested post-treatment, repeat in ≥3 months.'; }
+  }
+}
+
+function setCE(v) {
+  S.ce = v;
+  ['on','myelitis','adem','cerebral','brainstem','cortical','none'].forEach(x => {
+    const b = document.getElementById('ce-'+x); if(b) b.classList.remove('ay','an','ap','aw','ab','aa');
+  });
+  const b = document.getElementById('ce-'+v); if(b) b.classList.add(v==='none'?'an':'ay');
+  const item = document.getElementById('coreevent-item');
+  if(item) { item.className='crit'; item.classList.add(v==='none'?'c-no':'c-yes'); }
+  const a2 = document.getElementById('a2');
+  if(a2) {
+    a2.className='alrt';
+    if(v==='none') { a2.classList.add('show','aerr'); a2.textContent='✗ No qualifying core clinical event: MOGAD cannot be diagnosed without one of the six specified core demyelinating event types. Consider if the clinical presentation truly fits one of these categories before proceeding.'; }
+    else { a2.classList.add('show','aok'); a2.textContent='✓ Core clinical event identified. Proceed to document supporting MRI/clinical features.'; }
+  }
+}
+
+function setSF(k, v) {
+  S.sf[k] = v;
+  ['yes','no','na'].forEach(x => {
+    const b = document.getElementById('sf-'+k+'-'+x); if(b) b.classList.remove('ay','an','ap','aw','ab','aa');
+  });
+  const map = {yes:'ay', no:'an', na:'aa'};
+  const b = document.getElementById('sf-'+k+'-'+v); if(b) b.classList.add(map[v]);
+  const item = document.getElementById('sf-'+k+'-item');
+  if(item) { item.className='crit'; if(v==='yes') item.classList.add('c-yes'); else if(v==='no') item.classList.add('c-no'); else item.classList.add('c-abs'); }
+  updateSFAlert();
+}
+
+function updateSFAlert() {
+  const a3 = document.getElementById('a3'); if(!a3) return;
+  const sfVals = Object.values(S.sf);
+  const anyPresent = sfVals.some(v => v === 'yes');
+  const requiresSF = S.titer === 'low' || S.titer === 'csf_pos';
+  a3.className = 'alrt';
+  if(requiresSF) {
+    if(anyPresent) { a3.classList.add('show','aok'); a3.textContent='✓ At least one supporting feature present — criterion B requirement for low-positive/CSF-positive results is met (if also AQP4-IgG seronegative).'; }
+    else { a3.classList.add('show','awn'); a3.textContent='⚠ No supporting features marked as present. For a low positive or CSF-only positive result, at least one supporting feature is required for diagnosis.'; }
+  }
+}
+
+function setExcl(k, v) {
+  S.excl[k] = v;
+  ['no','yes','partial','neg','pos','nd','cleared','pending','concern'].forEach(x => {
+    const b = document.getElementById('excl-'+k+'-'+x); if(b) b.classList.remove('ay','an','ap','aw','ab','aa');
+  });
+  const map = {no:'ay', neg:'ay', cleared:'ay', partial:'aw', pending:'aw', yes:'an', pos:'an', concern:'an', nd:'aa'};
+  const b = document.getElementById('excl-'+k+'-'+v); if(b) b.classList.add(map[v]);
+  const item = document.getElementById('excl-'+k+'-item');
+  if(item) { item.className='crit'; const bad=['yes','pos','concern']; const ok=['no','neg','cleared']; if(ok.includes(v)) item.classList.add('c-yes'); else if(bad.includes(v)) item.classList.add('c-no'); else item.classList.add('c-part'); }
+}
+
+function toggleRF(i) {
+  S.rf[i] = !S.rf[i];
+  const el = document.getElementById('rf'+i);
+  if(el) { el.classList.remove('rf-checked'); if(S.rf[i]) el.classList.add('rf-checked'); }
+}
+
+function setCourse(v) {
+  S.course = v;
+  ['first','monophasic','relapsing'].forEach(x => {
+    const b = document.getElementById('course-'+x); if(b) b.classList.remove('ay','an','ap','aw','ab','aa');
+  });
+  const map = {first:'aw', monophasic:'ay', relapsing:'ap'};
+  const b = document.getElementById('course-'+v); if(b) b.classList.add(map[v]);
+  const item = document.getElementById('course-item');
+  if(item) { item.className='crit'; if(v==='relapsing') item.classList.add('c-pres'); else if(v==='monophasic') item.classList.add('c-yes'); else item.classList.add('c-part'); }
+}
+
+function setPersis(v) {
+  S.persis = v;
+  ['persistent','declining','nd'].forEach(x => {
+    const b = document.getElementById('persis-'+x); if(b) b.classList.remove('ay','an','ap','aw','ab','aa');
+  });
+  const map = {persistent:'ap', declining:'ay', nd:'aa'};
+  const b = document.getElementById('persis-'+v); if(b) b.classList.add(map[v]);
+  const item = document.getElementById('persistence-item');
+  if(item) { item.className='crit'; if(v==='persistent') item.classList.add('c-pres'); else if(v==='declining') item.classList.add('c-yes'); else item.classList.add('c-abs'); }
+  const a5 = document.getElementById('a5');
+  if(a5) {
+    a5.className='alrt';
+    if(v==='persistent') { a5.classList.add('show','ayel'); a5.textContent='⚠ Persistent MOG-IgG seropositivity is associated with 2–10× increased relapse likelihood. Consider maintenance immunotherapy if relapsing course or high-risk features.'; }
+    else if(v==='declining') { a5.classList.add('show','aok'); a5.textContent='✓ Declining or seronegative MOG-IgG: May be consistent with monophasic disease. Continue clinical monitoring — some patients remain relapse-free with seroconversion.'; }
+  }
+}
+
+function rfCount() { return S.rf.filter(Boolean).length; }
+
+function criteriaCheck() {
+  // Criterion A: core event present
+  const crA = S.ce && S.ce !== 'none';
+  // Criterion B: MOG-IgG positive
+  const clearPos = S.titer === 'clear';
+  const lowPos = S.titer === 'low' || S.titer === 'csf_pos';
+  const anyPos = clearPos || lowPos;
+  // Supporting features for low positive
+  const hasSF = Object.values(S.sf).some(v => v === 'yes');
+  // AQP4 negative (required for low positive path)
+  const aqp4neg = S.excl.aqp4 === 'neg' || S.excl.aqp4 === 'nd';
+  const crB_met = clearPos || (lowPos && hasSF && aqp4neg);
+  // Criterion C: exclusions
+  const msOk = S.excl.ms === 'no' || S.excl.ms === 'partial';
+  const msClear = S.excl.ms === 'no';
+  const aqp4Ok = S.excl.aqp4 !== 'pos';
+  const otherOk = S.excl.other !== 'concern';
+  const crC = msClear && aqp4Ok && (S.excl.other === 'cleared' || S.excl.other === 'pending');
+  return { crA, crB_met, clearPos, lowPos, anyPos, hasSF, aqp4neg, msClear, msOk, aqp4Ok, otherOk, crC };
+}
+
+function rv() {
+  const c = criteriaCheck();
+  const rfs = rfCount();
+  let verdict, vClass, vDesc;
+
+  // Determine overall diagnostic status
+  const allMet = c.crA && c.crB_met && c.msClear && c.aqp4Ok && (S.excl.other === 'cleared' || S.excl.other === 'pending');
+  const allMetStrict = c.crA && c.crB_met && c.msClear && c.aqp4Ok && S.excl.other === 'cleared';
+
+  if(S.titer === 'neg') {
+    verdict = 'MOGAD Not Diagnosed — Seronegative'; vClass = 'vneg';
+    vDesc = 'MOG-IgG is the fundamental inclusion criterion. Negative serum (and CSF if tested) MOG-IgG precludes MOGAD diagnosis under these proposed criteria. Ensure testing was performed before acute treatments (corticosteroids, IVIG, apheresis can reduce detectability). If tested post-treatment, repeat in ≥3 months. Consider alternative diagnoses.';
+  } else if(S.excl.aqp4 === 'pos') {
+    verdict = 'AQP4-IgG–Seropositive NMOSD — MOGAD Excluded'; vClass = 'vneg';
+    vDesc = 'AQP4-IgG positivity in a patient with optic neuritis, myelitis, or NMOSD features is the dominant diagnostic finding. Dual positive patients follow a clinical course consistent with AQP4-IgG–seropositive NMOSD. MOGAD diagnosis is not appropriate.';
+  } else if(S.excl.ms === 'yes') {
+    verdict = 'MS More Likely — MOGAD Diagnosis in Question'; vClass = 'vcaution';
+    vDesc = 'Clinical and/or radiological features better fit MS than MOGAD. A patient with optic neuritis meeting 2024 McDonald criteria + positive CSF oligoclonal bands + low-titre MOG-IgG is more appropriately diagnosed with MS. The diagnosis of MOGAD requires exclusion of better explanations.';
+  } else if(!c.crA) {
+    verdict = 'No Qualifying Core Clinical Event'; vClass = 'vneg';
+    vDesc = 'MOGAD requires one of six specified core clinical demyelinating event types (optic neuritis, myelitis, ADEM, cerebral CNS deficits, brainstem/cerebellar deficits, or cerebral cortical encephalitis with seizures). No qualifying event has been documented.';
+  } else if(c.anyPos && c.crA && rfs >= 2) {
+    verdict = 'Possible MOGAD — Multiple Red Flags Present'; vClass = 'vund';
+    vDesc = `${rfs} of 5 red flags are present. While MOG-IgG positivity and a core clinical event have been documented, multiple features argue against a MOGAD diagnosis. Reconsider alternative diagnoses — particularly MS if progressive course, persistent enhancement, or well-circumscribed T2 lesions with CSF oligoclonal bands are present. Expert review recommended.`;
+  } else if(allMet && rfs === 0) {
+    verdict = c.clearPos ? 'MOGAD Criteria Met — Clear Positive' : 'MOGAD Criteria Met — Low/CSF Positive with Supporting Features';
+    vClass = 'vpos';
+    vDesc = `All three criteria are met: (A) Core demyelinating event present; (B) ${c.clearPos ? 'Clear positive MOG-IgG (no additional supporting features required)' : 'MOG-IgG positive (low/CSF) + AQP4-IgG seronegative + ≥1 supporting feature'}; (C) MS and AQP4-NMOSD excluded. No red flags against the diagnosis. Incidence 1.6–3.4/million/year; prevalence ~20/million. Disease course: ${S.course || 'not specified'}.`;
+  } else if(allMet && rfs === 1) {
+    verdict = 'MOGAD Criteria Met — One Red Flag (Review Recommended)';
+    vClass = 'vund';
+    vDesc = `All three criteria are met, but one red flag is present. Review clinical/imaging features carefully. Most red flag items represent features more typical of MS or other diagnoses. MOGAD can still be the correct diagnosis with one atypical feature, but expert reassessment is recommended.`;
+  } else if(c.anyPos && c.crA && (S.excl.ms === 'no' || S.excl.ms === 'partial') && S.excl.other !== 'concern') {
+    verdict = 'MOGAD Criteria Partially Met — Insufficient for Definitive Diagnosis';
+    vClass = 'vund';
+    vDesc = `Some diagnostic elements are in place, but the criteria are not fully satisfied. ${!c.hasSF && c.lowPos ? 'A low positive / CSF-only positive result requires ≥1 supporting clinical or MRI feature. ' : ''}${S.excl.ms === 'partial' ? 'MS exclusion is partial — clinical judgment required. ' : ''}${S.excl.other === 'pending' ? 'Work-up for alternative diagnoses is pending — complete before finalising diagnosis. ' : ''}Document findings, complete investigation, and reassess.`;
+  } else {
+    verdict = 'MOGAD Criteria Not Met — Incomplete Evaluation';
+    vClass = 'vund';
+    vDesc = 'Insufficient information has been entered to determine diagnostic status. Complete all steps to generate a full assessment.';
+  }
+
+  const courseLabel = {first:'First attack (course uncertain)', monophasic:'Monophasic to date', relapsing:'Relapsing'};
+  const persistLabel = {persistent:'Persistently seropositive (↑ relapse risk 2–10×)', declining:'Declining / seroconverted', nd:'Serial testing not performed'};
+
+  // Build verdict banner
+  let html = `<div class="vban ${vClass}">
+    <div class="vban-head">
+      <div class="vlbl">2023 INTERNATIONAL MOGAD PANEL — DIAGNOSTIC ASSESSMENT</div>
+      <div class="vtitle">${verdict}</div>
+      <div class="vdesc">${vDesc}</div>
+    </div>
+  </div>`;
+
+  // Summary grid
+  html += `<div class="sum-grid">`;
+
+  // Column 1: Diagnostic Criteria
+  html += `<div class="sblock"><div class="sbtitle">Diagnostic Criteria Summary (A + B + C)</div>`;
+
+  const ceLabel = {on:'Optic neuritis',myelitis:'Myelitis / transverse myelitis',adem:'ADEM',cerebral:'Cerebral monofocal/polyfocal',brainstem:'Brainstem/cerebellar',cortical:'Cortical encephalitis + seizures',none:'None identified'};
+  html += `<div class="srow"><div class="dot ${c.crA?'dg':'dr'}"></div><div class="sname">Criterion A: Core event</div><div class="stag ${c.crA?'tg':'tr'}">${ceLabel[S.ce]||'—'}</div></div>`;
+
+  const titerLabel = {clear:'Clear positive (no SF required)',low:'Low positive (SF required)',csf_pos:'CSF-only positive',neg:'Negative'};
+  html += `<div class="srow"><div class="dot ${S.titer==='neg'?'dr':S.titer==='clear'?'dg':'da'}"></div><div class="sname">Criterion B: MOG-IgG result</div><div class="stag ${S.titer==='neg'?'tr':S.titer==='clear'?'tg':'ta'}">${titerLabel[S.titer]||'—'}</div></div>`;
+
+  const sfCount = Object.values(S.sf).filter(v => v==='yes').length;
+  html += `<div class="srow"><div class="dot ${sfCount>0?'dg':'dgr'}"></div><div class="sname">Supporting features present</div><div class="stag ${sfCount>0?'tg':'tgr'}">${sfCount} feature(s)</div></div>`;
+
+  const msLabel = {no:'MS excluded',partial:'Partial overlap',yes:'MS more likely'};
+  html += `<div class="srow"><div class="dot ${S.excl.ms==='no'?'dg':S.excl.ms==='yes'?'dr':'da'}"></div><div class="sname">Criterion C: MS exclusion</div><div class="stag ${S.excl.ms==='no'?'tg':S.excl.ms==='yes'?'tr':'ta'}">${msLabel[S.excl.ms]||'—'}</div></div>`;
+
+  html += `<div class="srow"><div class="dot ${S.excl.aqp4==='neg'?'dg':S.excl.aqp4==='pos'?'dr':'dgr'}"></div><div class="sname">AQP4-IgG status</div><div class="stag ${S.excl.aqp4==='neg'?'tg':S.excl.aqp4==='pos'?'tr':'tgr'}">${S.excl.aqp4==='neg'?'Seronegative':S.excl.aqp4==='pos'?'SEROPOSITIVE':S.excl.aqp4==='nd'?'Not tested':'—'}</div></div>`;
+
+  html += `<div class="srow"><div class="dot ${rfs===0?'dg':rfs===1?'da':'dr'}"></div><div class="sname">Red flags against MOGAD</div><div class="stag ${rfs===0?'tg':rfs===1?'ta':'tr'}">${rfs}/5 present</div></div>`;
+  html += `</div>`;
+
+  // Column 2: Disease Course & Prognostics
+  html += `<div class="sblock"><div class="sbtitle">Disease Course &amp; Prognostic Profile</div>`;
+  html += `<div class="srow"><div class="dot ${S.course?'dy':'dgr'}"></div><div class="sname">Disease course</div><div class="stag ${S.course?'ty':'tgr'}">${courseLabel[S.course]||'—'}</div></div>`;
+  html += `<div class="srow"><div class="dot ${S.persis==='persistent'?'dy':S.persis==='declining'?'dg':'dgr'}"></div><div class="sname">MOG-IgG persistence</div><div class="stag ${S.persis==='persistent'?'ty':S.persis==='declining'?'tg':'tgr'}">${persistLabel[S.persis]||'—'}</div></div>`;
+  html += `<div class="srow"><div class="dot ${S.ctx==='high'?'dg':S.ctx==='moderate'?'da':'dr'}"></div><div class="sname">Pretest probability context</div><div class="stag ${S.ctx==='high'?'tg':S.ctx==='moderate'?'ta':'tr'}">${S.ctx||'—'}</div></div>`;
+
+  // Relapse risk note
+  const relapseNote = S.course==='relapsing' ? 'Relapsing — treatment strongly recommended' :
+    S.course==='first' ? '4-yr relapse risk 31.7%; 8-yr 36.3% (UK cohort)' :
+    S.course==='monophasic' ? 'Monophasic to date — monitor; consider treatment if high-risk' : '—';
+  html += `<div class="srow"><div class="dot ${S.course==='relapsing'?'dy':'dgr'}"></div><div class="sname">Relapse risk note</div><div class="stag tgr" style="white-space:normal;line-height:1.3;font-size:9px;">${relapseNote}</div></div>`;
+
+  // Supporting features summary
+  const sfNames = {bilateral:'Bilateral ON',letm_on:'Longitudinal ON (>50%)',perineuritis:'Perineural sheath enh.',discoedema:'Disc oedema',letm_sc:'LETM (≥3 seg)',hsign:'H-sign / central cord',conus:'Conus lesion',illdefined:'Ill-defined brain T2',deepgrey:'Deep grey matter',mcp:'Pons/MCP/medulla',corticallesion:'Cortical lesion/FLAMES'};
+  const presentSF = Object.entries(S.sf).filter(([k,v]) => v==='yes').map(([k]) => sfNames[k]||k);
+  html += `<div class="srow"><div class="dot ${presentSF.length>0?'dg':'dgr'}"></div><div class="sname">Supporting MRI/clinical features</div><div class="stag ${presentSF.length>0?'tg':'tgr'}" style="white-space:normal;line-height:1.3;font-size:9px;">${presentSF.length>0?presentSF.join(', '):'None marked'}</div></div>`;
+  html += `</div>`;
+  html += `</div>`;
+
+  // Treatment guidance box
+  if(vClass === 'vpos' || vClass === 'vund') {
+    html += `<div class="lbox" style="border-color:var(--yellow-bd);">
+      <strong style="color:var(--yellow);">Treatment Considerations (No completed RCTs — all therapies off-label):</strong><br>
+      <span class="ly">Acute attack:</span> High-dose IV methylprednisolone (1g/day × 3–5 days). Relapses may occur during taper — prolonged oral prednisone taper recommended (≥12.5 mg/day × ≥3 months associated with 88% reduced relapse risk, multicenter cohort n=109). IVIG and plasmapheresis are alternatives if steroid-refractory.<br>
+      <span class="ly">Relapse prevention (relapsing course):</span> IVIG (network meta-analysis OR vs. no treatment: 0.075); oral corticosteroids; mycophenolate mofetil; azathioprine; rituximab (55% relapse-free, ARR reduction 1.36, p&lt;0.001, meta-analysis n=238). Tocilizumab (IL-6 receptor blockade) for steroid-dependent or rituximab-refractory cases.<br>
+      <span class="lr">Avoid:</span> MS disease-modifying therapies (DMTs) — network meta-analysis OR 1.3 (increased relapse incidence). Interferon-beta and natalizumab are ineffective and may worsen disease.<br>
+      <span class="ly">Monitoring:</span> Serial MOG-IgG titres (prognostic value for relapse if persistently elevated). OCT for optic nerve monitoring. Serial MRI only with clinical symptoms — silent lesion accrual is rare (0% of 110 follow-up MRIs in MOGAD).
+    </div>`;
+  }
+
+  document.getElementById('vout').innerHTML = html;
+  buildDoc(verdict, vClass, c, rfs, presentSF, courseLabel, persistLabel);
+}
+
+function buildDoc(verdict, vClass, c, rfs, presentSF, courseLabel, persistLabel) {
+  const ceLabel = {on:'Optic neuritis',myelitis:'Myelitis / transverse myelitis',adem:'ADEM',cerebral:'Cerebral monofocal/polyfocal CNS deficits',brainstem:'Brainstem or cerebellar deficits',cortical:'Cerebral cortical encephalitis with seizures',none:'None qualifying'};
+  const titerLabel = {clear:'Clear positive serum MOG-IgG (no additional supporting features required)',low:'Low positive serum MOG-IgG (titre ≥1:10, <1:100 on fixed CBA)',csf_pos:'CSF-only positive MOG-IgG (serum negative)',neg:'Negative serum and CSF MOG-IgG'};
+  const rfNames = ['Progressive neurological impairment without attacks','Rapid onset to nadir (minutes to hours)','No improvement with high-dose corticosteroids','Well-circumscribed MS-pattern T2 lesions + CSF OCBs + silent accrual','Contrast enhancement persisting ≥6 months'];
+  const presentRF = S.rf.map((v,i) => v ? rfNames[i] : null).filter(Boolean);
+
+  let note = `NEUROIMMUNOLOGY CONSULTATION
+2023 International MOGAD Panel Proposed Diagnostic Criteria
+Banwell B et al. Lancet Neurol 2023;22:268–282
+Date: ${new Date().toLocaleDateString()}
+
+DIAGNOSTIC ASSESSMENT
+  Overall conclusion: ${verdict}
+
+CRITERION A — CORE CLINICAL DEMYELINATING EVENT
+  Event type: ${ceLabel[S.ce]||'Not specified'}
+  Criterion A met: ${c.crA ? 'YES' : 'NO'}
+
+CRITERION B — MOG-IgG RESULT
+  Serum MOG-IgG: ${titerLabel[S.titer]||'Not specified'}
+  Criterion B met: ${c.crB_met ? 'YES' : 'NO (see requirements for low/CSF-positive results)'}
+
+SUPPORTING CLINICAL AND MRI FEATURES
+  Features present: ${presentSF.length > 0 ? presentSF.join(', ') : 'None documented'}
+  Supporting feature requirement: ${c.clearPos ? 'Not required (clear positive)' : 'Required (low/CSF positive) — ' + (c.hasSF ? 'MET' : 'NOT MET')}
+
+CRITERION C — EXCLUSION OF BETTER DIAGNOSES
+  MS exclusion: ${S.excl.ms==='no'?'MS excluded — clinical/MRI not better explained by MS':S.excl.ms==='partial'?'Partial overlap — clinical judgment applied':S.excl.ms==='yes'?'MS more likely — MOGAD diagnosis in question':'Not assessed'}
+  AQP4-IgG serostatus: ${S.excl.aqp4==='neg'?'Seronegative (MOG-IgG testing appropriate)':S.excl.aqp4==='pos'?'SEROPOSITIVE — AQP4-IgG NMOSD more likely':S.excl.aqp4==='nd'?'Not tested':'Not specified'}
+  Alternative diagnoses excluded: ${S.excl.other==='cleared'?'Adequately excluded':S.excl.other==='pending'?'Work-up pending':S.excl.other==='concern'?'Alternative diagnosis remains concern':'Not assessed'}
+  Criterion C met: ${(c.msClear && c.aqp4Ok && S.excl.other !== 'concern') ? 'YES' : 'NO / UNCERTAIN'}
+
+RED FLAGS AGAINST MOGAD (Panel 3, Banwell et al.)
+  Count: ${rfs}/5
+  Present: ${presentRF.length > 0 ? presentRF.join('; ') : 'None'}
+
+DISEASE COURSE AND PROGNOSTIC PROFILE
+  Disease course: ${courseLabel[S.course]||'Not specified'}
+  MOG-IgG persistence: ${persistLabel[S.persis]||'Not specified'}
+  Pretest probability context: ${S.ctx||'Not specified'}
+
+EPIDEMIOLOGIC CONTEXT
+  Incidence: 1.6–3.4 per million per year
+  Prevalence: ~20 per million (95% CI 11–34)
+  Sex distribution: F=M (unlike MS and NMOSD)
+  Relapse risk: 4-year 31.7%; 8-year 36.3% (UK cohort, n=183)
+  Persistent seropositivity: associated with 2–10× increased relapse risk
+
+TREATMENT CONSIDERATIONS (off-label — no completed RCTs)
+  Acute attack: High-dose IV methylprednisolone × 3–5 days; prolonged oral taper
+    (≥12.5 mg/day × ≥3 months: 88% reduced relapse risk, n=109 cohort)
+  Relapse prevention: IVIG, oral corticosteroids, MMF, azathioprine, rituximab
+    (Rituximab meta-analysis n=238: 55% relapse-free; ARR reduction 1.36, p<0.001)
+  Avoid: MS DMTs (interferon-beta, natalizumab) — network meta-analysis shows increased relapse risk
+  
+Reference: Banwell B, Bennett JL, Marignier R, et al. Diagnosis of myelin oligodendrocyte glycoprotein antibody-associated disease: International MOGAD Panel proposed criteria. Lancet Neurol. 2023;22:268–282.`;
+
+  document.getElementById('dn').textContent = note;
+}
+
+function goTab(n) { if(n===cur) return; go(n); }
+
+function go(n) {
+  document.getElementById('s'+cur).classList.remove('active');
+  document.getElementById('s'+n).classList.add('active');
+  for(let i=0;i<7;i++){const d=document.getElementById('st'+i);d.classList.remove('active','done');if(i<n)d.classList.add('done');else if(i===n)d.classList.add('active');}
+  cur=n;
+  document.getElementById('pf').style.width=((n/6)*100)+'%';
+  if(n===6) rv();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function xp(btn){
+  const d=btn.closest('.crit').querySelector('.crit-detail');if(!d)return;
+  const o=d.classList.toggle('open');
+  btn.textContent=o?'close ▴':'details ▾';
+}
+
+function toggleDoc(){
+  const body=document.getElementById('dn'),btn=document.getElementById('copy-btn'),tog=document.querySelector('.doc-tog');
+  if(!body)return;
+  const open=body.classList.toggle('open');
+  if(tog)tog.textContent=open?'▲ Documentation Note':'▼ Documentation Note';
+  if(btn)btn.classList.toggle('visible',open);
+}
+
+function copyDoc(){
+  const body=document.getElementById('dn'),btn=document.getElementById('copy-btn');
+  if(!body)return;
+  const text=body.textContent||body.innerText;
+  navigator.clipboard.writeText(text).then(()=>{if(btn){btn.textContent='✓ Copied';btn.classList.add('copied');setTimeout(()=>{btn.textContent='⎘ Copy';btn.classList.remove('copied');},2000);}})
+  .catch(()=>{const ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);if(btn){btn.textContent='✓ Copied';btn.classList.add('copied');setTimeout(()=>{btn.textContent='⎘ Copy';btn.classList.remove('copied');},2000);}});
+}
+
+function resetAll(){
+  S.ctx=null; S.titer=null; S.ce=null; S.course=null; S.persis=null;
+  Object.keys(S.sf).forEach(k=>S.sf[k]=null);
+  Object.keys(S.excl).forEach(k=>S.excl[k]=null);
+  S.rf=[false,false,false,false,false];
+  document.querySelectorAll('.crit').forEach(el=>el.className='crit');
+  document.querySelectorAll('.abtn').forEach(b=>b.classList.remove('ay','an','ap','ab','aa','aw'));
+  document.querySelectorAll('.crit-detail').forEach(d=>d.classList.remove('open'));
+  document.querySelectorAll('.xbtn').forEach(b=>b.textContent='details ▾');
+  document.querySelectorAll('.redflag-item').forEach(el=>el.classList.remove('rf-checked'));
+  ['a0','a1','a2','a3','a4','a5'].forEach(id=>{const el=document.getElementById(id);if(el){el.className='alrt';el.textContent='';}});
+  const dn=document.getElementById('dn');if(dn)dn.classList.remove('open');
+  const cb=document.getElementById('copy-btn');if(cb)cb.classList.remove('visible','copied');
+  const tog=document.querySelector('.doc-tog');if(tog)tog.textContent='▼ Documentation Note';
+  const vout=document.getElementById('vout');if(vout)vout.innerHTML='';
+  const sout=document.getElementById('sout');if(sout)sout.innerHTML='';
+  go(0);
+  document.getElementById('n0').disabled=true;
+}
+
+// initialise
+document.getElementById('n0').disabled = true;
+</script>
+</body>
+</html>
