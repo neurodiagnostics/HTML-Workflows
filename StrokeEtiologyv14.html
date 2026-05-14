@@ -39,6 +39,103 @@
   --mono:  'IBM Plex Mono', monospace;
 }
 
+/* ── STEP TABS — actual HTML table, works in all browser modes ── */
+table.steps {
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  margin-bottom: 20px;
+  table-layout: fixed;
+  background: var(--card);
+  overflow: hidden;
+}
+.steps .stab {
+  display: table-cell !important;
+  width: 25%;
+  padding: 7px 4px 8px;
+  text-align: center;
+  font-family: var(--sans);
+  font-size: 9px;
+  color: var(--text3);
+  cursor: pointer;
+  background: var(--card);
+  line-height: 1.2;
+  border-right: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  transition: background 0.15s, color 0.15s;
+  vertical-align: middle;
+}
+.steps .steps-row:last-child .stab { border-bottom: none !important; }
+.steps .steps-row .stab:last-child { border-right: none !important; }
+.steps .stab .sn {
+  display: block;
+  width: 18px;
+  height: 18px;
+  line-height: 18px;
+  border-radius: 50%;
+  background: var(--card2);
+  border: 1px solid var(--border);
+  font-size: 9px;
+  font-weight: 700;
+  margin: 0 auto 3px;
+  transition: all 0.2s;
+  text-align: center;
+}
+.steps .stab .slbl { display: block; font-size: 9px; font-weight: 600; letter-spacing: 0; line-height: 1.2; }
+.steps .stab.active { color: var(--teal) !important; background: rgba(57,208,176,0.10) !important; }
+.steps .stab.active .sn { background: var(--teal) !important; color: #0d1117 !important; border-color: var(--teal) !important; }
+.steps .stab.done { color: var(--green) !important; }
+.steps .stab.done .sn { background: var(--green) !important; color: #0d1117 !important; border-color: var(--green) !important; }
+.steps .stab:hover:not(.active) { background: var(--card2) !important; }
+
+
+
+/* ── STEP TABS: flex-wrap grid, max 4 per row ────────────────── */
+.stab {
+  flex: 0 0 25%;            /* exactly 4 per row */
+  box-sizing: border-box;
+  padding: 7px 4px 8px;
+  text-align: center;
+  font-family: var(--sans);
+  font-size: 9px;
+  color: var(--text3);
+  cursor: pointer;
+  background: var(--card);
+  line-height: 1.2;
+  border-right: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  transition: background 0.15s, color 0.15s;
+}
+/* Remove border-right on every 4th tab (last in each row) */
+.stab:nth-child(4n) { border-right: none; }
+/* Remove border-bottom on the last row (tabs 9,10,11) */
+.stab:nth-child(n+9) { border-bottom: none; }
+/* Last tab — may be alone in its row, still no border-right */
+.stab:last-child { border-right: none; }
+.stab .sn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--card2);
+  border: 1px solid var(--border);
+  font-size: 9px;
+  font-weight: 700;
+  margin: 0 auto 3px;
+  transition: all 0.2s;
+}
+.stab .slbl { display: block; font-size: 9px; font-weight: 600; letter-spacing: 0; line-height: 1.2; }
+.stab.active { color: var(--teal); background: rgba(57,208,176,0.08); }
+.stab.active .sn { background: var(--teal); color: #0d1117; border-color: var(--teal); }
+.stab.done { color: var(--green); }
+.stab.done .sn { background: var(--green); color: #0d1117; border-color: var(--green); }
+.stab:hover:not(.active) { background: var(--card2); }
+
+
+
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { background: var(--bg); color: var(--text); font-family: var(--sans); font-size: 14px; line-height: 1.5; min-height: 100vh; }
 .app { max-width: 960px; margin: 0 auto; padding: 0 20px 80px; }
@@ -56,52 +153,9 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
 .prog-fill { height: 100%; background: linear-gradient(90deg, var(--teal), #58efd4); border-radius: 2px; transition: width 0.4s ease; box-shadow: 0 0 6px rgba(57,208,176,0.4); }
 
 /* STEP TABS — 2-row grid */
-.steps {
-  display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  margin-bottom: 20px;
-  overflow: hidden;
-  background: var(--card);
-}
-.stab {
-  padding: 9px 6px 10px;
-  text-align: center;
-  font-family: var(--sans);
-  font-size: 10px;
-  color: var(--text3);
-  border-right: 1px solid var(--border);
-  border-bottom: 1px solid var(--border);
-  transition: all 0.2s;
-  line-height: 1.3;
-  cursor: pointer;
-  background: var(--card);
-}
 /* Remove right border on last of each row */
-.stab:nth-child(6n) { border-right: none; }
+/* Row separators: tabs in rows 2 and 3 need top border */
 /* Remove bottom border on last row items */
-.stab:nth-child(n+7) { border-bottom: none; }
-.stab .sn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 22px;
-  height: 22px;
-  border-radius: 50%;
-  background: var(--card2);
-  border: 1px solid var(--border);
-  font-size: 11px;
-  font-weight: 700;
-  margin: 0 auto 4px;
-  transition: all 0.2s;
-}
-.stab .slbl { display: block; font-size: 10px; font-weight: 600; letter-spacing: 0; line-height: 1.3; }
-.stab.active { color: var(--teal); background: rgba(57,208,176,0.06); }
-.stab.active .sn { background: var(--teal); color: #0d1117; border-color: var(--teal); }
-.stab.done { color: var(--green); }
-.stab.done .sn { background: var(--green); color: #0d1117; border-color: var(--green); }
-.stab:hover:not(.active) { background: var(--card2); }
 
 /* CARD */
 .card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 22px; margin-bottom: 12px; }
@@ -133,7 +187,7 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
 .xbtn:hover { background: var(--purple); color: #0d1117; border-color: var(--purple); }
 .crit-detail { display: none; padding: 10px 13px 12px; font-size: 12px; color: var(--text); line-height: 1.65; border-top: 1px solid var(--border); }
 .crit-detail.open { display: block; }
-.cnote { margin-top: 8px; padding: 8px 11px; background: var(--card2); border-left: 3px solid var(--border2); font-family: var(--mono); font-size: 10px; color: var(--text2); line-height: 1.75; border-radius: 0 3px 3px 0; }
+.cnote { margin-top: 8px; padding: 8px 11px; background: var(--card2); border-left: 3px solid var(--border2); font-family: var(--sans); font-size: 11px; color: var(--text2); line-height: 1.75; border-radius: 0 3px 3px 0; }
 .cnote strong { color: var(--text); }
 
 /* BUTTON ROW */
@@ -141,12 +195,12 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
 .abtn { flex: 1; min-width: 120px; padding: 9px 10px; background: none; border: none; border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); color: var(--text2); font-family: var(--sans); font-size: 12px; cursor: pointer; transition: all 0.12s; text-transform: none; letter-spacing: 0; font-weight: 400; line-height: 1.4; text-align: left; }
 .abtn:last-child { border-right: none; }
 .abtn:hover { background: var(--card2); color: var(--text); }
-.abtn.ay  { background: var(--green-bg);  color: var(--green);  font-weight: 700; }
-.abtn.an  { background: var(--red-bg);    color: var(--red);    font-weight: 700; }
-.abtn.at  { background: var(--teal-bg);   color: var(--teal);   font-weight: 700; }
-.abtn.ab  { background: var(--blue-bg);   color: var(--blue);   font-weight: 700; }
-.abtn.aa  { background: var(--card2);     color: var(--text2);  font-weight: 700; }
-.abtn.aw  { background: var(--amber-bg);  color: var(--amber);  font-weight: 700; }
+.abtn.ay  { background: var(--green-bg) !important;  color: var(--green) !important;  font-weight: 700 !important; }
+.abtn.an  { background: var(--red-bg) !important;    color: var(--red) !important;    font-weight: 700 !important; }
+.abtn.at  { background: var(--teal-bg) !important;   color: var(--teal) !important;   font-weight: 700 !important; }
+.abtn.ab  { background: var(--blue-bg) !important;   color: var(--blue) !important;   font-weight: 700 !important; }
+.abtn.aa  { background: rgba(227,179,65,0.15) !important; color: var(--amber) !important;  font-weight: 700 !important; }
+.abtn.aw  { background: var(--amber-bg) !important;  color: var(--amber) !important;  font-weight: 700 !important; }
 
 /* MULTI-SELECT note */
 .multi-note { font-family: var(--sans); font-size: 11px; color: var(--text3); padding: 6px 13px; border-top: 1px solid var(--border); background: var(--card2); }
@@ -172,7 +226,7 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
 
 /* TALLY / CHIP */
 .tally { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
-.chip { display: flex; align-items: center; gap: 5px; padding: 5px 11px; border-radius: 20px; font-family: var(--mono); font-size: 11px; border: 1px solid var(--border); background: var(--card2); color: var(--text2); }
+.chip { display: flex; align-items: center; gap: 5px; padding: 5px 11px; border-radius: 20px; font-family: var(--sans); font-size: 11px; border: 1px solid var(--border); background: var(--card2); color: var(--text2); }
 .chip .n { font-size: 14px; font-weight: 700; }
 .ct { border-color: var(--teal-bd);   background: var(--teal-bg);   color: var(--teal); }
 .cg { border-color: var(--green-bd);  background: var(--green-bg);  color: var(--green); }
@@ -207,7 +261,7 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
 .vund   { border-color: var(--red);    background: var(--red-bg); }
 .vmult  { border-color: var(--teal);   background: var(--teal-bg); }
 .vban-head { text-align: center; margin-bottom: 14px; }
-.vlbl { font-family: var(--mono); font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase; opacity: 0.6; margin-bottom: 5px; }
+.vlbl { font-family: var(--sans); font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase; opacity: 0.6; margin-bottom: 5px; }
 .vtitle { font-size: 22px; font-weight: 700; margin-bottom: 6px; letter-spacing: -0.01em; }
 .vlaa   .vtitle { color: var(--blue); }
 .vce    .vtitle { color: var(--purple); }
@@ -216,7 +270,7 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
 .vund   .vtitle { color: var(--red); }
 .vmult  .vtitle { color: var(--teal); }
 .vdesc { font-size: 12px; color: var(--text2); line-height: 1.7; max-width: 620px; margin: 0 auto; }
-.vconf { display: inline-block; font-family: var(--mono); font-size: 10px; padding: 2px 10px; border-radius: 12px; border: 1px solid; margin-top: 6px; }
+.vconf { display: inline-block; font-family: var(--sans); font-size: 10px; padding: 2px 10px; border-radius: 12px; border: 1px solid; margin-top: 6px; }
 .conf-h { border-color: var(--green-bd);  color: var(--green);  background: var(--green-bg); }
 .conf-m { border-color: var(--amber-bd);  color: var(--amber);  background: var(--amber-bg); }
 .conf-l { border-color: var(--red-bd);    color: var(--red);    background: var(--red-bg); }
@@ -236,7 +290,7 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
 .da { background: var(--amber); } .dgr{ background: var(--text3); }
 .dp { background: var(--purple); }
 .sname { flex: 1; color: var(--text); line-height: 1.4; }
-.stag { font-family: var(--mono); font-size: 9px; padding: 1px 7px; border-radius: 10px; border: 1px solid; white-space: nowrap; }
+.stag { font-family: var(--sans); font-size: 9px; padding: 1px 7px; border-radius: 10px; border: 1px solid; white-space: nowrap; }
 .tg { border-color: var(--green-bd);  color: var(--green); }
 .tr { border-color: var(--red-bd);    color: var(--red); }
 .tt { border-color: var(--teal-bd);   color: var(--teal); }
@@ -246,7 +300,7 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
 
 /* EVIDENCE TABLE */
 .evtable { width: 100%; border-collapse: collapse; font-size: 11px; margin-top: 8px; }
-.evtable th { background: var(--card2); border: 1px solid var(--border); padding: 6px 10px; font-family: var(--mono); font-size: 10px; color: var(--text2); text-align: left; letter-spacing: 0.04em; }
+.evtable th { background: var(--card2); border: 1px solid var(--border); padding: 6px 10px; font-family: var(--sans); font-size: 10px; color: var(--text2); text-align: left; letter-spacing: 0.04em; }
 .evtable td { border: 1px solid var(--border); padding: 6px 10px; color: var(--text2); vertical-align: top; line-height: 1.5; }
 .evtable td strong { color: var(--text); }
 .evtable tr.ev-high td { background: rgba(248,81,73,0.05); }
@@ -261,12 +315,12 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
 .copy-btn.visible { display: block; }
 .copy-btn:hover { border-color: var(--green); color: var(--green); }
 .copy-btn.copied { border-color: var(--green); color: var(--green); background: var(--green-bg); }
-.doc-body { display: none; background: var(--card2); border: 1px solid var(--border2); border-radius: 5px; padding: 13px 15px; font-family: var(--mono); font-size: 11px; color: var(--text2); line-height: 1.85; white-space: pre-wrap; margin-bottom: 12px; }
+.doc-body { display: none; background: var(--card2); border: 1px solid var(--border2); border-radius: 5px; padding: 13px 15px; font-family: var(--sans); font-size: 11px; color: var(--text2); line-height: 1.85; white-space: pre-wrap; margin-bottom: 12px; }
 .doc-body.open { display: block; }
 
 /* SCORE BAR */
 .score-bars { display: grid; gap: 6px; margin-top: 10px; }
-.score-row { display: flex; align-items: center; gap: 8px; font-family: var(--mono); font-size: 11px; }
+.score-row { display: flex; align-items: center; gap: 8px; font-family: var(--sans); font-size: 11px; }
 .score-label { width: 130px; color: var(--text2); flex-shrink: 0; }
 .score-track { flex: 1; height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; }
 .score-fill { height: 100%; border-radius: 3px; transition: width 0.5s ease; }
@@ -285,13 +339,36 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
   border: 1px solid var(--border);
   border-left: 3px solid var(--amber);
   border-radius: 5px;
-  font-family: var(--mono);
+  font-family: var(--sansr(--sans);
   font-size: 11px;
   color: var(--amber);
   margin-bottom: 10px;
 }
 .section-skip-note.visible { display: block; }
+.abtn.av { background: var(--amber-bg) !important; color: var(--amber) !important; font-weight: 700 !important; border: 1px solid var(--teal-bd) !important; }
+.c-teal { border-color: var(--teal-bd) !important; background: var(--teal-bg) !important; }
+
+/* vban color variants */
+.vban.vlaa  { border-color: var(--red);    background: rgba(248,81,73,0.08); }
+.vban.vce   { border-color: var(--amber);  background: rgba(227,179,65,0.08); }
+.vban.vsvd  { border-color: var(--blue);   background: rgba(88,166,255,0.08); }
+.vban.voth  { border-color: var(--purple); background: rgba(188,140,255,0.08); }
+.vban.vmult { border-color: var(--border2); background: rgba(255,255,255,0.04); }
+.vban.vund  { border-color: var(--border2); background: rgba(255,255,255,0.04); }
+.vban.cv    { border-color: var(--border2); background: rgba(255,255,255,0.04); }
+.vban.ce    { border-color: var(--amber);  background: rgba(227,179,65,0.08); }
+.vtitle     { font-size: 22px; font-weight: 700; margin-bottom: 6px; font-family: var(--sans); }
+.vban.vlaa .vtitle  { color: var(--red); }
+.vban.vce  .vtitle  { color: var(--amber); }
+.vban.vsvd .vtitle  { color: var(--blue); }
+.vban.voth .vtitle  { color: var(--purple); }
+.vban.vmult .vtitle { color: var(--text); }
+.vban.vund  .vtitle { color: var(--text3); }
+.vban.cv    .vtitle { color: var(--text3); }
+.vban.ce    .vtitle { color: var(--amber); }
 </style>
+</head>
+<body>
 </head>
 <body>
 <div class="app">
@@ -306,19 +383,26 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
 
 <div class="prog-track"><div class="prog-fill" id="pf" style="width:0%"></div></div>
 
-<div class="steps">
-  <div class="stab active" id="st0" onclick="goTab(0)" title="Go to step 1"><span class="sn">1</span><span class="slbl">Age &amp; BP</span></div>
-  <div class="stab" id="st1" onclick="goTab(1)" title="Go to step 2"><span class="sn">2</span><span class="slbl">Infarct</span></div>
-  <div class="stab" id="st2" onclick="goTab(2)" title="Go to step 3"><span class="sn">3</span><span class="slbl">Topography</span></div>
-  <div class="stab" id="st3" onclick="goTab(3)" title="Go to step 4"><span class="sn">4</span><span class="slbl">Parent Vessel</span></div>
-  <div class="stab" id="st4" onclick="goTab(4)" title="Go to step 5"><span class="sn">5</span><span class="slbl">NASCET</span></div>
-  <div class="stab" id="st5" onclick="goTab(5)" title="Go to step 6"><span class="sn">6</span><span class="slbl">Plaque</span></div>
-  <div class="stab" id="st6" onclick="goTab(6)" title="Go to step 7"><span class="sn">7</span><span class="slbl">Thrombus</span></div>
-  <div class="stab" id="st7" onclick="goTab(7)" title="Go to step 8"><span class="sn">8</span><span class="slbl">Cardiac</span></div>
-  <div class="stab" id="st8" onclick="goTab(8)" title="Go to step 9"><span class="sn">9</span><span class="slbl">TCD</span></div>
-  <div class="stab" id="st9" onclick="goTab(9)" title="Go to step 10"><span class="sn">10</span><span class="slbl">Vasculitis</span></div>
-  <div class="stab" id="st10" onclick="goTab(10)" title="Go to step 11"><span class="sn">11</span><span class="slbl">Verdict</span></div>
-</div>
+<table class="steps" role="navigation">
+  <tr class="steps-row">
+    <td class="stab active" id="st0" onclick="goTab(0)"><span class="sn">1</span><span class="slbl">Age &amp; BP</span></td>
+    <td class="stab" id="st1" onclick="goTab(1)"><span class="sn">2</span><span class="slbl">Infarct</span></td>
+    <td class="stab" id="st2" onclick="goTab(2)"><span class="sn">3</span><span class="slbl">Topography</span></td>
+    <td class="stab" id="st3" onclick="goTab(3)"><span class="sn">4</span><span class="slbl">Parent Vessel</span></td>
+  </tr>
+  <tr class="steps-row">
+    <td class="stab" id="st4" onclick="goTab(4)"><span class="sn">5</span><span class="slbl">NASCET</span></td>
+    <td class="stab" id="st5" onclick="goTab(5)"><span class="sn">6</span><span class="slbl">Plaque</span></td>
+    <td class="stab" id="st6" onclick="goTab(6)"><span class="sn">7</span><span class="slbl">Cardiac</span></td>
+    <td class="stab" id="st7" onclick="goTab(7)"><span class="sn">8</span><span class="slbl">TCD</span></td>
+  </tr>
+  <tr class="steps-row">
+    <td class="stab" id="st8" onclick="goTab(8)"><span class="sn">9</span><span class="slbl">ESUS / HCS</span></td>
+    <td class="stab" id="st9" onclick="goTab(9)"><span class="sn">10</span><span class="slbl">Vasculopathy</span></td>
+    <td class="stab" id="st10" onclick="goTab(10)"><span class="sn">11</span><span class="slbl">Verdict</span></td>
+    <td style="background:var(--card);border-bottom:none;"></td>
+  </tr>
+</table>
 
 <!-- ══════════════════════════════════════════════════════
      SCREEN 0 — BLOOD PRESSURE
@@ -368,11 +452,12 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
       <div class="cnote"><strong>Ref:</strong> AHA/ASA Acute Ischemic Stroke Guidelines. Owens WB. Blood pressure control in acute cerebrovascular disease. J Clin Hypertens 2011;13(3):205–211. StatPearls — Lacunar Stroke (NBK563216). Management threshold: permissive hypertension until SBP >220 mmHg or DBP >110 mmHg; lower by 15% in first 24h if exceeded.</div>
     </div>
     <div class="brow">
-      <button class="abtn" onclick="set('bpsys','severe')">↑↑ &gt;220 mmHg — Severely elevated</button>
+            <button class="abtn" onclick="set('bpsys','severe')">↑↑ &gt;220 mmHg — Severely elevated</button>
       <button class="abtn" onclick="set('bpsys','mod')">180–220 mmHg — Moderately elevated</button>
       <button class="abtn" onclick="set('bpsys','mild')">140–179 mmHg — Mildly elevated</button>
       <button class="abtn" onclick="set('bpsys','normal')">&lt;140 mmHg — Normal / low</button>
       <button class="abtn" onclick="set('bpsys','nd')">— Not recorded</button>
+    
     </div>
   </div>
 
@@ -383,10 +468,11 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
       <div class="crit-name">Presenting diastolic blood pressure (DBP)</div>
     </div>
     <div class="brow">
-      <button class="abtn" onclick="set('bpdia','severe')">↑↑ &gt;110 mmHg — Above acute stroke treatment threshold</button>
+            <button class="abtn" onclick="set('bpdia','severe')">↑↑ &gt;110 mmHg — Above acute stroke treatment threshold</button>
       <button class="abtn" onclick="set('bpdia','mod')">100–110 mmHg — Approaching threshold</button>
       <button class="abtn" onclick="set('bpdia','mild')">&lt;100 mmHg — Below treatment threshold</button>
       <button class="abtn" onclick="set('bpdia','nd')">— Not recorded</button>
+    
     </div>
   </div>
 
@@ -406,11 +492,12 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
       <div class="cnote">Permissive hypertension threshold in acute ischemic stroke: SBP &gt;220 mmHg or DBP &gt;110 mmHg (AHA/ASA guidelines). Treatment threshold for IV tPA eligibility: &gt;185/110 mmHg. If BP was treated prior to recording, true untreated BP may have been higher.</div>
     </div>
     <div class="brow">
-      <button class="abtn" onclick="set('antihtn','none')">No — BP recorded before any antihypertensives were given</button>
+            <button class="abtn" onclick="set('antihtn','none')">No — BP recorded before any antihypertensives were given</button>
       <button class="abtn" onclick="set('antihtn','home')">Home antihypertensive meds only — not given acutely</button>
       <button class="abtn" onclick="set('antihtn','acute')">Yes — acute antihypertensive given (IV labetalol, nicardipine, hydralazine, etc.) before BP recorded</button>
       <button class="abtn" onclick="set('antihtn','anesthesia')">Yes — anesthetic/procedural agent given (propofol, general anesthesia, sedation) before BP recorded</button>
       <button class="abtn" onclick="set('antihtn','nd')">— Unknown</button>
+    
     </div>
   </div>
 
@@ -445,11 +532,12 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
       <div class="cnote"><strong>Ref:</strong> Adams HP et al. Stroke. 1993;24:35–41. Lacune definition: &lt;15 mm; Fisher CM original series: 0.5–15 mm diameter. Punctate embolic shower: Kang DW et al. Stroke 2003;34:2599 — multiple small DWI lesions strongly associated with embolic source (CE or hypercoagulable) rather than SVD.</div>
     </div>
     <div class="brow">
-      <button class="abtn" onclick="set('size','punctate')">Punctate — tiny (&lt;5 mm), often multiple; embolic shower pattern</button>
+            <button class="abtn" onclick="set('size','punctate')">Punctate — tiny (&lt;5 mm), often multiple; embolic shower pattern</button>
       <button class="abtn" onclick="set('size','small')">&lt;15 mm — Lacunar / small (not punctate)</button>
       <button class="abtn" onclick="set('size','grey')">15–20 mm — Grey zone</button>
       <button class="abtn" onclick="set('size','large')">&gt;20 mm — Non-lacunar size (territorial)</button>
       <button class="abtn" onclick="set('size','nd')">— MRI not yet performed</button>
+    
     </div>
   </div>
 
@@ -465,10 +553,11 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
       <div class="cnote"><strong>Ref:</strong> Yaghi S et al. Patterns of infarction on MRI in patients with acute ischemic stroke and cardio-embolism: systematic review. Front Neurol. 2020. Kang DW et al. Stroke. 2003;34:2599–2602 — embolic source in 27% with multiple DWI lesions vs. 6% with single lacunar lesion.</div>
     </div>
     <div class="brow">
-      <button class="abtn" onclick="set('count','single')">Single acute infarct</button>
+            <button class="abtn" onclick="set('count','single')">Single acute infarct</button>
       <button class="abtn" onclick="set('count','multi-same')">Multiple — same territory</button>
       <button class="abtn" onclick="set('count','multi-diff')">Multiple — different territories (bilateral / ant + post)</button>
       <button class="abtn" onclick="set('count','nd')">— Not assessable</button>
+    
     </div>
   </div>
 
@@ -499,25 +588,20 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
         <img src="data:image/webp;base64,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"
           alt="Axial MRI showing watershed and border zone territories. Red dotted triangles = cortical ACA/MCA and MCA/PCA border zones. Blue dotted rectangles = internal border zones in deep white matter flanking the lateral ventricles."
           style="max-width:460px;width:100%;border-radius:6px;border:1px solid var(--border);display:block;"/>
-        <div style="margin-top:6px;font-family:var(--mono);font-size:10px;color:var(--text3);line-height:1.6;max-width:460px;">
+        <div style="margin-top:6px;font-family:var(--sans);font-size:10px;color:var(--text3);line-height:1.6;max-width:460px;">
           Axial T2/FLAIR MRI. <span style="color:#e05555">&#9632; Red dotted</span> = cortical ACA/MCA and MCA/PCA border zones.
           <span style="color:#5599cc">&#9632; Blue dotted</span> = internal (subcortical) border zones flanking the lateral ventricles in the centrum semiovale/corona radiata.
           Left image: high convexity level (corona radiata). Right image: lower cut showing both cortical and internal zones simultaneously.
           Internal border zone infarcts produce the classic "string of beads" linear DWI pattern — hallmark of hemodynamic ischemia from high-grade ICA stenosis or hypoperfusion.
         </div>
       </div>
-      <div style="font-size:11px;color:var(--text2);line-height:1.9;font-family:var(--mono);min-width:155px;max-width:175px;padding-top:4px;">
+      <div style="font-size:11px;color:var(--text2);line-height:1.9;font-family:var(--sans);min-width:155px;max-width:175px;padding-top:4px;">
         <div style="margin-bottom:8px;color:var(--text);font-size:12px;font-weight:700;">Border Zones</div>
-        <div style="display:flex;align-items:center;gap:7px;margin-bottom:6px;">
-          <span style="display:inline-block;width:14px;height:3px;border:1.5px dashed #e05555;flex-shrink:0;"></span>
-          <div><span style="color:#e05555;font-weight:700;">Cortical ACA/MCA</span><br><span style="font-size:9px;color:var(--text3);">Parasagittal, vertex level</span></div>
+        <div style="margin-bottom:5px;"><span style="color:#e05555;font-weight:700;">Cortical ACA/MCA</span> <span style="font-size:9px;color:var(--text3);">— parasagittal, vertex level</span></div
         </div>
-        <div style="display:flex;align-items:center;gap:7px;margin-bottom:6px;">
-          <span style="display:inline-block;width:14px;height:3px;border:1.5px dashed #5599cc;flex-shrink:0;"></span>
-          <div><span style="color:#5599cc;font-weight:700;">Internal border zone</span><br><span style="font-size:9px;color:var(--text3);">Deep WM flanking ventricles</span></div>
+        <div style="margin-bottom:5px;"><span style="color:#5599cc;font-weight:700;">Internal border zone</span> <span style="font-size:9px;color:var(--text3);">— Deep WM flanking ventricles</span></div
         </div>
         <div style="display:flex;align-items:center;gap:7px;margin-bottom:14px;">
-          <span style="display:inline-block;width:14px;height:3px;border:1.5px dashed #e05555;flex-shrink:0;"></span>
           <div><span style="color:#e05555;font-weight:700;">Cortical MCA/PCA</span><br><span style="font-size:9px;color:var(--text3);">Posterior-lateral, lower cut</span></div>
         </div>
         <div style="border-top:1px solid var(--border);padding-top:8px;font-size:10px;color:var(--text3);line-height:1.7;">
@@ -590,12 +674,72 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
         <div class="cnote"><strong>Key refs:</strong> Lambert SL et al. J Neurol Sci 2016 — FPCA prevalence 11–46%; carotid thromboembolism causing concurrent PCA + MCA infarction via FPCA. Nedeltchev K et al. PMC10733935 (2024) — CFP syndrome: 9% of patients with ≥50% carotid stenosis + ipsilateral FPCA + posterior symptoms meet CFP criteria. Prevalence FPCA 20–30% (Saveetha MRI study 2024). Fetal-type PComA incidence 4–29% (Cureus 2019).</div>
       </div>
       <div class="brow">
-        <button class="abtn" onclick="set('fetal-pca','yes-ipsi')">✓ Yes — ipsilateral fetal PCA confirmed on CTA/MRA (ipsilateral to carotid/anterior disease)</button>
-        <button class="abtn" onclick="set('fetal-pca','yes-contra')">~ Contralateral fetal PCA only — ipsilateral P1 present; does not explain posterior infarct via carotid</button>
-        <button class="abtn" onclick="set('fetal-pca','bilateral')">~ Bilateral fetal PCA — both sides; PCA territory on affected side still carotid-supplied</button>
-        <button class="abtn" onclick="set('fetal-pca','no')">✗ No fetal PCA — standard anatomy; posterior circulation via basilar (carotid cannot supply PCA)</button>
-        <button class="abtn" onclick="set('fetal-pca','nd')">— Not assessed / CTA/MRA not reviewed for this</button>
+              <button class="abtn" onclick="set('fetal-pca','yes-ipsi')">✓ Yes — ipsilateral fetal PCA confirmed on CTA/MRA (ipsilateral to carotid/anterior disease)</button>
+      <button class="abtn" onclick="set('fetal-pca','yes-contra')">~ Contralateral fetal PCA only — ipsilateral P1 present; does not explain posterior infarct via carotid</button>
+      <button class="abtn" onclick="set('fetal-pca','bilateral')">~ Bilateral fetal PCA — both sides; PCA territory on affected side still carotid-supplied</button>
+      <button class="abtn" onclick="set('fetal-pca','no')">✗ No fetal PCA — standard anatomy; posterior circulation via basilar (carotid cannot supply PCA)</button>
+      <button class="abtn" onclick="set('fetal-pca','nd')">— Not assessed / CTA/MRA not reviewed for this</button>
+    
       </div>
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:14px;">Venous Infarction / CVST — Atypical Territory Assessment <span class="pill pill-a">Separate from Arterial Ischemic Stroke</span></div>
+
+  <div class="lbox">
+    <strong>CVST is a distinct pathology from arterial ischemic stroke</strong> and should not be scored within the arterial ischemic etiology framework. If CVST is strongly suspected, the verdict will indicate venous infarction as the primary impression rather than an arterial TOAST category.<br><br>
+    CVST accounts for <strong>0.5–1.0% of all strokes</strong>; F:M ≈ 4:1; mean age ~28y (Ferro JM et al. ISCVT, Stroke 2004; n=624). Superior sagittal sinus is most commonly affected (62%), followed by transverse (44%), sigmoid (18%), and deep venous system (11%).<br><br>
+    <strong>Imaging characteristics vs. arterial infarct:</strong><br>
+    • <span class="lt">Atypical DWI location</span> — does not conform to arterial territory; often parasagittal (SSS), posterior temporal (vein of Labbé/transverse sinus), bilateral thalamic (internal cerebral veins/vein of Galen)<br>
+    • <span class="lt">Hemorrhagic transformation</span> — more common and more extensive than arterial infarcts; often early hemorrhagic conversion<br>
+    • <span class="lt">Mixed DWI signal</span> — combination of cytotoxic and vasogenic edema (unlike pure cytotoxic edema in arterial stroke) — DWI may show restricted, normal, or mixed diffusivity<br>
+    • <span class="lt">Empty delta sign</span> — contrast CT: filling defect in dural sinus surrounded by enhancing collaterals (sensitivity ~30%; specific when present)<br>
+    • <span class="lr">MRV is gold standard</span> — absence of flow in sinus; filling defect on contrast MRV. Sensitivity approaches 100% with T1 black-blood + contrast-enhanced MRV (StatPearls CVST 2025)<br><br>
+    <strong>Treatment:</strong> Anticoagulation (LMWH → warfarin/DOAC) even with hemorrhagic transformation — AHA/ASA guidelines. In deteriorating patients despite anticoagulation: endovascular thrombectomy/thrombolysis considered.<br><br>
+    <div style="display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap;margin-top:8px;">
+      <div style="flex:1;min-width:180px;">
+        <div style="font-size:10px;color:var(--text3);margin-bottom:4px;font-family:var(--sans);">Cerebral venous anatomy — is infarct adjacent to a sinus?</div>
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSuhhXm-rdg13L1vmz9Lbq0Img3kduPSBLJtQ&s" alt="Cerebral venous anatomy" style="width:100%;max-width:280px;border-radius:5px;border:1px solid var(--border);display:block;" onerror="this.style.display='none'">
+      </div>
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:10px;">Infarct Location — Venous Territory Assessment <span class="pill pill-t">Select Most Applicable</span></div>
+  <div class="crit" id="topo-venous-item">
+    <div class="crit-main"><div class="crit-name">Infarct topography relative to venous territories</div><button class="xbtn" onclick="xp(this)">details ▾</button></div>
+    <div class="crit-detail">
+      Parasagittal cortical / bilateral cortical → SSS. Posterior temporal → transverse sinus / vein of Labbé. Bilateral thalamic → internal cerebral veins. Cerebellar → transverse-sigmoid sinus. Isolated cortical infarct without cortical artery source → consider cortical venous thrombosis. Single cortical vein thrombosis may cause focal infarct mimicking arterial territory stroke — MRV with contrast and high-resolution T1 black-blood are key.
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setToggle('topo-venous','para')">⚠ Parasagittal / bilateral cortical — near SSS (strongest venous signal)</button>
+      <button class="abtn" onclick="setToggle('topo-venous','temporal')">⚠ Posterior temporal / inferior temporal — near transverse sinus / vein of Labbé</button>
+      <button class="abtn" onclick="setToggle('topo-venous','thalamic')">⚠ Bilateral thalamic — internal cerebral vein / vein of Galen thrombosis</button>
+      <button class="abtn" onclick="setToggle('topo-venous','cortical')">~ Isolated cortical infarct without clear arterial source — consider cortical vein thrombosis</button>
+      <button class="abtn" onclick="setToggle('topo-venous','no')">✗ Arterial territory — no venous territory involvement</button>
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:10px;">CVST Imaging Red Flags <span class="pill pill-t">Select All Present</span></div>
+  <div class="crit" id="cvst-imaging-item">
+    <div class="crit-main"><div class="crit-name">CVST imaging features — hemorrhagic infarct in atypical location, mixed DWI, empty delta sign</div><button class="xbtn" onclick="xp(this)">details ▾</button></div>
+    <div class="crit-detail">Hemorrhagic transformation in non-arterial territory is characteristic. Mixed DWI restriction (cytotoxic + vasogenic) differs from arterial infarct (pure cytotoxic). Empty delta sign on contrast CT is specific (&lt;30% sensitive) but when present is strong evidence. Absence of flow void in a major sinus on T2 MRI suggests thrombosis — confirm with MRV.</div>
+    <div class="brow">
+            <button class="abtn" onclick="setToggle('cvst-imaging','yes')">✓ CVST imaging features present (hemorrhagic infarct in atypical location, mixed DWI, empty delta sign, absent sinus flow void)</button>
+      <button class="abtn" onclick="setToggle('cvst-imaging','mrv')">⚠ MRV / CTV ordered — sinus occlusion confirmed or suspected</button>
+      <button class="abtn" onclick="setToggle('cvst-imaging','no')">✗ No CVST imaging features — arterial pattern</button>
+      <button class="abtn" onclick="setToggle('cvst-imaging','nd')">— MRV not yet performed</button>
+    
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:10px;">CVST Risk Factors <span class="pill pill-t">Select All Present</span></div>
+  <div class="crit" id="cvst-rf-item">
+    <div class="crit-main"><div class="crit-name">Puerperium, OCP, hypercoagulable state, CNS infection, IBD, malignancy, dehydration</div></div>
+    <div class="brow">
+            <button class="abtn" onclick="setToggle('cvst-rf','yes')">✓ ≥1 CVST risk factor present</button>
+      <button class="abtn" onclick="setToggle('cvst-rf','no')">✗ No identifiable CVST risk factor</button>
+      <button class="abtn" onclick="setToggle('cvst-rf','nd')">— Risk factors not yet assessed</button>
+    
     </div>
   </div>
 
@@ -634,11 +778,11 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
       <div class="cnote"><strong>Ref:</strong> Prabhakaran S et al. TOAST stroke subtype classification in clinical practice: GWTG-Stroke. Front Neurol 2024. LVD sensitivity 33%, PPV 13% — suboptimal due to over-attribution of mild stenosis.</div>
     </div>
     <div class="brow">
-      <button class="abtn" onclick="set('vessel','none')">No significant disease on parent vessels</button>
-      <button class="abtn" onclick="set('vessel','mild')">Mild non-stenotic disease — plaques, &lt;50% stenosis</button>
-      <button class="abtn" onclick="set('vessel','moderate')">Moderate stenosis — 50–69% (NASCET)</button>
-      <button class="abtn" onclick="set('vessel','severe')">Severe stenosis — ≥70% or near-occlusion</button>
       <button class="abtn" onclick="set('vessel','occlusion')">Occlusion — 100% of relevant parent vessel</button>
+      <button class="abtn" onclick="set('vessel','severe')">Severe stenosis — ≥70% or near-occlusion</button>
+      <button class="abtn" onclick="set('vessel','moderate')">Moderate stenosis — 50–69% (NASCET)</button>
+      <button class="abtn" onclick="set('vessel','mild')">Mild non-stenotic disease — plaques, &lt;50% stenosis</button>
+      <button class="abtn" onclick="set('vessel','none')">No significant disease on parent vessels</button>
     </div>
   </div>
 
@@ -650,13 +794,14 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
       <button class="xbtn" onclick="xp(this)">details ▾</button>
     </div>
     <div class="crit-detail">
-      Dissection is a distinct "Other Determined Etiology" per TOAST — not LVD. Most common: ICA or vertebral artery. CTA findings: intimal flap, double lumen, tapered occlusion ("flame sign"), pseudoaneurysm, mural hematoma (hyperintense on fat-sat T1). MRA: tapered stenosis or occlusion. Vessel wall MRI: intramural hematoma. Mechanism: artery-to-artery embolism from thrombus on the dissected intima.
-      <div class="cnote">Young patients (&lt;50y), neck trauma, connective tissue disorders (EDS, Marfan), fibromuscular dysplasia — high suspicion for dissection. Headache or neck pain at stroke onset is characteristic.</div>
+      Dissection is a distinct "Other Determined Etiology" per TOAST — not LVD. Most common: ICA or vertebral artery. CTA findings: intimal flap, double lumen, tapered occlusion ("flame sign"), pseudoaneurysm, mural hematoma (hyperintense on fat-sat T1). MRA: tapered stenosis or occlusion. Vessel wall MRI: intramural hematoma. Mechanism: artery-to-artery embolism from thrombus on the dissected intima, or local occlusion at the dissection site. Imaging for dissection: CTA/MRA showing arterial narrowing, intimal flap, or pseudoaneurysm. <strong>High-resolution black blood MRA (vessel wall MRI, T1 fat-saturated sequences)</strong> is the gold standard for detecting intramural hematoma — the T1-hyperintense crescentic signal in the vessel wall. Request specifically when dissection is suspected and CTA is equivocal.
+      <div class="cnote">Young patients (&lt;50y), neck trauma, chiropractic manipulation, connective tissue disorders (EDS, Marfan), fibromuscular dysplasia — high suspicion for dissection. Headache or neck pain at stroke onset is characteristic. Horner syndrome ipsilateral to stroke suggests cervical ICA dissection.</div>
     </div>
     <div class="brow">
-      <button class="abtn" onclick="setToggle('dissection','yes')">✓ Dissection identified</button>
+            <button class="abtn" onclick="setToggle('dissection','yes')">✓ Dissection identified</button>
       <button class="abtn" onclick="setToggle('dissection','no')">✗ No dissection</button>
       <button class="abtn" onclick="setToggle('dissection','nd')">— Not assessed / no vessel wall imaging</button>
+    
     </div>
   </div>
 
@@ -665,9 +810,10 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
       <div class="crit-name">Intracranial atherosclerotic disease (ICAD) — stenosis of intracranial parent artery (MCA, basilar, intracranial ICA)</div>
     </div>
     <div class="brow">
-      <button class="abtn" onclick="setToggle('icad','yes')">✓ ICAD — ≥50% intracranial stenosis (meets LVD criteria)</button>
+            <button class="abtn" onclick="setToggle('icad','yes')">✓ ICAD — ≥50% intracranial stenosis (meets LVD criteria)</button>
       <button class="abtn" onclick="setToggle('icad','no')">✗ No significant intracranial stenosis / mild ICAD &lt;50% (not causal, same as no stenosis)</button>
       <button class="abtn" onclick="setToggle('icad','nd')">— Not assessed / CTA not available</button>
+    
     </div>
   </div>
 
@@ -694,10 +840,30 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
       <div class="cnote"><strong>Key refs:</strong> Joux J et al. Stroke 2019;50:3447 — recurrence 6.9%/year, surgery effective. Sajedi SA et al. Stroke 2019;50:3143 — bilateral in 58%, thrombus in 29%. Compagne KCJ et al. Stroke 2018 — 2.5% in MR-CLEAN LVO. Coutinho JM et al. Int J Stroke 2019 — 9.4% in cryptogenic stroke. Takasugi J et al. J Neurol 2024 — RR 4.38 for recurrence. ESVS 2023 guidelines.</div>
     </div>
     <div class="brow">
-      <button class="abtn" onclick="setToggle('carotid-web','yes')">✓ Carotid web identified on CTA/DSA — ipsilateral to stroke</button>
+            <button class="abtn" onclick="setToggle('carotid-web','yes')">✓ Carotid web identified on CTA/DSA — ipsilateral to stroke</button>
       <button class="abtn" onclick="setToggle('carotid-web','contralateral')">~ Carotid web identified — contralateral only (may still be relevant; bilateral webs common)</button>
       <button class="abtn" onclick="setToggle('carotid-web','no')">✗ No carotid web identified on dedicated CTA review</button>
       <button class="abtn" onclick="setToggle('carotid-web','nd')">— CTA not reviewed specifically for carotid web / not assessed</button>
+    
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:14px;">Vertebrobasilar Dolichoectasia (VBD) <span class="pill pill-a">Posterior Circulation Large-Vessel Disease</span></div>
+  <div class="lbox">
+    VBD is an independent risk factor for ischemic stroke and all-cause mortality beyond conventional vascular risk factors (PubMed 14707300; JSTROKE 2008). Primarily relevant in <strong>posterior circulation stroke</strong>. Mechanisms: (1) local thrombosis in low-flow/turbulent regions; (2) artery-to-artery embolism from ectatic basilar; (3) penetrating artery compression/stretching — pontine/midbrain infarcts (deep perforator compression).<br><br>
+    <strong>Recurrence risk (BMC Neurology 2019, n=115):</strong> BA diameter ≥5.3 mm: HR 4.744 (95% CI 1.718–13.097). Diffuse dolichoectasia: HR 3.603 (95% CI 1.367–9.496). Overall 22-month recurrence: 19.1%.
+  </div>
+  <div class="crit" id="oth-dolicho-item">
+    <div class="crit-main"><div class="crit-name">Vertebrobasilar dolichoectasia — tortuous/ectatic vertebrobasilar arteries; posterior circulation stroke</div><button class="xbtn" onclick="xp(this)">details ▾</button></div>
+    <div class="crit-detail">
+      Consider as contributing or dominant etiology when: (1) posterior circulation stroke without clear atherosclerosis, cardioembolism, or dissection; (2) MRA/CT demonstrates ectatic, tortuous basilar or vertebral arteries; (3) BA diameter ≥4.5–5.3 mm (≥5.3 mm = 90th percentile = highest-risk group).<br><br>
+      VBD is classified as a <strong>large-vessel disease</strong> process — tortuous, enlarged arteries with turbulent flow, endothelial damage, and susceptibility to thrombosis and embolism. This is distinct from atherosclerotic stenosis but shares the parent vessel mechanism category. Not associated with atherosclerotic plaque or stenosis specifically — an ectatic/dilated vessel with normal or even enlarged lumen is the hallmark.<div class="cnote"><strong>Ref:</strong> PubMed 14707300 (JSTROKE 2008) — VBD independent stroke risk. BMC Neurology 2019 (PMC6636033) — HR 4.744 for BA ≥5.3 mm. Passero SG &amp; Rossi S, Neurology 2008 — natural history VBD.</div>
+    </div>
+    <div class="brow">
+            <button class="abtn" onclick="setToggle('oth-dolicho','yes')">✓ VBD identified — tortuous/ectatic vertebrobasilar system, posterior circulation stroke</button>
+      <button class="abtn" onclick="setToggle('oth-dolicho','no')">✗ Not identified — vertebrobasilar anatomy normal</button>
+      <button class="abtn" onclick="setToggle('oth-dolicho','nd')">— Not assessed / no posterior circulation imaging</button>
+    
     </div>
   </div>
 
@@ -737,11 +903,12 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
       <div class="cnote"><strong>Ref:</strong> NASCET Collaborators. N Engl J Med 1991;325:445–453. Howard DPJ et al. Lancet Neurol 2021;20(3):193–202 — pooled asymptomatic stroke rates stratified by decade and stenosis degree.</div>
     </div>
     <div class="brow">
-      <button class="abtn" onclick="set('nascet','none')">&lt;50% — Below TOAST LVD threshold</button>
-      <button class="abtn" onclick="set('nascet','mod')">50–69% — Moderate (borderline LVD)</button>
-      <button class="abtn" onclick="set('nascet','severe')">70–99% — Severe (meets LVD criteria)</button>
       <button class="abtn" onclick="set('nascet','occ')">100% — Occlusion</button>
+      <button class="abtn" onclick="set('nascet','severe')">70–99% — Severe (meets LVD criteria)</button>
+      <button class="abtn" onclick="set('nascet','mod')">50–69% — Moderate (borderline LVD)</button>
+      <button class="abtn" onclick="set('nascet','none')">&lt;50% — Below TOAST LVD threshold</button>
       <button class="abtn" onclick="set('nascet','na')">N/A — Posterior circ. / no carotid imaging</button>
+    
     </div>
   </div>
 
@@ -782,11 +949,12 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
       <div class="cnote"><strong>Ref:</strong> Hunt TS et al. AJNR 2023;44(8):880. Van den Bouwhuijsen QJA et al. JACC 2021. Carotid Plaque-RADS: Gupta A et al. JACC Cardiovasc Imaging 2023.</div>
     </div>
     <div class="brow">
-      <button class="abtn" onclick="set('plaqcomp','calcified')">Strictly hyperdense / macrocalcified — homogeneous</button>
+            <button class="abtn" onclick="set('plaqcomp','calcified')">Strictly hyperdense / macrocalcified — homogeneous</button>
       <button class="abtn" onclick="set('plaqcomp','mixed')">Mixed — soft tissue + calcification (heterogeneous)</button>
       <button class="abtn" onclick="set('plaqcomp','soft')">All soft — hypoechoic / low-density / no calcification</button>
       <button class="abtn" onclick="set('plaqcomp','nopl')">No significant plaque identified</button>
       <button class="abtn" onclick="set('plaqcomp','nd')">— Plaque present but composition not characterized</button>
+    
     </div>
   </div>
 
@@ -810,9 +978,10 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
         <div class="cnote"><strong>OR 25.2</strong> for carotid-source stroke (Balu N et al. Stroke 2014). HR 5.7 for future events (meta-analysis, Gupta A et al. Stroke 2013). Intraplaque hemorrhage is the best-established single biomarker of plaque vulnerability.</div>
       </div>
       <div class="brow">
-        <button class="abtn" onclick="setHRP('iph','yes')">✓ Intraplaque hemorrhage — confirmed on vessel wall MRI or inferred from imaging</button>
-        <button class="abtn" onclick="setHRP('iph','no')">✗ No intraplaque hemorrhage identified</button>
-        <button class="abtn" onclick="setHRP('iph','nd')">— Not assessed / no vessel wall MRI performed</button>
+              <button class="abtn" onclick="setHRP('iph','yes')">✓ Intraplaque hemorrhage — confirmed on vessel wall MRI or inferred from imaging</button>
+      <button class="abtn" onclick="setHRP('iph','no')">✗ No intraplaque hemorrhage identified</button>
+      <button class="abtn" onclick="setHRP('iph','nd')">— Not assessed / no vessel wall MRI performed</button>
+    
       </div>
     </div>
     <div class="crit" id="hrp-lrnc-item">
@@ -828,9 +997,10 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
         <div class="cnote"><strong>Ref:</strong> CARE-II study (Zhao XQ et al. J Cardiovasc Magn Reson 2019) — LRNC volume OR 1.30 per unit for ipsilateral acute cerebral infarction. LRNC >40% of plaque volume has highest risk association.</div>
       </div>
       <div class="brow">
-        <button class="abtn" onclick="setHRP('lrnc','yes')">✓ LRNC identified</button>
-        <button class="abtn" onclick="setHRP('lrnc','no')">✗ Not identified</button>
-        <button class="abtn" onclick="setHRP('lrnc','nd')">— Not assessed</button>
+              <button class="abtn" onclick="setHRP('lrnc','yes')">✓ LRNC identified</button>
+      <button class="abtn" onclick="setHRP('lrnc','no')">✗ Not identified</button>
+      <button class="abtn" onclick="setHRP('lrnc','nd')">— Not assessed</button>
+    
       </div>
     </div>
     <div class="crit" id="hrp-ulcer-item">
@@ -845,9 +1015,10 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
         <span style="color:var(--blue)">Carotid ultrasound (duplex):</span> Irregular plaque surface with an echogenic "crater" or surface defect on B-mode. More difficult to characterize reliably than CTA; surface irregularity (vs. smooth plaque surface) is itself an independent stroke risk marker.
       </div>
       <div class="brow">
-        <button class="abtn" onclick="setHRP('ulcer','yes')">✓ Ulceration / surface crater identified</button>
-        <button class="abtn" onclick="setHRP('ulcer','no')">✗ Smooth surface</button>
-        <button class="abtn" onclick="setHRP('ulcer','nd')">— Not assessed</button>
+              <button class="abtn" onclick="setHRP('ulcer','yes')">✓ Ulceration / surface crater identified</button>
+      <button class="abtn" onclick="setHRP('ulcer','no')">✗ Smooth surface</button>
+      <button class="abtn" onclick="setHRP('ulcer','nd')">— Not assessed</button>
+    
       </div>
     </div>
     <div class="crit" id="hrp-cap-item">
@@ -862,67 +1033,51 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
         <span style="color:var(--blue)">Carotid ultrasound (duplex):</span> Not reliably assessable. A "juxtaluminal" hypoechoic zone immediately below the echogenic surface can suggest cap thinning, but this requires expert interpretation and is not validated for routine use.
       </div>
       <div class="brow">
-        <button class="abtn" onclick="setHRP('cap','yes')">✓ Thin / ruptured cap identified</button>
-        <button class="abtn" onclick="setHRP('cap','no')">✗ Intact thick cap</button>
-        <button class="abtn" onclick="setHRP('cap','nd')">— Not assessed / no plaque MRI</button>
+              <button class="abtn" onclick="setHRP('cap','yes')">✓ Thin / ruptured cap identified</button>
+      <button class="abtn" onclick="setHRP('cap','no')">✗ Intact thick cap</button>
+      <button class="abtn" onclick="setHRP('cap','nd')">— Not assessed / no plaque MRI</button>
+    
       </div>
     </div>
   </div>
   </div><!-- /hrp-section -->
 
-  <div id="a5" class="alrt"></div>
-  <div class="nav-row">
-    <button class="nbtn ns" onclick="go(4)">← Back</button>
-    <button class="nbtn np" onclick="go(6)">Next: Intraluminal Thrombus →</button>
+
+  <div class="slabel" style="margin-top:14px;">Intraluminal Thrombus at Plaque Site <span class="pill pill-r">STRONGEST IMAGING PREDICTOR</span></div>
+  <div class="lbox" style="margin-bottom:8px;">
+    <strong>Critical evidence:</strong> Intraluminal thrombus carries an <span class="lr">OR of 103.6</span> (p&lt;0.001) for carotid-source stroke — the most powerful imaging predictor of carotid etiology, exceeding intraplaque hemorrhage (OR 25.2), stenosis as a continuous variable (AUC 0.770), and stenosis cutoffs alone. Model discriminatory value with thrombus + intraplaque hemorrhage + thickness + smoking: AUC <strong>0.862</strong> vs. AUC 0.770 for stenosis alone. (Balu N et al. Stroke 2014; 2015)
   </div>
-</div>
-</div>
-
-<!-- ══════════════════════════════════════════════════════
-     SCREEN 6 — INTRALUMINAL THROMBUS
-══════════════════════════════════════════════════════ -->
-<div class="screen" id="s6">
-<div class="card">
-  <div class="ctitle" style="color:var(--teal);">Step 7 · Intraluminal Thrombus</div>
-  <div class="csub">Evidence of atherothrombotic plaque rupture with superimposed thrombus — the strongest single imaging predictor of carotid-source stroke. Presence effectively confirms artery-to-artery atherothromboembolism as the dominant mechanism.</div>
-
-  <div class="lbox">
-    <strong>Critical evidence:</strong> Intraluminal thrombus carries an <span class="lr">OR of 103.6</span> (p&lt;0.001) for carotid-source stroke in multivariable analysis — the most powerful imaging predictor of carotid etiology, exceeding intraplaque hemorrhage (OR 25.2), stenosis as a continuous variable (AUC 0.770), and stenosis cutoffs of 50% or 70% (AUC 0.669). Its presence confirms atherothrombotic plaque rupture.<br><br>
-    Model discriminatory value with intraluminal thrombus + intraplaque hemorrhage + thickness + smoking: AUC <strong>0.862</strong> vs. AUC 0.770 for stenosis alone (Balu N et al. Stroke 2014; Balu N et al. Stroke 2015).
-  </div>
-
-  <div class="slabel">Intraluminal thrombus on CTA / MRA / DSA <span class="pill pill-r">STRONGEST IMAGING PREDICTOR</span></div>
-
   <div class="crit" id="ilt-item">
     <div class="crit-main">
-      <div class="crit-name">Intraluminal filling defect at the site of atherosclerotic plaque — consistent with thrombus superimposed on ruptured plaque</div>
+      <div class="crit-name">Intraluminal filling defect at the site of atherosclerotic plaque — thrombus superimposed on ruptured plaque</div>
       <button class="xbtn" onclick="xp(this)">details ▾</button>
     </div>
     <div class="crit-detail">
-      CTA appearance: filling defect within the lumen at or just distal to the plaque; may show heterogeneous or low-density material within the contrast column. Differentiate from: (a) embolic thrombus at a non-plaque location (suggests CE origin), (b) in-situ thrombosis from hypercoagulable state, (c) artefact from dense calcification. DSA or high-resolution vessel wall MRI can confirm. The presence of thrombus attached to a plaque is pathognomonic of plaque rupture — atherothrombosis mechanism.
-      <div class="cnote"><strong>Ref:</strong> Balu N et al. Stroke 2014;45 (STROKEAHA.114.006286) — OR 103.6 (p&lt;0.001) for carotid-source stroke. Balu N et al. Stroke 2015 (1.5T/3T MRI study) — PR 3.60 (95% CI 2.23–5.81, p&lt;0.001).</div>
+      CTA appearance: filling defect within the lumen at or just distal to the plaque; may show heterogeneous or low-density material within the contrast column. Differentiate from: (a) embolic thrombus at a non-plaque location (suggests CE origin), (b) in-situ thrombosis from hypercoagulable state, (c) artefact from dense calcification. DSA or high-resolution vessel wall MRI can confirm. Thrombus attached to a plaque is pathognomonic of plaque rupture — atherothrombosis mechanism.
+      <div class="cnote"><strong>Ref:</strong> Balu N et al. Stroke 2014 — OR 103.6 (p&lt;0.001) for carotid-source stroke. Balu N et al. Stroke 2015 — PR 3.60 (95% CI 2.23–5.81, p&lt;0.001).</div>
     </div>
     <div class="brow">
-      <button class="abtn" onclick="set('ilt','yes')">✓ YES — Intraluminal thrombus at plaque site (OR 103.6)</button>
+            <button class="abtn" onclick="set('ilt','yes')">✓ YES — Intraluminal thrombus at plaque site (OR 103.6)</button>
       <button class="abtn" onclick="set('ilt','no')">✗ No intraluminal thrombus identified</button>
       <button class="abtn" onclick="set('ilt','nd')">— Not assessed / no adequate vascular imaging</button>
+    
     </div>
   </div>
 
-  <div id="a6" class="alrt"></div>
+  <div id="a5" class="alrt"></div>
   <div class="nav-row">
-    <button class="nbtn ns" onclick="go(5)">← Back</button>
-    <button class="nbtn np" onclick="go(7)">Next: Cardiac Sources →</button>
+    <button class="nbtn ns" onclick="go(4)">← Back</button>
+    <button class="nbtn np" onclick="go(6)">Next: Cardiac Sources →</button>
   </div>
 </div>
 </div>
 
-<!-- ══════════════════════════════════════════════════════
-     SCREEN 7 — CARDIAC SOURCES & OTHER ETIOLOGIES
-══════════════════════════════════════════════════════ -->
-<div class="screen" id="s7">
+
+
+
+<div class="screen" id="s6">
 <div class="card">
-  <div class="ctitle" style="color:var(--teal);">Step 8 · Cardiac Sources and Other Determined Etiologies</div>
+  <div class="ctitle" style="color:var(--teal);">Step 7 · Cardiac Sources and Other Determined Etiologies</div>
   <div class="csub">Evaluation for high-risk cardioembolic sources per TOAST criteria, and other determined etiologies. All ischemic stroke patients receive a standard transthoracic echocardiogram (TTE), ECG, and telemetry. Select what has been found and what higher-level testing has been done.</div>
 
   <div class="lbox">
@@ -939,9 +1094,10 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
       <div class="crit-name">Atrial fibrillation / flutter — paroxysmal or persistent, confirmed on ECG, continuous telemetry, or Holter monitor</div>
     </div>
     <div class="brow">
-      <button class="abtn" onclick="setToggle('ce-afib','yes')">✓ Confirmed AF/flutter</button>
+            <button class="abtn" onclick="setToggle('ce-afib','yes')">✓ Confirmed AF/flutter</button>
       <button class="abtn" onclick="setToggle('ce-afib','no')">✗ No AF on monitoring to date</button>
       <button class="abtn" onclick="setToggle('ce-afib','nd')">— Monitoring incomplete / &lt;24h telemetry only</button>
+    
     </div>
   </div>
 
@@ -950,11 +1106,12 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
       <div class="crit-name">Reduced EF or recent MI — TTE: EF &lt;35%, regional wall motion abnormality, or recent MI (&lt;4 weeks) on history / troponins</div>
     </div>
     <div class="brow">
-      <button class="abtn" onclick="setToggle('ce-cmp','ef')">✓ EF &lt;35% / dilated cardiomyopathy confirmed on TTE</button>
+            <button class="abtn" onclick="setToggle('ce-cmp','ef')">✓ EF &lt;35% / dilated cardiomyopathy confirmed on TTE</button>
       <button class="abtn" onclick="setToggle('ce-cmp','mi')">✓ Recent MI (&lt;4 weeks) — confirmed on history / troponins</button>
       <button class="abtn" onclick="setToggle('ce-cmp','rwma')">~ Regional wall motion abnormality (EF preserved but focal TTE dysfunction)</button>
       <button class="abtn" onclick="setToggle('ce-cmp','no')">✗ Normal EF; no MI; no wall motion abnormality</button>
       <button class="abtn" onclick="setToggle('ce-cmp','nd')">— TTE not yet performed</button>
+    
     </div>
   </div>
 
@@ -970,9 +1127,10 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
       <span style="color:var(--green)">Valve regurgitation alone (aortic or mitral) is generally NOT a high-risk embolic source</span> — regurgitant lesions do not generate thrombus on the valve leaflets in the same way as stenotic or infected valves. Severe mitral regurgitation may cause atrial enlargement and subsequent AF, but the regurgitation itself is not a direct embolic mechanism. <em>Exception:</em> flail mitral valve leaflets or those with attached vegetations (endocarditis) — these do carry embolic risk.
     </div>
     <div class="brow">
-      <button class="abtn" onclick="setToggle('ce-valve','yes')">✓ High-risk valve disease on TTE (above)</button>
+            <button class="abtn" onclick="setToggle('ce-valve','yes')">✓ High-risk valve disease on TTE (above)</button>
       <button class="abtn" onclick="setToggle('ce-valve','no')">✗ No significant valve disease on TTE</button>
       <button class="abtn" onclick="setToggle('ce-valve','nd')">— TTE not yet performed</button>
+    
     </div>
   </div>
 
@@ -989,10 +1147,11 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
       <strong style="color:var(--amber)">CTA heart morphology (cardiac CT) — second-line when TEE is not an option:</strong> Sensitivity ~96% for LAA thrombus; useful when TEE is not tolerated (patient refusal, esophageal contraindications, procedural risk), or when rapid non-invasive assessment is needed. CT cardiac cannot assess valvular function dynamically and may have artefact in irregular rhythms. Cardiac MRI (delayed gadolinium enhancement) is most sensitive for LV thrombus and myocardial scar.
     </div>
     <div class="brow">
-      <button class="abtn" onclick="setToggle('ce-thrombus','yes')">✓ Intracardiac thrombus confirmed on TEE</button>
+            <button class="abtn" onclick="setToggle('ce-thrombus','yes')">✓ Intracardiac thrombus confirmed on TEE</button>
       <button class="abtn" onclick="setToggle('ce-thrombus','no')">✗ No thrombus on TEE (or cardiac CT if TEE not performed)</button>
       <button class="abtn" onclick="setToggle('ce-thrombus','tte')">~ TEE not yet performed — TTE only so far</button>
       <button class="abtn" onclick="setToggle('ce-thrombus','nd')">— No advanced cardiac imaging performed</button>
+    
     </div>
   </div>
 
@@ -1007,10 +1166,11 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
       PFO is present in ~25% of the general population. Attribution as a stroke mechanism requires: (1) exclusion of other causes (cryptogenic stroke), (2) large right-to-left shunt (≥20 microbubbles at rest or with Valsalva), and/or (3) concurrent atrial septal aneurysm (redundant interatrial septum with ≥10 mm excursion). RoPE score (Risk of Paradoxical Embolism) quantifies attribution probability. CLOSE, REDUCE, and DEFENSE trials showed benefit of PFO closure for cryptogenic stroke patients under 60 with high-risk PFO features.
     </div>
     <div class="brow">
-      <button class="abtn" onclick="setToggle('ce-pfo','yes')">✓ PFO — large shunt or atrial septal aneurysm</button>
+            <button class="abtn" onclick="setToggle('ce-pfo','yes')">✓ PFO — large shunt or atrial septal aneurysm</button>
       <button class="abtn" onclick="setToggle('ce-pfo','small')">~ PFO — small shunt, no atrial septal aneurysm</button>
       <button class="abtn" onclick="setToggle('ce-pfo','no')">✗ No PFO on bubble study</button>
       <button class="abtn" onclick="setToggle('ce-pfo','nd')">— Bubble study not done</button>
+    
     </div>
   </div>
 
@@ -1021,42 +1181,32 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
       <div class="crit-name">Overall cardiac workup status — determines whether "Undetermined — incomplete workup" applies in the verdict</div>
     </div>
     <div class="brow">
-      <button class="abtn" onclick="setToggle('ce-complete','yes')">✓ Complete — TTE + prolonged monitoring done; no source</button>
+            <button class="abtn" onclick="setToggle('ce-complete','yes')">✓ Complete — TTE + prolonged monitoring done; no source</button>
       <button class="abtn" onclick="setToggle('ce-complete','tte')">~ Partial — TTE done; TEE / prolonged monitoring pending</button>
       <button class="abtn" onclick="setToggle('ce-complete','nd')">— Incomplete — cardiac workup not yet started</button>
+    
     </div>
   </div>
 
-  <div class="slabel" style="margin-top:14px;">Other determined etiologies <span class="pill pill-a">SELECT ALL IDENTIFIED OR TESTED</span></div>
-
-  <div class="crit" id="oth-hypercog-item">
-    <div class="crit-main">
-      <div class="crit-name">Hypercoagulable state — antiphospholipid antibody syndrome (APLS), protein C/S deficiency, factor V Leiden, JAK2 mutation, malignancy-associated coagulopathy</div>
-      <button class="xbtn" onclick="xp(this)">details ▾</button>
-    </div>
-    <div class="crit-detail">
-      Hypercoagulable testing is not routine for all stroke patients — it is most indicated in: young patients (&lt;55y) with cryptogenic stroke, history of recurrent venous/arterial thrombosis, known autoimmune disease, prior miscarriages (consider APLS), or active malignancy. Testing ideally done off anticoagulation. Antiphospholipid antibodies (anticardiolipin IgG/IgM, anti-β2GP1, lupus anticoagulant) require confirmation on repeat testing ≥12 weeks apart for a formal APLS diagnosis. If not yet tested and the clinical picture is suggestive, the verdict will flag this as a recommendation.
-    </div>
-    <div class="brow">
-      <button class="abtn" onclick="setToggle('oth-hypercog','yes')">✓ Hypercoagulable state confirmed</button>
-      <button class="abtn" onclick="setToggle('oth-hypercog','no')">✗ Tested — negative</button>
-      <button class="abtn" onclick="setToggle('oth-hypercog','nd')">— Not suspected / not tested</button>
-    </div>
-  </div>
+  <div class="slabel" style="margin-top:14px;">Genetic Arteriopathy <span class="pill pill-a">CONSIDER IN YOUNG CRYPTOGENIC STROKE</span></div>
 
   <div class="crit" id="oth-genetic-item">
     <div class="crit-main">
-      <div class="crit-name">Genetic arteriopathy — CADASIL (NOTCH3), Fabry disease (GLA gene), MELAS (mitochondrial)</div>
+      <div class="crit-name">Genetic arteriopathy — CADASIL (NOTCH3), Fabry disease (GLA gene), MELAS (mtDNA)</div>
       <button class="xbtn" onclick="xp(this)">details ▾</button>
     </div>
     <div class="crit-detail">
-      Genetic arteriopathies are rare but should be considered in: young patients with white matter disease + lacunar infarcts (CADASIL — look for anterior temporal pole and external capsule T2 signal), recurrent cryptogenic strokes in young adults, family history of early stroke/dementia, or in specific demographics (Fabry disease — consider in young men with cryptogenic stroke + neuropathic pain + angiokeratoma). Testing is not routine in standard acute stroke workup — select "Low suspicion" if the clinical picture raises a possibility without definitive testing, and "Not suspected / not tested" in routine cases.
+      Genetic arteriopathies are rare but important in young cryptogenic stroke. Consider when no other etiology is identified:<br><br>
+      <strong>CADASIL (NOTCH3 mutation)</strong> — most common hereditary stroke disease in adults. Characteristic MRI: T2/FLAIR white matter hyperintensities in anterior temporal poles and external capsule (Dichgans M et al. Lancet Neurol 2019). Recurrent lacunar strokes + migraine with aura + cognitive decline. Prevalence ~4–5/100,000; diagnosis by NOTCH3 gene testing or skin biopsy (GOM deposits). No proven treatment; BP control, antiplatelet for stroke prevention.<br><br>
+      <strong>Fabry Disease (GLA gene, X-linked)</strong> — α-galactosidase A deficiency. Stroke in young adults (mean age ~38y in males). Posterior circulation strokes common (vertebrobasilar dolichoectasia is frequent). Associated features: neuropathic pain, angiokeratoma, cornea verticillata, renal/cardiac involvement. Prevalence in cryptogenic stroke: ~1–4% (Rolfs A et al. Lancet 2005). Diagnosed by enzyme assay (males) or GLA gene testing (females). Treatment: enzyme replacement therapy.<br><br>
+      <strong>MELAS (Mitochondrial Encephalomyopathy, Lactic Acidosis, Stroke-like episodes)</strong> — maternally inherited mitochondrial DNA mutation (most commonly m.3243A>G in MT-TL1, ~80% of cases). Stroke-like episodes typically posterior > anterior; do NOT follow vascular territories (crossing vascular boundaries on DWI is a key imaging clue). Associated with: elevated serum/CSF lactate, hearing loss, migraine, seizures, short stature, ophthalmoplegia, diabetes. Mean onset of stroke-like episodes ~35y. MRI: diffusion-positive lesions in cortex and subcortical regions NOT conforming to arterial territories — key distinguishing feature from arterial ischemic stroke. Diagnosis: mitochondrial genetic panel, muscle biopsy (ragged red fibers). Treatment: L-arginine infusion acutely, supplementation; no proven disease-modifying therapy (Yamamoto et al. Neurology 2021).
     </div>
     <div class="brow">
-      <button class="abtn" onclick="setToggle('oth-genetic','yes')">✓ Confirmed — genetic testing positive</button>
+            <button class="abtn" onclick="setToggle('oth-genetic','yes')">✓ Confirmed — genetic testing positive</button>
       <button class="abtn" onclick="setToggle('oth-genetic','low')">~ Low clinical suspicion — features present, testing pending</button>
       <button class="abtn" onclick="setToggle('oth-genetic','no')">✗ Tested — negative</button>
       <button class="abtn" onclick="setToggle('oth-genetic','nd')">— Not suspected / not tested</button>
+    
     </div>
   </div>
 
@@ -1075,18 +1225,19 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
       <div class="cnote"><strong>Key refs:</strong> Gilden DH et al. VZV vasculopathy. Neurology 2019. Langan SM et al. Lancet 2014 — 1.3× stroke risk after zoster, highest 1st year. Romero JR et al. J Neurol Sci 2021 — COVID-19 thromboinflammatory stroke mechanisms. VZV stroke risk in &lt;40y: OR up to 4× in first 6 months post-zoster.</div>
     </div>
     <div class="brow">
-      <button class="abtn" onclick="setToggle('oth-postinfect','vzv')">✓ VZV / HSV (herpes simplex/zoster virus) — within 6 months, particularly ophthalmic zoster</button>
+            <button class="abtn" onclick="setToggle('oth-postinfect','vzv')">✓ VZV / HSV (herpes simplex/zoster virus) — within 6 months, particularly ophthalmic zoster</button>
       <button class="abtn" onclick="setToggle('oth-postinfect','covid')">✓ COVID-19 — confirmed SARS-CoV-2 infection within 6 months</button>
       <button class="abtn" onclick="setToggle('oth-postinfect','other')">✓ Other preceding infection — bacterial meningitis, HIV, Lyme, other</button>
       <button class="abtn" onclick="setToggle('oth-postinfect','no')">✗ No relevant preceding infection identified</button>
       <button class="abtn" onclick="setToggle('oth-postinfect','nd')">— Not assessed / history not available</button>
+    
     </div>
   </div>
 
-  <div id="a7" class="alrt"></div>
+  <div id="a6" class="alrt"></div>
   <div class="nav-row">
-    <button class="nbtn ns" onclick="go(6)">← Back</button>
-    <button class="nbtn np" onclick="go(8)">Next: TCD Assessment →</button>
+    <button class="nbtn ns" onclick="go(5)">← Back: Plaque</button>
+    <button class="nbtn np" onclick="go(7)">Next: TCD Assessment →</button>
   </div>
 </div>
 </div>
@@ -1094,9 +1245,9 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
 <!-- ══════════════════════════════════════════════════════
      SCREEN 8 — TRANSCRANIAL DOPPLER (TCD)
 ══════════════════════════════════════════════════════ -->
-<div class="screen" id="s8">
+<div class="screen" id="s7">
 <div class="card">
-  <div class="ctitle" style="color:var(--teal);">Step 9 · Transcranial Doppler (TCD)</div>
+  <div class="ctitle" style="color:var(--teal);">Step 8 · Transcranial Doppler (TCD)</div>
   <div class="csub">TCD provides real-time intracranial hemodynamic data and microembolic signal detection that can critically distinguish between competing etiologies — particularly carotid vs. cardiac sources, PFO vs. local arterial disease, and ICAD vs. proximal stenosis. Enter results if TCD was performed.</div>
 
   <div class="lbox">
@@ -1116,9 +1267,10 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
       <div class="crit-name">Was TCD performed as part of this stroke evaluation?</div>
     </div>
     <div class="brow">
-      <button class="abtn" onclick="set('tcd-done','yes')">✓ Yes — TCD performed (enter findings below)</button>
+            <button class="abtn" onclick="set('tcd-done','yes')">✓ Yes — TCD performed (enter findings below)</button>
       <button class="abtn" onclick="set('tcd-done','no')">✗ TCD not performed</button>
       <button class="abtn" onclick="set('tcd-done','nd')">— Not yet done / pending</button>
+    
     </div>
   </div>
 
@@ -1142,10 +1294,11 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
       <div class="cnote"><strong>Key refs:</strong> Ringelstein EB et al. Ann Neurol 1998;44:186 — cardiac vs. arterial MES differentiation. CARESS trial (Markus 2005, Lancet Neurol) — MES as therapeutic monitoring in carotid stenosis. Abbott AL et al. Stroke 2005 — asymptomatic carotid stenosis: &gt;2 MES/hour ipsilateral MCA = 3.6% vs. 0.7% 2-year stroke risk.</div>
     </div>
     <div class="brow">
-      <button class="abtn" onclick="set('tcd-hits','bilateral')">↑↑ Bilateral / multiterritory HITS — central (cardiac / aortic) embolic pattern</button>
+            <button class="abtn" onclick="set('tcd-hits','bilateral')">↑↑ Bilateral / multiterritory HITS — central (cardiac / aortic) embolic pattern</button>
       <button class="abtn" onclick="set('tcd-hits','unilateral')">↑ Unilateral HITS — ipsilateral to stroke only — local arterial source (carotid / ICAD)</button>
       <button class="abtn" onclick="set('tcd-hits','none')">✗ No spontaneous HITS on monitoring</button>
       <button class="abtn" onclick="set('tcd-hits','nd')">— HITS monitoring not performed / TCD not done</button>
+    
     </div>
   </div>
 
@@ -1164,11 +1317,12 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
       <div class="cnote"><strong>Refs:</strong> Spencer MP et al. J Ultrasound Med 2004 — grading scale. Di Tullio M et al. Stroke 1993 — TCD bubble study sensitivity. Mas JL et al. CLOSE trial — PFO closure benefit in Grade ≥3 shunt + atrial septal aneurysm.</div>
     </div>
     <div class="brow">
-      <button class="abtn" onclick="set('tcd-bubble','large')">↑↑ Large RLS — Grade ≥3 (≥31 HITS) or curtain pattern</button>
+            <button class="abtn" onclick="set('tcd-bubble','large')">↑↑ Large RLS — Grade ≥3 (≥31 HITS) or curtain pattern</button>
       <button class="abtn" onclick="set('tcd-bubble','small')">~ Small–moderate RLS — Grade 1–2 (1–30 HITS)</button>
       <button class="abtn" onclick="set('tcd-bubble','delayed')">~ Delayed HITS (&gt;25 cycles) — intrapulmonary shunt, not intracardiac PFO</button>
       <button class="abtn" onclick="set('tcd-bubble','neg')">✗ No HITS — no right-to-left shunt detected</button>
       <button class="abtn" onclick="set('tcd-bubble','nd')">— TCD bubble study not performed</button>
+    
     </div>
   </div>
 
@@ -1186,30 +1340,158 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
       <div class="cnote">Lindegaard KF et al. Stroke 1986 — Lindegaard ratio. Silvestrini M et al. Neurology 2000 — impaired VMR predicts stroke in asymptomatic ICA stenosis.</div>
     </div>
     <div class="brow">
-      <button class="abtn" onclick="set('tcd-velocity','elevated')">↑ Focal velocity elevation — ICAD / intracranial stenosis</button>
+            <button class="abtn" onclick="set('tcd-velocity','elevated')">↑ Focal velocity elevation — ICAD / intracranial stenosis</button>
       <button class="abtn" onclick="set('tcd-velocity','reduced')">↓ Reduced ipsilateral MCA / reversed OA — ICA hemodynamic compromise</button>
       <button class="abtn" onclick="set('tcd-velocity','collateral')">~ Collateral flow pattern — increased cross-filling via AComm / PComm</button>
       <button class="abtn" onclick="set('tcd-velocity','normal')">✓ Normal bilateral flow velocities and waveforms</button>
       <button class="abtn" onclick="set('tcd-velocity','nd')">— Not assessed / TCD not done</button>
+    
     </div>
   </div>
 
   </div><!-- /tcd-results-section -->
 
-  <div id="a8" class="alrt"></div>
+  <div id="a7" class="alrt"></div>
   <div class="nav-row">
-    <button class="nbtn ns" onclick="go(7)">← Back</button>
-    <button class="nbtn np" onclick="go(9)">Next: Vasculitis Assessment →</button>
+    <button class="nbtn ns" onclick="go(6)">← Back</button>
+    <button class="nbtn np" onclick="go(8)">Next: ESUS / Hypercoagulability →</button>
   </div>
 </div>
 </div>
 
 <!-- ══════════════════════════════════════════════════════
+     SCREEN 8 — ESUS / HYPERCOAGULABILITY / CANCER SCREENING
+══════════════════════════════════════════════════════ -->
+<div class="screen" id="s8">
+<div class="card">
+  <div class="ctitle" style="color:var(--teal);">Step 9 · ESUS — Embolic Stroke of Undetermined Source &amp; Hypercoagulability</div>
+  <div class="csub">This step refines undetermined-source embolic strokes. Applies when no dominant mechanism has been identified in prior steps. Address D-dimer, malignancy screening, and hypercoagulable states — post-discharge testing increases HCS diagnosis 3-fold (Gordo et al. Front Neurol. 2025).</div>
+
+  <div class="slabel">D-Dimer Assessment <span class="pill pill-a">Critical Biomarker in ESUS</span></div>
+  <div class="lbox">
+    <strong>D-dimer in ESUS:</strong> Elevated D-dimer is associated with increased risk of recurrent embolic stroke and should raise suspicion for underlying malignancy or hypercoagulable state.<br>
+    <span class="lt">• D-dimer ≥2,785 FEU ng/mL:</span> sensitivity 51%, specificity 99% for differentiating embolic stroke with cancer vs. without cancer (Mishra RK et al. J Neurosci Rural Pract. 2024).<br>
+    <span class="la">• D-dimer quartile risk (ESUS cohort, Choi KH et al. Stroke 2021, n=1,431):</span><br>
+    &nbsp;&nbsp;Q1 (200–520 ng/mL): Reference · Q2 (540–1,040): HR 2.42 · Q3 (1,060–2,480): HR 3.12 (95% CI 1.07–9.07) · Q4 (≥2,500): HR 7.29 (95% CI 2.59–20.52)<br>
+    <span class="lr">No high-quality RCT data support a specific D-dimer threshold to initiate anticoagulation for stroke.</span> D-dimer levels guide clinical suspicion, not therapy, in isolation.
+  </div>
+  <div class="crit" id="esus-ddimer-item">
+    <div class="crit-main"><div class="crit-name">D-dimer level</div><button class="xbtn" onclick="xp(this)">details ▾</button></div>
+    <div class="crit-detail">
+      Obtain admission D-dimer in all ESUS patients if not already done. Median stroke-onset to D-dimer testing was 7 hours in the ESUS validation cohort (Choi 2021). Markedly elevated D-dimer (&gt;2,785 FEU ng/mL) is 99% specific for cancer-associated stroke and should trigger urgent malignancy workup.<br><br>
+      The OASIS-CANCER study demonstrated that lowering D-dimer levels with anticoagulation was associated with reduced recurrent embolic stroke in cancer patients (Lee MJ et al. J Stroke 2017). No prospective RCT has yet validated anticoagulation initiation based solely on D-dimer threshold in non-cancer ESUS.
+    </div>
+    <div class="brow">
+            <button class="abtn" onclick="setToggle('esus-ddimer','high')">⚠ Markedly elevated (&gt;2,785 FEU ng/mL) — strong suspicion for cancer-associated stroke</button>
+      <button class="abtn" onclick="setToggle('esus-ddimer','mod')">~ Moderately elevated (500–2,785) — elevated recurrence risk; evaluate for HCS/malignancy</button>
+      <button class="abtn" onclick="setToggle('esus-ddimer','normal')">✓ Normal or mildly elevated (&lt;500 FEU ng/mL)</button>
+      <button class="abtn" onclick="setToggle('esus-ddimer','nd')">— Not obtained</button>
+    
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:14px;">Cancer Screening Status (USPSTF) <span class="pill pill-a">Malignancy-Associated Stroke</span></div>
+  <div class="lbox">
+    Adenocarcinoma, sarcoma, and cardiac fibroelastoma/myxoma carry the highest risk of cancer-associated stroke (Sener U et al. Mayo Clin Proc 2022). Mechanisms include: systemic hypercoagulability, NBTE (non-bacterial thrombotic endocarditis), circulating microparticles, atrial cardiomyopathy, and treatment-related events.<br><br>
+    <strong>USPSTF age-appropriate cancer screening (2024):</strong><br>
+    <span class="lt">• Breast:</span> Mammogram every 2 years, age 40–74 (Grade B, USPSTF 2024)<br>
+    <span class="lt">• Colorectal:</span> Colonoscopy or equivalent, starting age 45 (Grade B, USPSTF 2021; gold standard is colonoscopy)<br>
+    <span class="lt">• Lung:</span> Annual LDCT, age 50–80, ≥20 pack-year history, currently smoking or quit within 15 years (Grade B, USPSTF 2021)<br>
+    <span class="lt">• Cervical:</span> Pap smear q3y (age 21–65) or HPV co-test q5y (age 30–65) (Grade A, USPSTF)<br>
+    <span class="la">• Prostate:</span> Shared decision-making, age 55–69 (Grade C, USPSTF) — discuss with patient<br>
+    Note: if active malignancy is already known, document type and staging.
+  </div>
+  <div class="crit" id="esus-cancer-item">
+    <div class="crit-main"><div class="crit-name">Known active malignancy or newly suspected cancer-associated stroke</div><button class="xbtn" onclick="xp(this)">details ▾</button></div>
+    <div class="crit-detail">
+      <strong>Antithrombotic strategy in cancer-associated stroke:</strong><br>
+      Arterial thrombosis: retrospective studies favor UFH or LMWH over warfarin for cancer-associated cryptogenic stroke (Yamaura G et al. Thromb Res 2021). The TEACH pilot RCT (Navi BB et al. JAMA Neurol 2018) was halted early (n=20) — enoxaparin vs. aspirin; underpowered. Post-hoc ARCADIA subgroup (Navi BB et al. JAMA Neurol 2024): apixaban vs. aspirin — HR 0.61 (95% CI 0.26–1.43, p=0.26); nominally lower recurrence on apixaban, not statistically significant. No definitive RCT evidence yet.<br><br>
+      <strong>VTE prevention in malignancy (better evidence):</strong> CLOT (NEJM 2003): LMWH superior to warfarin for VTE prevention. Hokusai VTE Cancer (2018): edoxaban non-inferior to dalteparin. SELECT-D (2018): rivaroxaban superior, higher GI bleeding. CARAVAGGIO (NEJM 2020): apixaban non-inferior to dalteparin, favorable bleeding profile. ASH 2021 guidelines: DOAC or LMWH for initial 3–6 months.<br><br>
+      <strong>Bleeding risk:</strong> Up to 20% annual major bleeding risk in cancer patients on anticoagulation (Kamphuisen et al. 2014).
+    </div>
+    <div class="brow">
+            <button class="abtn" onclick="setToggle('esus-cancer','yes')">✓ Active malignancy — cancer-associated stroke suspected</button>
+      <button class="abtn" onclick="setToggle('esus-cancer','overdue')">⚠ Overdue for age-appropriate cancer screening — refer for workup</button>
+      <button class="abtn" onclick="setToggle('esus-cancer','screening')">~ Up to date with USPSTF screening — no known malignancy</button>
+      <button class="abtn" onclick="setToggle('esus-cancer','no')">✗ Not applicable — malignancy not suspected</button>
+    
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:14px;">Hypercoagulable States <span class="pill pill-a">APLS / Factor V Leiden / PTG / Protein C,S</span></div>
+  <div class="lbox">
+    <strong>Multiple-hit hypothesis:</strong> Symptomatic thrombosis is uncommon with only one hypercoagulable state — two or more concurrent HCS, one HCS + atrial septal abnormality, or one HCS + persistent migraine with aura significantly increase risk.<br><br>
+    <strong>APLS antibody risk (OR for arterial events):</strong> Lupus anticoagulant OR 3.58 · Anti-β2-glycoprotein-I OR 3.12 · Anti-cardiolipin OR 2.65 (Horbach 1996; Zen et al. Rheumatology 2025). <strong style="color:var(--red)">Triple-positive = highest risk</strong> — <span class="lr">warfarin strongly preferred over DOACs</span> (meta-analysis of RAPS/TRAPS/Ordi-Ros/ASTRO-APS: DOACs OR 5.43 for arterial events vs. warfarin, p&lt;0.001; Khairani CD et al. JACC 2023). Single-positive: DOACs possibly safe (Liu A et al. Eur J Haematol 2022).<br><br>
+    <strong>Factor V Leiden (FVL):</strong> OR 2.7 (95% CI 1.9–3.8) in young adults with cryptogenic stroke; unlikely risk factor in older adults (Hamedani AG et al. Stroke 2010). Subgroup analysis: &lt;50 years, cryptogenic.<br><br>
+    <strong>Prothrombin G20210A:</strong> OR 1.5 (95% CI 1.1–2.0) in young adults — meta-analysis of 18 case-control studies. Not a significant risk in older adults (Ridker et al. 1999, n=15,000, RR 1.1).<br><br>
+    <strong>Post-discharge testing:</strong> Testing post-discharge (off anticoagulation) increases HCS diagnosis 3-fold and decreases cryptogenesis by half (Gordo et al. Front Neurol. 2025;15:1393999).
+  </div>
+  <div class="crit" id="esus-apls-item">
+    <div class="crit-main"><div class="crit-name">Antiphospholipid antibody syndrome (APLS) — lupus anticoagulant, anti-β2GPI, anti-cardiolipin</div><button class="xbtn" onclick="xp(this)">details ▾</button></div>
+    <div class="crit-detail">
+      APLS diagnosis requires: (1) clinical event (thrombosis or pregnancy morbidity) AND (2) positive laboratory test on TWO occasions ≥12 weeks apart. Lupus anticoagulant is the most thrombogenic — even as a single positive it is considered "high-risk profile." Triple-positivity (LA + aCL + anti-β2GPI) carries OR 5.43 for arterial events with DOAC vs. warfarin — warfarin is the only guideline-recommended agent for triple-positive APLS stroke.
+    </div>
+    <div class="brow">
+            <button class="abtn" onclick="setToggle('esus-apls','triple')">⚠ Triple-positive APLS — warfarin required (DOACs contraindicated; OR 5.43 vs warfarin)</button>
+      <button class="abtn" onclick="setToggle('esus-apls','single')">~ Single or double-positive APLS</button>
+      <button class="abtn" onclick="setToggle('esus-apls','no')">✗ APLS negative or not meeting criteria</button>
+      <button class="abtn" onclick="setToggle('esus-apls','nd')">— Not tested / pending repeat confirmatory testing</button>
+    
+    </div>
+  </div>
+  <div class="crit" id="esus-hcs-other-item" style="margin-top:5px;">
+    <div class="crit-main"><div class="crit-name">Other hypercoagulable states — Factor V Leiden, prothrombin G20210A, protein C/S deficiency, antithrombin deficiency</div><button class="xbtn" onclick="xp(this)">details ▾</button></div>
+    <div class="crit-detail">
+      Inherited thrombophilias most relevant in: age &lt;55, cryptogenic stroke, prior DVT/PE, family history of thrombosis. Testing ideally done off anticoagulation (acute-phase proteins can affect results).<br><br>
+      <strong>Factor V Leiden (FVL):</strong> Most common inherited thrombophilia (~5% of Caucasians). Activates APC resistance. Risk for arterial stroke: OR 2.7 (95% CI 1.9–3.8) in young adults with cryptogenic stroke (Hamedani AG et al. Stroke 2010; meta-analysis of 19 case-control studies). FVL is unlikely to be a significant risk factor in adults &gt;60y — competing vascular risk factors dominate. Heterozygous FVL: 3–7× increased VTE risk; homozygous: 50–80×.<br><br>
+      <strong>Prothrombin G20210A (PTG):</strong> Second most common thrombophilia (~2% of Caucasians). OR 1.5 (95% CI 1.1–2.0) for ischemic stroke in young adults — meta-analysis of 18 case-control studies (IPSYS Investigators, Circulation 2014). Not a significant risk in older adults (Ridker et al. NEJM 1999, n=15,000 men; RR 1.1, 95% CI 0.6–2.1). Consider testing in young cryptogenic stroke, especially with prior VTE or family history.<br><br>
+      <strong>Protein C/S deficiency:</strong> Reduced anticoagulant activity. Both cause increased venous and arterial thrombosis; protein S deficiency may be more relevant for arterial events. Levels can be reduced acutely by inflammation, sepsis, DIC, liver disease, warfarin — test at least 3 months post-stroke off anticoagulation for reliable results.<br><br>
+      <strong>Antithrombin deficiency:</strong> Rare (&lt;1% of VTE patients) but high thrombotic risk. Acquired causes: nephrotic syndrome, liver disease, heparin use (heparin requires antithrombin as co-factor — deficiency causes heparin resistance).<br><br>
+      <strong>JAK2 V617F:</strong> Myeloproliferative neoplasm marker. Associated with cerebral venous sinus thrombosis, unusual arterial thrombosis, Budd-Chiari syndrome. Consider in young stroke + abnormal CBC (elevated Hgb, Hct, platelets).
+    </div>
+    <div class="brow">
+            <button class="abtn" onclick="setToggle('esus-hcs-other','yes')">✓ Inherited thrombophilia identified (FVL, PTG, protein C/S deficiency, antithrombin)</button>
+      <button class="abtn" onclick="setToggle('esus-hcs-other','no')">✗ Tested — negative</button>
+      <button class="abtn" onclick="setToggle('esus-hcs-other','nd')">— Not yet tested (recommend post-discharge off anticoagulation)</button>
+    
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:14px;">Hypercoagulable State — Summary <span class="pill pill-a">ESUS / CRYPTOGENIC STROKE</span></div>
+  <div class="crit" id="oth-hypercog-item">
+    <div class="crit-main">
+      <div class="crit-name">Hypercoagulable state — overall assessment (APLS, FVL, PTG, protein C/S deficiency, malignancy-associated coagulopathy)</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      Hypercoagulable testing is not routine for all stroke patients — most indicated in: young patients (&lt;55y) with cryptogenic stroke, history of recurrent venous/arterial thrombosis, known autoimmune disease, prior miscarriages (consider APLS), or active malignancy. Testing ideally done off anticoagulation. Antiphospholipid antibodies require confirmation on repeat testing ≥12 weeks apart. Post-discharge testing increases HCS diagnosis 3-fold (Gordo et al. Front Neurol 2025). If labs ordered but pending, select "Pending."
+    </div>
+    <div class="brow">
+            <button class="abtn" onclick="setToggle('oth-hypercog','yes')">✓ Hypercoagulable state confirmed (APLS, FVL, protein C/S, or other)</button>
+      <button class="abtn" onclick="setToggle('oth-hypercog','no')">✗ Tested — negative</button>
+      <button class="abtn" onclick="setToggle('oth-hypercog','pending')">⏳ Testing ordered — results pending (recommend repeat post-discharge off anticoagulation)</button>
+      <button class="abtn" onclick="setToggle('oth-hypercog','nd')">— Not suspected / not tested</button>
+    
+    </div>
+  </div>
+
+  <div id="a8" class="alrt"></div>
+  <div class="nav-row">
+    <button class="nbtn ns" onclick="go(7)">← Back: TCD</button>
+    <button class="nbtn np" onclick="go(9)">Next: Vasculopathy →</button>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     SCREEN 7 — CARDIAC SOURCES & OTHER ETIOLOGIES
+══════════════════════════════════════════════════════ -->
+<!-- ══════════════════════════════════════════════════════
      SCREEN 8 — VASCULITIS / INFLAMMATORY ARTERIOPATHY
 ══════════════════════════════════════════════════════ -->
 <div class="screen" id="s9">
 <div class="card">
-  <div class="ctitle" style="color:var(--teal);">Step 9 · Inflammatory Arteriopathy Assessment</div>
+  <div class="ctitle" style="color:var(--teal);">Step 10 · Vasculopathy</div>
   <div class="csub">CNS vasculitis and inflammatory arteriopathies are rare and almost never confirmed in the acute inpatient setting — this step captures clinical suspicion level and supporting features, which feeds directly into the verdict and workup recommendations.</div>
 
   <div class="lbox">
@@ -1233,17 +1515,77 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
       <div class="cnote">Confirmed CNS vasculitis requires tissue diagnosis (brain biopsy) or highly characteristic vessel wall MRI + clinical picture — this is almost never established acutely. Selecting "high suspicion" here flags vasculitis as a differential to pursue in the outpatient/follow-up setting and adjusts the verdict accordingly.</div>
     </div>
     <div class="brow">
-      <button class="abtn" onclick="setToggle('oth-vasc','confirmed')">✓ Confirmed — biopsy-proven or highly characteristic vessel wall MRI + clinical picture</button>
+            <button class="abtn" onclick="setToggle('oth-vasc','confirmed')">✓ Confirmed — biopsy-proven or highly characteristic vessel wall MRI + clinical picture</button>
       <button class="abtn" onclick="setToggle('oth-vasc','high')">⚠ High clinical suspicion — multiple supportive features (see details)</button>
       <button class="abtn" onclick="setToggle('oth-vasc','low')">~ Low / moderate suspicion — one feature or cryptogenic young stroke</button>
       <button class="abtn" onclick="setToggle('oth-vasc','no')">✗ Not suspected — typical vascular risk factor profile or clear other etiology</button>
       <button class="abtn" onclick="setToggle('oth-vasc','nd')">— Not yet assessed (routine in acute setting)</button>
+    
     </div>
   </div>
 
-  <div id="a8" class="alrt"></div>
+
+  <div class="slabel" style="margin-top:14px;">RCVS — Reversible Cerebral Vasoconstriction Syndrome <span class="pill pill-a">Other Determined Etiology</span></div>
+  <div class="lbox">
+    RCVS is a rare but important cause of ischemic stroke, particularly in young adults (predominantly women). Characterized by <strong>recurrent thunderclap headaches</strong> (reaching peak intensity within ≤1 minute) with multifocal segmental vasoconstriction resolving within 3 months. Accounts for a significant proportion of cryptogenic stroke with thunderclap headache history.<br><br>
+    <strong>Ischemic mechanism:</strong> Hypoperfusion in watershed territories during severe vasoconstriction; "string of beads" or "sausage on a string" appearance on angiography.<br>
+    <strong>Complications:</strong> ~30–50% develop complications — convexity subarachnoid hemorrhage, lobar hemorrhage, ischemic stroke (watershed), PRES (7–38% overlap). (Singhal AB. Int J Stroke 2023; StatPearls RCVS 2024)<br>
+    <strong>RCVS2 score:</strong> High accuracy distinguishing RCVS from PACNS — recurrent thunderclap headache (+3), carotid artery involvement (−2), intracranial carotid involvement (+1), sex (female +1), subarachnoid hemorrhage (+1). Score ≥5 strongly favors RCVS (Neurology 2019).<br>
+    <strong>Triggers:</strong> Vasoactive drugs (triptans, SSRIs, cocaine, amphetamines), postpartum/eclampsia, surgical procedures.<br>
+    <strong>Treatment:</strong> Nimodipine (vasodilation); remove triggers; avoid vasoconstrictors. Long-term prognosis favorable — 71% no disability (PMC systematic review). ICD-10: I67.841.
+  </div>
+  <div class="crit" id="oth-rcvs-item">
+    <div class="crit-main"><div class="crit-name">RCVS — thunderclap headache at onset, postpartum or vasoactive drug trigger, watershed ischemia</div><button class="xbtn" onclick="xp(this)">details ▾</button></div>
+    <div class="crit-detail">
+      <strong>Diagnostic criteria (Calabrese et al.):</strong> (1) Recurrent severe/thunderclap headaches reaching peak intensity within 1 minute over 1–3 weeks; (2) Cerebral vasoconstriction on angiography in ≥2 arteries ("string of beads" or "sausage on a string"); (3) Resolution of vasoconstriction by 3 months; (4) Absence of PACNS or aneurysmal SAH; (5) Normal or near-normal CSF.<br><br>
+      <strong>Imaging evolution:</strong> Vasoconstriction begins distally (small pial/cortical arteries) and progresses centripetally to proximal vessels. Early CTA/MRA may be normal — maximum vasoconstriction typically at 2 weeks. Catheter DSA is gold standard but has procedural risk; MRA or TCD monitoring preferred for serial assessment (TCD can detect early vasospasm non-invasively even when MRA is normal).<br><br>
+      <strong>RCVS2 Score</strong> (Ducros A et al. Neurology 2019; sensitivity 90%, specificity 99% for RCVS vs. other intracranial arteriopathies at score ≥5):<br>
+      +5: recurrent thunderclap headache · +3: carotid artery involvement (−2) · +1: intracranial carotid involvement · +1: female sex · +1: convexity SAH<br><br>
+      <strong>Epidemiology:</strong> Predominantly women (≈ 2:1 F:M); mean age 42y. Triggers in 70% of patients. PRES overlap in 7–38% (shared pathophysiology: endothelial dysfunction + loss of cerebrovascular autoregulation).<br><br>
+      <strong>Treatment evidence:</strong> Nimodipine reduces headache recurrence (observational data only; no RCT). Remove triggers. Avoid vasoconstrictors (triptans, ergotamines, decongestants, sympathomimetics, SSRIs in some cases). Glucocorticoids should be AVOIDED — retrospective data suggest possible harm (Singhal 2023). 71% no long-term disability; 29% minor disability (systematic review, PMC3020907).<br><br>
+      <strong>vs. PACNS:</strong> PACNS typically has CSF pleocytosis/elevated protein, more diffuse vessel involvement, no thunderclap headache, more severe cognitive decline — tissue diagnosis often required.
+      <div class="cnote"><strong>Ref:</strong> Singhal AB et al. Int J Stroke 2023;18(10):1151–1160. Ducros A et al. Neurology 2019 (RCVS2 score; n=110 PACNS vs 173 RCVS). StatPearls RCVS 2024. PMC3020907 (systematic review). PMC11478140 (pathogenesis 2024).</div>
+    </div>
+    <div class="brow">
+            <button class="abtn" onclick="setToggle('oth-rcvs','yes')">✓ RCVS suspected — thunderclap headache, trigger exposure, segmental vasoconstriction on imaging</button>
+      <button class="abtn" onclick="setToggle('oth-rcvs','no')">✗ Not suspected</button>
+      <button class="abtn" onclick="setToggle('oth-rcvs','nd')">— Cannot assess (no headache history available)</button>
+    
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:14px;">Moya moya Disease / Syndrome <span class="pill pill-a">Other Determined Etiology</span></div>
+  <div class="lbox">
+    Moya moya is a progressive steno-occlusive cerebrovascular disease affecting the terminal ICA and proximal MCA/ACA bilaterally, with compensatory "puff of smoke" collateral formation at the base of the brain. Important cause of stroke in young adults and children — accounts for ~6–10% of non-perinatal pediatric strokes (Practical Neurology 2024).<br><br>
+    <strong>Epidemiology:</strong> Prevalence 0.1/100,000 in North America; 0.5–1.5/100,000 in East Asia. Asian Americans: 4.6× higher risk than Caucasians (Medscape 2024). Female predominance.<br>
+    <strong>Genetics:</strong> RNF213 Arg4810Lys is the major susceptibility variant in East Asians (penetrance &lt;1% — synergistic with other factors; Lancet 2022).<br>
+    <strong>Clinical:</strong> Children predominantly ischemic (TIA/stroke triggered by hyperventilation or dehydration); adults — hemorrhagic more common. Conservative management: annual stroke rate 3.2–15%; post-surgical direct bypass revascularization: 0–1.6% annually (Praktische 2024, PMC5965184).<br>
+    <strong>Diagnosis:</strong> Gold standard — catheter angiography (stenosis/occlusion at carotid fork + "puff of smoke" collaterals). MRA correlates 83% with DSA (Stroke 1994). When moya moya is identified, family history screening and genetic counseling warranted (familial cases ~10–15%).
+  </div>
+  <div class="crit" id="oth-moya moya-item">
+    <div class="crit-main"><div class="crit-name">Moya moya — bilateral ICA stenosis/occlusion, "puff of smoke" collaterals on angiography</div><button class="xbtn" onclick="xp(this)">details ▾</button></div>
+    <div class="crit-detail">
+      <strong>Moya moya disease</strong> = idiopathic, bilateral steno-occlusion of terminal ICA/proximal MCA-ACA. <strong>Moya moya syndrome</strong> = same radiographic appearance but associated with an identifiable condition: sickle cell disease (most common in North America), neurofibromatosis type 1, Down syndrome, cranial radiation, thyroid disease, PHACE syndrome.<br><br>
+      <strong>Suspect when:</strong> Young patient with ischemic stroke/TIA — especially triggered by hyperventilation, crying, or exertion (hyperventilation → CO₂ loss → vasoconstriction → ischemia in compromised vessels). Bilateral anterior circulation ischemia without cardiac/atherosclerotic source. Recurrent border-zone/watershed infarcts. Children: ischemic predominant. Adults: hemorrhagic more common (rupture of fragile collaterals).<br><br>
+      <strong>Diagnostic approach:</strong> MRA/CTA first — "puff of smoke" collaterals + ICA stenosis. MRA correlates 83% with catheter angiography at the carotid fork (Stroke 1994;25:2159). Catheter DSA remains gold standard for treatment planning. MRI: multiple bilateral chronic infarcts, ivy sign (leptomeningeal enhancement on FLAIR). Consider thyroid antibodies (elevated in significant % of pediatric patients — Medscape).<br><br>
+      <strong>Treatment:</strong> Surgical revascularization — direct bypass (STA-MCA) reduces annual stroke rate from 3.2–15% → 0–1.6% (PMC5965184). Indirect revascularization (EDAS, encephalomyosynangiosis) used in children. Antiplatelet agents used as bridge but do not prevent progression. Anticoagulation generally NOT used for moya moya (risk of hemorrhage from fragile collaterals).<br><br>
+      <strong>Genetics:</strong> RNF213 Arg4810Lys — major susceptibility variant in East Asians; penetrance &lt;1% (synergistic environmental/genetic factors required). Familial moya moya ~10–15% of cases — screen first-degree relatives. Genetic counseling if familial form identified (Lancet 2022).
+      <div class="cnote"><strong>Ref:</strong> Practical Neurology 2024. Lancet 2022 (moya moya pathogenesis; RNF213). PMC5965184 (stroke rates, revascularization). Stroke 1994;25:2159 (MRA accuracy). Medscape moya moya 2024.</div>
+    </div>
+    <div class="brow">
+            <button class="abtn" onclick="setToggle('oth-moya moya','yes')">✓ Moya moya identified — bilateral ICA/MCA-ACA stenosis, puff of smoke collaterals</button>
+      <button class="abtn" onclick="setToggle('oth-moya moya','syndrome')">~ Moya moya syndrome — unilateral or associated with known condition</button>
+      <button class="abtn" onclick="setToggle('oth-moya moya','no')">✗ Not identified on imaging</button>
+      <button class="abtn" onclick="setToggle('oth-moya moya','nd')">— Not assessed (MRA/DSA not yet performed)</button>
+    
+    </div>
+  </div>
+
+
+
+  <div id="a7" class="alrt"></div>
   <div class="nav-row">
-    <button class="nbtn ns" onclick="go(8)">← Back</button>
+    <button class="nbtn ns" onclick="go(8)">← Back: ESUS</button>
     <button class="nbtn np" onclick="go(10)">Generate Classification →</button>
   </div>
 </div>
@@ -1260,7 +1602,7 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
   </div>
   <div class="doc-body" id="dn"></div>
   <div class="nav-row">
-    <button class="nbtn ns" onclick="go(8)">← Back</button>
+    <button class="nbtn ns" onclick="go(7)">← Back</button>
     <button class="nbtn np" onclick="resetAll()">↺ New Classification</button>
   </div>
 </div>
@@ -1289,31 +1631,38 @@ let cur = 0;
 // ─── TOPO MULTI-SELECT ────────────────────────────────────
 function toggleTopo(btn, val) {
   if (!S.topos) S.topos = [];
+  // Mutual exclusion: cortical and cortical-sub cannot both be active
+  const exclusive = {'cortical': 'cortical-sub', 'cortical-sub': 'cortical'};
+  if (exclusive[val]) {
+    const otherVal = exclusive[val];
+    const otherIdx = S.topos.indexOf(otherVal);
+    if (otherIdx !== -1) {
+      S.topos.splice(otherIdx, 1);
+      document.querySelectorAll('.toggle-topo').forEach(b => {
+        const oc = b.getAttribute('onclick') || '';
+        if (oc.indexOf("'" + otherVal + "'") !== -1)
+          b.classList.remove('ay','at','ab','aw','av','an','aa');
+      });
+    }
+  }
   const idx = S.topos.indexOf(val);
   if (idx === -1) {
-    // Add
     S.topos.push(val);
     btn.classList.add('ay');
-    // Set S.topo to first selected (for backward compat with existing scoring that uses S.topo)
     if (S.topos.length === 1) S.topo = val;
   } else {
-    // Remove
     S.topos.splice(idx, 1);
-    btn.classList.remove('ay','an','at','ab','aa','aw');
+    btn.classList.remove('ay','an','at','ab','aa','aw','av');
     S.topo = S.topos.length > 0 ? S.topos[0] : null;
   }
   ui();
 }
-
-// ─── BUTTON SETTERS ───────────────────────────────────────
-
-// Single-select within a crit row
 function set(k, v) {
   S[k] = v;
   // Clear all abtn states in this crit's brow
   const item = document.getElementById(k+'-item');
   if (item) {
-    item.querySelectorAll('.abtn').forEach(b => b.classList.remove('ay','an','at','ab','aa','aw'));
+    item.querySelectorAll('.abtn').forEach(b => b.classList.remove('ay','an','at','ab','aa','aw','av'));
     item.className = 'crit';
   }
   // Style the selected button
@@ -1322,6 +1671,8 @@ function set(k, v) {
     severe:'an', yes:'ay', mod:'aw', occ:'an', soft:'an', mixed:'aw', large:'an', grey:'aw', punctate:'aw',
     multi_diff:'an', 'multi-diff':'an',
     cortical:'aw', watershed:'aw', 'cortical-sub':'aw',
+    para:'av', temporal:'av', thalamic:'av', 'cortical':'av', no:'an',
+    yes:'ay', mrv:'av', screening:'ay', overdue:'aw', pending:'aa', triple:'an', single:'aw',
     // neutral / negative / not done
     small:'ay', none:'ay', normal:'ay', calcified:'ay', nopl:'aa',
     mild:'aa', na:'aa', nd:'aa',
@@ -1355,30 +1706,50 @@ function set(k, v) {
 // Toggle/independent select (for rows that can have yes/no/nd independently)
 function setToggle(k, v) {
   S[k] = v;
-  const item = document.getElementById(k+'-item');
-  if (item) {
-    item.querySelectorAll('.abtn').forEach(b => b.classList.remove('ay','an','at','ab','aa','aw'));
-    item.className = 'crit';
-    const allBtns = item.querySelectorAll('.abtn');
-    allBtns.forEach(b => {
-      const action = b.getAttribute('onclick');
-      if (action && action.includes(`'${v}'`)) {
-        if (v === 'yes' || v === 'confirmed' || v === 'vzv' || v === 'covid' || v === 'other') {
-          b.classList.add('ay'); item.classList.add('c-warn');
-        } else if (v === 'high') { b.classList.add('an'); item.classList.add('c-warn'); }
-        else if (v === 'low') { b.classList.add('aw'); item.classList.add('c-part'); }
-        else if (v === 'no') { b.classList.add('an'); item.classList.add('c-yes'); }
-        else if (v === 'small') { b.classList.add('aw'); item.classList.add('c-part'); }
-        else if (v === 'tte') { b.classList.add('aw'); item.classList.add('c-part'); }
-        else if (v === 'nd') { b.classList.add('aa'); item.classList.add('c-abs'); }
-        else { b.classList.add('aa'); item.classList.add('c-abs'); }
+  const item = document.getElementById(k + '-item');
+  if (!item) { ui(); return; }
+  // Reset all buttons in this crit to default state
+  item.querySelectorAll('.abtn').forEach(b => {
+    b.classList.remove('ay','an','at','ab','aa','aw','av');
+    b.style.background = '';
+    b.style.color = '';
+    b.style.fontWeight = '';
+  });
+  item.className = 'crit';
+  // Find the matching button and apply inline style (beats all CSS)
+  item.querySelectorAll('.abtn').forEach(b => {
+    const oc = b.getAttribute('onclick') || '';
+    if (oc.indexOf("'" + v + "'") !== -1 || oc.indexOf('"' + v + '"') !== -1) {
+      if (['yes','confirmed','vzv','covid','other','normal','negative','screening','low_risk'].indexOf(v) !== -1) {
+        b.style.background = 'rgba(63,185,80,0.20)';
+        b.style.color = '#3fb950';
+        b.style.fontWeight = '700';
+        item.classList.add('c-yes');
+      } else if (['no','high','absent','negative_test'].indexOf(v) !== -1) {
+        b.style.background = 'rgba(248,81,73,0.20)';
+        b.style.color = '#f85149';
+        b.style.fontWeight = '700';
+        item.classList.add('c-yes');
+      } else if (['para','temporal','thalamic','cortical','mrv','triple','yes_cvst','low','mod','small','tte','overdue','single','impaired','pregnant','pending'].indexOf(v) !== -1) {
+        b.style.background = 'rgba(227,179,65,0.25)';
+        b.style.color = '#e3b341';
+        b.style.fontWeight = '700';
+        item.classList.add('c-warn');
+      } else if (['nd','na'].indexOf(v) !== -1) {
+        b.style.background = 'rgba(227,179,65,0.15)';
+        b.style.color = '#e3b341';
+        b.style.fontWeight = '700';
+        item.classList.add('c-abs');
+      } else {
+        b.style.background = 'rgba(227,179,65,0.20)';
+        b.style.color = '#e3b341';
+        b.style.fontWeight = '700';
+        item.classList.add('c-warn');
       }
-    });
-  }
+    }
+  });
   ui();
 }
-
-// HRP items share a prefix pattern
 function setHRP(suffix, v) {
   const k = 'hrp-' + suffix;
   S[k] = v;
@@ -1413,6 +1784,7 @@ function goTab(n) {
 
 // ─── STEP NAVIGATION ──────────────────────────────────────
 function go(n) {
+  window.scrollTo(0,0);
   document.getElementById('s'+cur).classList.remove('active');
   document.getElementById('s'+n).classList.add('active');
   for (let i = 0; i < 11; i++) {
@@ -1623,6 +1995,35 @@ function computeScores() {
       other += 25; ev.other.push({txt:'<strong>Hypercoagulable workup pending/not tested</strong> — infarct pattern (multi-territory, cortical, no CE/LVD source) is clinically suspicious for hypercoagulable state (e.g., APLS, thrombophilia). Score reflects suspicion pending result.', w:'POSSIBLE (pending)', cls:'ev-mod'});
     }
   }
+  // ── ESUS / Hypercoagulability step scoring ──────────────────────────────
+  // D-dimer
+  if (S['esus-ddimer']==='high') {
+    other += 35; ev.other.push({txt:'<strong>Markedly elevated D-dimer (&gt;2,785 FEU ng/mL)</strong> — 99% specific for cancer-associated embolic stroke (Mishra RK et al. J Neurosci Rural Pract 2024). D-dimer quartile Q4 in ESUS: HR 7.29 (95% CI 2.59–20.52) for recurrent stroke (Choi KH et al. Stroke 2021). Strongly implicates systemic hypercoagulable / malignancy mechanism.', w:'HIGH', cls:'ev-high'});
+    ce = Math.max(0, ce - 10);
+  } else if (S['esus-ddimer']==='mod') {
+    other += 15; ev.other.push({txt:'<strong>Moderately elevated D-dimer (500–2,785 FEU ng/mL)</strong> — elevated recurrence risk (Choi 2021 Q2–Q3: HR 2.42–3.12). Consider HCS/malignancy workup.', w:'MOD', cls:'ev-mod'});
+  }
+  // Active malignancy / cancer screening
+  if (S['esus-cancer']==='yes') {
+    other += 45; ev.other.push({txt:'<strong>Active malignancy — cancer-associated stroke</strong>. Mechanisms: systemic hypercoagulability, NBTE, circulating microparticles, atrial cardiomyopathy. Adenocarcinoma, sarcoma, and cardiac fibroelastoma carry highest risk (Sener U et al. Mayo Clin Proc 2022). Anticoagulation preferred over antiplatelet for arterial thrombosis in malignancy (retrospective data; TEACH pilot; ARCADIA post-hoc).', w:'HIGH', cls:'ev-high'});
+    ce = Math.max(0, ce - 15);
+  } else if (S['esus-cancer']==='overdue') {
+    other += 15; ev.other.push({txt:'<strong>Overdue for age-appropriate cancer screening (USPSTF)</strong> — occult malignancy cannot be excluded. Post-discharge hypercoagulability/malignancy workup strongly recommended. Gordo et al. 2025: post-discharge testing increases HCS diagnosis 3-fold.', w:'MOD', cls:'ev-mod'});
+  }
+  // APLS
+  if (S['esus-apls']==='triple') {
+    other += 60; ev.other.push({txt:'<strong>Triple-positive APLS</strong> (LA + aCL + anti-β2GPI) — highest arterial thrombosis risk. DOACs contraindicated; warfarin required (Khairani CD et al. JACC 2023: DOACs OR 5.43 for arterial events vs warfarin). Requires confirmed diagnosis (repeat testing ≥12 weeks apart).', w:'DEFINITIVE', cls:'ev-high'});
+    ce = Math.max(0, ce - 15);
+  } else if (S['esus-apls']==='single') {
+    other += 30; ev.other.push({txt:'<strong>Single or double-positive APLS</strong> — anticoagulation indicated; warfarin preferred. Lower risk than triple-positive but still significant. Confirm with repeat testing ≥12 weeks.', w:'HIGH', cls:'ev-high'});
+  }
+  // Other inherited thrombophilia
+  if (S['esus-hcs-other']==='yes') {
+    other += 30; ev.other.push({txt:'<strong>Inherited thrombophilia confirmed</strong> (FVL, PTG, protein C/S deficiency, antithrombin deficiency) — coagulopathy contributes to thrombotic risk. FVL: OR 2.7 in young cryptogenic stroke (Hamedani 2010). PTG: OR 1.5 (IPSYS 2014). Haematology co-management recommended.', w:'HIGH', cls:'ev-high'});
+  } else if (S['esus-hcs-other']==='nd') {
+    other += 8; ev.other.push({txt:'<strong>Inherited thrombophilia not yet tested</strong> — recommend post-discharge testing off anticoagulation for complete HCS workup (Gordo et al. 2025).', w:'LOW', cls:'ev-low'});
+  }
+
   if (S['oth-vasc']==='confirmed') {
     other += 70; ev.other.push({txt:'<strong>Inflammatory arteriopathy / CNS vasculitis — confirmed</strong> (biopsy or characteristic vessel wall MRI) — Other Determined Etiology', w:'DEFINITIVE', cls:'ev-high'});
   } else if (S['oth-vasc']==='high') {
@@ -1788,9 +2189,24 @@ function computeScores() {
   // ── TCD scoring ──
   // TCD bilateral HITS: boosts CE strongly, penalises LVD
   if (S['tcd-hits']==='bilateral') {
-    ce += 35; ev.ce.push({txt:'<strong>Bilateral / multiterritory TCD HITS</strong> — strongly implicates a central (cardiac or aortic) embolic source; a unilateral carotid plaque, carotid web, or ICAD cannot produce simultaneous bilateral MES. Significantly increases CE probability. (Ringelstein 1998, Ann Neurol)', w:'HIGH', cls:'ev-high'});
+    // Bilateral HITS = central/systemic embolic source — cardiac OR hypercoagulable/malignancy
+    // Differentiate by HCS signals: if strong HCS/malignancy signals present, redirect to other
+    const hcsBilateral = (S['esus-ddimer']==='high') ||
+                         (S['esus-cancer']==='yes') ||
+                         (S['oth-hypercog']==='yes') ||
+                         (S['esus-apls']==='triple' || S['esus-apls']==='single');
+    const noCEconfirmedSource = ['ce-afib','ce-thrombus','ce-valve'].filter(k=>S[k]==='yes').length===0 &&
+                                !['ef','mi','rwma'].includes(S['ce-cmp']);
+    if (hcsBilateral && noCEconfirmedSource) {
+      // HCS signals present and no confirmed cardiac source → bilateral HITS supports other/HCS
+      other += 30; ev.other.push({txt:'<strong>Bilateral TCD HITS with hypercoagulable / malignancy signals</strong> — bilateral MES without confirmed cardiac source in the context of elevated D-dimer, active malignancy, or confirmed hypercoagulable state suggests systemic thrombogenic mechanism (cancer-associated coagulopathy, APLS, other HCS) rather than cardioembolism. (Ringelstein 1998; Mishra 2024; Gordo 2025)', w:'HIGH', cls:'ev-high'});
+      ce += 10; ev.ce.push({txt:'<strong>Bilateral TCD HITS</strong> — central embolic source possible; however HCS/malignancy signals present (see Other). Cardiac workup still indicated but HCS mechanism favored.', w:'MOD', cls:'ev-mod'});
+    } else {
+      // No HCS signals → classical cardiac/aortic central embolic source
+      ce += 35; ev.ce.push({txt:'<strong>Bilateral / multiterritory TCD HITS</strong> — strongly implicates a central (cardiac or aortic) embolic source; a unilateral carotid plaque, carotid web, or ICAD cannot produce simultaneous bilateral MES. Significantly increases CE probability. (Ringelstein 1998, Ann Neurol)', w:'HIGH', cls:'ev-high'});
+    }
     laa = Math.max(0, laa - 20);
-    ev.laa.push({txt:'<strong>Bilateral TCD HITS</strong> — inconsistent with single-vessel carotid/ICAD source as primary mechanism. LVD score penalised.', w:'NEGATIVE (TCD)', cls:''});
+    ev.laa.push({txt:'<strong>Bilateral TCD HITS</strong> — inconsistent with single-vessel carotid/ICAD source. LVD score penalised.', w:'NEGATIVE (TCD)', cls:''});
   }
   if (S['tcd-hits']==='unilateral') {
     laa += 15; ev.laa.push({txt:'<strong>Unilateral ipsilateral TCD HITS only</strong> — favours local arterial source ipsilateral to stroke (carotid stenosis, carotid web, ICAD). Consistent with LVD etiology. (Abbott 2005, Stroke)', w:'MOD', cls:'ev-mod'});
@@ -2032,25 +2448,77 @@ function buildMgmt(cat, mechLabel) {
 }
 
 function buildVerdict() {
-  const { laa, ce, svd, other, ev } = computeScores();
-  const scores = {laa,ce,svd,other};
-  const maxScore = Math.max(laa,ce,svd,other);
+  // ── CVST pre-check: venous infarction is a separate pathology ──
+  const cvstSignals = [
+    S['topo-venous'] && S['topo-venous'] !== 'no' && S['topo-venous'] !== null,
+    S['cvst-imaging'] === 'yes' || S['cvst-imaging'] === 'mrv',
+    S['cvst-rf'] === 'yes'
+  ].filter(Boolean).length;
+  const cvstActive = cvstSignals >= 2;
 
-  // Determine primary category
+  // Compute scores for all four TOAST categories
+  const { laa, ce, svd, other, ev } = computeScores();
+  const scores = {laa, ce, svd, other};
+  const maxScore = Math.max(laa, ce, svd, other);
   let type, cls, conf, confCls, desc, mechLabel='', mgmtHTML='';
+
   const ceHigh = ['ce-afib','ce-thrombus','ce-valve'].filter(k=>S[k]==='yes').length>0 || ['ef','mi','rwma'].includes(S['ce-cmp']);
   const lvdHigh = S.vessel==='severe'||S.nascet==='severe'||S.nascet==='occ'||S.ilt==='yes'||S.icad==='yes'; // note: 'occlusion' alone removed — could be embolic, not definitively LAA
 
   if (other >= 60) {
     let othMech = '';
-    if (S['oth-postinfect']==='vzv') { mechLabel='VZV vasculopathy → granulomatous arterial inflammation → thrombosis/stenosis'; othMech = ' — <strong>VZV post-herpetic vasculopathy</strong>: antiviral therapy (IV acyclovir) + corticosteroids; neurology/ID co-management.'; }
-    else if (S['oth-postinfect']==='covid') { mechLabel='COVID-19 thromboinflammatory vasculopathy → stroke'; othMech = ' — <strong>COVID-19 associated stroke</strong>: thromboinflammatory mechanism; anticoagulation/antiplatelet per dominant mechanism; neurology co-management.'; }
-    else if (S.dissection==='yes') { mechLabel='Cervical artery dissection → artery-to-artery thromboembolism'; othMech = ' — <strong>Arterial dissection</strong>: artery-to-artery thromboembolism from dissected intimal flap. Secondary prevention: anticoagulation or antiplatelet; CTA/MRA follow-up at 3–6 months.'; }
-    else if (S['oth-hypercog']==='yes') { mechLabel='Hypercoagulable state (APLS/thrombophilia) → intravascular thrombosis'; othMech = ' — <strong>Hypercoagulable state</strong>: systemic coagulopathy promoting intravascular thrombosis. Requires haematology co-management; anticoagulation typically indicated.'; }
-    else if (S['oth-vasc']==='confirmed') { mechLabel='CNS vasculitis → inflammatory small vessel wall injury → ischemia'; othMech = ' — <strong>CNS Vasculitis</strong>: inflammatory vessel wall injury causing ischemia. Requires immunosuppression (corticosteroids ± DMARDs); rheumatology/neurology co-management.'; }
-    else if (S['oth-genetic']==='yes') { mechLabel='Genetic arteriopathy (CADASIL / Fabry / MELAS)'; othMech = ' — <strong>Genetic arteriopathy</strong>: heritable vascular disease. Management targets underlying diagnosis; genetic counselling indicated.'; }
+    // Priority order: most specific / highest-scoring signals first
+    // 1. Definitive structural/infectious etiologies
+    if (S.dissection==='yes') {
+      mechLabel = 'Cervical artery dissection → artery-to-artery thromboembolism';
+      othMech = ' — <strong>Sub-etiology: Cervical Artery Dissection.</strong> Artery-to-artery thromboembolism from dissected intimal flap. Secondary prevention: anticoagulation or antiplatelet (equivalent efficacy, CADISS trial); CTA/MRA follow-up at 3–6 months to confirm recanalization.';
+    } else if (S['oth-postinfect']==='vzv') {
+      mechLabel = 'VZV vasculopathy → granulomatous arterial inflammation → thrombosis/stenosis';
+      othMech = ' — <strong>Sub-etiology: VZV Post-herpetic Vasculopathy.</strong> Granulomatous inflammation of vessel walls following herpes zoster reactivation → stenosis/thrombosis. Antiviral therapy (IV acyclovir) + corticosteroids; neurology/ID co-management.';
+    } else if (S['oth-postinfect']==='covid') {
+      mechLabel = 'COVID-19 thromboinflammatory vasculopathy → stroke';
+      othMech = ' — <strong>Sub-etiology: COVID-19 Thromboinflammatory Vasculopathy.</strong> Endothelial injury, procoagulant state, and cytokine-driven thrombosis. Anticoagulation/antiplatelet per dominant mechanism; neurology co-management.';
+    } else if (S['oth-vasc']==='confirmed') {
+      mechLabel = 'CNS vasculitis → inflammatory small vessel wall injury → ischemia';
+      othMech = ' — <strong>Sub-etiology: CNS Vasculitis / Inflammatory Arteriopathy.</strong> Inflammatory vessel wall injury causing ischemia. Requires tissue or angiographic confirmation; immunosuppression (corticosteroids ± DMARDs); rheumatology/neurology co-management.';
+    } else if (S['oth-genetic']==='yes') {
+      mechLabel = 'Genetic arteriopathy — CADASIL / Fabry disease / MELAS';
+      othMech = ' — <strong>Sub-etiology: Genetic Arteriopathy.</strong> Heritable vascular disease. Management targets underlying diagnosis (enzyme replacement for Fabry; L-arginine for MELAS; BP control + antiplatelet for CADASIL); genetic counselling and family screening indicated.';
+    // 2. APLS — highest-specificity hypercoagulable state
+    } else if (S['esus-apls']==='triple') {
+      mechLabel = 'Triple-positive antiphospholipid syndrome (APLS) → arterial thrombosis';
+      othMech = ' — <strong>Sub-etiology: Triple-Positive Antiphospholipid Syndrome (APLS).</strong> Lupus anticoagulant + anti-cardiolipin + anti-β2GPI positivity = highest-risk APLS profile (Horbach 1996: LA OR 3.58 for arterial events). DOACs are contraindicated — warfarin is the only guideline-recommended agent for arterial events in triple-positive APLS (Khairani CD et al. JACC 2023: DOACs OR 5.43 vs warfarin; p&lt;0.001). Haematology co-management required. Confirm diagnosis with repeat testing ≥12 weeks apart.';
+    } else if (S['esus-apls']==='single') {
+      mechLabel = 'Single/double-positive antiphospholipid syndrome (APLS) → arterial thrombosis';
+      othMech = ' — <strong>Sub-etiology: Antiphospholipid Syndrome (APLS) — Single/Double Positive.</strong> Moderate-risk APLS profile. Anticoagulation indicated; warfarin preferred over DOACs for arterial events (lower-risk APLS: DOACs possibly acceptable for single-positive, Liu A et al. 2022). Confirm with repeat testing ≥12 weeks.';
+    // 3. Active malignancy / hypercoagulability of malignancy
+    } else if (S['esus-cancer']==='yes') {
+      mechLabel = 'Hypercoagulability of malignancy → cancer-associated stroke (NBTE / systemic coagulopathy)';
+      othMech = ' — <strong>Sub-etiology: Cancer-Associated Stroke / Hypercoagulability of Malignancy.</strong> Active malignancy promotes systemic hypercoagulability via procoagulant factor secretion, NBTE, circulating microparticles, and endothelial dysfunction. Adenocarcinoma, sarcoma, and fibroelastoma carry highest risk (Sener U et al. Mayo Clin Proc 2022). Antithrombotic strategy: retrospective data favor LMWH/UFH over antiplatelet for arterial thrombosis in cancer (OASIS-CANCER); apixaban vs aspirin HR 0.61 in ARCADIA post-hoc (not significant). Bleeding risk up to 20%/year on anticoagulation. Oncology co-management essential.';
+    // 4. High D-dimer + hypercoagulable signals without confirmed malignancy
+    } else if (S['esus-ddimer']==='high' && (S['esus-hcs-other']==='yes' || S['oth-hypercog']==='yes' || S['oth-hypercog']==='pending')) {
+      mechLabel = 'Systemic hypercoagulable state (elevated D-dimer + thrombophilia) → thromboembolism';
+      othMech = ' — <strong>Sub-etiology: Hypercoagulable State — Thrombophilia with Elevated D-dimer.</strong> Markedly elevated D-dimer (99% specific for cancer-associated stroke at &gt;2,785 FEU ng/mL; Mishra 2024) in combination with confirmed or pending inherited thrombophilia (FVL/PTG/protein C-S deficiency) suggests systemic thrombogenic mechanism. Haematology consultation; anticoagulation duration guided by underlying diagnosis.';
+    } else if (S['esus-ddimer']==='high' && S['esus-cancer']==='overdue') {
+      mechLabel = 'Elevated D-dimer + overdue cancer screening → possible occult malignancy-associated stroke';
+      othMech = ' — <strong>Sub-etiology: Possible Cancer-Associated Stroke — Occult Malignancy.</strong> Markedly elevated D-dimer (&gt;2,785 FEU ng/mL: 99% specific, 51% sensitive for cancer-associated stroke; Mishra 2024) with overdue USPSTF cancer screening. Urgent age-appropriate cancer screening and hypercoagulability workup required before attributing to another mechanism. Gordo et al. 2025: post-discharge testing increases HCS diagnosis 3-fold.';
+    } else if (S['esus-ddimer']==='high') {
+      mechLabel = 'Markedly elevated D-dimer → systemic thrombogenic / embolic source (malignancy vs. HCS)';
+      othMech = ' — <strong>Sub-etiology: Elevated D-dimer — Systemic Thrombogenic Mechanism Suspected.</strong> D-dimer &gt;2,785 FEU ng/mL has 99% specificity for cancer-associated embolic stroke (Mishra 2024). Risk of recurrent stroke HR 7.29 (95% CI 2.59–20.52, Q4 vs Q1; Choi KH et al. Stroke 2021). Complete malignancy workup and hypercoagulable panel required to identify specific etiology.';
+    // 5. Confirmed inherited thrombophilia (FVL, PTG, protein C/S)
+    } else if (S['esus-hcs-other']==='yes') {
+      mechLabel = 'Inherited thrombophilia (FVL / PTG / protein C/S deficiency / antithrombin deficiency) → thromboembolism';
+      othMech = ' — <strong>Sub-etiology: Inherited Thrombophilia.</strong> Factor V Leiden (OR 2.7 in young cryptogenic stroke; Hamedani 2010) or prothrombin G20210A (OR 1.5; IPSYS 2014) or protein C/S deficiency identified. Anticoagulation typically indicated; haematology co-management for duration and monitoring.';
+    // 6. General confirmed hypercoagulable state
+    } else if (S['oth-hypercog']==='yes') {
+      mechLabel = 'Hypercoagulable state confirmed → intravascular thrombosis';
+      othMech = ' — <strong>Sub-etiology: Hypercoagulable State (Confirmed).</strong> Confirmed hypercoagulable state promoting intravascular thrombosis (specific agent: see labs). Haematology co-management required; anticoagulation typically indicated.';
+    } else {
+      mechLabel = 'Other determined etiology — see evidence table for specific mechanism';
+      othMech = ' — Other specific etiology identified. See evidence table below for details.';
+    }
     type = 'Other Determined Etiology'; cls = 'voth'; conf = 'HIGH'; confCls = 'conf-h';
-    desc = 'A specific non-atherosclerotic, non-cardioembolic, non-SVD cause has been identified' + othMech;
+    desc = 'A specific non-atherosclerotic, non-cardioembolic, non-SVD cause has been identified.' + othMech;
     mgmtHTML = buildMgmt('other', mechLabel);
 
   } else if (ceHigh && lvdHigh) {
@@ -2194,6 +2662,13 @@ function buildVerdict() {
       } else {
         mechLabel = 'Large vessel atherosclerosis — mechanism unclear (artery-to-artery embolism most likely; hemodynamic ischemia only if watershed pattern present)';
         lvdMech = '<strong>Mechanism: Uncertain — artery-to-artery embolism most likely without watershed pattern.</strong> Large vessel atherosclerotic disease is present. Without a watershed/border-zone infarct pattern, hemodynamic flow-failure is less favoured. Consider: (1) vessel wall MRI for plaque vulnerability; (2) TCD for HITS and vasomotor reactivity; (3) CT perfusion if hemodynamic mechanism still suspected despite non-watershed pattern.';
+      }
+      // ── Moya moya override ──
+      const moyaVal = S['oth-moya moya'];
+      if (moyaVal === 'yes' || moyaVal === 'syndrome') {
+        const moyaType = moyaVal === 'syndrome' ? 'Moya moya syndrome (associated condition)' : 'Moya moya disease (idiopathic bilateral)';
+        mechLabel = 'Moya moya disease — progressive ICA steno-occlusion with collateral formation → ischemia';
+        lvdMech = '<strong>Mechanism: Moya moya disease / syndrome.</strong> Progressive stenosis/occlusion of the terminal ICA and proximal MCA/ACA with compensatory "puff of smoke" collateral formation. Ischemia results from hemodynamic failure and/or artery-to-artery embolism from fragile collaterals. Classification: ' + moyaType + '. Annual stroke risk conservatively managed: 3.2–15%; post-surgical revascularization: 0–1.6% (PMC5965184). ';
       }
       desc = '<strong>LVD — Proposed mechanism:</strong> ' + lvdMech + ' Meets or approaches TOAST large vessel disease criteria.';
       mgmtHTML = buildMgmt('laa', mechLabel);
@@ -2354,6 +2829,35 @@ function buildVerdict() {
     const dc = tagCls==='tr'?'dr':tagCls==='tg'?'dg':tagCls==='ta'?'da':tagCls==='tt'?'dt':'dgr';
     return `<div class="srow"><div class="dot ${dc}"></div><div class="sname">${label}</div><div class="stag ${tagCls}">${val||'—'}</div></div>`;
   }
+
+
+  // ── CVST early return ──────────────────────────────────────
+  if (cvstActive) {
+    const cvstOut = [
+      '<div class="vban" style="border:2px solid var(--amber);background:rgba(227,179,65,0.12);padding:20px 24px;border-radius:8px;text-align:center;margin-bottom:16px;">',
+      '<div style="font-family:var(--sans);font-size:9px;color:var(--amber);letter-spacing:.12em;margin-bottom:5px;">VENOUS INFARCTION — SEPARATE FROM ARTERIAL ISCHEMIC STROKE</div>',
+      '<div style="font-size:20px;font-weight:700;color:var(--amber);margin-bottom:6px;font-family:var(--sans);">Suspected Cerebral Venous Sinus Thrombosis (CVST)</div>',
+      '<div style="font-size:12px;color:var(--text2);line-height:1.7;max-width:600px;margin:0 auto;font-family:var(--sans);">Topographic and imaging features are consistent with <strong>venous infarction</strong> rather than arterial ischemic stroke. CVST is a distinct pathology — arterial TOAST categories do not apply. Arterial scoring is shown below for reference only.<br><strong style="color:var(--amber)">Order MRV immediately. Start LMWH — do not withhold due to hemorrhagic transformation.</strong></div>',
+      '</div>',
+      '<div class="sblock"><div class="sbtitle">CVST Management</div>',
+      '<div class="srow"><div class="dot dt"></div><div class="sname">Order MRV ± contrast-enhanced MRV if not yet done</div></div>',
+      '<div class="srow"><div class="dot dt"></div><div class="sname">Start anticoagulation: LMWH acutely → warfarin or DOAC (even with hemorrhagic infarct — AHA/EFNS guidelines)</div></div>',
+      '<div class="srow"><div class="dot dt"></div><div class="sname">Investigate cause: hypercoagulable panel, OCP review, CNS infection, malignancy</div></div>',
+      '<div class="srow"><div class="dot da"></div><div class="sname">Note: Arterial TOAST scoring below is for reference only — do not use for anticoagulation decisions in confirmed CVST</div></div>',
+      '</div>'
+    ].join('');
+    document.getElementById('vout').innerHTML = cvstOut;
+    buildDoc('venous', 'CVST — Venous Infarction', 0, 0, 0, 0, 0, [], []);
+    return;
+  }
+
+
+  // Ensure cls/conf/confCls/desc have fallback values
+  if (!type) type = 'undetermined';
+  if (!cls) cls = 'vund';
+  if (!conf) conf = 'Undetermined';
+  if (!confCls) confCls = 'conf-low';
+  if (!desc) desc = 'Insufficient information to determine a dominant stroke etiology with the data provided. Continue completing the workflow for a more specific classification.';
 
   let html = `
   <div class="vban ${cls}">
@@ -2543,7 +3047,7 @@ function copyDoc() {
 function resetAll() {
   Object.keys(S).forEach(k => S[k]=null);
   document.querySelectorAll('.crit').forEach(el => el.className='crit');
-  document.querySelectorAll('.abtn').forEach(b => b.classList.remove('ay','an','at','ab','aa','aw'));
+  document.querySelectorAll('.abtn').forEach(b => { b.classList.remove('ay','an','at','ab','aa','aw','av'); b.style.background=''; b.style.color=''; b.style.fontWeight=''; });
   document.querySelectorAll('.toggle-topo').forEach(b => b.classList.remove('ay','an','at','ab','aa','aw'));
   document.querySelectorAll('.crit-detail').forEach(d => d.classList.remove('open'));
   document.querySelectorAll('.xbtn').forEach(b => b.textContent='details ▾');
@@ -2553,7 +3057,24 @@ function resetAll() {
   const tog=document.querySelector('.doc-tog'); if(tog) tog.textContent='▼ Documentation Note';
   document.getElementById('vout').innerHTML='';
   go(0);
+  // Auto-select TCD not performed by default
+  S['tcd-done'] = 'no';
+  const tcdItem = document.getElementById('tcd-done-item');
+  if (tcdItem) {
+    tcdItem.querySelectorAll('.abtn').forEach(b => b.classList.remove('ay','an','at','ab','aa','aw','av'));
+    tcdItem.querySelectorAll('.abtn').forEach(b => {
+      if (b.getAttribute('onclick') && b.getAttribute('onclick').includes("'no'")) b.classList.add('an');
+    });
+    tcdItem.className = 'crit c-yes';
+    const tcdNote = document.getElementById('tcd-results-note');
+    if (tcdNote) tcdNote.style.display = 'block';
+    const tcdSec = document.getElementById('tcd-results-section');
+    if (tcdSec) tcdSec.style.display = 'none';
+  }
 }
+
+ui();
+setTimeout(function(){ set('tcd-done','no'); }, 50);
 </script>
 </body>
 </html>
