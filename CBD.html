@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>CBD 2013 Criteria · Diagnostic Navigator</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@300;400;500;600;700&family=Lexend:wght@300;400;500;600&display=swap');
 
 :root {
   --bg:        #0d1117;
@@ -31,7 +31,7 @@
   --text:      #e6edf3;
   --text2:     #aab4c0;
   --text3:     #6e7f94;
-  --sans:  'Inter', system-ui, sans-serif;
+  --sans:  'Lexend', 'Inter', system-ui, sans-serif;
   --mono:  'IBM Plex Mono', monospace;
 }
 
@@ -42,25 +42,31 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); font
 header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
 .h-title { font-size: 19px; font-weight: 700; }
 .h-title span { color: var(--lime); }
-.h-sub { font-family: var(--mono); font-size: 10px; color: var(--text3); margin-top: 3px; line-height: 1.5; }
-.reset-btn { background: var(--card2); border: 1px solid var(--border); color: var(--text2); font-family: var(--mono); font-size: 11px; padding: 6px 14px; cursor: pointer; border-radius: 4px; transition: all 0.15s; white-space: nowrap; }
+.h-sub { font-family: var(--sans); font-size: 11px; color: var(--text3); margin-top: 3px; line-height: 1.6; }
+.h-credit { font-family: var(--sans); font-size: 11px; color: var(--text3); margin-top: 2px; }
+.reset-btn { background: var(--card2); border: 1px solid var(--border); color: var(--text2); font-family: var(--sans); font-size: 12px; padding: 6px 14px; cursor: pointer; border-radius: 4px; transition: all 0.15s; white-space: nowrap; font-weight: 500; }
 .reset-btn:hover { border-color: var(--lime); color: var(--lime); }
 
 .prog-track { height: 3px; background: var(--border); margin-bottom: 20px; border-radius: 2px; }
 .prog-fill { height: 100%; background: linear-gradient(90deg, var(--lime), #bbf7d0); border-radius: 2px; transition: width 0.4s ease; box-shadow: 0 0 6px rgba(126,231,135,0.4); }
 
-.steps { display: flex; border-bottom: 1px solid var(--border); margin-bottom: 20px; overflow-x: auto; }
-.stab { flex: 1; min-width: 70px; padding: 7px 4px 9px; text-align: center; font-family: var(--mono); font-size: 9px; color: var(--text3); border-bottom: 2px solid transparent; margin-bottom: -1px; transition: all 0.2s; line-height: 1.3; }
-.stab .sn { display: block; font-size: 13px; font-weight: 600; margin-bottom: 1px; }
-.stab.active { color: var(--lime); border-bottom-color: var(--lime); }
-.stab.done   { color: var(--green); border-bottom-color: var(--green); }
+.steps { display: grid; grid-template-columns: repeat(5, 1fr); border: 1px solid var(--border); border-radius: 8px; margin-bottom: 20px; overflow: hidden; background: var(--card); }
+.stab { padding: 9px 4px 10px; text-align: center; font-family: var(--sans); font-size: 10px; color: var(--text3); border-right: 1px solid var(--border); transition: all 0.2s; cursor: pointer; background: var(--card); line-height: 1.3; }
+.stab:nth-child(5n) { border-right: none; }
+.stab .sn { display: flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 50%; background: var(--card2); border: 1px solid var(--border); font-size: 11px; font-weight: 700; margin: 0 auto 4px; transition: all 0.2s; }
+.stab .slbl { display: block; font-size: 9px; font-weight: 600; letter-spacing: 0; line-height: 1.3; }
+.stab.active { color: var(--lime); background: var(--lime-bg); }
+.stab.active .sn { background: var(--lime); color: #0d1117; border-color: var(--lime); }
+.stab.done { color: var(--green); }
+.stab.done .sn { background: var(--green); color: #0d1117; border-color: var(--green); }
+.stab:hover:not(.active) { background: var(--card2); }
 
 .card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 22px; margin-bottom: 12px; }
-.ctitle { font-size: 12px; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; margin-bottom: 3px; }
+.ctitle { font-size: 13px; font-weight: 700; font-family: var(--sans); letter-spacing: 0; text-transform: none; margin-bottom: 3px; }
 .csub { font-size: 12px; color: var(--text2); margin-bottom: 16px; line-height: 1.5; }
 
-.slabel { display: flex; align-items: center; gap: 8px; font-family: var(--mono); font-size: 10px; font-weight: 500; color: var(--text2); letter-spacing: 0.07em; text-transform: uppercase; margin-bottom: 9px; padding-bottom: 6px; border-bottom: 1px solid var(--border); }
-.pill { font-size: 9px; padding: 1px 7px; border-radius: 20px; border: 1px solid; margin-left: auto; }
+.slabel { display: flex; align-items: center; gap: 8px; font-family: var(--sans); font-size: 11px; font-weight: 600; color: var(--text); letter-spacing: 0; text-transform: none; margin-bottom: 9px; padding-bottom: 6px; border-bottom: 1px solid var(--border); }
+.pill { font-size: 9px; padding: 1px 7px; border-radius: 20px; border: 1px solid; margin-left: auto; font-family: var(--sans); letter-spacing: 0.04em; text-transform: uppercase; }
 .pill-r  { border-color: var(--red);   color: var(--red);   background: var(--red-bg); }
 .pill-a  { border-color: var(--amber); color: var(--amber); background: var(--amber-bg); }
 .pill-l  { border-color: var(--lime);  color: var(--lime);  background: var(--lime-bg); }
@@ -75,8 +81,8 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
 
 .crit-main { display: flex; align-items: center; gap: 8px; padding: 10px 13px; }
 .crit-name { flex: 1; font-size: 13px; font-weight: 500; color: var(--text); line-height: 1.3; }
-.xbtn { background: none; border: 1px solid var(--border); color: var(--text3); font-size: 11px; cursor: pointer; padding: 2px 8px; font-family: var(--mono); white-space: nowrap; transition: all 0.15s; flex-shrink: 0; border-radius: 3px; }
-.xbtn:hover { color: var(--blue); border-color: var(--blue); }
+.xbtn { background: rgba(188,140,255,0.10); border: 1px solid rgba(188,140,255,0.35); color: #bc8cff; font-size: 11px; cursor: pointer; padding: 2px 8px; font-family: var(--sans); white-space: nowrap; transition: all 0.15s; flex-shrink: 0; border-radius: 3px; font-weight: 500; }
+.xbtn:hover { background: #bc8cff; color: #0d1117; border-color: #bc8cff; }
 
 .crit-detail { display: none; padding: 10px 13px 12px; font-size: 12px; color: var(--text); line-height: 1.65; border-top: 1px solid var(--border); }
 .crit-detail.open { display: block; }
@@ -84,7 +90,7 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
 .cnote strong { color: var(--text); }
 
 .brow { display: flex; border-top: 1px solid var(--border); }
-.abtn { flex: 1; padding: 8px 6px; background: none; border: none; border-right: 1px solid var(--border); color: var(--text2); font-family: var(--mono); font-size: 11px; cursor: pointer; transition: all 0.12s; text-transform: uppercase; letter-spacing: 0.04em; font-weight: 500; }
+.abtn { flex: 1; padding: 9px 10px; background: none; border: none; border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); color: var(--text2); font-family: var(--sans); font-size: 12px; cursor: pointer; transition: all 0.12s; text-transform: none; letter-spacing: 0; font-weight: 400; line-height: 1.4; text-align: left; }
 .abtn:last-child { border-right: none; }
 .abtn:hover { background: var(--card2); color: var(--text); }
 .abtn.ay { background: var(--green-bg); color: var(--green); font-weight: 700; }
@@ -106,11 +112,11 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
 .phen-card.sel-poss { border-color: var(--amber-bd); background: var(--amber-bg); }
 .phen-card.sel-none { border-color: var(--border2); background: var(--card2); }
 .phen-header { padding: 10px 12px 6px; display: flex; align-items: center; gap: 8px; }
-.phen-code { font-family: var(--mono); font-size: 10px; font-weight: 700; padding: 1px 7px; border-radius: 3px; border: 1px solid; }
+.phen-code { font-family: var(--sans); font-size: 10px; font-weight: 700; padding: 1px 7px; border-radius: 3px; border: 1px solid; letter-spacing: 0; }
 .phen-title { font-size: 13px; font-weight: 700; color: var(--text); }
 .phen-body { padding: 0 12px 10px; font-size: 11px; color: var(--text2); line-height: 1.5; }
 .phen-btns { display: flex; border-top: 1px solid var(--border); }
-.pbtn { flex: 1; padding: 7px 4px; background: none; border: none; border-right: 1px solid var(--border); color: var(--text3); font-family: var(--mono); font-size: 10px; cursor: pointer; transition: all 0.12s; text-transform: uppercase; }
+.pbtn { flex: 1; padding: 7px 4px; background: none; border: none; border-right: 1px solid var(--border); color: var(--text3); font-family: var(--sans); font-size: 11px; cursor: pointer; transition: all 0.12s; text-transform: none; }
 .pbtn:last-child { border-right: none; }
 .pbtn:hover { background: var(--card2); color: var(--text); }
 .pbtn.py { background: var(--green-bg); color: var(--green); font-weight: 700; }
@@ -126,7 +132,7 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
 .sfcheck.checked { background: var(--green-bg); border-color: var(--green-bd); color: var(--green); }
 .sfcheck.checked-a { background: var(--amber-bg); border-color: var(--amber-bd); color: var(--amber); }
 .sfname { flex: 1; font-size: 12px; color: var(--text); }
-.sf-req { font-family: var(--mono); font-size: 9px; color: var(--text3); }
+.sf-req { font-family: var(--sans); font-size: 9px; color: var(--text3); }
 
 .alrt { padding: 9px 13px; border-radius: 5px; font-size: 12px; line-height: 1.55; margin-top: 12px; border-left: 3px solid; display: none; }
 .alrt.show { display: block; }
@@ -153,7 +159,7 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
 .cr { border-color: var(--red-bd);   background: var(--red-bg);   color: var(--red); }
 
 .nav-row { display: flex; justify-content: space-between; align-items: center; margin-top: 20px; gap: 10px; }
-.nbtn { padding: 9px 22px; border-radius: 5px; font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; border: 1px solid; cursor: pointer; font-weight: 500; transition: all 0.15s; }
+.nbtn { padding: 9px 22px; border-radius: 5px; font-family: var(--sans); font-size: 13px; letter-spacing: 0; text-transform: none; border: 1px solid; cursor: pointer; font-weight: 600; transition: all 0.15s; }
 .np { background: var(--lime); border-color: var(--lime); color: #0d1117; font-weight: 700; }
 .np:hover { background: #bbf7d0; border-color: #bbf7d0; }
 .np:disabled { opacity: 0.3; cursor: not-allowed; }
@@ -174,14 +180,14 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
 .vprob .vtitle { color: var(--green); }
 .vposs .vtitle { color: var(--amber); }
 .vno   .vtitle { color: var(--red); }
-.vphen { font-family: var(--mono); font-size: 11px; padding: 2px 10px; border-radius: 20px; border: 1px solid; display: inline-block; margin-bottom: 7px; }
+.vphen { font-family: var(--sans); font-size: 11px; font-weight: 600; padding: 2px 10px; border-radius: 20px; border: 1px solid; display: inline-block; margin-bottom: 7px; }
 .vdesc { font-size: 12px; color: var(--text2); line-height: 1.7; max-width: 640px; margin: 0 auto; }
 
 /* SUMMARY */
 .sum-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
 @media (max-width: 580px) { .sum-grid { grid-template-columns: 1fr; } }
 .sblock { background: var(--card); border: 1px solid var(--border); border-radius: 6px; overflow: hidden; }
-.sbtitle { font-family: var(--mono); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; padding: 7px 11px; border-bottom: 1px solid var(--border); color: var(--text2); background: var(--card2); }
+.sbtitle { font-family: var(--sans); font-size: 11px; font-weight: 600; letter-spacing: 0; text-transform: none; padding: 7px 11px; border-bottom: 1px solid var(--border); color: var(--text); background: var(--card2); }
 .srow { display: flex; align-items: flex-start; gap: 8px; padding: 6px 11px; border-bottom: 1px solid var(--border); font-size: 12px; }
 .srow:last-child { border-bottom: none; }
 .dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; margin-top: 4px; }
@@ -196,9 +202,9 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
 .tgr { border-color: var(--border2);  color: var(--text3); }
 
 .doc-header { display: flex; align-items: center; gap: 8px; margin-bottom: 5px; }
-.doc-tog { flex: 1; text-align: left; background: var(--card2); border: 1px solid var(--border2); border-radius: 5px; color: var(--text2); font-family: var(--mono); font-size: 11px; padding: 8px 13px; cursor: pointer; transition: all 0.15s; letter-spacing: 0.04em; }
+.doc-tog { flex: 1; text-align: left; background: var(--card2); border: 1px solid var(--border2); border-radius: 5px; color: var(--text2); font-family: var(--sans); font-size: 13px; padding: 8px 13px; cursor: pointer; transition: all 0.15s; }
 .doc-tog:hover { border-color: var(--lime); color: var(--lime); }
-.copy-btn { background: var(--card2); border: 1px solid var(--border2); border-radius: 5px; color: var(--text2); font-family: var(--mono); font-size: 11px; padding: 8px 14px; cursor: pointer; white-space: nowrap; transition: all 0.15s; display: none; }
+.copy-btn { background: var(--card2); border: 1px solid var(--border2); border-radius: 5px; color: var(--text2); font-family: var(--sans); font-size: 12px; padding: 8px 14px; cursor: pointer; white-space: nowrap; transition: all 0.15s; display: none; }
 .copy-btn.visible { display: block; }
 .copy-btn:hover { border-color: var(--green); color: var(--green); }
 .copy-btn.copied { border-color: var(--green); color: var(--green); background: var(--green-bg); }
@@ -212,7 +218,8 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
 <header>
   <div>
     <div class="h-title">CBD <span>2013 Diagnostic Criteria</span></div>
-    <div class="h-sub">Armstrong MJ, Litvan I et al. · Neurology 2013;80:496–503 · doi:10.1212/WNL.0b013e31827f0fd1<br>International Consortium · Clinical Research (cr-CBD) and Possible (p-CBD) Criteria</div>
+    <div class="h-sub">Armstrong MJ, Litvan I et al. · Neurology 2013;80:496–503 · For educator use only</div>
+    <div class="h-credit">Designed by Daniel Short, MD</div>
   </div>
   <button class="reset-btn" onclick="resetAll()">↺ Reset</button>
 </header>
@@ -220,11 +227,11 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
 <div class="prog-track"><div class="prog-fill" id="pf" style="width:0%"></div></div>
 
 <div class="steps">
-  <div class="stab active" id="st0"><span class="sn">1</span>Prerequisites</div>
-  <div class="stab" id="st1"><span class="sn">2</span>Phenotype</div>
-  <div class="stab" id="st2"><span class="sn">3</span>CBS Features</div>
-  <div class="stab" id="st3"><span class="sn">4</span>Exclusions</div>
-  <div class="stab" id="st4"><span class="sn">5</span>Verdict</div>
+  <div class="stab active" id="st0" onclick="goTab(0)" title="Go to step 1"><span class="sn">1</span><span class="slbl">Prerequisites</span></div>
+  <div class="stab" id="st1" onclick="goTab(1)" title="Go to step 2"><span class="sn">2</span><span class="slbl">Phenotype</span></div>
+  <div class="stab" id="st2" onclick="goTab(2)" title="Go to step 3"><span class="sn">3</span><span class="slbl">CBS Features</span></div>
+  <div class="stab" id="st3" onclick="goTab(3)" title="Go to step 4"><span class="sn">4</span><span class="slbl">Exclusions</span></div>
+  <div class="stab" id="st4" onclick="goTab(4)" title="Go to step 5"><span class="sn">5</span><span class="slbl">Verdict</span></div>
 </div>
 
 <!-- ══ SCREEN 0: PREREQUISITES ══ -->
@@ -852,6 +859,11 @@ function rv() {
   Object.entries(excNames).forEach(([k,nm])=>{ note+=`  ${nm}: ${S[k]==='no'?'Absent':S[k]==='yes'?'PRESENT — EXCLUDES CBD':'Not assessed'}\n`; });
   note+=`  Any exclusion triggered: ${anyHardExclusion()?'YES — CBD diagnosis not possible':'No'}\n\nCBD CLASSIFICATION (Table 5)\n${v.t}${v.phen?' — '+v.phen:''}\n${v.d}\n\nDiagnostic framework:\n  cr-CBD (Clinical Research Criteria — Probable Sporadic CBD): More specific. Requires age ≥50, sporadic, no tau mutation, no family history. Phenotype: Probable CBS or FBS/naPPA + ≥1 CBS feature (a–f). Goal: minimize contamination from other tau-based diagnoses for research cohorts.\n  p-CBD (Possible CBD Criteria): Broader. No age minimum, permits family history, permits MAPT tau mutations, includes PSPS phenotype. Phenotype: Possible CBS or FBS/naPPA/PSPS + ≥1 CBS feature (b–f only — NOT feature a). Goal: captures CBD cases while still emphasizing tau-based pathology; higher false-positive rate.\n\nKey points:\n  - CBD pathology is predicted antemortem in only 25–56% of cases — a definitive clinical diagnosis remains challenging\n  - CBS is the most common clinical phenotype (37.1%) but PSPS (23.3%), FTD (13.8%), and aphasia (4.8%) are also common CBD presentations\n  - Exclusion of amyloid evidence (CSF/PET) may miss ~14% of CBD cases with co-existing amyloid pathology (Dickson)\n  - No laboratory-supported diagnostic category is proposed — imaging and CSF biomarkers lack sufficient validation for CBD\n  - Mean age at onset 63.7 years (range 45–77.2), mean disease duration 6.6 years (range 2.0–12.5)\n\nRef: Armstrong MJ, Litvan I, Lang AE, et al. Criteria for the diagnosis of corticobasal degeneration. Neurology. 2013;80:496–503.`;
   document.getElementById('dn').textContent=note;
+}
+
+function goTab(n) {
+  if (n === cur) return;
+  go(n);
 }
 
 function go(n){
