@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>DLB 2017 Criteria · Diagnostic Navigator</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@300;400;500;600;700&family=Lexend:wght@300;400;500;600&display=swap');
 
 :root {
   --bg:        #0d1117;
@@ -31,7 +31,7 @@
   --text:      #e6edf3;
   --text2:     #aab4c0;
   --text3:     #6e7f94;
-  --sans:  'Inter', system-ui, sans-serif;
+  --sans:  'Lexend', 'Inter', system-ui, sans-serif;
   --mono:  'IBM Plex Mono', monospace;
 }
 
@@ -42,25 +42,31 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); font
 header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
 .h-title { font-size: 19px; font-weight: 700; }
 .h-title span { color: var(--rose); }
-.h-sub { font-family: var(--mono); font-size: 10px; color: var(--text3); margin-top: 3px; line-height: 1.5; }
-.reset-btn { background: var(--card2); border: 1px solid var(--border); color: var(--text2); font-family: var(--mono); font-size: 11px; padding: 6px 14px; cursor: pointer; border-radius: 4px; transition: all 0.15s; white-space: nowrap; }
+.h-sub { font-family: var(--sans); font-size: 11px; color: var(--text3); margin-top: 3px; line-height: 1.6; }
+.h-credit { font-family: var(--sans); font-size: 11px; color: var(--text3); margin-top: 2px; }
+.reset-btn { background: var(--card2); border: 1px solid var(--border); color: var(--text2); font-family: var(--sans); font-size: 12px; padding: 6px 14px; cursor: pointer; border-radius: 4px; transition: all 0.15s; white-space: nowrap; font-weight: 500; }
 .reset-btn:hover { border-color: var(--rose); color: var(--rose); }
 
 .prog-track { height: 3px; background: var(--border); margin-bottom: 20px; border-radius: 2px; }
 .prog-fill { height: 100%; background: linear-gradient(90deg, var(--rose), #f9a8d4); border-radius: 2px; transition: width 0.4s ease; box-shadow: 0 0 6px rgba(232,121,160,0.4); }
 
-.steps { display: flex; border-bottom: 1px solid var(--border); margin-bottom: 20px; overflow-x: auto; }
-.stab { flex: 1; min-width: 72px; padding: 7px 4px 9px; text-align: center; font-family: var(--mono); font-size: 9px; color: var(--text3); border-bottom: 2px solid transparent; margin-bottom: -1px; transition: all 0.2s; line-height: 1.3; }
-.stab .sn { display: block; font-size: 13px; font-weight: 600; margin-bottom: 1px; }
-.stab.active { color: var(--rose); border-bottom-color: var(--rose); }
-.stab.done   { color: var(--green); border-bottom-color: var(--green); }
+.steps { display: grid; grid-template-columns: repeat(6, 1fr); border: 1px solid var(--border); border-radius: 8px; margin-bottom: 20px; overflow: hidden; background: var(--card); }
+.stab { padding: 9px 4px 10px; text-align: center; font-family: var(--sans); font-size: 10px; color: var(--text3); border-right: 1px solid var(--border); transition: all 0.2s; cursor: pointer; background: var(--card); line-height: 1.3; }
+.stab:nth-child(6n) { border-right: none; }
+.stab .sn { display: flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 50%; background: var(--card2); border: 1px solid var(--border); font-size: 11px; font-weight: 700; margin: 0 auto 4px; transition: all 0.2s; }
+.stab .slbl { display: block; font-size: 9px; font-weight: 600; letter-spacing: 0; line-height: 1.3; }
+.stab.active { color: var(--rose); background: rgba(232,121,160,0.06); }
+.stab.active .sn { background: var(--rose); color: #0d1117; border-color: var(--rose); }
+.stab.done { color: var(--green); }
+.stab.done .sn { background: var(--green); color: #0d1117; border-color: var(--green); }
+.stab:hover:not(.active) { background: var(--card2); }
 
 .card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 22px; margin-bottom: 12px; }
-.ctitle { font-size: 12px; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; margin-bottom: 3px; }
+.ctitle { font-size: 13px; font-weight: 700; font-family: var(--sans); letter-spacing: 0; text-transform: none; margin-bottom: 3px; }
 .csub { font-size: 12px; color: var(--text2); margin-bottom: 16px; line-height: 1.5; }
 
-.slabel { display: flex; align-items: center; gap: 8px; font-family: var(--mono); font-size: 10px; font-weight: 500; color: var(--text2); letter-spacing: 0.07em; text-transform: uppercase; margin-bottom: 9px; padding-bottom: 6px; border-bottom: 1px solid var(--border); }
-.pill { font-size: 9px; padding: 1px 7px; border-radius: 20px; border: 1px solid; margin-left: auto; }
+.slabel { display: flex; align-items: center; gap: 8px; font-family: var(--sans); font-size: 11px; font-weight: 600; color: var(--text); letter-spacing: 0; text-transform: none; margin-bottom: 9px; padding-bottom: 6px; border-bottom: 1px solid var(--border); }
+.pill { font-size: 9px; padding: 1px 7px; border-radius: 20px; border: 1px solid; margin-left: auto; font-family: var(--sans); letter-spacing: 0.04em; text-transform: uppercase; }
 .pill-r  { border-color: var(--red);   color: var(--red);   background: var(--red-bg); }
 .pill-a  { border-color: var(--amber); color: var(--amber); background: var(--amber-bg); }
 .pill-ro { border-color: var(--rose);  color: var(--rose);  background: var(--rose-bg); }
@@ -68,7 +74,7 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
 .pill-b  { border-color: var(--blue);  color: var(--blue);  background: var(--blue-bg); }
 
 /* Weight badges */
-.wbadge { font-family: var(--mono); font-size: 9px; padding: 2px 7px; border-radius: 3px; border: 1px solid; flex-shrink: 0; letter-spacing: 0.04em; }
+.wbadge { font-family: var(--sans); font-size: 9px; font-weight: 600; padding: 2px 7px; border-radius: 3px; border: 1px solid; flex-shrink: 0; letter-spacing: 0; }
 .wb-core { border-color: var(--rose-bd);  color: var(--rose);  background: var(--rose-bg); }
 .wb-supp { border-color: var(--amber-bd); color: var(--amber); background: var(--amber-bg); }
 .wb-indic { border-color: var(--blue-bd); color: var(--blue);  background: var(--blue-bg); }
@@ -83,8 +89,8 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
 
 .crit-main { display: flex; align-items: center; gap: 8px; padding: 10px 13px; }
 .crit-name { flex: 1; font-size: 13px; font-weight: 500; color: var(--text); line-height: 1.3; }
-.xbtn { background: none; border: 1px solid var(--border); color: var(--text3); font-size: 11px; cursor: pointer; padding: 2px 8px; font-family: var(--mono); white-space: nowrap; transition: all 0.15s; flex-shrink: 0; border-radius: 3px; }
-.xbtn:hover { color: var(--blue); border-color: var(--blue); }
+.xbtn { background: rgba(188,140,255,0.10); border: 1px solid rgba(188,140,255,0.35); color: #bc8cff; font-size: 11px; cursor: pointer; padding: 2px 8px; font-family: var(--sans); white-space: nowrap; transition: all 0.15s; flex-shrink: 0; border-radius: 3px; font-weight: 500; }
+.xbtn:hover { background: #bc8cff; color: #0d1117; border-color: #bc8cff; }
 
 .crit-detail { display: none; padding: 10px 13px 12px; font-size: 12px; color: var(--text); line-height: 1.65; border-top: 1px solid var(--border); }
 .crit-detail.open { display: block; }
@@ -92,7 +98,7 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
 .cnote strong { color: var(--text); }
 
 .brow { display: flex; border-top: 1px solid var(--border); }
-.abtn { flex: 1; padding: 8px 6px; background: none; border: none; border-right: 1px solid var(--border); color: var(--text2); font-family: var(--mono); font-size: 11px; cursor: pointer; transition: all 0.12s; text-transform: uppercase; letter-spacing: 0.04em; font-weight: 500; }
+.abtn { flex: 1; padding: 9px 10px; background: none; border: none; border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); color: var(--text2); font-family: var(--sans); font-size: 12px; cursor: pointer; transition: all 0.12s; text-transform: none; letter-spacing: 0; font-weight: 400; line-height: 1.4; text-align: left; }
 .abtn:last-child { border-right: none; }
 .abtn:hover { background: var(--card2); color: var(--text); }
 .abtn.ay { background: var(--green-bg); color: var(--green); font-weight: 700; }
@@ -130,7 +136,7 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
 .ca { border-color: var(--amber-bd); background: var(--amber-bg); color: var(--amber); }
 
 .nav-row { display: flex; justify-content: space-between; align-items: center; margin-top: 20px; gap: 10px; }
-.nbtn { padding: 9px 22px; border-radius: 5px; font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; border: 1px solid; cursor: pointer; font-weight: 500; transition: all 0.15s; }
+.nbtn { padding: 9px 22px; border-radius: 5px; font-family: var(--sans); font-size: 13px; letter-spacing: 0; text-transform: none; border: 1px solid; cursor: pointer; font-weight: 600; transition: all 0.15s; }
 .np { background: var(--rose); border-color: var(--rose); color: #0d1117; font-weight: 700; }
 .np:hover { background: #f9a8d4; border-color: #f9a8d4; }
 .np:disabled { opacity: 0.3; cursor: not-allowed; }
@@ -153,7 +159,7 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
 .vposs .vtitle { color: var(--amber); }
 .vless .vtitle { color: var(--blue); }
 .vno   .vtitle { color: var(--red); }
-.vphen { font-family: var(--mono); font-size: 11px; padding: 2px 10px; border-radius: 20px; border: 1px solid; display: inline-block; margin-bottom: 7px; }
+.vphen { font-family: var(--sans); font-size: 11px; font-weight: 600; padding: 2px 10px; border-radius: 20px; border: 1px solid; display: inline-block; margin-bottom: 7px; }
 .vdesc { font-size: 12px; color: var(--text2); line-height: 1.7; max-width: 620px; margin: 0 auto; }
 
 /* LOGIC GRID — Table 1 combination rules visualized */
@@ -162,7 +168,7 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
 .combo-card { border: 1px solid var(--border); border-radius: 6px; padding: 12px 13px; font-size: 12px; line-height: 1.55; background: var(--card2); transition: all 0.2s; }
 .combo-card.met { border-color: var(--green-bd); background: var(--green-bg); }
 .combo-card.unmet { border-color: var(--border2); }
-.combo-title { font-family: var(--mono); font-size: 10px; font-weight: 700; margin-bottom: 4px; }
+.combo-title { font-family: var(--sans); font-size: 10px; font-weight: 700; margin-bottom: 4px; }
 .combo-card.met .combo-title { color: var(--green); }
 .combo-card.unmet .combo-title { color: var(--text3); }
 
@@ -170,7 +176,7 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
 .sum-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
 @media (max-width: 580px) { .sum-grid { grid-template-columns: 1fr; } }
 .sblock { background: var(--card); border: 1px solid var(--border); border-radius: 6px; overflow: hidden; }
-.sbtitle { font-family: var(--mono); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; padding: 7px 11px; border-bottom: 1px solid var(--border); color: var(--text2); background: var(--card2); }
+.sbtitle { font-family: var(--sans); font-size: 11px; font-weight: 600; letter-spacing: 0; text-transform: none; padding: 7px 11px; border-bottom: 1px solid var(--border); color: var(--text); background: var(--card2); }
 .srow { display: flex; align-items: flex-start; gap: 8px; padding: 6px 11px; border-bottom: 1px solid var(--border); font-size: 12px; }
 .srow:last-child { border-bottom: none; }
 .dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; margin-top: 4px; }
@@ -187,9 +193,9 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
 .tgr { border-color: var(--border2);  color: var(--text3); }
 
 .doc-header { display: flex; align-items: center; gap: 8px; margin-bottom: 5px; }
-.doc-tog { flex: 1; text-align: left; background: var(--card2); border: 1px solid var(--border2); border-radius: 5px; color: var(--text2); font-family: var(--mono); font-size: 11px; padding: 8px 13px; cursor: pointer; transition: all 0.15s; letter-spacing: 0.04em; }
+.doc-tog { flex: 1; text-align: left; background: var(--card2); border: 1px solid var(--border2); border-radius: 5px; color: var(--text2); font-family: var(--sans); font-size: 13px; padding: 8px 13px; cursor: pointer; transition: all 0.15s; }
 .doc-tog:hover { border-color: var(--rose); color: var(--rose); }
-.copy-btn { background: var(--card2); border: 1px solid var(--border2); border-radius: 5px; color: var(--text2); font-family: var(--mono); font-size: 11px; padding: 8px 14px; cursor: pointer; white-space: nowrap; transition: all 0.15s; display: none; }
+.copy-btn { background: var(--card2); border: 1px solid var(--border2); border-radius: 5px; color: var(--text2); font-family: var(--sans); font-size: 12px; padding: 8px 14px; cursor: pointer; white-space: nowrap; transition: all 0.15s; display: none; }
 .copy-btn.visible { display: block; }
 .copy-btn:hover { border-color: var(--green); color: var(--green); }
 .copy-btn.copied { border-color: var(--green); color: var(--green); background: var(--green-bg); }
@@ -203,7 +209,8 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
 <header>
   <div>
     <div class="h-title">DLB <span>2017 Consensus Criteria</span></div>
-    <div class="h-sub">McKeith IG et al. · Neurology 2017;89:88–100 · doi:10.1212/WNL.0000000000004058<br>Designed by Daniel Short, MD</div>
+    <div class="h-sub">McKeith IG et al. · Neurology 2017;89:88–100 · For educator use only</div>
+    <div class="h-credit">Designed by Daniel Short, MD</div>
   </div>
   <button class="reset-btn" onclick="resetAll()">↺ Reset</button>
 </header>
@@ -211,12 +218,12 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
 <div class="prog-track"><div class="prog-fill" id="pf" style="width:0%"></div></div>
 
 <div class="steps">
-  <div class="stab active" id="st0"><span class="sn">1</span>Essential</div>
-  <div class="stab" id="st1"><span class="sn">2</span>Core Clinical</div>
-  <div class="stab" id="st2"><span class="sn">3</span>Indicative BM</div>
-  <div class="stab" id="st3"><span class="sn">4</span>Supportive</div>
-  <div class="stab" id="st4"><span class="sn">5</span>"Less Likely"</div>
-  <div class="stab" id="st5"><span class="sn">6</span>Verdict</div>
+  <div class="stab active" id="st0" onclick="goTab(0)" title="Go to step 1"><span class="sn">1</span><span class="slbl">Essential</span></div>
+  <div class="stab" id="st1" onclick="goTab(1)" title="Go to step 2"><span class="sn">2</span><span class="slbl">Core Clinical</span></div>
+  <div class="stab" id="st2" onclick="goTab(2)" title="Go to step 3"><span class="sn">3</span><span class="slbl">Indicative BM</span></div>
+  <div class="stab" id="st3" onclick="goTab(3)" title="Go to step 4"><span class="sn">4</span><span class="slbl">Supportive</span></div>
+  <div class="stab" id="st4" onclick="goTab(4)" title="Go to step 5"><span class="sn">5</span><span class="slbl">Less Likely</span></div>
+  <div class="stab" id="st5" onclick="goTab(5)" title="Go to step 6"><span class="sn">6</span><span class="slbl">Verdict</span></div>
 </div>
 
 <!-- ══════════════ SCREEN 0: ESSENTIAL FEATURE ══════════════ -->
@@ -814,6 +821,11 @@ function rv() {
   SUPP_CLIN_KEYS.forEach(k=>{ if(S[k]!==null) note+=`  ${suppClinNames[k]}: ${S[k]==='yes'?'Present':'Absent'}\n`; });
   note+=`  Supportive clinical features present: ${suppClin}\n\nSUPPORTIVE BIOMARKERS\n  MTL preservation on MRI/CT: ${S.mri_mtl==='pres'?'Relatively preserved (supports DLB)':S.mri_mtl==='atr'?'MTL atrophied (favors AD)':'Not assessed'}\n  FDG-PET/SPECT occipital hypometabolism: ${S.fdgpet==='pos'?'Present':S.fdgpet==='neg'?'Absent':S.fdgpet==='nd'?'Not performed':'Not assessed'}\n  EEG posterior slow-wave: ${S.eeg==='pos'?'Characteristic pattern present':S.eeg==='neg'?'Not present':S.eeg==='nd'?'Not performed':'Not assessed'}\n\n"LESS LIKELY" CONDITIONS\n  Other illness/disorder sufficient to explain symptoms: ${S.ll_illness==='no'?'None identified':S.ll_illness==='part'?'Present (partial — mixed pathology possible)':S.ll_illness==='yes'?'Present (largely accounts for symptoms)':'Not assessed'}\n  Parkinsonism only core feature, first at severe dementia stage: ${S.ll_park==='no'?'Not applicable':S.ll_park==='yes'?'Present (reduces DLB likelihood)':'Not assessed'}\n\nDLB CONSORTIUM 2017 CLASSIFICATION\n${v.t}\n${v.d}\n\nCombination rule applied:\n  Probable DLB Rule A (≥2 core features): ${probA?'MET':'Not met'}\n  Probable DLB Rule B (1 core + ≥1 indicative BM): ${probB?'MET':'Not met'}\n  Possible DLB Rule A (1 core, no indicative BM): ${possA?'MET':'Not met'}\n  Possible DLB Rule B (≥1 indicative BM, no core features): ${possB?'MET':'Not met'}\n\nKey 2017 updates (vs. 2005 criteria):\n  - RBD upgraded from "suggestive" to Core clinical feature\n  - MIBG scintigraphy upgraded to Indicative biomarker\n  - PSG-confirmed REM sleep without atonia added as Indicative biomarker\n  - DAT imaging retained as Indicative biomarker\n  - New Supportive features: hypersomnia, hyposmia\n  - Antipsychotic sensitivity downgraded to Supportive (reduced prescribing limits usefulness)\n  - Clinical features + biomarkers now categorized separately (not combined as "suggestive")\n  - Probable DLB should NOT be diagnosed on biomarkers alone\n\nClinical management notes:\n  - Avoid antipsychotics (SEVERE sensitivity risk — mortality); if required, consider low-dose quetiapine\n  - Cholinesterase inhibitors (rivastigmine, donepezil) supported by Class I evidence for cognition, global function, ADLs\n  - Levodopa may help parkinsonism — introduce at low doses, titrate slowly; risk of psychosis\n  - RBD: clonazepam (cautious bedtime use) or melatonin (possibly safer — less cognitive/gait risk)\n  - Antidopaminergic and anticholinergic medications can adversely affect cognition and behavior\n\nRef: McKeith IG, Boeve BF, Dickson DW, et al. Diagnosis and management of dementia with Lewy bodies: fourth consensus report of the DLB Consortium. Neurology. 2017;89:88–100.`;
   document.getElementById('dn').textContent=note;
+}
+
+function goTab(n) {
+  if (n === cur) return;
+  go(n);
 }
 
 function go(n){
