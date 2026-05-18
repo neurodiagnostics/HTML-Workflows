@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ICHD-3 Headache Diagnosis</title>
 <style>
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@300;400;500;600;700&family=Lexend:wght@300;400;500;600&display=swap');
+
   :root {
     --bg: #0f1117;
     --surface: #1a1d27;
@@ -38,26 +40,27 @@
     --radius-sm: 6px;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { background: var(--bg); font-family: 'Segoe UI', system-ui, sans-serif; color: var(--text); min-height: 100vh; }
+  body { background: var(--bg); font-family: 'Lexend', 'Inter', system-ui, sans-serif; color: var(--text); min-height: 100vh; }
   .header { background: var(--surface); border-bottom: 1px solid var(--border2); padding: 18px 24px 14px; position: sticky; top: 0; z-index: 10; }
   .header-top { display: flex; align-items: center; gap: 12px; margin-bottom: 4px; }
-  .header-badge { background: var(--teal-bg); border: 1px solid var(--teal-border); color: var(--teal); font-size: 11px; font-weight: 600; letter-spacing: 0.06em; padding: 3px 8px; border-radius: 20px; text-transform: uppercase; }
-  .header h1 { font-size: 18px; font-weight: 600; color: var(--text); letter-spacing: -0.01em; }
-  .header-sub { font-size: 12px; color: var(--text3); margin-top: 2px; }
+  .header-badge { background: var(--teal-bg); border: 1px solid var(--teal-border); color: var(--teal); font-size: 10px; font-weight: 600; letter-spacing: 0.04em; padding: 3px 8px; border-radius: 20px; font-family: 'Lexend', 'Inter', system-ui, sans-serif; text-transform: uppercase; }
+  .header h1 { font-size: 18px; font-weight: 700; color: var(--text); letter-spacing: 0; font-family: 'Lexend', 'Inter', system-ui, sans-serif; }
+  .header-sub { font-size: 11px; color: var(--text3); margin-top: 2px; font-family: 'Lexend', 'Inter', system-ui, sans-serif; line-height: 1.6; }
+  .header-credit { font-size: 11px; color: var(--text3); margin-top: 2px; font-family: 'Lexend', 'Inter', system-ui, sans-serif; }
   .progress-bar-wrap { background: var(--surface2); border-bottom: 1px solid var(--border); padding: 10px 24px; display: flex; align-items: center; gap: 12px; }
   .progress-track { flex: 1; height: 4px; background: var(--surface3); border-radius: 2px; overflow: hidden; }
   .progress-fill { height: 100%; background: linear-gradient(90deg, var(--teal), var(--accent)); border-radius: 2px; transition: width 0.4s ease; }
-  .progress-label { font-size: 11px; color: var(--text3); white-space: nowrap; }
+  .progress-label { font-size: 11px; color: var(--text3); white-space: nowrap; font-family: 'Lexend', 'Inter', system-ui, sans-serif; }
   .main { padding: 20px 24px; max-width: 780px; margin: 0 auto; }
   .step-card { background: var(--surface); border: 1px solid var(--border2); border-radius: var(--radius); padding: 20px; margin-bottom: 14px; animation: fadeIn 0.22s ease; }
   @keyframes fadeIn { from { opacity:0; transform: translateY(5px); } to { opacity:1; transform:none; } }
-  .step-label { font-size: 10px; font-weight: 600; letter-spacing: 0.09em; color: var(--teal); text-transform: uppercase; margin-bottom: 6px; }
-  .step-q { font-size: 15px; font-weight: 500; color: var(--text); line-height: 1.5; margin-bottom: 10px; }
+  .step-label { font-size: 11px; font-weight: 600; letter-spacing: 0; color: var(--teal); text-transform: none; margin-bottom: 6px; font-family: 'Lexend', 'Inter', system-ui, sans-serif; }
+  .step-q { font-size: 15px; font-weight: 600; color: var(--text); line-height: 1.45; margin-bottom: 10px; font-family: 'Lexend', 'Inter', system-ui, sans-serif; }
   .step-note { font-size: 12px; color: var(--text2); line-height: 1.55; padding: 8px 10px; background: var(--surface2); border-radius: var(--radius-sm); border-left: 2px solid var(--accent2); margin-bottom: 10px; }
   .step-note.warn { border-left-color: var(--amber); }
   .step-note.danger { border-left-color: var(--red); }
   .opts { display: flex; flex-direction: column; gap: 8px; }
-  .opt { background: var(--surface2); border: 1px solid var(--border2); border-radius: var(--radius-sm); color: var(--text); font-size: 13px; padding: 10px 14px; text-align: left; cursor: pointer; transition: all 0.13s; display: flex; align-items: center; gap: 10px; line-height: 1.4; }
+  .opt { background: var(--surface2); border: 1px solid var(--border2); border-radius: var(--radius-sm); color: var(--text); font-size: 13px; padding: 10px 14px; text-align: left; cursor: pointer; transition: all 0.13s; display: flex; align-items: center; gap: 10px; line-height: 1.4; font-family: 'Lexend', 'Inter', system-ui, sans-serif; font-weight: 400; }
   .opt:hover { background: var(--surface3); border-color: var(--accent); }
   .opt.sel { background: var(--blue-bg); border-color: var(--accent); }
   .radio-dot { width: 16px; height: 16px; min-width: 16px; border-radius: 50%; border: 1px solid var(--border2); background: var(--surface); display: flex; align-items: center; justify-content: center; }
@@ -65,16 +68,16 @@
   .radio-inner { width: 6px; height: 6px; border-radius: 50%; background: white; display: none; }
   .opt.sel .radio-inner { display: block; }
   .check-opts { display: flex; flex-direction: column; gap: 8px; margin-bottom: 10px; }
-  .copt { background: var(--surface2); border: 1px solid var(--border2); border-radius: var(--radius-sm); color: var(--text); font-size: 13px; padding: 10px 14px; text-align: left; cursor: pointer; transition: all 0.13s; display: flex; align-items: flex-start; gap: 10px; line-height: 1.4; }
+  .copt { background: var(--surface2); border: 1px solid var(--border2); border-radius: var(--radius-sm); color: var(--text); font-size: 13px; padding: 10px 14px; text-align: left; cursor: pointer; transition: all 0.13s; display: flex; align-items: flex-start; gap: 10px; line-height: 1.4; font-family: 'Lexend', 'Inter', system-ui, sans-serif; font-weight: 400; }
   .copt:hover { background: var(--surface3); }
   .copt.chk { background: var(--blue-bg); border-color: var(--accent); }
   .cbox { width: 16px; height: 16px; min-width: 16px; border-radius: 3px; border: 1px solid var(--border2); background: var(--surface); display: flex; align-items: center; justify-content: center; margin-top: 1px; font-size: 10px; color: white; }
   .copt.chk .cbox { background: var(--accent); border-color: var(--accent); }
   .action-row { display: flex; gap: 10px; margin-top: 14px; flex-wrap: wrap; align-items: center; }
-  .btn-p { background: var(--accent); border: none; border-radius: var(--radius-sm); color: white; font-size: 13px; font-weight: 500; padding: 9px 18px; cursor: pointer; transition: background 0.13s; }
+  .btn-p { background: var(--accent); border: none; border-radius: var(--radius-sm); color: white; font-size: 13px; font-weight: 600; padding: 9px 18px; cursor: pointer; transition: background 0.13s; font-family: 'Lexend', 'Inter', system-ui, sans-serif; }
   .btn-p:hover { background: var(--accent2); }
   .btn-p:disabled { opacity: 0.3; cursor: default; }
-  .btn-s { background: transparent; border: 1px solid var(--border2); border-radius: var(--radius-sm); color: var(--text2); font-size: 13px; padding: 9px 16px; cursor: pointer; transition: all 0.13s; }
+  .btn-s { background: transparent; border: 1px solid var(--border2); border-radius: var(--radius-sm); color: var(--text2); font-size: 13px; padding: 9px 16px; cursor: pointer; transition: all 0.13s; font-family: 'Lexend', 'Inter', system-ui, sans-serif; font-weight: 400; }
   .btn-s:hover { color: var(--text); background: var(--surface2); }
   .min-sel-note { font-size: 11px; color: var(--text3); margin-top: 4px; font-style: italic; }
   /* Results */
@@ -85,7 +88,7 @@
   .r-purple { background: var(--purple-bg); border: 1px solid var(--purple-border); }
   .r-teal { background: var(--teal-bg); border: 1px solid var(--teal-border); }
   .r-blue { background: var(--blue-bg); border: 1px solid var(--blue-border); }
-  .r-title { font-size: 16px; font-weight: 600; margin-bottom: 8px; display: flex; align-items: center; gap: 9px; }
+  .r-title { font-size: 16px; font-weight: 700; margin-bottom: 8px; display: flex; align-items: center; gap: 9px; font-family: 'Lexend', 'Inter', system-ui, sans-serif; }
   .r-green .r-title { color: var(--green); }
   .r-amber .r-title { color: var(--amber); }
   .r-red .r-title { color: var(--red); }
@@ -99,13 +102,13 @@
   .r-purple .r-icon { background: var(--purple); color: #fff; }
   .r-teal .r-icon { background: var(--teal); color: #fff; }
   .r-blue .r-icon { background: var(--accent); color: #fff; }
-  .r-ichd { font-size: 11px; font-weight: 600; letter-spacing: 0.06em; opacity: 0.7; margin-bottom: 6px; }
-  .r-body { font-size: 13px; color: var(--text2); line-height: 1.65; }
+  .r-ichd { font-size: 11px; font-weight: 600; letter-spacing: 0; opacity: 0.7; margin-bottom: 6px; font-family: 'Lexend', 'Inter', system-ui, sans-serif; }
+  .r-body { font-size: 13px; color: var(--text2); line-height: 1.65; font-family: 'Lexend', 'Inter', system-ui, sans-serif; }
   .r-body ul { margin: 8px 0 0 16px; }
   .r-body li { margin-bottom: 5px; }
   .r-body strong { color: var(--text); }
   .r-criteria { background: var(--surface); border: 1px solid var(--border2); border-radius: var(--radius); padding: 16px 18px; margin-bottom: 14px; }
-  .r-criteria-title { font-size: 11px; font-weight: 600; letter-spacing: 0.07em; color: var(--text3); text-transform: uppercase; margin-bottom: 10px; }
+  .r-criteria-title { font-size: 11px; font-weight: 600; letter-spacing: 0; color: var(--text3); text-transform: none; margin-bottom: 10px; font-family: 'Lexend', 'Inter', system-ui, sans-serif; }
   .crit-row { font-size: 13px; padding: 5px 0; border-bottom: 1px solid var(--border); display: flex; gap: 8px; align-items: flex-start; }
   .crit-row:last-child { border-bottom: none; }
   .crit-key { color: var(--text2); flex: 0 0 130px; font-size: 12px; }
@@ -121,8 +124,8 @@
   @media (max-width:520px) { .main { padding: 12px; } .header { padding: 12px; } .crit-key { flex: 0 0 100px; } }
   .doc-note-card { background:var(--surface); border:1px solid var(--border2); border-radius:var(--radius); margin-bottom:14px; overflow:hidden; }
   .doc-note-header { display:flex; align-items:center; justify-content:space-between; padding:10px 14px; background:var(--surface2); border-bottom:1px solid var(--border2); }
-  .doc-note-label { font-size:11px; font-weight:600; letter-spacing:.07em; color:var(--text3); text-transform:uppercase; }
-  .copy-btn { background:var(--blue-bg); border:1px solid var(--blue-border); border-radius:var(--radius-sm); color:var(--accent); font-size:12px; font-weight:600; padding:5px 12px; cursor:pointer; transition:all .15s; white-space:nowrap; }
+  .doc-note-label { font-size:11px; font-weight:600; letter-spacing:0; color:var(--text3); text-transform:none; font-family:'Lexend','Inter',system-ui,sans-serif; }
+  .copy-btn { background:var(--blue-bg); border:1px solid var(--blue-border); border-radius:var(--radius-sm); color:var(--accent); font-size:12px; font-weight:600; padding:5px 12px; cursor:pointer; transition:all .15s; white-space:nowrap; font-family:'Lexend','Inter',system-ui,sans-serif; }
   .copy-btn:hover { background:var(--accent); color:#fff; border-color:var(--accent); }
   .doc-note-body { font-family:'Courier New',Courier,monospace; font-size:11.5px; color:var(--text2); line-height:1.65; padding:14px 16px; white-space:pre-wrap; word-break:break-word; margin:0; background:transparent; }
 </style>
@@ -132,7 +135,8 @@
 <div class="header">
   <div class="header-top"><div class="header-badge">Diagnostic Tool</div></div>
   <h1>ICHD-3 Headache Classification</h1>
-  <div class="header-sub">International Classification of Headache Disorders, 3rd Edition &nbsp;·&nbsp; Stepwise diagnosis</div>
+  <div class="header-sub">International Classification of Headache Disorders, 3rd Edition · Stepwise diagnosis · For educator use only</div>
+  <div class="header-credit">Designed by Daniel Short, MD</div>
 </div>
 <div class="progress-bar-wrap">
   <div class="progress-track"><div class="progress-fill" id="pFill" style="width:0%"></div></div>
