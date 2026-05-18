@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Narcolepsy Criteria · ICSD-3-TR</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@300;400;500;600;700&family=Lexend:wght@300;400;500;600&display=swap');
 
 :root {
   --bg:        #0d1117;
@@ -31,7 +31,7 @@
   --text:      #e6edf3;
   --text2:     #aab4c0;
   --text3:     #6e7f94;
-  --sans:  'Inter', system-ui, sans-serif;
+  --sans:  'Lexend', 'Inter', system-ui, sans-serif;
   --mono:  'IBM Plex Mono', monospace;
 }
 
@@ -43,8 +43,9 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); font
 header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
 .h-title { font-size: 19px; font-weight: 700; }
 .h-title span { color: var(--indigo); }
-.h-sub { font-family: var(--mono); font-size: 10px; color: var(--text3); margin-top: 3px; line-height: 1.5; }
-.reset-btn { background: var(--card2); border: 1px solid var(--border); color: var(--text2); font-family: var(--mono); font-size: 11px; padding: 6px 14px; cursor: pointer; border-radius: 4px; transition: all 0.15s; white-space: nowrap; }
+.h-sub { font-family: var(--sans); font-size: 11px; color: var(--text3); margin-top: 3px; line-height: 1.6; }
+.h-credit { font-family: var(--sans); font-size: 11px; color: var(--text3); margin-top: 2px; }
+.reset-btn { background: var(--card2); border: 1px solid var(--border); color: var(--text2); font-family: var(--sans); font-size: 12px; padding: 6px 14px; cursor: pointer; border-radius: 4px; transition: all 0.15s; white-space: nowrap; font-weight: 500; }
 .reset-btn:hover { border-color: var(--indigo); color: var(--indigo); }
 
 /* PROGRESS */
@@ -52,11 +53,16 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
 .prog-fill { height: 100%; background: linear-gradient(90deg, var(--indigo), #c4b5fd); border-radius: 2px; transition: width 0.4s ease; box-shadow: 0 0 6px rgba(167,139,250,0.4); }
 
 /* STEP TABS */
-.steps { display: flex; border-bottom: 1px solid var(--border); margin-bottom: 20px; overflow-x: auto; }
-.stab { flex: 1; min-width: 72px; padding: 7px 4px 9px; text-align: center; font-family: var(--mono); font-size: 9px; color: var(--text3); border-bottom: 2px solid transparent; margin-bottom: -1px; transition: all 0.2s; line-height: 1.3; }
-.stab .sn { display: block; font-size: 14px; font-weight: 600; margin-bottom: 1px; }
-.stab.active { color: var(--indigo); border-bottom-color: var(--indigo); }
-.stab.done   { color: var(--green);  border-bottom-color: var(--green); }
+.steps { display: grid; grid-template-columns: repeat(5, 1fr); border: 1px solid var(--border); border-radius: 8px; margin-bottom: 20px; overflow: hidden; background: var(--card); }
+.stab { padding: 9px 4px 10px; text-align: center; font-family: var(--sans); font-size: 10px; color: var(--text3); border-right: 1px solid var(--border); transition: all 0.2s; cursor: pointer; background: var(--card); line-height: 1.3; }
+.stab:nth-child(5n) { border-right: none; }
+.stab .sn { display: flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 50%; background: var(--card2); border: 1px solid var(--border); font-size: 11px; font-weight: 700; margin: 0 auto 4px; transition: all 0.2s; }
+.stab .slbl { display: block; font-size: 9px; font-weight: 600; letter-spacing: 0; line-height: 1.3; }
+.stab.active { color: var(--indigo); background: var(--indigo-bg); }
+.stab.active .sn { background: var(--indigo); color: #0d1117; border-color: var(--indigo); }
+.stab.done { color: var(--green); }
+.stab.done .sn { background: var(--green); color: #0d1117; border-color: var(--green); }
+.stab:hover:not(.active) { background: var(--card2); }
 
 /* SUBTYPE SELECTOR */
 .subtype-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 0; }
@@ -64,7 +70,7 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
 .subtype-btn:hover { border-color: var(--border2); background: var(--card); }
 .subtype-btn.sel-t1 { border-color: var(--indigo-bd); background: var(--indigo-bg); }
 .subtype-btn.sel-t2 { border-color: var(--blue-bd); background: var(--blue-bg); }
-.sb-label { font-family: var(--mono); font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text3); margin-bottom: 4px; }
+.sb-label { font-family: var(--sans); font-size: 9px; font-weight: 600; letter-spacing: 0; text-transform: none; color: var(--text3); margin-bottom: 4px; }
 .sb-title { font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
 .sb-desc { font-size: 11px; color: var(--text2); line-height: 1.5; }
 .subtype-btn.sel-t1 .sb-title { color: var(--indigo); }
@@ -72,12 +78,12 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
 
 /* CARD */
 .card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 22px; margin-bottom: 12px; }
-.ctitle { font-size: 12px; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; margin-bottom: 3px; }
+.ctitle { font-size: 13px; font-weight: 700; font-family: var(--sans); letter-spacing: 0; text-transform: none; margin-bottom: 3px; }
 .csub { font-size: 12px; color: var(--text2); margin-bottom: 16px; line-height: 1.5; }
 
 /* SECTION LABEL */
-.slabel { display: flex; align-items: center; gap: 8px; font-family: var(--mono); font-size: 10px; font-weight: 500; color: var(--text2); letter-spacing: 0.07em; text-transform: uppercase; margin-bottom: 9px; padding-bottom: 6px; border-bottom: 1px solid var(--border); }
-.pill { font-size: 9px; padding: 1px 7px; border-radius: 20px; border: 1px solid; margin-left: auto; }
+.slabel { display: flex; align-items: center; gap: 8px; font-family: var(--sans); font-size: 11px; font-weight: 600; color: var(--text); letter-spacing: 0; text-transform: none; margin-bottom: 9px; padding-bottom: 6px; border-bottom: 1px solid var(--border); }
+.pill { font-size: 9px; padding: 1px 7px; border-radius: 20px; border: 1px solid; margin-left: auto; font-family: var(--sans); letter-spacing: 0.04em; text-transform: uppercase; }
 .pill-r  { border-color: var(--red);    color: var(--red);    background: var(--red-bg); }
 .pill-a  { border-color: var(--amber);  color: var(--amber);  background: var(--amber-bg); }
 .pill-i  { border-color: var(--indigo); color: var(--indigo); background: var(--indigo-bg); }
@@ -95,8 +101,8 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
 
 .crit-main { display: flex; align-items: center; gap: 10px; padding: 10px 13px; }
 .crit-name { flex: 1; font-size: 13px; font-weight: 500; color: var(--text); line-height: 1.3; }
-.xbtn { background: none; border: 1px solid var(--border); color: var(--text3); font-size: 11px; cursor: pointer; padding: 2px 8px; font-family: var(--mono); white-space: nowrap; transition: all 0.15s; flex-shrink: 0; border-radius: 3px; }
-.xbtn:hover { color: var(--blue); border-color: var(--blue); }
+.xbtn { background: rgba(188,140,255,0.10); border: 1px solid rgba(188,140,255,0.35); color: #bc8cff; font-size: 11px; cursor: pointer; padding: 2px 8px; font-family: var(--sans); white-space: nowrap; transition: all 0.15s; flex-shrink: 0; border-radius: 3px; font-weight: 500; }
+.xbtn:hover { background: #bc8cff; color: #0d1117; border-color: #bc8cff; }
 
 .crit-detail { display: none; padding: 10px 13px 12px; font-size: 12px; color: var(--text); line-height: 1.65; border-top: 1px solid var(--border); }
 .crit-detail.open { display: block; }
@@ -105,7 +111,7 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
 
 /* BUTTON ROW */
 .brow { display: flex; border-top: 1px solid var(--border); }
-.abtn { flex: 1; padding: 8px 6px; background: none; border: none; border-right: 1px solid var(--border); color: var(--text2); font-family: var(--mono); font-size: 11px; cursor: pointer; transition: all 0.12s; text-transform: uppercase; letter-spacing: 0.04em; font-weight: 500; }
+.abtn { flex: 1; padding: 9px 10px; background: none; border: none; border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); color: var(--text2); font-family: var(--sans); font-size: 12px; cursor: pointer; transition: all 0.12s; text-transform: none; letter-spacing: 0; font-weight: 400; line-height: 1.4; text-align: left; }
 .abtn:last-child { border-right: none; }
 .abtn:hover { background: var(--card2); color: var(--text); }
 .abtn.ay { background: var(--green-bg);  color: var(--green);  font-weight: 700; }
@@ -129,8 +135,8 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
 .pathway-box.pb-not  { border-color: var(--border2);   background: var(--card2); }
 
 .pb-header { padding: 9px 13px 7px; border-bottom: 1px solid var(--border); }
-.pb-title { font-size: 11px; font-weight: 700; color: var(--text); letter-spacing: 0.04em; margin-bottom: 2px; }
-.pb-sub { font-family: var(--mono); font-size: 9px; color: var(--text3); }
+.pb-title { font-size: 11px; font-weight: 700; color: var(--text); letter-spacing: 0; margin-bottom: 2px; }
+.pb-sub { font-family: var(--sans); font-size: 9px; color: var(--text3); }
 .pb-body { padding: 10px 13px 4px; }
 
 /* ALERT */
@@ -161,7 +167,7 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
 
 /* NAV */
 .nav-row { display: flex; justify-content: space-between; align-items: center; margin-top: 20px; gap: 10px; }
-.nbtn { padding: 9px 22px; border-radius: 5px; font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; border: 1px solid; cursor: pointer; font-weight: 500; transition: all 0.15s; }
+.nbtn { padding: 9px 22px; border-radius: 5px; font-family: var(--sans); font-size: 13px; letter-spacing: 0; text-transform: none; border: 1px solid; cursor: pointer; font-weight: 600; transition: all 0.15s; }
 .np { background: var(--indigo); border-color: var(--indigo); color: #0d1117; font-weight: 700; }
 .np:hover { background: #c4b5fd; border-color: #c4b5fd; }
 .np:disabled { opacity: 0.3; cursor: not-allowed; }
@@ -191,7 +197,7 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
 .sum-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
 @media (max-width: 580px) { .sum-grid { grid-template-columns: 1fr; } }
 .sblock { background: var(--card); border: 1px solid var(--border); border-radius: 6px; overflow: hidden; }
-.sbtitle { font-family: var(--mono); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; padding: 7px 11px; border-bottom: 1px solid var(--border); color: var(--text2); background: var(--card2); }
+.sbtitle { font-family: var(--sans); font-size: 11px; font-weight: 600; letter-spacing: 0; text-transform: none; padding: 7px 11px; border-bottom: 1px solid var(--border); color: var(--text); background: var(--card2); }
 .srow { display: flex; align-items: flex-start; gap: 8px; padding: 6px 11px; border-bottom: 1px solid var(--border); font-size: 12px; }
 .srow:last-child { border-bottom: none; }
 .dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; margin-top: 4px; }
@@ -212,9 +218,9 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
 
 /* DOC NOTE */
 .doc-header { display: flex; align-items: center; gap: 8px; margin-bottom: 5px; }
-.doc-tog { flex: 1; text-align: left; background: var(--card2); border: 1px solid var(--border2); border-radius: 5px; color: var(--text2); font-family: var(--mono); font-size: 11px; padding: 8px 13px; cursor: pointer; transition: all 0.15s; letter-spacing: 0.04em; }
+.doc-tog { flex: 1; text-align: left; background: var(--card2); border: 1px solid var(--border2); border-radius: 5px; color: var(--text2); font-family: var(--sans); font-size: 13px; padding: 8px 13px; cursor: pointer; transition: all 0.15s; }
 .doc-tog:hover { border-color: var(--indigo); color: var(--indigo); }
-.copy-btn { background: var(--card2); border: 1px solid var(--border2); border-radius: 5px; color: var(--text2); font-family: var(--mono); font-size: 11px; padding: 8px 14px; cursor: pointer; white-space: nowrap; transition: all 0.15s; display: none; }
+.copy-btn { background: var(--card2); border: 1px solid var(--border2); border-radius: 5px; color: var(--text2); font-family: var(--sans); font-size: 12px; padding: 8px 14px; cursor: pointer; white-space: nowrap; transition: all 0.15s; display: none; }
 .copy-btn.visible { display: block; }
 .copy-btn:hover { border-color: var(--green); color: var(--green); }
 .copy-btn.copied { border-color: var(--green); color: var(--green); background: var(--green-bg); }
@@ -228,7 +234,8 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
 <header>
   <div>
     <div class="h-title">Narcolepsy <span>ICSD-3-TR Criteria</span></div>
-    <div class="h-sub">AASM International Classification of Sleep Disorders, 3rd Edition, Text Revision · 2023<br>Central Disorders of Hypersomnolence · Type 1 (with cataplexy) · Type 2 (without cataplexy)</div>
+    <div class="h-sub">AASM International Classification of Sleep Disorders, 3rd Edition, Text Revision · 2023 · Central Disorders of Hypersomnolence · Type 1 (with cataplexy) · Type 2 (without cataplexy)</div>
+    <div class="h-credit">Designed by Daniel Short, MD</div>
   </div>
   <button class="reset-btn" onclick="resetAll()">↺ Reset</button>
 </header>
@@ -236,11 +243,11 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
 <div class="prog-track"><div class="prog-fill" id="pf" style="width:0%"></div></div>
 
 <div class="steps">
-  <div class="stab active" id="st0"><span class="sn">1</span>Subtype</div>
-  <div class="stab" id="st1"><span class="sn">2</span>EDS</div>
-  <div class="stab" id="st2"><span class="sn">3</span>Core Criteria</div>
-  <div class="stab" id="st3"><span class="sn">4</span>Exclusions</div>
-  <div class="stab" id="st4"><span class="sn">5</span>Verdict</div>
+  <div class="stab active" id="st0" onclick="goTab(0)" title="Go to step 1"><span class="sn">1</span><span class="slbl">Subtype</span></div>
+  <div class="stab" id="st1" onclick="goTab(1)" title="Go to step 2"><span class="sn">2</span><span class="slbl">EDS</span></div>
+  <div class="stab" id="st2" onclick="goTab(2)" title="Go to step 3"><span class="sn">3</span><span class="slbl">Core Criteria</span></div>
+  <div class="stab" id="st3" onclick="goTab(3)" title="Go to step 4"><span class="sn">4</span><span class="slbl">Exclusions</span></div>
+  <div class="stab" id="st4" onclick="goTab(4)" title="Go to step 5"><span class="sn">5</span><span class="slbl">Verdict</span></div>
 </div>
 
 <!-- ══════════════ SCREEN 0: SUBTYPE SELECTION ══════════════ -->
@@ -882,6 +889,11 @@ function rv() {
   note += `\nICSD-3-TR 2023 CLASSIFICATION\n${v.t}\n${v.d}\n\n`;
   note += `Key ICSD-3-TR 2023 update:\n  - Type 1: Cataplexy + overnight PSG SOREMP (<15 min from sleep onset) now independently\n    fulfills Criterion B without requiring MSLT. This is a new pathway confirmed by well-\n    established evidence (previously only allowed as a substitute for one of the MSLT SOREMPs).\n\nPre-MSLT requirements:\n  - Sleep logs (required) + actigraphy (whenever possible) ≥1-2 weeks prior\n  - Adequate sleep opportunity confirmed (insufficient sleep excluded)\n  - Circadian re-entrainment confirmed (shift workers re-entrained before testing)\n  - REM-altering medications withheld ≥2 weeks if clinically feasible\n  - Nocturnal PSG immediately preceding MSLT (same day)\n\nRef: American Academy of Sleep Medicine. International Classification of Sleep Disorders,\n3rd Edition, Text Revision (ICSD-3-TR). AASM; 2023.`;
   document.getElementById('dn').textContent = note;
+}
+
+function goTab(n) {
+  if (n === cur) return;
+  go(n);
 }
 
 function go(n) {
