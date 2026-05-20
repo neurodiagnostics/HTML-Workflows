@@ -1,0 +1,972 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>REM Sleep Behavior Disorder &middot; ICSD-3-TR Navigator</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Lexend:wght@300;400;500;600;700&display=swap');
+:root {
+  --bg:#0d1117; --card:#161b22; --card2:#1c2330; --border:#2a3a4a; --border2:#3a5060;
+  --green:#3fb950; --green-bg:rgba(63,185,80,.10); --green-bd:rgba(63,185,80,.35);
+  --red:#f85149; --red-bg:rgba(248,81,73,.10); --red-bd:rgba(248,81,73,.35);
+  --amber:#e3b341; --amber-bg:rgba(227,179,65,.10); --amber-bd:rgba(227,179,65,.35);
+  --blue:#58a6ff; --blue-bg:rgba(88,166,255,.10); --blue-bd:rgba(88,166,255,.35);
+  --purple:#bc8cff; --purple-bg:rgba(188,140,255,.10); --purple-bd:rgba(188,140,255,.35);
+  /* RBD accent: indigo — titles and interactive elements only */
+  --accent:#818cf8; --accent-bg:rgba(129,140,248,.10); --accent-bd:rgba(129,140,248,.35);
+  --accent2:#3730a3;
+  --text:#e6edf3; --text2:#aab4c0; --text3:#6e7f94;
+  --sans:'Lexend','Inter',system-ui,sans-serif; --mono:'IBM Plex Mono',monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:14px;line-height:1.5;min-height:100vh;}
+.app{max-width:960px;margin:0 auto;padding:0 20px 80px;}
+header{padding:24px 0 16px;border-bottom:1px solid var(--border);margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;}
+.h-title{font-size:19px;font-weight:700;font-family:var(--sans);}.h-title span{color:var(--accent);}
+.h-sub{font-size:11px;color:var(--text3);margin-top:3px;line-height:1.6;font-family:var(--sans);}
+.h-credit{font-size:11px;color:var(--text3);margin-top:2px;font-family:var(--sans);}
+.reset-btn{background:var(--card2);border:1px solid var(--border);color:var(--text2);font-family:var(--sans);font-size:12px;padding:6px 14px;cursor:pointer;border-radius:4px;transition:all .15s;white-space:nowrap;font-weight:500;}
+.reset-btn:hover{border-color:var(--accent);color:var(--accent);}
+.prog-track{height:3px;background:var(--border);margin-bottom:20px;border-radius:2px;}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--accent2),var(--accent));border-radius:2px;transition:width .4s ease;box-shadow:0 0 8px rgba(129,140,248,.4);}
+.steps{display:grid;grid-template-columns:repeat(6,1fr);border:1px solid var(--border);border-radius:8px;margin-bottom:20px;overflow:hidden;background:var(--card);}
+.stab{padding:8px 3px 9px;text-align:center;font-size:10px;color:var(--text3);border-right:1px solid var(--border);transition:all .2s;cursor:pointer;background:var(--card);line-height:1.3;font-family:var(--sans);}
+.stab:nth-child(6n){border-right:none;}
+.stab .sn{display:flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;background:var(--card2);border:1px solid var(--border);font-size:10px;font-weight:700;margin:0 auto 3px;transition:all .2s;}
+.stab .slbl{display:block;font-size:9px;font-weight:600;line-height:1.3;font-family:var(--sans);}
+.stab.active{color:var(--accent);background:var(--accent-bg);}
+.stab.active .sn{background:var(--accent);color:#0d1117;border-color:var(--accent);}
+.stab.done{color:var(--green);}.stab.done .sn{background:var(--green);color:#0d1117;border-color:var(--green);}
+.stab:hover:not(.active){background:var(--card2);}
+.card{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:22px;margin-bottom:12px;}
+.ctitle{font-size:13px;font-weight:700;margin-bottom:3px;font-family:var(--sans);}
+.csub{font-size:12px;color:var(--text2);margin-bottom:16px;line-height:1.5;font-family:var(--sans);}
+.slabel{display:flex;align-items:center;gap:8px;font-size:11px;font-weight:600;color:var(--text);margin-bottom:9px;padding-bottom:6px;border-bottom:1px solid var(--border);font-family:var(--sans);}
+.pill{font-size:9px;padding:1px 7px;border-radius:20px;border:1px solid;margin-left:auto;letter-spacing:.04em;text-transform:uppercase;font-family:var(--sans);}
+.pill-r{border-color:var(--red);color:var(--red);background:var(--red-bg);}
+.pill-a{border-color:var(--amber);color:var(--amber);background:var(--amber-bg);}
+.pill-i{border-color:var(--accent);color:var(--accent);background:var(--accent-bg);}
+.pill-g{border-color:var(--green);color:var(--green);background:var(--green-bg);}
+.pill-b{border-color:var(--blue);color:var(--blue);background:var(--blue-bg);}
+.crit{border:1px solid var(--border);border-radius:6px;margin-bottom:5px;overflow:hidden;transition:border-color .15s,background .15s;}
+.crit.c-yes{border-color:var(--green-bd);background:var(--green-bg);}
+.crit.c-no{border-color:var(--red-bd);background:var(--red-bg);}
+.crit.c-i{border-color:var(--accent-bd);background:var(--accent-bg);}
+.crit.c-abs{border-color:var(--border2);background:var(--card2);}
+.crit.c-part{border-color:var(--amber-bd);background:var(--amber-bg);}
+.crit.c-blue{border-color:var(--blue-bd);background:var(--blue-bg);}
+.crit-main{display:flex;align-items:center;gap:10px;padding:10px 13px;}
+.crit-name{flex:1;font-size:13px;font-weight:500;color:var(--text);line-height:1.3;font-family:var(--sans);}
+.xbtn{background:var(--purple-bg);border:1px solid var(--purple-bd);color:var(--purple);font-size:11px;cursor:pointer;padding:2px 8px;white-space:nowrap;transition:all .15s;flex-shrink:0;border-radius:3px;font-weight:500;font-family:var(--sans);}
+.xbtn:hover{background:var(--purple);color:#0d1117;border-color:var(--purple);}
+.crit-detail{display:none;padding:10px 13px 12px;font-size:12px;color:var(--text);line-height:1.65;border-top:1px solid var(--border);font-family:var(--sans);}
+.crit-detail.open{display:block;}
+.cnote{margin-top:8px;padding:8px 11px;background:var(--card2);border-left:3px solid var(--border2);font-size:11px;color:var(--text2);line-height:1.75;border-radius:0 3px 3px 0;font-family:var(--sans);}
+.cnote strong{color:var(--text);}
+.brow{display:flex;border-top:1px solid var(--border);flex-wrap:wrap;}
+.abtn{flex:1;min-width:80px;padding:9px 10px;background:none;border:none;border-right:1px solid var(--border);border-bottom:1px solid var(--border);color:var(--text2);font-family:var(--sans);font-size:11px;cursor:pointer;transition:all .12s;font-weight:400;line-height:1.4;text-align:left;}
+.abtn:last-child{border-right:none;}.abtn:hover{background:var(--card2);color:var(--text);}
+.abtn.ay{background:var(--green-bg);color:var(--green);font-weight:700;}
+.abtn.an{background:var(--red-bg);color:var(--red);font-weight:700;}
+.abtn.ai{background:var(--accent-bg);color:var(--accent);font-weight:700;}
+.abtn.ab{background:var(--blue-bg);color:var(--blue);font-weight:700;}
+.abtn.aa{background:var(--card2);color:var(--text2);font-weight:700;}
+.abtn.aw{background:var(--amber-bg);color:var(--amber);font-weight:700;}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:5px;}
+@media(max-width:600px){.two-col{grid-template-columns:1fr;}}
+.alrt{padding:9px 13px;border-radius:5px;font-size:12px;line-height:1.55;margin-top:12px;border-left:3px solid;display:none;font-family:var(--sans);}
+.alrt.show{display:block;}
+.aok{border-color:var(--green);background:var(--green-bg);color:#7ee787;}
+.awn{border-color:var(--amber);background:var(--amber-bg);color:var(--amber);}
+.aerr{border-color:var(--red);background:var(--red-bg);color:#ff7b72;}
+.ainf{border-color:var(--blue);background:var(--blue-bg);color:var(--blue);}
+.ai{border-color:var(--accent);background:var(--accent-bg);color:var(--accent);}
+.lbox{background:var(--card2);border:1px solid var(--border);border-radius:5px;padding:12px 15px;font-size:12px;color:var(--text2);line-height:1.75;margin-bottom:14px;font-family:var(--sans);}
+.lbox strong{color:var(--text);}
+.li{color:var(--accent);font-weight:600;} .lg{color:var(--green);font-weight:600;}
+.la{color:var(--amber);font-weight:600;} .lr{color:var(--red);font-weight:600;}
+.lb{color:var(--blue);font-weight:600;}
+/* Phenoconversion timeline */
+.pc-bar{display:flex;margin-bottom:14px;border-radius:6px;overflow:hidden;height:36px;}
+.pc-seg{display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;font-family:var(--sans);transition:flex .3s;}
+/* Criteria checklist */
+.chk-list{display:flex;flex-direction:column;gap:4px;margin-bottom:14px;}
+.chk-item{display:flex;align-items:center;gap:10px;padding:9px 12px;border:1px solid var(--border);border-radius:5px;background:var(--card2);font-size:12px;font-family:var(--sans);transition:all .15s;}
+.chk-item.chk-met{border-color:var(--green-bd);background:var(--green-bg);color:var(--text);}
+.chk-item.chk-not{border-color:var(--red-bd);background:var(--red-bg);color:var(--text);}
+.chk-icon{font-size:14px;flex-shrink:0;width:20px;text-align:center;}
+/* Nav */
+.nav-row{display:flex;justify-content:space-between;align-items:center;margin-top:20px;gap:10px;}
+.nbtn{padding:9px 22px;border-radius:5px;font-family:var(--sans);font-size:13px;border:1px solid;cursor:pointer;font-weight:600;transition:all .15s;}
+.np{background:var(--accent);border-color:var(--accent);color:#0d1117;font-weight:700;}
+.np:hover{background:#a5b4fc;border-color:#a5b4fc;}
+.np:disabled{opacity:.3;cursor:not-allowed;}
+.ns{background:transparent;border-color:var(--border2);color:var(--text2);}
+.ns:hover{border-color:var(--text);color:var(--text);}
+.screen{display:none;}.screen.active{display:block;animation:fu .25s ease;}
+@keyframes fu{from{opacity:0;transform:translateY(5px);}to{opacity:1;transform:translateY(0);}}
+/* Verdict */
+.vban{border-radius:8px;padding:22px 26px;margin-bottom:16px;border:2px solid;}
+.vdef{border-color:var(--green);background:var(--green-bg);}
+.vprob{border-color:var(--accent);background:var(--accent-bg);}
+.vexcl{border-color:var(--red);background:var(--red-bg);}
+.vund{border-color:var(--border2);background:var(--card2);}
+.vban-head{text-align:center;margin-bottom:14px;}
+.vlbl{font-family:var(--sans);font-size:9px;letter-spacing:.15em;text-transform:uppercase;opacity:.6;margin-bottom:5px;}
+.vtitle{font-size:22px;font-weight:700;margin-bottom:6px;font-family:var(--sans);}
+.vdef .vtitle{color:var(--green);}.vprob .vtitle{color:var(--accent);}
+.vexcl .vtitle{color:var(--red);}.vund .vtitle{color:var(--text2);}
+.vdesc{font-size:12px;color:var(--text2);line-height:1.7;max-width:640px;margin:0 auto;font-family:var(--sans);}
+.sum-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;}
+@media(max-width:580px){.sum-grid{grid-template-columns:1fr;}}
+.sblock{background:var(--card);border:1px solid var(--border);border-radius:6px;overflow:hidden;}
+.sbtitle{font-size:11px;font-weight:600;padding:7px 11px;border-bottom:1px solid var(--border);color:var(--text);background:var(--card2);font-family:var(--sans);}
+.srow{display:flex;align-items:flex-start;gap:8px;padding:6px 11px;border-bottom:1px solid var(--border);font-size:12px;font-family:var(--sans);}
+.srow:last-child{border-bottom:none;}
+.dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;margin-top:4px;}
+.dg{background:var(--green);}.dr{background:var(--red);}.di{background:var(--accent);}
+.db{background:var(--blue);}.da{background:var(--amber);}.dgr{background:var(--text3);}
+.sname{flex:1;color:var(--text);line-height:1.4;font-family:var(--sans);}
+.stag{font-family:var(--sans);font-size:9px;padding:1px 7px;border-radius:10px;border:1px solid;white-space:nowrap;}
+.tg{border-color:var(--green-bd);color:var(--green);}
+.tr{border-color:var(--red-bd);color:var(--red);}
+.ti{border-color:var(--accent-bd);color:var(--accent);}
+.tb{border-color:var(--blue-bd);color:var(--blue);}
+.ta{border-color:var(--amber-bd);color:var(--amber);}
+.tgr{border-color:var(--border2);color:var(--text3);}
+/* Doc note */
+.doc-header{display:flex;align-items:center;gap:8px;margin-bottom:5px;}
+.doc-tog{flex:1;text-align:left;background:var(--card2);border:1px solid var(--border2);border-radius:5px;color:var(--text2);font-family:var(--sans);font-size:13px;padding:8px 13px;cursor:pointer;transition:all .15s;}
+.doc-tog:hover{border-color:var(--accent);color:var(--accent);}
+.copy-btn{background:var(--card2);border:1px solid var(--border2);border-radius:5px;color:var(--text2);font-family:var(--sans);font-size:12px;padding:8px 14px;cursor:pointer;white-space:nowrap;transition:all .15s;display:none;}
+.copy-btn.visible{display:block;}.copy-btn:hover{border-color:var(--green);color:var(--green);}
+.copy-btn.copied{border-color:var(--green);color:var(--green);background:var(--green-bg);}
+.doc-body{display:none;background:var(--card2);border:1px solid var(--border2);border-radius:5px;padding:13px 15px;font-family:var(--mono);font-size:11px;color:var(--text2);line-height:1.85;white-space:pre-wrap;margin-bottom:12px;}
+.doc-body.open{display:block;}
+</style>
+</head>
+<body>
+<div class="app">
+<header>
+  <div>
+    <div class="h-title">REM Sleep Behavior Disorder &middot; <span>ICSD-3-TR Diagnostic Navigator</span></div>
+    <div class="h-sub">AASM ICSD-3-TR 2023 &middot; Schenck CH &amp; Mahowald MR 1996 &middot; Galbiati A et al. 2019 (phenoconversion) &middot; McCarter SJ et al. JCSM 2013 (treatment) &middot; For educator use only</div>
+    <div class="h-credit">Designed by Daniel Short, MD</div>
+  </div>
+  <button class="reset-btn" onclick="resetAll()">&#8634; Reset</button>
+</header>
+<div class="prog-track"><div class="prog-fill" id="pf" style="width:0%"></div></div>
+<div class="steps">
+  <div class="stab active" id="st0" onclick="goTab(0)"><span class="sn">1</span><span class="slbl">Clinical Features</span></div>
+  <div class="stab" id="st1" onclick="goTab(1)"><span class="sn">2</span><span class="slbl">ICSD-3-TR Criteria</span></div>
+  <div class="stab" id="st2" onclick="goTab(2)"><span class="sn">3</span><span class="slbl">PSG / RSWA</span></div>
+  <div class="stab" id="st3" onclick="goTab(3)"><span class="sn">4</span><span class="slbl">Mimics &amp; Causes</span></div>
+  <div class="stab" id="st4" onclick="goTab(4)"><span class="sn">5</span><span class="slbl">Phenoconversion</span></div>
+  <div class="stab" id="st5" onclick="goTab(5)"><span class="sn">6</span><span class="slbl">Treatment &amp; Verdict</span></div>
+</div>
+
+<!-- S0: CLINICAL FEATURES -->
+<div class="screen active" id="s0">
+<div class="card">
+  <div class="ctitle" style="color:var(--accent);">Step 1 &middot; Clinical Features &amp; Presentation</div>
+  <div class="csub">REM sleep behavior disorder (RBD) is a REM-stage parasomnia characterised by loss of normal skeletal muscle atonia during REM sleep, resulting in dream enactment behaviours (DEB). It is the only parasomnia for which polysomnography (PSG) is mandatory for diagnosis. Isolated (idiopathic) RBD is a prodromal synucleinopathy &mdash; the strongest single predictor of future Parkinson&rsquo;s disease, DLB, or MSA.</div>
+  <div class="lbox">
+    <strong>Epidemiology:</strong> Prevalence ~0.38&ndash;0.5% general population. Isolated RBD (iRBD) predominantly affects males (&gt;80%) aged &gt;50 years. Secondary RBD (associated with overt neurodegeneration or medications) has equal sex distribution and can occur at any age. RBD is present in ~30% of narcolepsy patients (any age, equal sex distribution).<br><br>
+    <span class="li">Core clinical triad:</span> (1) Dream enactment behaviours (vocalisation, limb movements, sitting up, falling out of bed); (2) unpleasant/action-filled dream content (being chased, attacked, fighting); (3) absence of confusion on awakening &mdash; distinguishing from NREM parasomnias.
+  </div>
+
+  <div class="slabel">Cardinal clinical features &mdash; select all present <span class="pill pill-r">ALL SHOULD BE ASSESSED</span></div>
+  <div class="two-col">
+    <div class="crit" id="deb-item">
+      <div class="crit-main">
+        <div class="crit-name">Dream enactment behaviour &mdash; vocalisation (talking, shouting, laughing, swearing), limb movements (punching, kicking, flailing), sitting up, falling out of bed</div>
+        <button class="xbtn" onclick="xp(this)">details &#9662;</button>
+      </div>
+      <div class="crit-detail">
+        Dream enactment in RBD typically occurs in the second half of the night (when REM sleep is most concentrated). Behaviours mirror dream content &mdash; the patient often reports dreaming of being attacked, chased, or defending themselves. <strong>Witness history is critical:</strong> the bed partner can often provide accurate descriptions that the patient cannot (patients may be unaware of mild symptoms). Episodes can be violent enough to cause self-injury (ecchymoses, lacerations, fractures reported in up to 55% of untreated patients) or injury to the bed partner.<br><br>
+        <strong>RBD1Q screening question (Postuma R et al.):</strong> &ldquo;Have you ever been told, or suspected yourself, that you seem to &lsquo;act out your dreams&rsquo; while asleep (for example, punching, flailing your arms in the air, making running movements, etc.)?&rdquo; &mdash; Sensitivity ~94%, specificity ~87% in validation studies.
+        <div class="cnote"><strong>Forensic implications:</strong> Because violent behaviours during RBD occur during sleep and are involuntary, they may carry forensic and medicolegal significance. Video-PSG documentation is critical in legal contexts. Courts in multiple countries have accepted confirmed RBD as a defence in assault cases involving sleep-related violence.</div>
+      </div>
+      <div class="brow">
+        <button class="abtn" onclick="setClin('deb',true)"  id="deb-yes">&#10003; Present</button>
+        <button class="abtn" onclick="setClin('deb',false)" id="deb-no">&#10007; Absent</button>
+      </div>
+    </div>
+
+    <div class="crit" id="dream-item">
+      <div class="crit-main">
+        <div class="crit-name">Unpleasant, action-filled, vivid dream content &mdash; being chased, attacked, fighting, defending; dream content corresponds to enacted behaviours</div>
+        <button class="xbtn" onclick="xp(this)">details &#9662;</button>
+      </div>
+      <div class="crit-detail">
+        Dream content in RBD is characteristically unpleasant and action-oriented &mdash; in stark contrast to the often benign or bizarre content of normal REM dreams. Patients frequently report dreams of being attacked by strangers, animals, or threatening figures. The dream narrative directly corresponds to the observed motor behaviour (e.g., a patient dreaming of being punched will make punching motions). <strong>However, dream recall is not required for diagnosis</strong> &mdash; some patients (especially those with cognitive impairment) have no dream recall. Some may recall pleasant dreams but still have violent behaviours.
+      </div>
+      <div class="brow">
+        <button class="abtn" onclick="setClin('dream',true)"  id="dream-yes">&#10003; Present (unpleasant/action dreams)</button>
+        <button class="abtn" onclick="setClin('dream',false)" id="dream-no">&#10007; Absent or not recalled</button>
+      </div>
+    </div>
+
+    <div class="crit" id="aware-item">
+      <div class="crit-main">
+        <div class="crit-name">Clear consciousness on awakening &mdash; patient is immediately alert, oriented, not confused; can recall the episode or associated dream</div>
+        <button class="xbtn" onclick="xp(this)">details &#9662;</button>
+      </div>
+      <div class="crit-detail">
+        Prompt orientation on awakening is a hallmark of RBD and distinguishes it from NREM parasomnias (sleepwalking, night terrors, confusional arousals) where amnesia and postictal confusion are typical. In RBD, abrupt awakening during an episode yields a fully conscious, oriented individual who may be distressed by what they were dreaming. This distinction is clinically important: waking an NREM parasomnia patient may prolong confusion, while waking an RBD patient typically terminates the episode safely.
+        <div class="cnote"><strong>Exception &mdash; RBD with dementia:</strong> In patients with DLB or advanced Parkinson&rsquo;s dementia, cognitive impairment may blunt post-arousal orientation. In this context, the witness history and PSG findings become even more important for diagnosis.</div>
+      </div>
+      <div class="brow">
+        <button class="abtn" onclick="setClin('aware',true)"  id="aware-yes">&#10003; Alert and oriented on awakening</button>
+        <button class="abtn" onclick="setClin('aware',false)" id="aware-no">&#10007; Confused / amnestic on awakening (consider NREM parasomnia)</button>
+      </div>
+    </div>
+
+    <div class="crit" id="injury-item">
+      <div class="crit-main">
+        <div class="crit-name">Sleep-related injury &mdash; self-injury (bruising, lacerations, fractures) or bed partner injury from enacted behaviours during sleep</div>
+        <button class="xbtn" onclick="xp(this)">details &#9662;</button>
+      </div>
+      <div class="crit-detail">
+        Injury has been reported in up to 55% of RBD patients prior to diagnosis and treatment. Injuries include bruising (most common), lacerations, fractures, subdural haematoma, and dental injuries. Bed partner injury is also common and may drive the patient to seek evaluation. <strong>The presence of injury significantly impacts treatment urgency</strong> &mdash; pharmacological intervention (melatonin or clonazepam) should be considered promptly once diagnosis is confirmed in patients with prior injury.
+      </div>
+      <div class="brow">
+        <button class="abtn" onclick="setClin('injury',true)"  id="injury-yes">&#10003; Injury present (self or bed partner)</button>
+        <button class="abtn" onclick="setClin('injury',false)" id="injury-no">&#10007; No injury reported</button>
+      </div>
+    </div>
+
+    <div class="crit" id="timing-item">
+      <div class="crit-main">
+        <div class="crit-name">Timing &mdash; episodes occur predominantly in the second half of the night (when REM sleep is most abundant); not at sleep onset</div>
+        <button class="xbtn" onclick="xp(this)">details &#9662;</button>
+      </div>
+      <div class="crit-detail">
+        Normal REM sleep is concentrated in the last third of the night. RBD episodes therefore peak in the early morning hours (3&ndash;7 AM), which distinguishes them from NREM parasomnias (sleep terrors, sleepwalking), which occur in the first third of the night during deep NREM sleep. Episodes at sleep onset suggest hypnic jerks (hypnagogic myoclonus) or narcolepsy with cataplexy rather than RBD. However, patients may not remember timing, and some episodes can occur earlier in the night &mdash; timing should be corroborated by bed partner or video.
+      </div>
+      <div class="brow">
+        <button class="abtn" onclick="setClin('timing','late')"  id="timing-late">&#10003; Second half of night (REM-consistent)</button>
+        <button class="abtn" onclick="setClin('timing','early')" id="timing-early">&#10007; First half / sleep onset (consider NREM)</button>
+        <button class="abtn" onclick="setClin('timing','unk')"   id="timing-unk">&mdash; Timing unknown</button>
+      </div>
+    </div>
+
+    <div class="crit" id="prodromes-item">
+      <div class="crit-main">
+        <div class="crit-name">Prodromal features of synucleinopathy &mdash; hyposmia, constipation, orthostatic hypotension, colour vision impairment, mild cognitive changes, depression, anxiety</div>
+        <button class="xbtn" onclick="xp(this)">details &#9662;</button>
+      </div>
+      <div class="crit-detail">
+        In isolated RBD, the presence of prodromal features of PD/DLB/MSA increases phenoconversion risk and should be systematically assessed at diagnosis and at annual follow-up visits. <strong>Hyposmia</strong> is present in ~50&ndash;70% of iRBD patients and is one of the earliest and most persistent markers. <strong>Constipation</strong> and autonomic dysfunction reflect early enteric and autonomic nervous system alpha-synuclein deposition. <strong>Colour vision impairment</strong> can be tested with standard colour vision plates. <strong>Orthostatic hypotension</strong> may indicate MSA spectrum. <strong>Mild cognitive impairment</strong> (especially visuospatial deficits) suggests DLB trajectory. Depression and anxiety are common in prodromal PD and may precede motor symptoms by years.
+        <div class="cnote"><strong>MDS Research Criteria for Prodromal PD (Berg D et al. 2015):</strong> The Parkinson&rsquo;s Foundation and MDS have established probability calculators for prodromal PD combining iRBD with additional prodromal markers. Referral to a movement disorder specialist or enrolment in an iRBD cohort study (e.g., PPMI, NAPS) is strongly recommended in confirmed iRBD.</div>
+      </div>
+      <div class="brow">
+        <button class="abtn" onclick="setClin('prodromes',true)"  id="prod-yes">&#10003; One or more prodromal features present</button>
+        <button class="abtn" onclick="setClin('prodromes',false)" id="prod-no">&#10007; No prodromal features identified</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="a0" class="alrt"></div>
+  <div class="nav-row"><div></div><button class="nbtn np" id="n0" onclick="go(1)" disabled>Next: ICSD-3-TR Criteria &#8594;</button></div>
+</div>
+</div>
+
+<!-- S1: ICSD-3-TR -->
+<div class="screen" id="s1">
+<div class="card">
+  <div class="ctitle" style="color:var(--accent);">Step 2 &middot; ICSD-3-TR Diagnostic Criteria (AASM 2023)</div>
+  <div class="csub">The International Classification of Sleep Disorders, Third Edition, Text Revision (ICSD-3-TR, AASM 2023) requires ALL four criteria to be met for a diagnosis of RBD. The criteria cannot diagnose RBD on clinical grounds alone &mdash; PSG documentation of REM sleep without atonia (RSWA) is mandatory unless the patient has an established synucleinopathy diagnosis.</div>
+
+  <div class="lbox">
+    <strong>ICSD-3-TR RBD Diagnostic Criteria (all four required):</strong><br>
+    <span class="li">Criterion A:</span> Repeated episodes of sleep-related vocalisation and/or complex motor behaviours<br>
+    <span class="li">Criterion B:</span> Behaviours documented by PSG to occur during REM sleep, OR based on clinical history of dream enactment are presumed to occur during REM sleep AND one of: (1) RSWA on PSG, or (2) established synucleinopathy diagnosis<br>
+    <span class="li">Criterion C:</span> PSG demonstrates REM sleep without atonia (RSWA)<br>
+    <span class="li">Criterion D:</span> The disturbance is not better explained by another sleep disorder, mental disorder, medical or neurological condition, medication, or substance
+  </div>
+
+  <div class="slabel">ICSD-3-TR Criterion A <span class="pill pill-r">REQUIRED</span></div>
+  <div class="crit" id="crit-a-item">
+    <div class="crit-main">
+      <div class="crit-name">Criterion A: Repeated episodes of sleep-related vocalisation AND/OR complex motor behaviours (at least 2 or more episodes are implied; a single witnessed episode may warrant PSG referral)</div>
+      <button class="xbtn" onclick="xp(this)">details &#9662;</button>
+    </div>
+    <div class="crit-detail">
+      &ldquo;Repeated&rdquo; implies the behaviours are not an isolated single event. In practice, even a single dramatic episode warrants evaluation given the diagnostic and prognostic implications. <strong>Vocalisation</strong> includes talking during sleep, shouting, laughing, swearing, or screaming. <strong>Complex motor behaviours</strong> include punching, kicking, grabbing, sitting up, jumping out of bed, falling, or any purposeful motor activity. Both must occur during (or presumed to occur during) REM sleep.
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setCritA(true)"  id="ca-yes">&#10003; Met &mdash; repeated episodes of vocalisation/motor behaviours</button>
+      <button class="abtn" onclick="setCritA(false)" id="ca-no">&#10007; Not met &mdash; behaviours absent or single uncertain episode</button>
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:14px;">ICSD-3-TR Criterion B <span class="pill pill-r">REQUIRED</span></div>
+  <div class="crit" id="crit-b-item">
+    <div class="crit-main">
+      <div class="crit-name">Criterion B: Behaviours documented by PSG during REM sleep, OR clinically presumed to occur during REM sleep (via dream enactment history) AND [RSWA on PSG OR established synucleinopathy]</div>
+      <button class="xbtn" onclick="xp(this)">details &#9662;</button>
+    </div>
+    <div class="crit-detail">
+      Criterion B has two pathways. <strong>Pathway 1 (ideal):</strong> Video-PSG directly captures behaviours occurring during electrographically verified REM sleep. <strong>Pathway 2 (clinical + PSG corroboration):</strong> Clinical history strongly suggests dream enactment (matching behaviours to dream content, second-half-of-night timing, immediate post-arousal awareness) AND either (a) RSWA documented on PSG, OR (b) the patient carries an established synucleinopathy diagnosis (PD, DLB, MSA) &mdash; in which case PSG with RSWA may not be separately required per ICSD-3-TR, though PSG remains diagnostically valuable to exclude OSA pseudo-RBD.<br><br>
+      <strong>ICSD-3-TR 2023 update:</strong> The ICSD-3-TR clarifies that in patients with established synucleinopathy and typical clinical history, the diagnosis of RBD can be supported without a separate PSG capturing behaviours, provided RSWA is present on any PSG &mdash; however, PSG is still strongly recommended to exclude treatable mimics.
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setCritB('psg')"    id="cb-psg">&#10003; PSG captured behaviours during REM</button>
+      <button class="abtn" onclick="setCritB('clindx')" id="cb-clindx">&#10003; Clinical history + RSWA on PSG (no episode captured)</button>
+      <button class="abtn" onclick="setCritB('synuc')"  id="cb-synuc">&#10003; Clinical history + established synucleinopathy</button>
+      <button class="abtn" onclick="setCritB(false)"    id="cb-no">&#10007; Not met</button>
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:14px;">ICSD-3-TR Criterion C <span class="pill pill-r">REQUIRED &mdash; RSWA ON PSG</span></div>
+  <div class="crit" id="crit-c-item">
+    <div class="crit-main">
+      <div class="crit-name">Criterion C: PSG demonstrates REM sleep without atonia (RSWA) &mdash; excessive phasic and/or tonic EMG activity during REM sleep on chin or limb leads</div>
+      <button class="xbtn" onclick="xp(this)">details &#9662;</button>
+    </div>
+    <div class="crit-detail">
+      RSWA is the neurophysiological hallmark of RBD and is required by ICSD-3-TR (with the exception noted in Criterion B pathway 3). RSWA is defined as: increased chin EMG tone in REM sleep (tonic RSWA: &gt;50% of a 30-second epoch with chin EMG activity &gt; minimum amplitude in NREM) and/or increased phasic chin or limb EMG bursts during REM (phasic RSWA: miniepochs [3-sec] with EMG bursts &gt; 4&times; background).<br><br>
+      <strong>AASM scoring criteria (Iber C et al.):</strong> Tonic chin EMG criterion: &gt;50% of a 30-second REM epoch has chin EMG amplitude above the minimum amplitude seen in any stage. Phasic EMG criterion: &ge;3 transient muscle activity bursts per epoch of at least 0.1&ndash;5 seconds duration. RSWA &gt;27% of REM epochs (tonic) or RSWA phasic &gt;15% strongly supports RBD (Frauscher B et al. Sleep 2012).<br><br>
+      <strong>Important:</strong> RSWA quantification should be reported as a percentage of REM epochs meeting criteria, to better distinguish RBD from subclinical RSWA in at-risk populations (Ferri R et al. Sleep 2023).
+      <div class="cnote"><strong>Subclinical RSWA:</strong> RSWA can be present without clinical dream enactment behaviours in patients with synucleinopathies and some healthy older adults. Subclinical RSWA alone does not meet ICSD-3-TR criteria for RBD diagnosis but may be a prodromal biomarker requiring longitudinal surveillance.</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setCritC(true)"  id="cc-yes">&#10003; RSWA confirmed on PSG</button>
+      <button class="abtn" onclick="setCritC(false)" id="cc-no">&#10007; PSG normal &mdash; REM atonia preserved</button>
+      <button class="abtn" onclick="setCritC(null)"  id="cc-nd">&mdash; PSG not yet performed</button>
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:14px;">ICSD-3-TR Criterion D <span class="pill pill-r">REQUIRED &mdash; EXCLUSION</span></div>
+  <div class="crit" id="crit-d-item">
+    <div class="crit-main">
+      <div class="crit-name">Criterion D: Disturbance not better explained by another sleep disorder, mental disorder, medical/neurological condition, medication, or substance</div>
+      <button class="xbtn" onclick="xp(this)">details &#9662;</button>
+    </div>
+    <div class="crit-detail">
+      Key exclusions to consider (see also Step 4 &mdash; Mimics &amp; Causes):<br>
+      &bull; <strong>OSA pseudo-RBD:</strong> Severe OSA can cause arousals from REM sleep mimicking RBD (with preserved REM atonia on non-apnoeic REM epochs). PSG AHI &gt;15 with behaviours only during apnoeic events = OSA pseudo-RBD. Treat OSA first and reassess.<br>
+      &bull; <strong>NREM parasomnia:</strong> First-half of night timing, amnesia, no RSWA on PSG.<br>
+      &bull; <strong>Nocturnal seizures:</strong> EEG-confirmed epileptiform activity; stereotyped events; FLEP scale.<br>
+      &bull; <strong>Antidepressant-induced RBD:</strong> SSRIs, SNRIs, TCAs can induce RSWA and RBD-like behaviours. Consider medication withdrawal/switch if feasible before labelling isolated RBD.<br>
+      &bull; <strong>Narcolepsy-associated RBD:</strong> Secondary RBD; CSF hypocretin &lt;110 pg/mL; cataplexy; MSLT SOREMP.
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setCritD(true)"  id="cd-yes">&#10003; No better explanation identified &mdash; Criterion D met</button>
+      <button class="abtn" onclick="setCritD(false)" id="cd-no">&#10007; Alternative explanation present &mdash; Criterion D NOT met</button>
+    </div>
+  </div>
+
+  <div id="a1" class="alrt"></div>
+  <div class="nav-row">
+    <button class="nbtn ns" onclick="go(0)">&larr; Back</button>
+    <button class="nbtn np" onclick="go(2)">Next: PSG / RSWA &#8594;</button>
+  </div>
+</div>
+</div>
+
+<!-- S2: PSG / RSWA -->
+<div class="screen" id="s2">
+<div class="card">
+  <div class="ctitle" style="color:var(--accent);">Step 3 &middot; Polysomnography &amp; RSWA Assessment</div>
+  <div class="csub">PSG is the only test required for RBD diagnosis. Video-PSG (vPSG) is the gold standard &mdash; simultaneous video recording allows correlation of observed behaviours with sleep stage. A single PSG may miss RSWA if no REM sleep is captured (REM suppression by medications, first-night effect, insufficient recording time). Repeat PSG may be required if clinical suspicion is high.</div>
+
+  <div class="lbox">
+    <strong>Technical requirements for RBD-focused PSG (AASM Manual):</strong><br>
+    <span class="li">Full PSG montage:</span> EEG (minimum C3/C4, O1/O2, F3/F4 + M1/M2 references), EOG, submental chin EMG (mandatory), bilateral anterior tibialis EMG, ECG, airflow, respiratory effort, SpO2<br>
+    <span class="li">Video recording:</span> Synchronised infrared video recording is essential for capturing and correlating behaviours with PSG stage &mdash; this is what makes it video-PSG (vPSG)<br>
+    <span class="li">Extended limb EMG:</span> Bilateral flexor digitorum superficialis (FDS) EMG is recommended by some experts for improved RSWA detection in the arms (RBD behaviours often involve upper extremities)<br>
+    <span class="li">RSWA scoring:</span> Report the percentage of REM epochs meeting tonic and phasic RSWA criteria separately on chin and limb leads. RSWA &gt;27% tonic or phasic &gt;15% strongly supports RBD (Frauscher B et al. Sleep 2012, n=133 RBD + 136 controls)
+  </div>
+
+  <div class="slabel">PSG performance and findings <span class="pill pill-r">REQUIRED FOR DIAGNOSIS</span></div>
+  <div class="crit" id="psg-done-item">
+    <div class="crit-main">
+      <div class="crit-name">PSG performed? Was adequate REM sleep recorded (&ge;15 minutes of REM sleep for reliable RSWA assessment)?</div>
+      <button class="xbtn" onclick="xp(this)">details &#9662;</button>
+    </div>
+    <div class="crit-detail">
+      <strong>REM sleep latency:</strong> If REM latency is very long (e.g., first REM period at 200+ minutes) or REM sleep is very brief (&lt;15 minutes total), RSWA scoring will be unreliable. REM-suppressing medications (SSRIs, SNRIs, TCAs, clonazepam itself, alcohol) should ideally be tapered before PSG if clinically feasible and safe. <strong>First-night effect:</strong> The laboratory environment may alter sleep architecture and reduce REM sleep, especially in anxious patients. If clinical suspicion remains high after a normal study, repeat PSG is warranted.<br><br>
+      <strong>Home sleep testing (HSAT) is NOT appropriate for RBD diagnosis</strong> &mdash; portable monitoring devices do not include video, full EEG staging, or adequate EMG channels for RSWA scoring. In-laboratory vPSG is mandatory.
+      <div class="cnote"><strong>Why PSG is mandatory (and cannot be replaced):</strong> OSA pseudo-RBD presents identically to true RBD clinically. Without PSG: (1) OSA cannot be excluded, (2) REM atonia cannot be assessed, (3) sleep stage cannot be confirmed. A clinical diagnosis of &ldquo;probable RBD&rdquo; without PSG will misclassify a substantial fraction of patients (estimated 20&ndash;40% false positives when PSG is not performed).</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setPSG('done')"     id="psg-done">&#10003; PSG performed &mdash; adequate REM sleep recorded</button>
+      <button class="abtn" onclick="setPSG('poor-rem')" id="psg-poor">&#10007; PSG performed but inadequate REM (&lt;15 min) &mdash; repeat indicated</button>
+      <button class="abtn" onclick="setPSG('nd')"       id="psg-nd">&mdash; PSG not yet performed</button>
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:14px;">RSWA quantification <span class="pill pill-r">MUST BE REPORTED IN PSG</span></div>
+  <div class="crit" id="rswa-item">
+    <div class="crit-main">
+      <div class="crit-name">RSWA severity &mdash; percentage of REM epochs with tonic or phasic EMG activity above threshold on chin or limb leads</div>
+      <button class="xbtn" onclick="xp(this)">details &#9662;</button>
+    </div>
+    <div class="crit-detail">
+      <strong>RSWA classification (Frauscher B et al. Sleep 2012, n=269):</strong><br>
+      &bull; <strong>Tonic RSWA</strong> (chin): &gt;50% of a 30-second epoch with chin EMG amplitude &gt;minimum. Cut-off &gt;27.3% of REM epochs: sensitivity 81%, specificity 90% for RBD.<br>
+      &bull; <strong>Phasic RSWA</strong> (chin or limb): Bursts 0.1&ndash;5s duration, &ge;3/epoch. Cut-off &gt;15.2% of REM epochs: sensitivity 73%, specificity 91%.<br>
+      &bull; <strong>Combination tonic+phasic:</strong> Highest diagnostic accuracy when both assessed. Some labs use the SINBAR criteria (Ferri R et al.) with separate arm and leg EMG electrodes for more precise quantification.<br><br>
+      <strong>Subclinical RSWA:</strong> RSWA may be present in patients with synucleinopathies who do not yet have clinical dream enactment behaviours. These patients should be monitored annually, as RBD behaviours may emerge over time.
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setRSWA('def')"    id="rswa-def">&#10003; RSWA clearly present (meets criteria)</button>
+      <button class="abtn" onclick="setRSWA('sub')"    id="rswa-sub">&#9888; Subclinical RSWA &mdash; some RSWA but no captured behaviours</button>
+      <button class="abtn" onclick="setRSWA('absent')" id="rswa-absent">&#10007; RSWA absent &mdash; normal REM atonia</button>
+      <button class="abtn" onclick="setRSWA('nd')"     id="rswa-nd">&mdash; Not yet assessed / PSG pending</button>
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:14px;">Behaviours captured on PSG video <span class="pill pill-b">IDEAL &mdash; CONFIRMS REM TIMING OF EVENTS</span></div>
+  <div class="crit" id="vid-item">
+    <div class="crit-main">
+      <div class="crit-name">Video recording during PSG &mdash; were dream enactment behaviours captured on video and correlated with PSG-confirmed REM sleep?</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setVid('yes')"     id="vid-yes">&#10003; Behaviours captured during PSG-confirmed REM</button>
+      <button class="abtn" onclick="setVid('rswa-only')" id="vid-rswa">&#10003; No behaviours captured but RSWA documented</button>
+      <button class="abtn" onclick="setVid('no')"      id="vid-no">&#10007; No behaviours and no RSWA</button>
+      <button class="abtn" onclick="setVid('nd')"      id="vid-nd">&mdash; PSG pending</button>
+    </div>
+  </div>
+
+  <div id="a2" class="alrt"></div>
+  <div class="nav-row">
+    <button class="nbtn ns" onclick="go(1)">&larr; Back</button>
+    <button class="nbtn np" onclick="go(3)">Next: Mimics &amp; Causes &#8594;</button>
+  </div>
+</div>
+</div>
+
+<!-- S3: MIMICS -->
+<div class="screen" id="s3">
+<div class="card">
+  <div class="ctitle" style="color:var(--accent);">Step 4 &middot; RBD Mimics, Secondary Causes &amp; Classification</div>
+  <div class="csub">Multiple conditions can produce nocturnal behaviours clinically indistinguishable from RBD. PSG is mandatory to exclude the most common mimic (OSA pseudo-RBD). Once RBD is confirmed, it must be classified as isolated (iRBD) or secondary (associated with a known cause), as this distinction has profound prognostic and management implications.</div>
+
+  <div class="lbox">
+    <strong>RBD mimic hierarchy (PSG required to differentiate all):</strong><br>
+    <span class="lr">OSA pseudo-RBD (most common mimic):</span> Severe OSA causes REM-fragmentation arousals with complex behaviours. PSG shows normal REM atonia on non-apnoeic epochs; behaviours coincide with apnoeic arousals. AHI often &gt;40/hr. CPAP eliminates behaviours completely. Reported in ~10&ndash;20% of patients clinically suspected to have RBD.<br>
+    <span class="la">NREM parasomnias (disorders of arousal):</span> Confusional arousal, sleepwalking, sleep terrors. First-half of night; amnesia; PSG shows behaviours during N3 NREM, normal REM atonia.<br>
+    <span class="la">Nocturnal seizures (sleep-related hypermotor epilepsy):</span> Stereotyped, shorter episodes; may occur at any time of night; frontal lobe epilepsy EEG pattern; FLEP scale helpful. EMG on PSG may not show RSWA.<br>
+    <span class="lb">Antidepressant-induced RSWA/RBD:</span> SSRIs (especially paroxetine, fluoxetine), SNRIs, TCAs can induce RSWA in up to 15% of users and frank RBD symptoms. Clue: temporal onset with medication start. Consider medication switch to mirtazapine, bupropion, or agomelatine (less RSWA association).<br>
+    <span class="lb">PLMD pseudo-RBD:</span> Vigorous periodic limb movements can occasionally cause arousals with complex behaviours. PSG shows PLMS in NREM and REM, preserved REM atonia in non-PLM epochs.
+  </div>
+
+  <div class="slabel">Most likely mimic excluded? <span class="pill pill-r">OSA MUST BE EXCLUDED BY PSG FIRST</span></div>
+  <div class="crit" id="osa-excl-item">
+    <div class="crit-main">
+      <div class="crit-name">Obstructive sleep apnea pseudo-RBD excluded &mdash; PSG AHI, REM atonia on non-apnoeic epochs, correlation of behaviours with apnoeic events vs. REM stage</div>
+      <button class="xbtn" onclick="xp(this)">details &#9662;</button>
+    </div>
+    <div class="crit-detail">
+      In OSA pseudo-RBD: (1) AHI is typically &gt;30&ndash;40 events/hour; (2) behaviours occur at the termination of apnoeic events (arousals from REM), not during sustained REM sleep; (3) REM atonia is preserved on non-apnoeic REM epochs; (4) CPAP therapy eliminates behaviours completely. If both OSA and true RBD coexist (which can happen), CPAP treatment must be trialled first; if behaviours persist after adequate OSA treatment, repeat PSG for RSWA evaluation.
+      <div class="cnote"><strong>OSA and RBD co-occurrence:</strong> True RBD and OSA can genuinely coexist, as both are common in older males. The key question is whether behaviours persist on adequate PAP therapy. Residual behaviours on PAP + RSWA on PSG (in non-apnoeic REM epochs) = true comorbid RBD requiring treatment.</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setMimic('osa','excluded')" id="osa-excl">&#10003; OSA excluded or OSA treated &mdash; behaviours persist (true RBD)</button>
+      <button class="abtn" onclick="setMimic('osa','present')"  id="osa-present">&#10007; OSA present &mdash; behaviours may be OSA pseudo-RBD; treat OSA first</button>
+      <button class="abtn" onclick="setMimic('osa','nd')"       id="osa-nd">&mdash; PSG not done / AHI unknown</button>
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:14px;">Seizure excluded <span class="pill pill-a">EEG REQUIRED IF CLINICAL SUSPICION</span></div>
+  <div class="crit" id="sz-item">
+    <div class="crit-main">
+      <div class="crit-name">Nocturnal seizures excluded &mdash; clinical features (stereotyped, brief, hypermotor), EEG findings, FLEP scale assessment</div>
+      <button class="xbtn" onclick="xp(this)">details &#9662;</button>
+    </div>
+    <div class="crit-detail">
+      Sleep-related hypermotor epilepsy (SHE, formerly nocturnal frontal lobe epilepsy) can closely mimic RBD. Features favouring seizure: highly stereotyped episodes; brief duration (typically &lt;2 minutes); hypermotor activity (cycling, thrashing, jumping); may occur multiple times per night at any sleep stage; personal or family history of epilepsy; PSG EEG showing ictal pattern. The Frontal Lobe Epilepsy and Parasomnias (FLEP) scale can assist differentiation. Full-night vPSG with 18-channel EEG and prolonged montage is gold standard for excluding nocturnal seizures.
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setMimic('sz','excluded')" id="sz-excl">&#10003; Seizures excluded clinically / EEG normal</button>
+      <button class="abtn" onclick="setMimic('sz','possible')" id="sz-poss">&#9888; Seizures possible &mdash; EEG / epilepsy evaluation indicated</button>
+      <button class="abtn" onclick="setMimic('sz','nd')"       id="sz-nd">&mdash; Not evaluated</button>
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:14px;">RBD classification &mdash; isolated vs. secondary <span class="pill pill-i">CRITICAL FOR PROGNOSIS</span></div>
+  <div class="crit" id="class-item">
+    <div class="crit-main">
+      <div class="crit-name">Classification: isolated RBD (iRBD) vs. secondary RBD (associated with synucleinopathy, narcolepsy, medications, autoimmune disease, structural lesion)</div>
+      <button class="xbtn" onclick="xp(this)">details &#9662;</button>
+    </div>
+    <div class="crit-detail">
+      <strong>Isolated (idiopathic) RBD (iRBD):</strong> No identifiable cause. The most prognostically significant form &mdash; &gt;80% will develop PD, DLB, or MSA within their lifetime (Galbiati A et al. 2019 meta-analysis: 33.5% at 5 years, 82.4% at 10.5 years, 96.6% at 14 years). Term &ldquo;isolated&rdquo; is now preferred over &ldquo;idiopathic&rdquo; as it accurately reflects the absence of identified cause (rather than implying unknown aetiology).<br><br>
+      <strong>Secondary RBD causes:</strong><br>
+      &bull; <strong>Neurodegenerative:</strong> PD (~30&ndash;50%), DLB (~80%), MSA (&gt;90%), Alzheimer&rsquo;s (less common but reported)<br>
+      &bull; <strong>Narcolepsy:</strong> ~30% of narcolepsy patients, typically younger, equal sex distribution, CSF hypocretin deficient<br>
+      &bull; <strong>Medication-induced:</strong> SSRIs, SNRIs, TCAs, MAO-B inhibitors<br>
+      &bull; <strong>Autoimmune:</strong> Anti-IgLON5 syndrome (RBD + NREM parasomnia + bulbar dysfunction + tauopathy), anti-Ma2, LGI1<br>
+      &bull; <strong>Structural:</strong> Brainstem lesion (tumour, stroke, MS plaque affecting subcoeruleus/sublaterodorsal nucleus)
+      <div class="cnote"><strong>Anti-IgLON5 disease:</strong> A rare but treatable autoimmune condition that can cause a complex sleep disorder including both REM and NREM parasomnias, stridor, bulbar dysfunction, gait ataxia, and a tauopathy. Serum and CSF IgLON5 antibodies confirm diagnosis. Responds to immunotherapy. Must be distinguished from synucleinopathy-associated RBD.</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setClass('isolated')" id="cls-isolated">iRBD &mdash; Isolated (no identified cause)</button>
+      <button class="abtn" onclick="setClass('synuc')"    id="cls-synuc">Secondary &mdash; Synucleinopathy (PD / DLB / MSA)</button>
+      <button class="abtn" onclick="setClass('narco')"    id="cls-narco">Secondary &mdash; Narcolepsy</button>
+      <button class="abtn" onclick="setClass('meds')"     id="cls-meds">Secondary &mdash; Medication-induced</button>
+      <button class="abtn" onclick="setClass('auto')"     id="cls-auto">Secondary &mdash; Autoimmune / structural</button>
+      <button class="abtn" onclick="setClass('nd')"       id="cls-nd">&mdash; Undetermined pending workup</button>
+    </div>
+  </div>
+
+  <div id="a3" class="alrt"></div>
+  <div class="nav-row">
+    <button class="nbtn ns" onclick="go(2)">&larr; Back</button>
+    <button class="nbtn np" onclick="go(4)">Next: Phenoconversion Risk &#8594;</button>
+  </div>
+</div>
+</div>
+
+<!-- S4: PHENOCONVERSION -->
+<div class="screen" id="s4">
+<div class="card">
+  <div class="ctitle" style="color:var(--accent);">Step 5 &middot; Phenoconversion Risk &amp; Prodromal Biomarker Assessment</div>
+  <div class="csub">Isolated RBD is now established as the strongest clinical predictor of alpha-synucleinopathy (PD, DLB, MSA). Galbiati A et al. meta-analysis (Neurology 2019): 33.5% phenoconversion at 5 years, 82.4% at 10.5 years, 96.6% at 14 years. The prodromal period from RBD onset to overt neurodegeneration averages 12&ndash;14 years but can span 3&ndash;30+ years. Phenotype (PD vs. DLB vs. MSA) cannot be reliably predicted from clinical features alone.</div>
+
+  <div class="lbox">
+    <strong>Phenoconversion distribution in iRBD (estimated from longitudinal cohort data):</strong><br>
+    <span class="li">Dementia with Lewy bodies (DLB):</span> ~50% of phenoconverters<br>
+    <span class="li">Parkinson&rsquo;s disease (PD):</span> ~45% of phenoconverters<br>
+    <span class="li">Multiple system atrophy (MSA):</span> ~5% of phenoconverters<br><br>
+    <strong>Predictors of faster phenoconversion (higher risk):</strong> older age at RBD onset; male sex; presence of mild cognitive impairment at diagnosis; greater RSWA burden on PSG; abnormal dopamine transporter imaging (DATscan); hyposmia; colour vision impairment; constipation; orthostatic hypotension; positive alpha-synuclein seed amplification assay (SAA) in CSF or skin; reduced cardiac MIBG uptake.
+  </div>
+
+  <!-- Visual phenoconversion bar -->
+  <div class="slabel">Cumulative phenoconversion risk &mdash; isolated RBD (Galbiati 2019 meta-analysis) <span class="pill pill-r">COUNSEL ALL iRBD PATIENTS</span></div>
+  <div style="margin-bottom:14px;">
+    <div class="pc-bar" style="height:40px;border-radius:6px;overflow:hidden;">
+      <div style="flex:33.5;background:rgba(129,140,248,.35);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;color:var(--accent);border-right:1px solid var(--border);font-family:var(--sans);">5 yr: 33.5%</div>
+      <div style="flex:48.9;background:rgba(227,179,65,.25);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;color:var(--amber);border-right:1px solid var(--border);font-family:var(--sans);">10.5 yr: 82.4%</div>
+      <div style="flex:14.2;background:rgba(248,81,73,.35);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;color:var(--red);font-family:var(--sans);">14 yr: 96.6%</div>
+    </div>
+    <div style="font-size:10px;color:var(--text3);margin-top:5px;font-family:var(--sans);">Cumulative proportion converting to PD, DLB, or MSA &mdash; Galbiati A et al. Neurology 2019;93:e1932 (meta-analysis, n=1,279 iRBD patients)</div>
+  </div>
+
+  <div class="slabel">Prodromal markers assessment &mdash; document at diagnosis and annual follow-up <span class="pill pill-a">STRATIFIES PHENOCONVERSION RISK</span></div>
+  <div class="two-col">
+    <div class="crit" id="hypo-item">
+      <div class="crit-main"><div class="crit-name">Hyposmia &mdash; reduced smell identification (UPSIT / Sniffin&rsquo; Sticks; present in ~50&ndash;70% of iRBD)</div></div>
+      <div class="brow">
+        <button class="abtn" onclick="setProd('hypo',true)"  id="hypo-yes">&#10003; Present</button>
+        <button class="abtn" onclick="setProd('hypo',false)" id="hypo-no">&#10007; Absent</button>
+        <button class="abtn" onclick="setProd('hypo',null)"  id="hypo-nd">&mdash; Not tested</button>
+      </div>
+    </div>
+    <div class="crit" id="constip-item">
+      <div class="crit-main"><div class="crit-name">Constipation / autonomic dysfunction &mdash; &lt;3 stools/week, urinary dysfunction, orthostatic hypotension (&ge;20 mmHg SBP drop)</div></div>
+      <div class="brow">
+        <button class="abtn" onclick="setProd('constip',true)"  id="constip-yes">&#10003; Present</button>
+        <button class="abtn" onclick="setProd('constip',false)" id="constip-no">&#10007; Absent</button>
+        <button class="abtn" onclick="setProd('constip',null)"  id="constip-nd">&mdash; Not assessed</button>
+      </div>
+    </div>
+    <div class="crit" id="mci-item">
+      <div class="crit-main"><div class="crit-name">Mild cognitive impairment (MCI) &mdash; especially visuospatial or executive dysfunction (suggests DLB trajectory)</div></div>
+      <div class="brow">
+        <button class="abtn" onclick="setProd('mci',true)"  id="mci-yes">&#10003; Present</button>
+        <button class="abtn" onclick="setProd('mci',false)" id="mci-no">&#10007; Absent</button>
+        <button class="abtn" onclick="setProd('mci',null)"  id="mci-nd">&mdash; Not tested</button>
+      </div>
+    </div>
+    <div class="crit" id="dat-item">
+      <div class="crit-main"><div class="crit-name">DATscan (123I-ioflupane SPECT) &mdash; reduced striatal dopamine transporter uptake; present in ~30&ndash;50% of iRBD at diagnosis</div>
+        <button class="xbtn" onclick="xp(this)">details &#9662;</button>
+      </div>
+      <div class="crit-detail">
+        Abnormal DATscan in a patient with iRBD effectively confirms pre-motor dopaminergic neurodegeneration and places the patient on the PD spectrum. Abnormal DATscan in iRBD is associated with 3&ndash;4&times; higher phenoconversion rate and shorter time to conversion. However, DATscan is normal in many iRBD patients (especially early in the disease course) and a normal scan does not reassure regarding long-term risk. DATscan is not required for RBD diagnosis but is a useful prognostic biomarker.
+        <div class="cnote"><strong>Alpha-synuclein seed amplification assay (SAA):</strong> CSF or skin biopsy-based SAA (RT-QuIC or PMCA) detects misfolded alpha-synuclein with &gt;90% sensitivity and specificity in iRBD patients who will phenoconvert. This is currently the most sensitive biomarker for underlying synucleinopathy. Available in specialised research centres and increasingly in clinical practice. A positive SAA in iRBD essentially confirms underlying alpha-synuclein pathology (Parkinson&rsquo;s Foundation PPMI data, 2023).</div>
+      </div>
+      <div class="brow">
+        <button class="abtn" onclick="setProd('dat','abnorm')" id="dat-abn">&#10003; Abnormal DATscan (reduced uptake)</button>
+        <button class="abtn" onclick="setProd('dat','normal')" id="dat-norm">&#10007; Normal DATscan</button>
+        <button class="abtn" onclick="setProd('dat',null)"     id="dat-nd">&mdash; Not performed</button>
+      </div>
+    </div>
+    <div class="crit" id="mibg-item">
+      <div class="crit-main"><div class="crit-name">Cardiac MIBG scintigraphy &mdash; reduced cardiac sympathetic innervation; abnormal in ~60&ndash;80% of iRBD; favours PD/DLB over MSA</div></div>
+      <div class="brow">
+        <button class="abtn" onclick="setProd('mibg','abnorm')" id="mibg-abn">&#10003; Reduced cardiac MIBG uptake</button>
+        <button class="abtn" onclick="setProd('mibg','normal')" id="mibg-norm">&#10007; Normal MIBG</button>
+        <button class="abtn" onclick="setProd('mibg',null)"     id="mibg-nd">&mdash; Not performed</button>
+      </div>
+    </div>
+    <div class="crit" id="saa-item">
+      <div class="crit-main"><div class="crit-name">Alpha-synuclein SAA (CSF or skin biopsy) &mdash; &gt;90% sensitivity/specificity in iRBD; confirms underlying synuclein pathology</div></div>
+      <div class="brow">
+        <button class="abtn" onclick="setProd('saa','pos')" id="saa-pos">&#10003; Positive (synuclein pathology confirmed)</button>
+        <button class="abtn" onclick="setProd('saa','neg')" id="saa-neg">&#10007; Negative</button>
+        <button class="abtn" onclick="setProd('saa',null)"  id="saa-nd">&mdash; Not performed</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="a4" class="alrt"></div>
+  <div class="nav-row">
+    <button class="nbtn ns" onclick="go(3)">&larr; Back</button>
+    <button class="nbtn np" onclick="go(5)">Generate Verdict &amp; Treatment &#8594;</button>
+  </div>
+</div>
+</div>
+
+<!-- S5: TREATMENT + VERDICT -->
+<div class="screen" id="s5">
+  <div id="vout"></div>
+  <div class="doc-header">
+    <button class="doc-tog" onclick="toggleDoc()">&#9660; Documentation Note</button>
+    <button class="copy-btn" id="copy-btn" onclick="copyDoc()">&#9138; Copy</button>
+  </div>
+  <div class="doc-body" id="dn"></div>
+  <div class="nav-row">
+    <button class="nbtn ns" onclick="go(4)">&larr; Back</button>
+    <button class="nbtn np" onclick="resetAll()">&#8634; New Evaluation</button>
+  </div>
+</div>
+</div>
+
+<script>
+const S = {
+  // Clinical
+  deb:null, dream:null, aware:null, injury:null, timing:null, prodromes:null,
+  // ICSD-3-TR criteria
+  critA:null, critB:null, critC:null, critD:null,
+  // PSG
+  psg:null, rswa:null, vid:null,
+  // Mimics
+  osa:null, sz:null, rbd_class:null,
+  // Prodromal
+  prod: {hypo:null, constip:null, mci:null, dat:null, mibg:null, saa:null}
+};
+let cur = 0;
+
+function setClin(k, v) {
+  S[k] = v;
+  const item = document.getElementById(k+'-item');
+  if(item){ item.className='crit '+(v===true||v==='late'?'c-yes':v===false||v==='early'?'c-no':v==='unk'?'c-abs':''); }
+  // Button states
+  const map_id = {deb:['deb-yes','deb-no'], dream:['dream-yes','dream-no'], aware:['aware-yes','aware-no'],
+    injury:['injury-yes','injury-no'], prodromes:['prod-yes','prod-no']};
+  if(map_id[k]) {
+    map_id[k].forEach(id=>{const b=document.getElementById(id);if(b)b.classList.remove('ay','an');});
+    if(v===true){const b=document.getElementById(map_id[k][0]);if(b)b.classList.add('ay');}
+    else if(v===false){const b=document.getElementById(map_id[k][1]);if(b)b.classList.add('an');}
+  }
+  if(k==='timing') {
+    ['timing-late','timing-early','timing-unk'].forEach(id=>{const b=document.getElementById(id);if(b)b.classList.remove('ay','an','aa');});
+    if(v==='late'){const b=document.getElementById('timing-late');if(b)b.classList.add('ay');}
+    else if(v==='early'){const b=document.getElementById('timing-early');if(b)b.classList.add('an');}
+    else{const b=document.getElementById('timing-unk');if(b)b.classList.add('aa');}
+  }
+  // Enable nav after at least some crit assessed
+  if(S.deb!==null) document.getElementById('n0').disabled=false;
+  ui();
+}
+function setCritA(v){ S.critA=v; const item=document.getElementById('crit-a-item'); if(item)item.className='crit '+(v?'c-yes':'c-no'); const y=document.getElementById('ca-yes'),n=document.getElementById('ca-no'); if(y)y.classList.remove('ay','an'); if(n)n.classList.remove('ay','an'); if(v&&y)y.classList.add('ay'); if(!v&&n)n.classList.add('an'); if(cur===5)rv(); ui(); }
+function setCritB(v){ S.critB=v; const item=document.getElementById('crit-b-item'); if(item)item.className='crit '+(v?'c-yes':'c-no'); ['cb-psg','cb-clindx','cb-synuc','cb-no'].forEach(id=>{const b=document.getElementById(id);if(b)b.classList.remove('ay','ai','an','ab');}); if(v==='psg'){const b=document.getElementById('cb-psg');if(b)b.classList.add('ay');} else if(v==='clindx'){const b=document.getElementById('cb-clindx');if(b)b.classList.add('ai');} else if(v==='synuc'){const b=document.getElementById('cb-synuc');if(b)b.classList.add('ab');} else if(v===false){const b=document.getElementById('cb-no');if(b)b.classList.add('an');} if(cur===5)rv(); ui(); }
+function setCritC(v){ S.critC=v; const item=document.getElementById('crit-c-item'); if(item)item.className='crit '+(v===true?'c-yes':v===false?'c-no':'c-abs'); ['cc-yes','cc-no','cc-nd'].forEach(id=>{const b=document.getElementById(id);if(b)b.classList.remove('ay','an','aa');}); if(v===true){const b=document.getElementById('cc-yes');if(b)b.classList.add('ay');} else if(v===false){const b=document.getElementById('cc-no');if(b)b.classList.add('an');} else{const b=document.getElementById('cc-nd');if(b)b.classList.add('aa');} if(cur===5)rv(); ui(); }
+function setCritD(v){ S.critD=v; const item=document.getElementById('crit-d-item'); if(item)item.className='crit '+(v?'c-yes':'c-no'); const y=document.getElementById('cd-yes'),n=document.getElementById('cd-no'); if(y)y.classList.remove('ay','an'); if(n)n.classList.remove('ay','an'); if(v&&y)y.classList.add('ay'); if(!v&&n)n.classList.add('an'); if(cur===5)rv(); ui(); }
+function setPSG(v){ S.psg=v; const item=document.getElementById('psg-done-item'); if(item)item.className='crit '+(v==='done'?'c-yes':v==='poor-rem'?'c-part':'c-abs'); ['psg-done','psg-poor','psg-nd'].forEach(id=>{const b=document.getElementById(id);if(b)b.classList.remove('ay','aw','aa');}); const map={done:'ay','poor-rem':'aw',nd:'aa'}; const btn=document.getElementById('psg-'+v);if(btn)btn.classList.add(map[v]||'aa'); ui(); }
+function setRSWA(v){ S.rswa=v; const item=document.getElementById('rswa-item'); if(item)item.className='crit '+(v==='def'?'c-yes':v==='sub'?'c-part':v==='absent'?'c-no':'c-abs'); ['rswa-def','rswa-sub','rswa-absent','rswa-nd'].forEach(id=>{const b=document.getElementById(id);if(b)b.classList.remove('ay','aw','an','aa');}); const map={def:'ay',sub:'aw',absent:'an',nd:'aa'}; const btn=document.getElementById('rswa-'+v);if(btn)btn.classList.add(map[v]||'aa'); if(cur===5)rv(); ui(); }
+function setVid(v){ S.vid=v; const item=document.getElementById('vid-item'); if(item)item.className='crit '+(v==='yes'?'c-yes':v==='rswa-only'?'c-i':v==='no'?'c-no':'c-abs'); ['vid-yes','vid-rswa','vid-no','vid-nd'].forEach(id=>{const b=document.getElementById(id);if(b)b.classList.remove('ay','ai','an','aa');}); const map={yes:'ay','rswa-only':'ai',no:'an',nd:'aa'}; const btn=document.getElementById('vid-'+v);if(btn)btn.classList.add(map[v]||'aa'); ui(); }
+function setMimic(k, v) {
+  S[k] = v;
+  const pfx = k==='osa'?'osa':'sz';
+  const ids = k==='osa'?['osa-excl','osa-present','osa-nd']:['sz-excl','sz-poss','sz-nd'];
+  ids.forEach(id=>{const b=document.getElementById(id);if(b)b.classList.remove('ay','aw','an','aa');});
+  const item = document.getElementById(k==='osa'?'osa-excl-item':'sz-item');
+  if(item){ item.className='crit '+(v==='excluded'?'c-yes':v==='present'||v==='possible'?'c-no':'c-abs'); }
+  if(v==='excluded'){const b=document.getElementById(ids[0]);if(b)b.classList.add('ay');}
+  else if(v==='present'||v==='possible'){const b=document.getElementById(ids[1]);if(b)b.classList.add('an');}
+  else{const b=document.getElementById(ids[2]);if(b)b.classList.add('aa');}
+  if(cur===5)rv(); ui();
+}
+function setClass(v){ S.rbd_class=v; const item=document.getElementById('class-item'); if(item)item.className='crit '+(v==='isolated'?'c-i':v==='synuc'||v==='narco'||v==='auto'||v==='meds'?'c-blue':'c-abs'); ['cls-isolated','cls-synuc','cls-narco','cls-meds','cls-auto','cls-nd'].forEach(id=>{const b=document.getElementById(id);if(b)b.classList.remove('ai','ab','aa','aw');}); const map={isolated:'ai',synuc:'ab',narco:'ab',meds:'aw',auto:'ab',nd:'aa'}; const btn=document.getElementById('cls-'+v);if(btn)btn.classList.add(map[v]||'aa'); if(cur===5)rv(); ui(); }
+function setProd(k, v) {
+  S.prod[k] = v;
+  const itemId = k==='hypo'?'hypo-item':k==='constip'?'constip-item':k==='mci'?'mci-item':k==='dat'?'dat-item':k==='mibg'?'mibg-item':'saa-item';
+  const item = document.getElementById(itemId);
+  const isPos = v===true||v==='abnorm'||v==='pos';
+  const isNeg = v===false||v==='normal'||v==='neg';
+  if(item){ item.className='crit '+(isPos?'c-part':isNeg?'c-yes':'c-abs'); }
+  // button states
+  const pfxMap = {hypo:['hypo-yes','hypo-no','hypo-nd'],constip:['constip-yes','constip-no','constip-nd'],mci:['mci-yes','mci-no','mci-nd'],dat:['dat-abn','dat-norm','dat-nd'],mibg:['mibg-abn','mibg-norm','mibg-nd'],saa:['saa-pos','saa-neg','saa-nd']};
+  if(pfxMap[k]) pfxMap[k].forEach(id=>{const b=document.getElementById(id);if(b)b.classList.remove('ay','aw','an','aa');});
+  if(isPos){ const btn=document.getElementById(pfxMap[k][0]);if(btn)btn.classList.add('aw'); }
+  else if(isNeg){ const btn=document.getElementById(pfxMap[k][1]);if(btn)btn.classList.add('ay'); }
+  else{ const btn=document.getElementById(pfxMap[k][2]);if(btn)btn.classList.add('aa'); }
+  if(cur===5)rv(); ui();
+}
+
+function meetsCriteria() {
+  return S.critA===true && S.critB && S.critC===true && S.critD===true;
+}
+function probableCriteria() {
+  return S.critA===true && S.critB && (S.critC===null||S.critC===true) && S.critD!==false;
+}
+function prodCount() { return Object.values(S.prod).filter(v=>v===true||v==='abnorm'||v==='pos').length; }
+
+function ui() {
+  const a0=document.getElementById('a0');
+  if(S.deb!==null) {
+    if(S.deb===true) sa(a0,'aok','Dream enactment behaviours confirmed. Clinical picture is consistent with RBD. PSG is required to complete diagnosis. Proceed through all criteria.');
+    else sa(a0,'aerr','No dream enactment behaviours reported. RBD is unlikely &mdash; consider other causes of sleep complaint. RSWA alone without clinical behaviours = subclinical RSWA, not RBD.');
+  } else ha(a0);
+
+  const a1=document.getElementById('a1');
+  const crit_met = [S.critA===true, !!S.critB, S.critC===true, S.critD===true];
+  const n_met = crit_met.filter(Boolean).length;
+  if(n_met>0) {
+    if(n_met===4) sa(a1,'aok','All four ICSD-3-TR criteria met. RBD diagnosis confirmed (pending PSG result confirmation).');
+    else if(S.critA===false) sa(a1,'aerr','Criterion A not met &mdash; repeated episodes required. RBD cannot be diagnosed.');
+    else if(S.critD===false) sa(a1,'aerr','Criterion D not met &mdash; alternative diagnosis present. Address the alternative cause before diagnosing RBD.');
+    else sa(a1,'awn',n_met+'/4 ICSD-3-TR criteria met. '+(S.critC===null?'PSG pending for RSWA confirmation (Criterion C).':S.critC===false?'RSWA absent on PSG &mdash; RBD cannot be confirmed (Criterion C not met).':'Continue assessment.'));
+  } else ha(a1);
+
+  const a2=document.getElementById('a2');
+  if(S.rswa==='def') sa(a2,'aok','RSWA confirmed on PSG &mdash; Criterion C of ICSD-3-TR satisfied. This is the neurophysiological hallmark of RBD.');
+  else if(S.rswa==='sub') sa(a2,'awn','Subclinical RSWA detected &mdash; RSWA is present but no clinical DEB captured or reported. Annual surveillance indicated; behaviours may emerge over time. Counsel regarding prodromal synucleinopathy risk.');
+  else if(S.rswa==='absent') sa(a2,'aerr','No RSWA detected &mdash; Criterion C NOT met. If clinical suspicion remains high: (1) Repeat PSG after REM-suppressing medications are tapered; (2) Ensure adequate REM sleep was recorded; (3) Consider OSA pseudo-RBD if AHI is high.');
+  else if(S.psg==='nd') sa(a2,'ainf','PSG not yet performed. In-laboratory video-PSG is mandatory for RBD diagnosis. Home sleep testing (HSAT) is NOT appropriate &mdash; does not assess REM atonia.');
+  else ha(a2);
+
+  const a3=document.getElementById('a3');
+  if(S.osa==='present') sa(a3,'aerr','OSA is present and may represent OSA pseudo-RBD. Initiate CPAP therapy and reassess. If behaviours persist on adequate PAP therapy, repeat PSG for RSWA assessment during non-apnoeic REM epochs.');
+  else if(S.rbd_class==='isolated') sa(a3,'ai','Isolated RBD confirmed. This carries a lifetime risk &gt;80% for PD, DLB, or MSA phenoconversion. Proceed to prodromal biomarker assessment (Step 5) and enrol in annual surveillance. Refer to movement disorder specialist for longitudinal monitoring.');
+  else if(S.rbd_class==='meds') sa(a3,'awn','Medication-induced RBD suspected. Consider tapering or switching offending agent (SSRIs, SNRIs, TCAs) if clinically feasible. Reassess after 3&ndash;6 months off the medication &mdash; if RSWA and DEB persist, underlying isolated RBD is likely.');
+  else if(S.rbd_class==='auto') sa(a3,'awn','Autoimmune or structural cause suspected. Check IgLON5 antibodies (serum and CSF) for anti-IgLON5 disease. MRI brain to exclude structural brainstem lesion. Lumbar puncture for CSF analysis and antibody panel. Anti-IgLON5 disease is treatable with immunotherapy.');
+  else if(S.rbd_class) sa(a3,'ainf','Secondary RBD classified. Prognosis depends on underlying cause. Neurodegenerative-associated RBD: treat behaviours and address underlying condition.');
+  else ha(a3);
+
+  const a4=document.getElementById('a4');
+  const pc=prodCount();
+  if(pc>0) {
+    const high = pc>=3 || S.prod.dat==='abnorm' || S.prod.saa==='pos';
+    if(high) sa(a4,'aerr',pc+' prodromal marker'+(pc>1?'s':'')+' identified'+(S.prod.saa==='pos'?' including positive alpha-synuclein SAA &mdash; synuclein pathology confirmed':S.prod.dat==='abnorm'?' including abnormal DATscan &mdash; pre-motor nigrostriatal degeneration confirmed':'')+'. HIGH phenoconversion risk. Refer to movement disorder specialist. Consider clinical trial enrolment (PPMI, NAPS cohorts).');
+    else sa(a4,'awn',pc+' prodromal marker'+(pc>1?'s':'')+' identified. Intermediate phenoconversion risk. Annual neurological assessment with MoCA, motor exam, autonomic testing, and olfaction.');
+  } else if(Object.values(S.prod).some(v=>v!==null)) { sa(a4,'aok','No prodromal markers identified at this time. Lower phenoconversion risk in near term. Annual surveillance recommended given lifetime risk remains high (&gt;80% lifetime).');}
+  else ha(a4);
+}
+
+function rv() {
+  const confirmed = meetsCriteria();
+  const probable = probableCriteria();
+  const iRBD = S.rbd_class==='isolated';
+  const pc = prodCount();
+
+  let banCls, banTitle, banDesc;
+  if(S.critA===false||S.critD===false||S.rswa==='absent') {
+    banCls='vexcl'; banTitle='RBD Not Confirmed &mdash; Criteria Not Met';
+    banDesc=S.critA===false?'Criterion A not met &mdash; repeated dream enactment behaviours are required for RBD diagnosis. Evaluate for alternative sleep disorder (NREM parasomnia, nocturnal seizures, nightmare disorder).'
+      :S.critD===false?'Criterion D not met &mdash; an alternative diagnosis has been identified. Address the alternative cause (OSA pseudo-RBD, nocturnal seizures, medication effect) before diagnosing RBD.'
+      :'RSWA absent on PSG (Criterion C not met). If clinical suspicion remains high: repeat PSG after tapering REM-suppressing medications; ensure adequate REM sleep is recorded.';
+  } else if(confirmed) {
+    banCls='vdef'; banTitle='RBD Confirmed &mdash; All ICSD-3-TR Criteria Met';
+    banDesc='All four ICSD-3-TR (AASM 2023) criteria are satisfied: (A) repeated DEB, (B) REM-stage timing confirmed, (C) RSWA on PSG, (D) no alternative explanation. '+(iRBD?'Isolated RBD carries a lifetime risk >80% for PD, DLB, or MSA phenoconversion. Annual surveillance, prodromal biomarker assessment, and movement disorder referral are indicated.':'Secondary RBD identified &mdash; manage the underlying cause in addition to symptomatic RBD treatment.');
+  } else {
+    banCls='vprob'; banTitle='RBD Assessment Incomplete &mdash; PSG or Criteria Pending';
+    banDesc='Clinical features are consistent with RBD but assessment is incomplete. PSG with video-recording is required to confirm or exclude RSWA (Criterion C) and to exclude OSA pseudo-RBD. Do not diagnose RBD without PSG.';
+  }
+
+  let html=`<div class="vban ${banCls}"><div class="vban-head">
+    <div class="vlbl">AASM ICSD-3-TR 2023 &middot; Galbiati A et al. Neurology 2019 (phenoconversion) &middot; McCarter SJ et al. JCSM 2013 (treatment)</div>
+    <div class="vtitle">${banTitle}</div>
+    <div class="vdesc">${banDesc}</div>
+  </div></div>`;
+
+  // ICSD criteria checklist
+  const criteria = [
+    {label:'Criterion A: Repeated DEB (vocalisation/complex motor)', met:S.critA===true, text:S.critA===true?'Met':'Not met'},
+    {label:'Criterion B: REM timing established', met:!!S.critB, text:S.critB==='psg'?'PSG-confirmed':S.critB==='clindx'?'Clinical + RSWA':S.critB==='synuc'?'Clinical + synucleinopathy':S.critB===false?'Not met':'Pending'},
+    {label:'Criterion C: RSWA on PSG', met:S.critC===true, text:S.critC===true?'RSWA confirmed':S.critC===false?'RSWA absent':'PSG pending'},
+    {label:'Criterion D: No alternative explanation', met:S.critD===true, text:S.critD===true?'Met':S.critD===false?'Alternative identified':'Not assessed'}
+  ];
+
+  html+=`<div class="card" style="margin-bottom:12px;"><div class="ctitle" style="color:var(--accent);margin-bottom:10px;">ICSD-3-TR Criteria Summary</div>
+  <div class="chk-list">`;
+  criteria.forEach(c=>{
+    html+=`<div class="chk-item ${c.met?'chk-met':'chk-not'}"><div class="chk-icon">${c.met?'&#10003;':'&#9675;'}</div><div style="flex:1;font-family:var(--sans);">${c.label}</div><div class="stag ${c.met?'tg':'tr'}" style="font-family:var(--sans);">${c.text}</div></div>`;
+  });
+  html+=`</div></div>`;
+
+  // Treatment section
+  const injury = S.injury===true;
+  const txUrgent = confirmed && injury;
+
+  html+=`<div class="card" style="margin-bottom:12px;"><div class="ctitle" style="color:var(--accent);margin-bottom:6px;">Treatment &amp; Safety Management</div>
+  <div class="lbox">
+    <strong>AASM Best Practice Guide (McCarter SJ et al. JCSM 2013) &mdash; treatment levels of evidence:</strong><br>
+    <span class="li">Level A (Standard):</span> Environmental safety modification &mdash; mandatory for ALL patients with RBD regardless of pharmacotherapy decision<br>
+    <span class="li">Level B (Guideline):</span> Melatonin (immediate-release 3&ndash;12 mg at bedtime) &mdash; first-line pharmacotherapy; fewer side effects; better tolerated in elderly<br>
+    <span class="li">Level B (Guideline):</span> Clonazepam (0.25&ndash;2.0 mg at bedtime) &mdash; co-first-line; efficacy ~66.7% in aggregate case series; caution with OSA, dementia, gait disorders, fall risk<br>
+    <span class="li">Level C (Option):</span> Pramipexole (contradictory results), acetylcholinesterase inhibitors (in comorbid synucleinopathy), rivastigmine<br><br>
+    <strong>Practical first-line approach:</strong> Start melatonin 3&ndash;6 mg immediate-release at bedtime. If insufficient, increase to 9&ndash;12 mg or add clonazepam 0.25&ndash;0.5 mg. Combination therapy (melatonin + low-dose clonazepam) used in refractory cases.<br><br>
+    <strong>Note:</strong> No large randomised controlled trials exist for RBD treatment. Current evidence is primarily retrospective case series. Three small placebo-controlled trials did not demonstrate superiority of melatonin or clonazepam over placebo &mdash; creating uncertainty, but clinical experience supports benefit in reducing injury-related episodes.
+  </div>
+  <div class="lbox" style="border-color:var(--red-bd);background:var(--red-bg);">
+    <strong style="color:var(--red);">Environmental safety (Level A &mdash; mandatory):</strong><br>
+    &bull; Remove or secure dangerous objects from bedroom and within reach of the bed (lamps, bedside tables, weapons)<br>
+    &bull; Place mattress on the floor or pad the floor around the bed<br>
+    &bull; Install bed rails (padded) or bed alarms to prevent falls<br>
+    &bull; Bed partner should consider sleeping in a separate bed or room temporarily if at risk of injury<br>
+    &bull; Lock windows (upper floors) and secure the bedroom perimeter from patient leaving<br>
+    &bull; Consider video monitoring to track frequency and severity of episodes over time
+  </div></div>`;
+
+  html+=`<div class="sum-grid">
+  <div class="sblock"><div class="sbtitle">Clinical &amp; Diagnostic</div>
+    <div class="srow"><div class="dot ${S.deb===true?'dg':'dgr'}"></div><div class="sname">Dream enactment behaviours</div><div class="stag ${S.deb===true?'tg':'tgr'}">${S.deb===true?'Present':S.deb===false?'Absent':'Not assessed'}</div></div>
+    <div class="srow"><div class="dot ${S.aware===true?'dg':S.aware===false?'dr':'dgr'}"></div><div class="sname">Alert on awakening</div><div class="stag ${S.aware===true?'tg':S.aware===false?'tr':'tgr'}">${S.aware===true?'Yes (RBD-consistent)':S.aware===false?'Confused (consider NREM)':'Not assessed'}</div></div>
+    <div class="srow"><div class="dot ${S.injury===true?'dr':'dg'}"></div><div class="sname">Sleep-related injury</div><div class="stag ${S.injury===true?'tr':'tg'}">${S.injury===true?'Present &mdash; urgent Rx':S.injury===false?'None reported':'Not assessed'}</div></div>
+    <div class="srow"><div class="dot ${S.rswa==='def'?'dg':S.rswa==='sub'?'da':S.rswa==='absent'?'dr':'dgr'}"></div><div class="sname">RSWA on PSG</div><div class="stag ${S.rswa==='def'?'tg':S.rswa==='sub'?'ta':S.rswa==='absent'?'tr':'tgr'}">${{def:'Confirmed (Criterion C met)',sub:'Subclinical RSWA',absent:'Absent (Criterion C not met)',nd:'Pending PSG'}[S.rswa]||'Not done'}</div></div>
+    <div class="srow"><div class="dot ${S.osa==='excluded'?'dg':S.osa==='present'?'dr':'dgr'}"></div><div class="sname">OSA pseudo-RBD excluded</div><div class="stag ${S.osa==='excluded'?'tg':S.osa==='present'?'tr':'tgr'}">${{excluded:'Excluded',present:'OSA present &mdash; treat first',nd:'Not assessed'}[S.osa]||'Not assessed'}</div></div>
+  </div>
+  <div class="sblock"><div class="sbtitle">Classification &amp; Phenoconversion</div>
+    <div class="srow"><div class="dot ${confirmed?'dg':probable?'di':'dgr'}"></div><div class="sname">ICSD-3-TR diagnosis</div><div class="stag ${confirmed?'tg':probable?'ti':'tgr'}">${confirmed?'RBD Confirmed':probable?'Incomplete &mdash; PSG needed':'Not confirmed'}</div></div>
+    <div class="srow"><div class="dot ${S.rbd_class==='isolated'?'di':S.rbd_class?'db':'dgr'}"></div><div class="sname">RBD classification</div><div class="stag ${S.rbd_class==='isolated'?'ti':S.rbd_class?'tb':'tgr'}">${{isolated:'iRBD &mdash; isolated',synuc:'Secondary (synucleinopathy)',narco:'Secondary (narcolepsy)',meds:'Secondary (medication)',auto:'Secondary (autoimmune/structural)',nd:'Undetermined'}[S.rbd_class]||'Not classified'}</div></div>
+    <div class="srow"><div class="dot ${pc>0?'da':'dg'}"></div><div class="sname">Prodromal markers</div><div class="stag ${pc>0?'ta':'tg'}">${pc===0?'None identified':pc+' marker'+(pc>1?'s':'')+' present'}</div></div>
+    <div class="srow"><div class="dot ${S.prod.saa==='pos'||S.prod.dat==='abnorm'?'dr':'dgr'}"></div><div class="sname">High-confidence biomarker</div><div class="stag ${S.prod.saa==='pos'?'tr':S.prod.dat==='abnorm'?'ta':'tgr'}">${S.prod.saa==='pos'?'Alpha-syn SAA positive':S.prod.dat==='abnorm'?'DATscan abnormal':'None / not tested'}</div></div>
+    <div class="srow"><div class="dot ${S.prodromes===true?'da':'dgr'}"></div><div class="sname">Prodromal Sx at presentation</div><div class="stag ${S.prodromes===true?'ta':'tgr'}">${S.prodromes===true?'Present (hyposmia, constipation, etc.)':S.prodromes===false?'None identified':'Not assessed'}</div></div>
+  </div></div>`;
+
+  document.getElementById('vout').innerHTML = html;
+  buildDoc(banTitle, confirmed, iRBD, pc);
+}
+
+function buildDoc(title, confirmed, iRBD, pc) {
+  const note=`NEUROLOGY / SLEEP MEDICINE -- REM SLEEP BEHAVIOR DISORDER DIAGNOSTIC NAVIGATOR
+AASM ICSD-3-TR 2023 (RBD Diagnostic Criteria)
+Galbiati A et al. Neurology 2019;93:e1932 (phenoconversion meta-analysis, n=1,279 iRBD)
+McCarter SJ et al. J Clin Sleep Med 2013;9:1033 (AASM Best Practice Guide for RBD treatment)
+Schenck CH, Mahowald MR. Sleep 1996;19:702 (iRBD to neurodegenerative disease)
+Date: ${new Date().toLocaleDateString()}
+
+OVERALL ASSESSMENT: ${title.replace(/&mdash;/g,'--').replace(/&amp;/g,'&')}
+
+CLINICAL FEATURES:
+  Dream enactment behaviours (DEB): ${S.deb===true?'Present':S.deb===false?'Absent':'Not assessed'}
+  Unpleasant/action dream content: ${S.dream===true?'Present':S.dream===false?'Absent or not recalled':'Not assessed'}
+  Alert/oriented on awakening: ${S.aware===true?'Yes (RBD-consistent)':S.aware===false?'Confused/amnestic (consider NREM parasomnia)':'Not assessed'}
+  Sleep-related injury (self or bed partner): ${S.injury===true?'YES -- urgent treatment indicated':S.injury===false?'None reported':'Not assessed'}
+  Episode timing: ${S.timing==='late'?'Second half of night (REM-consistent)':S.timing==='early'?'First half/sleep onset (consider NREM)':S.timing==='unk'?'Unknown':'Not assessed'}
+  Prodromal synucleinopathy symptoms: ${S.prodromes===true?'Present (hyposmia, constipation, autonomic, cognitive changes)':S.prodromes===false?'None identified':'Not assessed'}
+
+ICSD-3-TR DIAGNOSTIC CRITERIA (AASM 2023 -- ALL FOUR REQUIRED):
+  Criterion A (Repeated DEB): ${S.critA===true?'MET':S.critA===false?'NOT MET':'Not assessed'}
+  Criterion B (REM timing): ${S.critB==='psg'?'MET -- behaviours captured during PSG-confirmed REM':S.critB==='clindx'?'MET -- clinical history + RSWA on PSG':S.critB==='synuc'?'MET -- clinical history + established synucleinopathy':S.critB===false?'NOT MET':'Not assessed'}
+  Criterion C (RSWA on PSG): ${S.critC===true?'MET -- RSWA confirmed on PSG':S.critC===false?'NOT MET -- REM atonia preserved':'Pending PSG'}
+  Criterion D (No alternative explanation): ${S.critD===true?'MET -- no better explanation identified':S.critD===false?'NOT MET -- alternative diagnosis present':'Not assessed'}
+  OVERALL: ${confirmed?'ALL CRITERIA MET -- RBD CONFIRMED':!S.critA||S.critD===false||S.critC===false?'CRITERIA NOT MET -- RBD NOT CONFIRMED':'INCOMPLETE -- PSG REQUIRED'}
+
+PSG / RSWA:
+  PSG status: ${{'done':'Performed -- adequate REM sleep recorded','poor-rem':'Performed -- inadequate REM sleep; repeat required','nd':'Not yet performed'}[S.psg]||'Not performed'}
+  RSWA: ${{'def':'CONFIRMED -- meets tonic/phasic RSWA criteria (Criterion C met)','sub':'Subclinical RSWA -- no clinical DEB; monitor annually','absent':'ABSENT -- normal REM atonia (Criterion C NOT met)','nd':'Pending PSG'}[S.rswa]||'Not assessed'}
+  Behaviours captured on video-PSG: ${{'yes':'YES -- captured during PSG-confirmed REM','rswa-only':'RSWA only -- no behaviours captured during recording','no':'No behaviours and no RSWA','nd':'PSG pending'}[S.vid]||'Not assessed'}
+  Note: In-laboratory video-PSG is mandatory for RBD diagnosis. HSAT cannot assess REM atonia or exclude OSA pseudo-RBD.
+
+MIMICS & CLASSIFICATION:
+  OSA pseudo-RBD: ${{'excluded':'Excluded (or OSA treated and behaviours persist -- true RBD)','present':'PRESENT -- behaviours may be OSA pseudo-RBD; initiate CPAP and reassess','nd':'Not assessed'}[S.osa]||'Not assessed'}
+  Nocturnal seizures: ${{'excluded':'Excluded','possible':'Possible -- EEG evaluation indicated','nd':'Not assessed'}[S.sz]||'Not assessed'}
+  RBD Classification: ${{'isolated':'ISOLATED (iRBD) -- no identified cause; prodromal synucleinopathy','synuc':'Secondary -- associated overt synucleinopathy (PD/DLB/MSA)','narco':'Secondary -- narcolepsy-associated','meds':'Secondary -- medication-induced (SSRI/SNRI/TCA)','auto':'Secondary -- autoimmune/structural (check IgLON5 Ab, MRI)','nd':'Undetermined'}[S.rbd_class]||'Not classified'}
+
+PHENOCONVERSION RISK (if iRBD):
+  Cumulative risk data (Galbiati A et al. 2019 meta-analysis, n=1,279):
+    5-year phenoconversion: 33.5% | 10.5-year: 82.4% | 14-year: 96.6%
+  Distribution: DLB ~50% | PD ~45% | MSA ~5%
+  Prodromal markers assessed:
+    Hyposmia: ${{'true':'Present (abnormal)','false':'Absent (normal)','null':'Not tested'}[String(S.prod.hypo)]||'Not tested'}
+    Constipation/autonomic dysfunction: ${{'true':'Present','false':'Absent','null':'Not assessed'}[String(S.prod.constip)]||'Not assessed'}
+    Mild cognitive impairment: ${{'true':'Present','false':'Absent','null':'Not tested'}[String(S.prod.mci)]||'Not tested'}
+    DATscan: ${{abnorm:'ABNORMAL -- pre-motor nigrostriatal degeneration confirmed','normal':'Normal','null':'Not performed'}[String(S.prod.dat)]||'Not performed'}
+    Cardiac MIBG: ${{abnorm:'Reduced uptake (abnormal)','normal':'Normal','null':'Not performed'}[String(S.prod.mibg)]||'Not performed'}
+    Alpha-synuclein SAA (CSF/skin): ${{pos:'POSITIVE -- synuclein pathology confirmed (>90% Sn/Sp)','neg':'Negative','null':'Not performed'}[String(S.prod.saa)]||'Not performed'}
+  Total prodromal markers positive: ${pc}/6
+  Recommendation: ${pc>=3||S.prod.dat==='abnorm'||S.prod.saa==='pos'?'HIGH RISK -- movement disorder specialist referral; consider clinical trial enrolment (PPMI, NAPS)':pc>0?'Intermediate risk -- annual surveillance with neurological exam, MoCA, olfaction testing, autonomic assessment':'Low near-term risk -- annual surveillance recommended (lifetime risk remains >80%)'}
+
+TREATMENT (AASM Best Practice Guide, McCarter SJ et al. JCSM 2013):
+  Level A (Standard -- mandatory ALL patients):
+    Environmental safety modification:
+      - Remove/secure dangerous objects from bedroom
+      - Pad/lower bed or place mattress on floor
+      - Bed rails (padded)
+      - Bed partner to consider separate sleeping arrangement if injury risk
+  Level B (Guideline -- first-line pharmacotherapy):
+    Melatonin immediate-release: 3-12 mg at bedtime (preferred first-line; fewer side effects)
+    Clonazepam: 0.25-2.0 mg at bedtime (effective ~66.7% in case series; caution: OSA, dementia, falls)
+  Level C (Options for refractory cases):
+    Pramipexole, acetylcholinesterase inhibitors, rivastigmine (especially in comorbid synucleinopathy)
+  Current treatment status: ${S.injury===true?'INJURY PRESENT -- pharmacotherapy should be initiated promptly alongside environmental safety measures':'No injury -- environmental modification mandatory; pharmacotherapy based on symptom severity and patient preference'}
+
+SURVEILLANCE RECOMMENDATIONS (iRBD):
+  Annual neurological examination (motor, cerebellar, autonomic)
+  Annual cognitive assessment (MoCA; neuropsychological testing if MCI suspected)
+  Annual olfaction testing (UPSIT or Sniffin Sticks)
+  Repeat consideration of DATscan, cardiac MIBG, alpha-synuclein SAA if not previously done
+  Movement disorder specialist referral
+  Consider enrolment in iRBD research cohorts (PPMI Phase 3, NAPS, Parkinson Progression Marker Initiative)
+  Counsel patient and family: discuss phenoconversion risk openly and document discussion
+
+KEY REFERENCES:
+  AASM ICSD-3-TR 2023 (RBD diagnostic criteria)
+  Galbiati A et al. Neurology 2019;93:e1932 (phenoconversion meta-analysis, n=1,279 iRBD patients)
+  McCarter SJ et al. J Clin Sleep Med 2013;9:1033-1055 (AASM Best Practice Guide -- RBD treatment)
+  Postuma RB et al. Neurology 2012;79:2036-2042 (RBD1Q screening question)
+  Schenck CH et al. Sleep Med Rev 2009;13:215-229 (iRBD to neurodegenerative disease timeline)
+  Frauscher B et al. Sleep 2012;35:455-463 (RSWA scoring thresholds -- tonic/phasic)
+  Miglis MG et al. Lancet Neurol 2021;20:671-684 (biomarkers of conversion in iRBD)
+  McCann H et al. Ann Neurol 2021;90:247-262 (alpha-synuclein SAA in iRBD; >90% Sn/Sp)`;
+  document.getElementById('dn').textContent = note;
+}
+
+function sa(el,cls,msg){if(!el)return;el.className='alrt show '+cls;el.innerHTML=msg;}
+function ha(el){if(el)el.classList.remove('show');}
+function goTab(n){if(n===cur)return;go(n);}
+function go(n){
+  document.getElementById('s'+cur).classList.remove('active');
+  document.getElementById('s'+n).classList.add('active');
+  for(let i=0;i<6;i++){const d=document.getElementById('st'+i);d.classList.remove('active','done');if(i<n)d.classList.add('done');else if(i===n)d.classList.add('active');}
+  cur=n; document.getElementById('pf').style.width=((n/5)*100)+'%';
+  if(n===5) rv();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function xp(btn){
+  const d=btn.closest('.crit').querySelector('.crit-detail');
+  if(!d)return;
+  const o=d.classList.toggle('open');
+  btn.textContent=o?'close \u25b4':'details \u25be';
+}
+function toggleDoc(){
+  const body=document.getElementById('dn'),btn=document.getElementById('copy-btn'),tog=document.querySelector('.doc-tog');
+  if(!body)return;
+  const open=body.classList.toggle('open');
+  if(tog)tog.textContent=open?'\u25b2 Documentation Note':'\u25bc Documentation Note';
+  if(btn)btn.classList.toggle('visible',open);
+}
+function copyDoc(){
+  const body=document.getElementById('dn'),btn=document.getElementById('copy-btn');
+  if(!body)return;
+  const text=body.textContent||body.innerText;
+  navigator.clipboard.writeText(text).then(()=>{if(btn){btn.textContent='\u2713 Copied';btn.classList.add('copied');setTimeout(()=>{btn.textContent='\u238a Copy';btn.classList.remove('copied');},2000);}}).catch(()=>{const ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);if(btn){btn.textContent='\u2713 Copied';btn.classList.add('copied');setTimeout(()=>{btn.textContent='\u238a Copy';btn.classList.remove('copied');},2000);}});
+}
+function resetAll(){
+  Object.keys(S).forEach(k=>{ if(k==='prod') Object.keys(S.prod).forEach(pk=>S.prod[pk]=null); else S[k]=null; });
+  document.querySelectorAll('.crit').forEach(el=>el.className='crit');
+  document.querySelectorAll('.abtn').forEach(b=>b.classList.remove('ay','an','ai','ab','aa','aw'));
+  document.querySelectorAll('.crit-detail').forEach(d=>d.classList.remove('open'));
+  document.querySelectorAll('.xbtn').forEach(b=>b.textContent='details \u25be');
+  ['a0','a1','a2','a3','a4'].forEach(id=>{const el=document.getElementById(id);if(el)el.classList.remove('show');});
+  document.getElementById('vout').innerHTML='';
+  const dn=document.getElementById('dn');if(dn)dn.classList.remove('open');
+  const cb=document.getElementById('copy-btn');if(cb)cb.classList.remove('visible','copied');
+  const tog=document.querySelector('.doc-tog');if(tog)tog.textContent='\u25bc Documentation Note';
+  go(0);
+  document.getElementById('n0').disabled=true;
+}
+ui();
+</script>
+</body>
+</html>
