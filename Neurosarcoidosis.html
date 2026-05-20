@@ -1,0 +1,1083 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Neurosarcoidosis Diagnostic Navigator · Stern 2018</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@300;400;500;600;700&family=Lexend:wght@300;400;500;600&display=swap');
+
+:root {
+  --bg:        #0d1117;
+  --card:      #161b22;
+  --card2:     #1c2330;
+  --border:    #3a4556;
+  --border2:   #4a5f7a;
+  --green:     #3fb950;
+  --green-bg:  rgba(63,185,80,0.10);
+  --green-bd:  rgba(63,185,80,0.35);
+  --red:       #f85149;
+  --red-bg:    rgba(248,81,73,0.10);
+  --red-bd:    rgba(248,81,73,0.35);
+  --amber:     #e3b341;
+  --amber-bg:  rgba(227,179,65,0.10);
+  --amber-bd:  rgba(227,179,65,0.35);
+  --blue:      #58a6ff;
+  --blue-bg:   rgba(88,166,255,0.10);
+  --blue-bd:   rgba(88,166,255,0.35);
+  --purple:    #bc8cff;
+  --purple-bg: rgba(188,140,255,0.10);
+  --purple-bd: rgba(188,140,255,0.35);
+  /* NS accent: warm yellow/gold */
+  --accent:    #f0c040;
+  --accent-bg: rgba(240,192,64,0.10);
+  --accent-bd: rgba(240,192,64,0.35);
+  --accent2:   #c49a20;
+  --text:      #e6edf3;
+  --text2:     #aab4c0;
+  --text3:     #6e7f94;
+  --sans:  'Lexend', 'Inter', system-ui, sans-serif;
+  --mono:  'IBM Plex Mono', monospace;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg); color: var(--text); font-family: var(--sans); font-size: 14px; line-height: 1.5; min-height: 100vh; }
+.app { max-width: 960px; margin: 0 auto; padding: 0 20px 80px; }
+
+/* HEADER */
+header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+.h-title { font-size: 19px; font-weight: 700; }
+.h-title span { color: var(--accent); }
+.h-sub { font-family: var(--sans); font-size: 11px; color: var(--text3); margin-top: 3px; line-height: 1.6; }
+.h-credit { font-family: var(--sans); font-size: 11px; color: var(--text3); margin-top: 2px; }
+.reset-btn { background: var(--card2); border: 1px solid var(--border); color: var(--text2); font-family: var(--sans); font-size: 12px; padding: 6px 14px; cursor: pointer; border-radius: 4px; transition: all 0.15s; white-space: nowrap; font-weight: 500; }
+.reset-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+/* PROGRESS */
+.prog-track { height: 3px; background: var(--border); margin-bottom: 20px; border-radius: 2px; }
+.prog-fill { height: 100%; background: linear-gradient(90deg, var(--accent2), var(--accent)); border-radius: 2px; transition: width 0.4s ease; box-shadow: 0 0 6px rgba(240,192,64,0.4); }
+
+/* STEP TABS */
+.steps { display: grid; grid-template-columns: repeat(6, 1fr); border: 1px solid var(--border); border-radius: 8px; margin-bottom: 20px; overflow: hidden; background: var(--card); }
+.stab { padding: 8px 3px 9px; text-align: center; font-family: var(--sans); font-size: 10px; color: var(--text3); border-right: 1px solid var(--border); transition: all 0.2s; cursor: pointer; background: var(--card); line-height: 1.3; }
+.stab:nth-child(6n) { border-right: none; }
+.stab .sn { display: flex; align-items: center; justify-content: center; width: 20px; height: 20px; border-radius: 50%; background: var(--card2); border: 1px solid var(--border); font-size: 10px; font-weight: 700; margin: 0 auto 3px; transition: all 0.2s; }
+.stab .slbl { display: block; font-size: 9px; font-weight: 600; line-height: 1.3; }
+.stab.active { color: var(--accent); background: var(--accent-bg); }
+.stab.active .sn { background: var(--accent); color: #0d1117; border-color: var(--accent); }
+.stab.done { color: var(--green); }
+.stab.done .sn { background: var(--green); color: #0d1117; border-color: var(--green); }
+.stab:hover:not(.active) { background: var(--card2); }
+
+/* CARD */
+.card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 22px; margin-bottom: 12px; }
+.ctitle { font-size: 13px; font-weight: 700; font-family: var(--sans); margin-bottom: 3px; }
+.csub { font-size: 12px; color: var(--text2); margin-bottom: 16px; line-height: 1.5; }
+
+/* SECTION LABEL */
+.slabel { display: flex; align-items: center; gap: 8px; font-family: var(--sans); font-size: 11px; font-weight: 600; color: var(--text); margin-bottom: 9px; padding-bottom: 6px; border-bottom: 1px solid var(--border); }
+.pill { font-size: 9px; padding: 1px 7px; border-radius: 20px; border: 1px solid; margin-left: auto; font-family: var(--sans); letter-spacing: 0.04em; text-transform: uppercase; }
+.pill-r { border-color: var(--red);    color: var(--red);    background: var(--red-bg); }
+.pill-a { border-color: var(--amber);  color: var(--amber);  background: var(--amber-bg); }
+.pill-y { border-color: var(--accent); color: var(--accent); background: var(--accent-bg); }
+.pill-g { border-color: var(--green);  color: var(--green);  background: var(--green-bg); }
+.pill-p { border-color: var(--purple); color: var(--purple); background: var(--purple-bg); }
+
+/* CRITERION ROW */
+.crit { border: 1px solid var(--border); border-radius: 6px; margin-bottom: 5px; overflow: hidden; transition: border-color 0.15s, background 0.15s; }
+.crit.c-yes  { border-color: var(--green-bd);  background: var(--green-bg); }
+.crit.c-no   { border-color: var(--red-bd);    background: var(--red-bg); }
+.crit.c-gold { border-color: var(--accent-bd); background: var(--accent-bg); }
+.crit.c-abs  { border-color: var(--border2);   background: var(--card2); }
+.crit.c-part { border-color: var(--amber-bd);  background: var(--amber-bg); }
+.crit.c-blue { border-color: var(--blue-bd);   background: var(--blue-bg); }
+
+.crit-main { display: flex; align-items: center; gap: 10px; padding: 10px 13px; }
+.crit-name { flex: 1; font-size: 13px; font-weight: 500; color: var(--text); line-height: 1.3; }
+.xbtn { background: var(--purple-bg); border: 1px solid var(--purple-bd); color: var(--purple); font-size: 11px; cursor: pointer; padding: 2px 8px; font-family: var(--sans); white-space: nowrap; transition: all 0.15s; flex-shrink: 0; border-radius: 3px; font-weight: 500; }
+.xbtn:hover { background: var(--purple); color: #0d1117; border-color: var(--purple); }
+
+.crit-detail { display: none; padding: 10px 13px 12px; font-size: 12px; color: var(--text); line-height: 1.65; border-top: 1px solid var(--border); font-family: var(--sans); }
+.crit-detail.open { display: block; }
+.cnote { margin-top: 8px; padding: 8px 11px; background: var(--card2); border-left: 3px solid var(--border2); font-family: var(--sans); font-size: 11px; color: var(--text2); line-height: 1.75; border-radius: 0 3px 3px 0; }
+.cnote strong { color: var(--text); }
+
+/* BUTTON ROW */
+.brow { display: flex; border-top: 1px solid var(--border); flex-wrap: wrap; }
+.abtn { flex: 1; min-width: 120px; padding: 9px 10px; background: none; border: none; border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); color: var(--text2); font-family: var(--sans); font-size: 12px; cursor: pointer; transition: all 0.12s; font-weight: 400; line-height: 1.4; text-align: left; }
+.abtn:last-child { border-right: none; }
+.abtn:hover { background: var(--card2); color: var(--text); }
+.abtn.ay  { background: var(--green-bg);  color: var(--green);  font-weight: 700; }
+.abtn.an  { background: var(--red-bg);    color: var(--red);    font-weight: 700; }
+.abtn.ag  { background: var(--accent-bg); color: var(--accent); font-weight: 700; }
+.abtn.ab  { background: var(--blue-bg);   color: var(--blue);   font-weight: 700; }
+.abtn.aa  { background: var(--card2);     color: var(--text2);  font-weight: 700; }
+.abtn.aw  { background: var(--amber-bg);  color: var(--amber);  font-weight: 700; }
+
+/* TWO-COL */
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; }
+@media (max-width: 600px) { .two-col { grid-template-columns: 1fr; } }
+
+/* ALERT */
+.alrt { padding: 9px 13px; border-radius: 5px; font-size: 12px; line-height: 1.55; margin-top: 12px; border-left: 3px solid; display: none; font-family: var(--sans); }
+.alrt.show { display: block; }
+.aok   { border-color: var(--green);  background: var(--green-bg);  color: #7ee787; }
+.awn   { border-color: var(--amber);  background: var(--amber-bg);  color: var(--amber); }
+.aerr  { border-color: var(--red);    background: var(--red-bg);    color: #ff7b72; }
+.ainf  { border-color: var(--blue);   background: var(--blue-bg);   color: var(--blue); }
+.agold { border-color: var(--accent); background: var(--accent-bg); color: var(--accent); }
+
+/* LOGIC BOX */
+.lbox { background: var(--card2); border: 1px solid var(--border); border-radius: 5px; padding: 12px 15px; font-size: 12px; color: var(--text2); line-height: 1.75; margin-bottom: 14px; font-family: var(--sans); }
+.lbox strong { color: var(--text); }
+.lp { color: var(--accent);  font-weight: 600; }
+.lg { color: var(--green);   font-weight: 600; }
+.la { color: var(--amber);   font-weight: 600; }
+.lr { color: var(--red);     font-weight: 600; }
+.lb { color: var(--blue);    font-weight: 600; }
+
+/* TIER CARDS */
+.tier-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; margin-bottom: 14px; }
+@media (max-width: 640px) { .tier-grid { grid-template-columns: 1fr; } }
+.tier-card { border: 1px solid var(--border); border-radius: 6px; padding: 14px; cursor: default; transition: all 0.2s; }
+.tier-card.t-possible  { border-color: var(--amber-bd);  background: var(--amber-bg); }
+.tier-card.t-probable  { border-color: var(--accent-bd); background: var(--accent-bg); }
+.tier-card.t-definite  { border-color: var(--green-bd);  background: var(--green-bg); }
+.tier-label { font-size: 16px; font-weight: 700; font-family: var(--sans); margin-bottom: 4px; }
+.tier-req   { font-size: 11px; color: var(--text2); line-height: 1.55; font-family: var(--sans); }
+
+/* NAV */
+.nav-row { display: flex; justify-content: space-between; align-items: center; margin-top: 20px; gap: 10px; }
+.nbtn { padding: 9px 22px; border-radius: 5px; font-family: var(--sans); font-size: 13px; border: 1px solid; cursor: pointer; font-weight: 600; transition: all 0.15s; }
+.np { background: var(--accent); border-color: var(--accent); color: #0d1117; font-weight: 700; }
+.np:hover { background: #f5d060; border-color: #f5d060; }
+.np:disabled { opacity: 0.3; cursor: not-allowed; }
+.ns { background: transparent; border-color: var(--border2); color: var(--text2); }
+.ns:hover { border-color: var(--text); color: var(--text); }
+
+/* SCREEN */
+.screen { display: none; }
+.screen.active { display: block; animation: fu 0.25s ease; }
+@keyframes fu { from { opacity:0; transform:translateY(5px); } to { opacity:1; transform:translateY(0); } }
+
+/* VERDICT */
+.vban { border-radius: 8px; padding: 22px 26px; margin-bottom: 16px; border: 2px solid; }
+.vdef  { border-color: var(--green);  background: var(--green-bg); }
+.vprob { border-color: var(--accent); background: var(--accent-bg); }
+.vposs { border-color: var(--amber);  background: var(--amber-bg); }
+.vneg  { border-color: var(--red);    background: var(--red-bg); }
+.vund  { border-color: var(--blue);   background: var(--blue-bg); }
+.vban-head { text-align: center; margin-bottom: 14px; }
+.vlbl { font-family: var(--mono); font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase; opacity: 0.6; margin-bottom: 5px; }
+.vtitle { font-size: 22px; font-weight: 700; margin-bottom: 6px; letter-spacing: -0.01em; }
+.vdef  .vtitle { color: var(--green); }
+.vprob .vtitle { color: var(--accent); }
+.vposs .vtitle { color: var(--amber); }
+.vneg  .vtitle { color: var(--red); }
+.vund  .vtitle { color: var(--blue); }
+.vdesc { font-size: 12px; color: var(--text2); line-height: 1.7; max-width: 640px; margin: 0 auto; font-family: var(--sans); }
+
+/* SUMMARY */
+.sum-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+@media (max-width: 580px) { .sum-grid { grid-template-columns: 1fr; } }
+.sblock { background: var(--card); border: 1px solid var(--border); border-radius: 6px; overflow: hidden; }
+.sbtitle { font-family: var(--sans); font-size: 11px; font-weight: 600; padding: 7px 11px; border-bottom: 1px solid var(--border); color: var(--text); background: var(--card2); }
+.srow { display: flex; align-items: flex-start; gap: 8px; padding: 6px 11px; border-bottom: 1px solid var(--border); font-size: 12px; font-family: var(--sans); }
+.srow:last-child { border-bottom: none; }
+.dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; margin-top: 4px; }
+.dg { background: var(--green); } .dr { background: var(--red); }
+.dy { background: var(--accent); } .db { background: var(--blue); }
+.da { background: var(--amber); } .dgr{ background: var(--text3); }
+.sname { flex: 1; color: var(--text); line-height: 1.4; }
+.stag { font-family: var(--mono); font-size: 9px; padding: 1px 7px; border-radius: 10px; border: 1px solid; white-space: nowrap; }
+.tg { border-color: var(--green-bd);  color: var(--green); }
+.tr { border-color: var(--red-bd);    color: var(--red); }
+.ty { border-color: var(--accent-bd); color: var(--accent); }
+.tb { border-color: var(--blue-bd);   color: var(--blue); }
+.ta { border-color: var(--amber-bd);  color: var(--amber); }
+.tgr{ border-color: var(--border2);   color: var(--text3); }
+
+/* DOC NOTE */
+.doc-header { display: flex; align-items: center; gap: 8px; margin-bottom: 5px; }
+.doc-tog { flex: 1; text-align: left; background: var(--card2); border: 1px solid var(--border2); border-radius: 5px; color: var(--text2); font-family: var(--sans); font-size: 13px; padding: 8px 13px; cursor: pointer; transition: all 0.15s; }
+.doc-tog:hover { border-color: var(--accent); color: var(--accent); }
+.copy-btn { background: var(--card2); border: 1px solid var(--border2); border-radius: 5px; color: var(--text2); font-family: var(--sans); font-size: 12px; padding: 8px 14px; cursor: pointer; white-space: nowrap; transition: all 0.15s; display: none; }
+.copy-btn.visible { display: block; }
+.copy-btn:hover { border-color: var(--green); color: var(--green); }
+.copy-btn.copied { border-color: var(--green); color: var(--green); background: var(--green-bg); }
+.doc-body { display: none; background: var(--card2); border: 1px solid var(--border2); border-radius: 5px; padding: 13px 15px; font-family: var(--mono); font-size: 11px; color: var(--text2); line-height: 1.85; white-space: pre-wrap; margin-bottom: 12px; }
+.doc-body.open { display: block; }
+</style>
+</head>
+<body>
+<div class="app">
+
+<header>
+  <div>
+    <div class="h-title">Neurosarcoidosis Diagnostic Navigator · <span>Stern et al. 2018</span></div>
+    <div class="h-sub">Stern BJ et al. · JAMA Neurology 2018;75(12):1546–1553 · Neurosarcoidosis Consortium Consensus Group · For educator use only</div>
+    <div class="h-credit">Designed by Daniel Short, MD</div>
+  </div>
+  <button class="reset-btn" onclick="resetAll()">↺ Reset</button>
+</header>
+
+<div class="prog-track"><div class="prog-fill" id="pf" style="width:0%"></div></div>
+
+<div class="steps">
+  <div class="stab active" id="st0" onclick="goTab(0)"><span class="sn">1</span><span class="slbl">Clinical Syndrome</span></div>
+  <div class="stab" id="st1" onclick="goTab(1)"><span class="sn">2</span><span class="slbl">Neuroimaging</span></div>
+  <div class="stab" id="st2" onclick="goTab(2)"><span class="sn">3</span><span class="slbl">CSF / Labs</span></div>
+  <div class="stab" id="st3" onclick="goTab(3)"><span class="sn">4</span><span class="slbl">Systemic Eval</span></div>
+  <div class="stab" id="st4" onclick="goTab(4)"><span class="sn">5</span><span class="slbl">Exclusions</span></div>
+  <div class="stab" id="st5" onclick="goTab(5)"><span class="sn">6</span><span class="slbl">Biopsy / Verdict</span></div>
+</div>
+
+<!-- ══ SCREEN 0: CLINICAL SYNDROME ══ -->
+<div class="screen active" id="s0">
+<div class="card">
+  <div class="ctitle" style="color:var(--accent);">Step 1 · Clinical Syndrome — Does the Presentation Suggest Neurosarcoidosis?</div>
+  <div class="csub">The prerequisite for all three diagnostic tiers (possible, probable, definite) is identical: the clinical presentation and diagnostic evaluation must suggest neurosarcoidosis, as defined by clinical manifestations and MRI, CSF, and/or EMG/NCS findings typical of granulomatous inflammation of the nervous system, after rigorous exclusion of other causes (Stern et al. 2018, JAMA Neurol 75:1546).</div>
+
+  <div class="lbox">
+    <strong>Epidemiology:</strong> Symptomatic neurosarcoidosis (NS) occurs in ~5–10% of patients with systemic sarcoidosis. Neurologic involvement is the presenting feature in ~50% of NS cases. Isolated NS (no detectable systemic disease) occurs in ~1–17% of NS. In a Spanish cohort of 1,532 sarcoidosis patients, 5.5% fulfilled Stern criteria for NS (Martínez-Martínez et al. 2021).<br><br>
+    <span class="lp">CNS most common (brain + spinal cord ~60–70%):</span> Cranial neuropathy, leptomeningitis, parenchymal lesions, hydrocephalus, hypothalamic-pituitary dysfunction, myelopathy, encephalopathy/vasculopathy<br>
+    <span class="lp">PNS (~14–15%):</span> Peripheral neuropathy (mononeuritis multiplex, symmetric sensorimotor, small fiber), myopathy<br>
+    <span class="la">In a meta-analysis (Fritz et al. BMC Neurol 2016, n=1,088):</span> Most common symptoms — headache 32%, sensory abnormalities 29%, limb paresis 19%. Most common manifestations — cranial nerve palsies, chronic meningitis, cerebral parenchymal lesions, spinal cord disease, peripheral neuropathy.
+  </div>
+
+  <div class="slabel">Select all presenting neurological features <span class="pill pill-r">SELECT ALL THAT APPLY</span></div>
+
+  <div class="two-col">
+  <div class="crit" id="cn-item">
+    <div class="crit-main">
+      <div class="crit-name">Cranial neuropathy (any cranial nerve — CN VII most common, then CN II, VIII)</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      Cranial nerve palsies are the most commonly reported NS manifestation (~50–75% of CNS involvement). CN VII (facial) palsy — unilateral or bilateral — is the most frequent, may be recurrent. CN II (optic neuritis) can cause progressive visual loss; sarcoid optic neuropathy may mimic demyelinating optic neuritis. CN VIII involvement causes vestibular dysfunction and/or hearing loss, typically from basilar leptomeningitis tracking along the nerve. Other cranial neuropathies (CN III, IV, VI — diplopia; CN V — trigeminal neuralgia or sensory loss; CN IX, X — dysphagia, dysphonia; CN XII — tongue weakness) occur less commonly. Multiple simultaneous cranial neuropathies in a subacute context strongly suggest NS or basilar meningitis.
+      <div class="cnote"><strong>Key data:</strong> Bilateral facial palsy in a young to middle-aged adult without prior trauma should always prompt sarcoidosis evaluation — serum ACE, chest imaging, and ophthalmologic exam. Heerfordt's syndrome (uveoparotid fever: uveitis + parotid enlargement + facial palsy ± fever) is a classic presentation of systemic sarcoidosis with NS.</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setSx('cn',true)"  id="cn-yes">✓ Present</button>
+      <button class="abtn" onclick="setSx('cn',false)" id="cn-no">✗ Absent</button>
+    </div>
+  </div>
+
+  <div class="crit" id="men-item">
+    <div class="crit-main">
+      <div class="crit-name">Meningitis syndrome (headache, neck stiffness, photophobia — chronic or subacute; basilar predominance)</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      Sarcoid meningitis is characteristically basilar — granulomas preferentially involve the leptomeninges at the base of the skull, producing a basilar meningitis pattern. May present as subacute headache, cranial nerve palsies from entrapment, or communicating hydrocephalus. Leptomeningeal gadolinium enhancement on MRI may appear disproportionately extensive compared to symptoms. CSF typically shows lymphocytic pleocytosis and elevated protein. Occasionally hypoglycorrhachia. Pachymeningitis (dural involvement) is less common but can mimic hypertrophic pachymeningitis from IgG4-related disease, idiopathic, or fungal causes. Nodular leptomeningeal enhancement — distinct from smooth, diffuse enhancement — is more characteristic of NS.
+      <div class="cnote"><strong>Chronic basilar meningitis differential:</strong> Neurosarcoidosis, tuberculous meningitis, cryptococcal meningitis, carcinomatous meningitis, IgG4-related hypertrophic pachymeningitis, neurosyphilis. India ink prep, cryptococcal antigen, AFB culture, cytology, and flow cytometry should be sent from any CSF obtained.</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setSx('men',true)"  id="men-yes">✓ Present</button>
+      <button class="abtn" onclick="setSx('men',false)" id="men-no">✗ Absent</button>
+    </div>
+  </div>
+
+  <div class="crit" id="par-item">
+    <div class="crit-main">
+      <div class="crit-name">Parenchymal brain lesion(s) — mass, enhancing nodule, white matter lesion(s), encephalopathy, vasculopathy, seizures</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      Parenchymal NS lesions may present as ring-enhancing or nodular enhancing masses mimicking tumor, abscess, or demyelination. White matter T2/FLAIR hyperintensities — nonspecific, also seen in MS, NMOSD, small vessel disease, CNS vasculitis. Sarcoid encephalopathy: diffuse white matter involvement causing cognitive decline, psychiatric symptoms, or altered consciousness. Vasculopathy: vessel wall inflammation (granulomatous angiitis) can cause stroke or TIA — MRA or vessel wall MRI may be needed. Hypothalamic-pituitary dysfunction: diabetes insipidus, amenorrhea, hyperprolactinemia, panhypopituitarism — MRI shows infundibular thickening/enhancement. Seizures occur in ~10–15% of NS; may be focal or generalized.
+      <div class="cnote"><strong>Medullary vein engorgement (MVE) on susceptibility-weighted imaging (SWI):</strong> One series found MVE had sensitivity 71.4% and specificity 92.3% for NS among 32 patients with neurological signs (Sarkis et al. 2019, Medscape/Sarcoidosis Workup). This radiologic sign reflects venous congestion from perivascular granulomatous infiltration and may precede parenchymal changes on conventional sequences.</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setSx('par',true)"  id="par-yes">✓ Present</button>
+      <button class="abtn" onclick="setSx('par',false)" id="par-no">✗ Absent</button>
+    </div>
+  </div>
+
+  <div class="crit" id="myel-item">
+    <div class="crit-main">
+      <div class="crit-name">Myelopathy or radiculopathy (spinal cord or nerve root involvement — weakness, sensory loss, bowel/bladder dysfunction)</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      Spinal cord NS is increasingly recognized — contemporary series document myelopathy in 19–26% of NS cases. Mechanisms include: intramedullary granulomas, leptomeningeal disease extending to the cord, extradural compression by granulomas, or ischemia from vasculopathy. Characteristic MRI: longitudinally extensive T2 hyperintensity with leptomeningeal and/or intramedullary enhancement. The "trident sign" — dorsal subpial and central canal gadolinium enhancement on axial sequences — is characteristic of spinal NS and has high specificity. Cauda equina involvement may cause polyradiculopathy with sphincter dysfunction, mimicking Guillain-Barré syndrome or carcinomatous meningitis.
+      <div class="cnote"><strong>Trident sign:</strong> Dorsal (posterior subpial) + central canal enhancement on axial gadolinium MRI of the spinal cord. Reflects perivascular spread of leptomeningeal granulomatous inflammation along Virchow-Robin spaces inward. Reported as highly specific for spinal NS when present in the correct clinical context — key differentiator from AQP4-IgG NMOSD (which causes central/ventral predominant signal), MS (shorter lesions, asymmetric), and TM from other causes.</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setSx('myel',true)"  id="myel-yes">✓ Present</button>
+      <button class="abtn" onclick="setSx('myel',false)" id="myel-no">✗ Absent</button>
+    </div>
+  </div>
+
+  <div class="crit" id="hyd-item">
+    <div class="crit-main">
+      <div class="crit-name">Hydrocephalus (communicating or obstructive — may present as increased ICP, papilledema, cognitive decline, or gait disturbance)</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      Hydrocephalus in NS is usually communicating, secondary to chronic basilar leptomeningitis impairing CSF reabsorption at the arachnoid granulations. Less commonly, obstructive hydrocephalus may result from granulomas in or near the cerebral aqueduct or foramen of Monro. May manifest as papilledema, headache, cognitive slowing, and gait instability (normal pressure hydrocephalus phenotype in chronic cases). Rarely presents as benign intracranial hypertension. Requires shunting or management alongside immunosuppression for leptomeningeal disease.
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setSx('hyd',true)"  id="hyd-yes">✓ Present</button>
+      <button class="abtn" onclick="setSx('hyd',false)" id="hyd-no">✗ Absent</button>
+    </div>
+  </div>
+
+  <div class="crit" id="pnp-item">
+    <div class="crit-main">
+      <div class="crit-name">Peripheral neuropathy or myopathy (sensorimotor, mononeuritis multiplex, small fiber, or proximal myopathy)</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      Peripheral neuropathy accounts for ~15% of NS presentations. Patterns include: mononeuritis multiplex (multifocal, asymmetric — vasculitic mechanism), symmetric length-dependent sensorimotor neuropathy, small fiber neuropathy (pain, autonomic dysfunction — may occur in patients with known sarcoidosis without other NS features), and polyradiculopathy. EMG/NCS characterizes the pattern. Nerve biopsy (sural) can confirm granulomatous infiltration with or without vasculitis. Myopathy: proximal weakness, elevated CK — muscle biopsy shows non-caseating granulomas in 50–80% of asymptomatic sarcoidosis patients; symptomatic myopathy is less common.
+      <div class="cnote"><strong>Small fiber neuropathy (SFN):</strong> Increasingly recognized in sarcoidosis — may occur even without other organ involvement. Presents with burning pain, paresthesias, and autonomic dysfunction. Standard NCS is normal — requires skin punch biopsy for intraepidermal nerve fiber density (IENFD). Not addressed directly in the 2018 Stern criteria but is included in NS when other causes are excluded.</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setSx('pnp',true)"  id="pnp-yes">✓ Present</button>
+      <button class="abtn" onclick="setSx('pnp',false)" id="pnp-no">✗ Absent</button>
+    </div>
+  </div>
+  </div>
+
+  <div id="a0" class="alrt"></div>
+  <div class="nav-row"><div></div><button class="nbtn np" id="n0" onclick="go(1)" disabled>Next: Neuroimaging →</button></div>
+</div>
+</div>
+
+<!-- ══ SCREEN 1: NEUROIMAGING ══ -->
+<div class="screen" id="s1">
+<div class="card">
+  <div class="ctitle" style="color:var(--accent);">Step 2 · Neuroimaging</div>
+  <div class="csub">MRI brain and spine with gadolinium is the preferred imaging modality for NS evaluation. Imaging findings support the prerequisite clinical-radiographic syndrome and contribute to the level of diagnostic certainty. FDG-PET/CT is important for identifying sites of systemic granulomatous disease available for biopsy.</div>
+
+  <div class="lbox">
+    <strong>MRI findings in NS (data from NS cohort studies):</strong><br>
+    <span class="lp">Leptomeningeal enhancement:</span> Most common specific finding (~35% of NS cohorts); may be diffuse or nodular; basilar predilection<br>
+    <span class="lp">White matter lesions:</span> ~30% — nonspecific, T2/FLAIR hyperintensities, may mimic MS or small vessel disease<br>
+    <span class="lp">Spinal cord involvement:</span> ~23% — longitudinally extensive T2 signal ± trident sign on axial gadolinium views<br>
+    <span class="la">Normal MRI does not exclude NS</span> — particularly in cranial neuropathy or peripheral neuropathy presentations where MRI may be unrevealing early
+  </div>
+
+  <div class="slabel">Brain MRI with gadolinium <span class="pill pill-y">REQUIRED IN ALL SUSPECTED NS</span></div>
+
+  <div class="crit" id="mri-item">
+    <div class="crit-main">
+      <div class="crit-name">Brain MRI findings consistent with NS (leptomeningeal enhancement, parenchymal nodule/mass, white matter lesions, hydrocephalus, infundibular/hypothalamic enhancement, cranial nerve enhancement)</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      <strong>High-specificity patterns:</strong> Nodular leptomeningeal enhancement (vs. smooth diffuse enhancement which is less specific); cranial nerve enhancement (facial, optic, vestibulocochlear); infundibular stalk thickening or enhancement (hypothalamic-pituitary NS); periventricular or subcortical enhancing nodules; dural-based enhancing mass.<br><br>
+      <strong>SWI:</strong> Medullary vein engorgement — sensitivity 71%, specificity 92% for NS in a symptomatic cohort. Reflects perivascular granulomatous infiltration and associated venous congestion — may be present when conventional sequences are subtle.<br><br>
+      <strong>Posterior fossa involvement:</strong> Brainstem and cerebellar granulomas are less common but well-described — may cause ataxia, cranial neuropathies, or internuclear ophthalmoplegia.
+      <div class="cnote"><strong>Practical point:</strong> Gadolinium enhancement pattern, anatomic distribution, and the clinical context (systemic disease, age, demographics) should be interpreted together. Smooth homogeneous leptomeningeal enhancement alone is nonspecific (also seen in viral/bacterial/carcinomatous meningitis). Nodular and basilar-predominant enhancement in a middle-aged adult with bilateral hilar adenopathy is a high-yield pattern for NS.</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setImg('mri','yes')"  id="mri-yes">✓ Consistent with NS</button>
+      <button class="abtn" onclick="setImg('mri','aty')"  id="mri-aty">⚠ Abnormal, atypical/nonspecific</button>
+      <button class="abtn" onclick="setImg('mri','no')"   id="mri-no">✗ Normal / not consistent</button>
+      <button class="abtn" onclick="setImg('mri','nd')"   id="mri-nd">— Not performed</button>
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:14px;">Spine MRI with gadolinium (if spinal cord or radicular symptoms) <span class="pill pill-y">OBTAIN WHEN MYELOPATHY/RADICULOPATHY PRESENT</span></div>
+
+  <div class="crit" id="spine-item">
+    <div class="crit-main">
+      <div class="crit-name">Spine MRI findings — longitudinally extensive T2 signal, leptomeningeal or intramedullary enhancement, trident sign on axial views, cauda equina nodular enhancement</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      <strong>Trident sign (axial gadolinium T1):</strong> Posterior subpial (dorsal columns) + central canal enhancement — reflects perivascular spread of granulomatous inflammation inward along Virchow-Robin spaces. Considered highly specific for spinal cord sarcoidosis in the appropriate clinical context. Distinguishes NS from AQP4-IgG NMOSD (central/ventral), MS (shorter, asymmetric, dorsolateral), and idiopathic LETM.<br><br>
+      <strong>Longitudinally extensive transverse myelitis (LETM, ≥3 vertebral segments):</strong> Common in spinal NS — must prompt evaluation for AQP4-IgG, MOG-IgG, and paraneoplastic antibodies as well as sarcoidosis.<br><br>
+      <strong>Cauda equina:</strong> Nodular enhancement of nerve roots — characteristic appearance; mimics leptomeningeal carcinomatosis or lymphomatous meningitis.
+      <div class="cnote"><strong>AQP4 and MOG antibody testing:</strong> Should always be performed in LETM cases before attributing to NS — AQP4-IgG NMOSD and MOGAD are more common causes of LETM than NS and are specifically treatable. False-positive AQP4-IgG ELISA results have been reported in sarcoidosis — confirmatory cell-based assay (CBA) recommended.</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setImg('spine','yes')"  id="spine-yes">✓ Consistent with NS (LETM, trident sign, nodular enhancement)</button>
+      <button class="abtn" onclick="setImg('spine','no')"   id="spine-no">✗ Normal or non-NS pattern</button>
+      <button class="abtn" onclick="setImg('spine','na')"   id="spine-na">— Not applicable (no spinal symptoms)</button>
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:14px;">FDG-PET/CT (whole body) <span class="pill pill-a">IDENTIFIES BIOPSY SITES — HIGH YIELD</span></div>
+
+  <div class="crit" id="pet-item">
+    <div class="crit-main">
+      <div class="crit-name">FDG-PET/CT — hypermetabolic mediastinal/hilar lymphadenopathy, or other systemic FDG-avid foci suggesting active granulomatous disease</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      FDG-PET/CT is particularly valuable when: (1) chest CT is normal but NS suspicion remains high — PET can detect metabolically active nodes that are normal in size; (2) identifying the most accessible and highest-yield biopsy site in suspected NS. PET showed avid areas in 74% of a confirmed NS cohort (Neurology 2020 study, n=85). Bilateral hilar and mediastinal lymphadenopathy with FDG avidity is highly characteristic of sarcoidosis. The "lambda sign" (hilar + paratracheal uptake pattern on gallium/PET) and "panda sign" (lacrimal + parotid gland uptake on gallium) are classic. In isolated NS without systemic findings on chest CT, whole-body PET is strongly recommended before considering neural biopsy — a positive extraneuronal site dramatically changes management.
+      <div class="cnote"><strong>Biopsy site prioritization:</strong> EBUS-guided transbronchial biopsy of mediastinal/hilar nodes — high yield, low risk, preferred. Skin lesion biopsy, peripheral node biopsy, conjunctival biopsy (palpable nodules), or blind conjunctival biopsy (20–30% positive in systemic sarcoidosis) — should all be considered before neural tissue biopsy.</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setImg('pet','yes')"  id="pet-yes">✓ FDG-avid systemic sites identified (hilar/mediastinal or other)</button>
+      <button class="abtn" onclick="setImg('pet','no')"   id="pet-no">✗ No FDG-avid systemic sites</button>
+      <button class="abtn" onclick="setImg('pet','nd')"   id="pet-nd">— Not performed</button>
+    </div>
+  </div>
+
+  <div id="a1" class="alrt"></div>
+  <div class="nav-row">
+    <button class="nbtn ns" onclick="go(0)">← Back</button>
+    <button class="nbtn np" onclick="go(2)">Next: CSF / Labs →</button>
+  </div>
+</div>
+</div>
+
+<!-- ══ SCREEN 2: CSF / LABS ══ -->
+<div class="screen" id="s2">
+<div class="card">
+  <div class="ctitle" style="color:var(--accent);">Step 3 · Cerebrospinal Fluid and Laboratory Evaluation</div>
+  <div class="csub">CSF analysis is essential in suspected CNS NS, both to support the diagnosis and to exclude mimics (infection, lymphoma). No CSF finding is pathognomonic for NS. Laboratory tests evaluate for systemic sarcoidosis and alternative diagnoses. Note: CSF ACE has poor sensitivity but elevated levels add supportive evidence.</div>
+
+  <div class="lbox">
+    <strong>CSF findings in NS (confirmed NS cohort, Willermain et al. / Neurology 2020, n=85):</strong><br>
+    <span class="lp">Lymphocytic pleocytosis:</span> ~63% of NS patients (most common CSF abnormality)<br>
+    <span class="lp">Elevated CSF protein:</span> ~62%<br>
+    <span class="lp">CSF-selective oligoclonal bands (OCBs):</span> only ~3% — contrast with MS (~95%) — useful to help distinguish NS from MS<br>
+    <span class="la">Hypoglycorrhachia (low CSF glucose):</span> Occasionally present, especially with leptomeningitis — important to note as it raises infectious concern also<br>
+    <span class="la">CSF ACE:</span> Sensitivity 0–55%, specificity 67–95% — poor sensitivity means a normal CSF ACE does not exclude NS; elevated CSF ACE adds supportive evidence but false-positives occur
+  </div>
+
+  <div class="slabel">CSF cellular and protein findings <span class="pill pill-y">PERFORM LP IN ALL CNS NS SUSPECTS</span></div>
+
+  <div class="crit" id="csf-item">
+    <div class="crit-main">
+      <div class="crit-name">CSF analysis results — cell count, differential, protein, glucose, OCBs, IgG index</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      <strong>Typical NS CSF profile:</strong> Lymphocyte-predominant pleocytosis (5–100 cells/µL, occasionally higher with florid leptomeningitis); elevated protein (50–200 mg/dL); normal to mildly low glucose; absence of CSF-selective OCBs (key differentiator from MS — OCBs present in ~3% of NS vs ~95% of MS).<br><br>
+      <strong>Normal CSF does not exclude NS</strong> — especially with isolated cranial neuropathy, peripheral neuropathy, or parenchymal lesions without leptomeningeal involvement.<br><br>
+      <strong>Mandatory exclusionary CSF testing:</strong> India ink prep, cryptococcal antigen, fungal culture, bacterial culture, AFB smear/culture, VDRL, cytology, flow cytometry (lymphoma), HIV, viral PCR panel if clinically indicated (HSV, EBV, CMV, enteroviruses). Infectious and neoplastic causes of subacute meningitis must be excluded before attributing NS diagnosis.
+      <div class="cnote"><strong>CSF oligoclonal bands:</strong> If CSF OCBs are present (≥2 IgG bands absent from serum), re-examine carefully for MS and other demyelinating diagnoses before proceeding with NS workup. The combination of typical NS imaging + normal OCBs favors NS over MS. CSF IgG index and CSF/serum synthesis rate may be mildly elevated in NS but are less discriminating than OCBs.</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setLab('csf','supp')">✓ Supportive of NS (pleocytosis, elevated protein, no OCBs)</button>
+      <button class="abtn" onclick="setLab('csf','norm')">ⓘ Normal CSF (does not exclude NS)</button>
+      <button class="abtn" onclick="setLab('csf','incon')">⚠ Inconsistent (OCBs present, low glucose + infection concern)</button>
+      <button class="abtn" onclick="setLab('csf','nd')">— LP not performed / pending</button>
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:14px;">CSF ACE and sIL-2R <span class="pill pill-a">SUPPORTIVE — NOT DIAGNOSTIC ALONE</span></div>
+
+  <div class="crit" id="csface-item">
+    <div class="crit-main">
+      <div class="crit-name">CSF angiotensin-converting enzyme (ACE) and/or soluble IL-2 receptor (sIL-2R)</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      <strong>CSF ACE:</strong> Sensitivity 0–55%, specificity 67–95%. Poor sensitivity — only 33–50% of patients with elevated CSF ACE ultimately have NS in reported series; false-negatives are common (ACE normal in confirmed NS, especially spinal cord disease). Useful as supportive evidence when elevated in the correct clinical context, but never sufficient alone.<br><br>
+      <strong>CSF sIL-2R (soluble interleukin-2 receptor):</strong> Emerging biomarker — reflects T-cell activation in active granulomatous disease. Elevated CSF sIL-2R has been reported in NS cases where ACE and lysozyme were normal. Not yet standardized for clinical use, but a markedly elevated CSF sIL-2R (e.g., >96 U/mL, reference <8 U/mL in one series) in an appropriate clinical and imaging context adds supportive evidence (Schürmann et al. 2024 case series).<br><br>
+      <strong>Serum ACE:</strong> Elevated in ~60% of active pulmonary sarcoidosis but in fewer than one-third of isolated NS cases. Specificity 70–97.5%. Influenced by ACE gene insertion/deletion polymorphism — labs should use genotype-adjusted reference ranges when available.
+      <div class="cnote"><strong>Practical point:</strong> A normal serum ACE does not exclude NS — especially in isolated or CNS-predominant disease. Conversely, an elevated serum ACE in the correct clinical context is a useful supportive finding. Do not use ACE as a standalone diagnostic test. CSF ACE should ideally be interpreted with concurrent serum ACE to account for passive diffusion.</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setLab('csface','pos')" id="csface-pos">✓ CSF ACE or sIL-2R elevated</button>
+      <button class="abtn" onclick="setLab('csface','neg')" id="csface-neg">✗ CSF ACE normal (sIL-2R not tested)</button>
+      <button class="abtn" onclick="setLab('csface','nd')"  id="csface-nd">— Not performed</button>
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:14px;">Serum inflammatory markers and sarcoidosis-associated labs <span class="pill pill-y">ROUTINE IN ALL SUSPECTED NS</span></div>
+
+  <div class="crit" id="serum-item">
+    <div class="crit-main">
+      <div class="crit-name">Serum ACE, serum sIL-2R, serum calcium, 24h urine calcium, CBC, CMP, LDH, lysozyme, serum protein electrophoresis</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      <strong>Serum ACE:</strong> Elevated in ~60% of active sarcoidosis. Falsely normal in up to 40% of sarcoidosis; falsely elevated in diabetes mellitus, hyperthyroidism, silicosis, berylliosis, lymphoma, histoplasmosis, and other conditions. Not a reliable standalone test.<br><br>
+      <strong>Hypercalcemia / hypercalciuria:</strong> Granuloma-mediated 1,25-dihydroxyvitamin D overproduction. ~10–30% of sarcoidosis patients; hypercalciuria more common than hypercalcemia. Nephrolithiasis and nephrocalcinosis may result.<br><br>
+      <strong>Serum sIL-2R:</strong> Reflects total body granuloma burden; may be elevated even when ACE is normal. Elevated in lymphoma as well — non-specific, but useful in aggregate.<br><br>
+      <strong>LDH:</strong> Elevated in lymphoma — important to consider given it is a key NS mimic.<br><br>
+      <strong>CBC:</strong> Lymphopenia is common in sarcoidosis (peripheral sequestration to granulomas). Eosinophilia in some. Cytopenias raise concern for lymphoma, bone marrow involvement, or autoimmune disease.
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setLab('serum','supp')" id="serum-supp">✓ Supportive (elevated ACE and/or hypercalcemia/uria)</button>
+      <button class="abtn" onclick="setLab('serum','norm')" id="serum-norm">ⓘ Normal / non-diagnostic labs</button>
+      <button class="abtn" onclick="setLab('serum','nd')"   id="serum-nd">— Pending / not performed</button>
+    </div>
+  </div>
+
+  <div id="a2" class="alrt"></div>
+  <div class="nav-row">
+    <button class="nbtn ns" onclick="go(1)">← Back</button>
+    <button class="nbtn np" onclick="go(3)">Next: Systemic Evaluation →</button>
+  </div>
+</div>
+</div>
+
+<!-- ══ SCREEN 3: SYSTEMIC EVALUATION ══ -->
+<div class="screen" id="s3">
+<div class="card">
+  <div class="ctitle" style="color:var(--accent);">Step 4 · Systemic Evaluation — Evidence of Extraneural Sarcoidosis</div>
+  <div class="csub">Evidence of systemic sarcoidosis is required for the Probable tier. The goal is to identify extraneural tissue accessible for biopsy or imaging findings strongly consistent with sarcoidosis. Most patients (~84–94%) with NS will have evidence of systemic disease at some point during their illness.</div>
+
+  <div class="lbox">
+    <strong>Systemic manifestations of sarcoidosis at initial NS presentation:</strong> Lungs/lymph nodes most common — bilateral hilar adenopathy on chest imaging in ~60–70%; pulmonary infiltrates in ~30–50%. Other frequent findings: uveitis/anterior chamber disease (~20%), skin lesions (erythema nodosum, lupus pernio, subcutaneous nodules), salivary/parotid gland enlargement, hepatosplenomegaly, bone lesions.<br><br>
+    <span class="lp">Key point:</span> Neurological involvement precedes or is concurrent with systemic diagnosis in ~50–70% of NS cases. A normal chest X-ray does not exclude systemic sarcoidosis — chest CT is more sensitive (~70% positive vs ~60% for CXR). Whole-body FDG-PET/CT is the most sensitive modality for identifying sites of active systemic disease.
+  </div>
+
+  <div class="slabel">Chest imaging <span class="pill pill-y">MANDATORY — CHEST CT PREFERRED OVER CXR</span></div>
+
+  <div class="crit" id="chest-item">
+    <div class="crit-main">
+      <div class="crit-name">Chest CT (or CXR) — bilateral hilar lymphadenopathy, mediastinal adenopathy, pulmonary infiltrates/fibrosis, or other findings consistent with sarcoidosis</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      <strong>Chest CT staging in sarcoidosis:</strong> Stage 0 (normal); Stage I (bilateral hilar adenopathy, BHA only); Stage II (BHA + pulmonary infiltrates); Stage III (pulmonary infiltrates without BHA); Stage IV (pulmonary fibrosis). Stage I/II most common in active sarcoidosis. BHA is symmetric in ~95%; asymmetric or unilateral adenopathy should prompt lymphoma consideration.<br><br>
+      <strong>High-resolution CT (HRCT):</strong> Better characterizes parenchymal involvement — perilymphatic micronodules along bronchovascular bundles, fissures, and subpleural regions are characteristic of sarcoidosis. "Galaxy sign" (central mass of fused granulomas surrounded by smaller nodules) is classic but uncommon.
+      <div class="cnote"><strong>If chest CT is normal and NS suspicion remains high:</strong> Proceed to whole-body FDG-PET/CT — may detect metabolically active nodes not enlarged on CT. Also consider ophthalmologic examination (slit-lamp, funduscopy) — uveitis and choroidal lesions can provide a relatively accessible biopsy target if granulomas are visible on funduscopy.</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setSys('chest','yes')"  id="chest-yes">✓ BHA or pulmonary infiltrates consistent with sarcoidosis</button>
+      <button class="abtn" onclick="setSys('chest','no')"   id="chest-no">✗ Normal chest CT</button>
+      <button class="abtn" onclick="setSys('chest','aty')"  id="chest-aty">⚠ Abnormal but atypical / lymphoma cannot be excluded</button>
+      <button class="abtn" onclick="setSys('chest','nd')"   id="chest-nd">— Not performed</button>
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:14px;">Ophthalmologic, skin, and other systemic findings <span class="pill pill-a">ACCESSIBLE BIOPSY SITES</span></div>
+
+  <div class="crit" id="extra-item">
+    <div class="crit-main">
+      <div class="crit-name">Extraneural findings consistent with sarcoidosis — uveitis, parotid/salivary gland enlargement, skin lesions, hepatosplenomegaly, bone/joint involvement, cardiac</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      <strong>Uveitis:</strong> Anterior uveitis most common; also intermediate and posterior uveitis. Choroidal granulomas visible on fundus exam can provide a clinical diagnosis without biopsy in the right context. Ophthalmologic exam should be performed in all suspected NS.<br><br>
+      <strong>Skin:</strong> Lupus pernio (indurated violaceous plaques on nose, cheeks, ears — very specific for chronic systemic sarcoidosis); erythema nodosum (non-specific, acute sarcoidosis); subcutaneous nodules (can be biopsied with low morbidity).<br><br>
+      <strong>Parotid/salivary glands:</strong> Enlargement with or without pain — Heerfordt's syndrome. Parotid biopsy has reasonable yield.<br><br>
+      <strong>Cardiac sarcoidosis:</strong> May coexist with NS — conduction disease (AV block), cardiomyopathy, ventricular tachycardia. Cardiac MRI or FDG-PET for evaluation. Relevant as concurrent diagnosis requiring monitoring and treatment.
+      <div class="cnote"><strong>Blind conjunctival biopsy:</strong> ~20–30% positive yield in systemic sarcoidosis even without macroscopic conjunctival lesions, low morbidity — a useful early step before thoracic procedures when accessible. Labial salivary gland biopsy (minor salivary gland) can also be performed with low morbidity and reasonable yield in suspected sarcoidosis.</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setSys('extra','yes')"  id="extra-yes">✓ Present (uveitis, skin, parotid, or other systemic findings)</button>
+      <button class="abtn" onclick="setSys('extra','no')"   id="extra-no">✗ No extraneural systemic findings</button>
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:14px;">Overall: evidence of systemic granulomatous disease consistent with sarcoidosis <span class="pill pill-r">REQUIRED FOR PROBABLE TIER</span></div>
+
+  <div class="crit" id="sys-item">
+    <div class="crit-main">
+      <div class="crit-name">Histopathologic confirmation of non-caseating granuloma from extraneural tissue (lymph node, lung, skin, liver, muscle, parotid, conjunctiva, labial salivary gland, bone marrow)</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      Extraneural tissue biopsy confirming non-caseating granuloma is required for the Probable tier. Choice of biopsy site should prioritize the highest yield and lowest risk:<br><br>
+      1. <strong>EBUS-guided transbronchial needle aspiration (EBUS-TBNA)</strong> of mediastinal/hilar nodes — diagnostic sensitivity ~80–90% in stage I/II sarcoidosis with enlarged nodes, very low complication rate. First choice when BHA present.<br>
+      2. <strong>Bronchoscopy with transbronchial biopsy</strong> — diagnostic yield ~40–90% depending on parenchymal involvement; useful with pulmonary infiltrates.<br>
+      3. <strong>Skin, peripheral lymph node, or accessible subcutaneous nodule biopsy</strong> — low risk, high yield when lesions present.<br>
+      4. <strong>Conjunctival biopsy, minor salivary gland biopsy, liver biopsy</strong> — less commonly used but available.<br><br>
+      Note: Non-caseating granuloma must be accompanied by appropriate exclusion of other granulomatous diseases — especially mycobacterial and fungal infections, which require special stains (AFB, GMS/PAS) and cultures.
+      <div class="cnote"><strong>After biopsy confirmation:</strong> Extraneural non-caseating granuloma + appropriate clinical neurologic syndrome + exclusion of mimics = Probable Neurosarcoidosis (Stern 2018 Tier 2). No neural tissue biopsy required for this tier — an important practical distinction from Definite NS.</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setSys('sys','pos')"  id="sys-pos">✓ Extraneural NCG confirmed on biopsy</button>
+      <button class="abtn" onclick="setSys('sys','neg')"  id="sys-neg">✗ No biopsy performed / non-diagnostic biopsy</button>
+      <button class="abtn" onclick="setSys('sys','pend')" id="sys-pend">⧗ Biopsy pending</button>
+    </div>
+  </div>
+
+  <div id="a3" class="alrt"></div>
+  <div class="nav-row">
+    <button class="nbtn ns" onclick="go(2)">← Back</button>
+    <button class="nbtn np" onclick="go(4)">Next: Exclusion of Mimics →</button>
+  </div>
+</div>
+</div>
+
+<!-- ══ SCREEN 4: EXCLUSIONS ══ -->
+<div class="screen" id="s4">
+<div class="card">
+  <div class="ctitle" style="color:var(--accent);">Step 5 · Exclusion of Alternative Diagnoses</div>
+  <div class="csub">Rigorous exclusion of other causes is explicitly required for all three Stern 2018 diagnostic tiers. NS is a diagnosis of exclusion in the context of confirmatory findings. The relevant differential depends on the predominant clinical syndrome. Granulomatous inflammation on biopsy is NOT itself sufficient — other granulomatous diseases must be excluded histopathologically and clinically.</div>
+
+  <div class="lbox">
+    <strong>Key mimics of neurosarcoidosis (Springer Current Allergy & Asthma Reports, 2023):</strong><br>
+    <span class="lr">Infectious (most important — must exclude before immunosuppression):</span> Tuberculosis (MTB, NTM), fungal infections (Cryptococcus, Histoplasma, Aspergillus, Coccidioides), neurosyphilis, Brucella, Lyme neuroborreliosis<br>
+    <span class="lr">Neoplastic:</span> Primary CNS lymphoma (PCNSL), leptomeningeal carcinomatosis/lymphomatosis, intravascular lymphoma, CNS glioma, meningioma, metastases<br>
+    <span class="la">Autoimmune/inflammatory:</span> Multiple sclerosis, NMOSD (AQP4-IgG, MOG-IgG), CNS vasculitis, IgG4-related disease, Behçet's, granulomatosis with polyangiitis (Wegener's), Langerhans cell histiocytosis<br>
+    <span class="la">Other granulomatous:</span> Berylliosis, hypersensitivity pneumonitis (granuloma on biopsy ≠ sarcoidosis — context and stains required)
+  </div>
+
+  <div class="slabel">Infectious exclusion <span class="pill pill-r">MANDATORY BEFORE ANY IMMUNOSUPPRESSION</span></div>
+
+  <div class="crit" id="infx-item">
+    <div class="crit-main">
+      <div class="crit-name">Infectious workup — TB, fungal, syphilis, HIV, Lyme excluded by appropriate testing</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      Minimum infectious exclusion workup for CNS NS:<br>
+      • <strong>CSF:</strong> India ink, cryptococcal antigen, fungal culture, bacterial culture and sensitivity (including aerobic, anaerobic, and fungal), AFB smear and culture, VDRL or TPPA, viral PCR panel (HSV1/2, VZV, CMV, EBV, enteroviruses, JC virus if immunocompromised), cytology<br>
+      • <strong>Serum:</strong> HIV 1/2 Ag/Ab, RPR (confirm positive with TPHA/FTA-ABS), Lyme ELISA with reflex Western blot (CSF Lyme Ab index if systemic serology positive), QuantiFERON-TB Gold or TST, Histoplasma urine antigen (endemic area), Coccidioides IgG/IgM (endemic area), Brucella serology (exposure history)<br>
+      • <strong>Tissue (if biopsy performed):</strong> AFB stain + culture, GMS (Grocott methenamine silver) for fungi, PAS stain — non-caseating granuloma must have negative special stains to be attributed to sarcoidosis
+      <div class="cnote"><strong>Critical reminder:</strong> Granulomatous meningitis caused by Cryptococcus, MTB, or Histoplasma can be clinically and radiographically indistinguishable from NS. Starting high-dose corticosteroids in undiagnosed infectious meningitis can be fatal. Delay immunosuppression until infectious causes are excluded or adequately treated. Tissue cultures may take weeks — clinical judgment required for timing of treatment initiation.</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setExcl('infx','done')"   id="infx-done">✓ Infectious workup complete — negative</button>
+      <button class="abtn" onclick="setExcl('infx','part')"   id="infx-part">⚠ Partial / some pending</button>
+      <button class="abtn" onclick="setExcl('infx','pos')"    id="infx-pos">✗ Infection identified</button>
+      <button class="abtn" onclick="setExcl('infx','nd')"     id="infx-nd">— Not yet initiated</button>
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:14px;">Neoplastic exclusion <span class="pill pill-r">ESSENTIAL — CNS LYMPHOMA IS KEY MIMIC</span></div>
+
+  <div class="crit" id="neo-item">
+    <div class="crit-main">
+      <div class="crit-name">CNS lymphoma, leptomeningeal malignancy, and other neoplastic causes evaluated and excluded</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      Primary CNS lymphoma (PCNSL) and intravascular lymphoma are the most important neoplastic mimics of NS. PCNSL may present as multiple enhancing parenchymal lesions, leptomeningeal enhancement, or isolated cranial neuropathies — clinically and radiographically very similar to NS. Intravascular lymphoma can mimic NS encephalopathy with white matter lesions and progressive neurological decline.<br><br>
+      <strong>Evaluation:</strong> CSF cytology and flow cytometry (CD19, CD20, CD3, CD5, κ/λ ratio — malignant B-cell population); serum LDH (elevated in PCNSL, lymphomatous meningitis); vitreous cytology if ocular involvement; PET/CT (FDG-avid CNS lesions in PCNSL, though sarcoidosis CNS lesions can also be FDG-avid); MRI perfusion; MRI spectroscopy.<br><br>
+      <strong>If CNS lymphoma cannot be excluded clinically/CSF:</strong> Neural biopsy required. Avoid empirical steroids before biopsy — steroids cause rapid lymphocyte apoptosis in PCNSL, producing a "ghost tumor" that may be histologically uninterpretable ("steroid footprint").
+      <div class="cnote"><strong>Steroid before biopsy warning:</strong> If CNS lymphoma is in the differential and neural biopsy is planned, avoid corticosteroids until biopsy is obtained — premature steroids can render PCNSL histologically undiagnosable, delaying definitive diagnosis by weeks. This creates a clinical dilemma when neurological deterioration requires urgent treatment. Multidisciplinary discussion (neurology, neuro-oncology, neurosurgery) is essential.</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setExcl('neo','done')"  id="neo-done">✓ Neoplastic workup negative (cytology, flow, LDH)</button>
+      <button class="abtn" onclick="setExcl('neo','part')"  id="neo-part">⚠ Evaluation incomplete — awaiting results</button>
+      <button class="abtn" onclick="setExcl('neo','pos')"   id="neo-pos">✗ Neoplastic process identified / not excluded</button>
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:14px;">Demyelinating disease exclusion (MS / NMOSD / MOGAD) <span class="pill pill-a">IMPORTANT IN WM LESION / MYELOPATHY PRESENTATIONS</span></div>
+
+  <div class="crit" id="demel-item">
+    <div class="crit-main">
+      <div class="crit-name">MS, AQP4-IgG NMOSD, MOG-IgG-associated disease evaluated — antibody testing, OCB status, lesion distribution</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      <strong>Key differentiators:</strong><br>
+      • <strong>MS vs NS:</strong> CSF OCBs present in ~95% MS, ~3% NS. MS lesions typically periventricular, juxtacortical, infratentorial, spinal (short, dorsolateral, ≤2 segments). NS lesions may be periventricular but leptomeningeal and parenchymal enhancement pattern differs. Both may have cranial neuropathy.<br>
+      • <strong>AQP4-IgG NMOSD vs NS:</strong> LETM in both. AQP4-IgG cell-based assay (CBA) is gold standard — sensitivity ~72–80%, specificity ~99%. False-positive ELISA in sarcoidosis has been reported — always confirm with CBA. NMOSD lesions: central cord, area postrema involvement, no trident sign.<br>
+      • <strong>MOGAD vs NS:</strong> MOG-IgG CBA. MOGAD more commonly affects cortex/ADEM phenotype, bilateral optic neuritis, conus involvement. Generally good prognosis with treatment.
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setExcl('demel','neg')"  id="demel-neg">✓ AQP4-IgG and MOG-IgG negative, OCBs absent</button>
+      <button class="abtn" onclick="setExcl('demel','part')" id="demel-part">⚠ Testing incomplete / OCBs present (MS more likely)</button>
+      <button class="abtn" onclick="setExcl('demel','pos')"  id="demel-pos">✗ AQP4/MOG positive or MS criteria met</button>
+      <button class="abtn" onclick="setExcl('demel','na')"   id="demel-na">— Not applicable (no WM/spinal lesions)</button>
+    </div>
+  </div>
+
+  <div id="a4" class="alrt"></div>
+  <div class="nav-row">
+    <button class="nbtn ns" onclick="go(3)">← Back</button>
+    <button class="nbtn np" onclick="go(5)">Next: Biopsy / Verdict →</button>
+  </div>
+</div>
+</div>
+
+<!-- ══ SCREEN 5: BIOPSY / VERDICT ══ -->
+<div class="screen" id="s5">
+<div class="card" style="margin-bottom:12px;">
+  <div class="ctitle" style="color:var(--accent);">Step 6 · Neural Tissue Biopsy (Required for Definite Tier)</div>
+  <div class="csub">Definite NS requires histopathologic confirmation of non-caseating granulomatous inflammation consistent with sarcoidosis in neural tissue (brain, spinal cord, meninges, or peripheral nerve/muscle biopsy in PNS NS). This is the highest level of diagnostic certainty.</div>
+
+  <div class="lbox">
+    <strong>Stern 2018 diagnostic tier summary:</strong><br>
+    <span class="la">Possible NS:</span> Clinical + MRI/CSF/EMG-NCS suggest NS + other causes rigorously excluded — <em>no</em> pathologic confirmation<br>
+    <span class="lp">Probable NS:</span> Above + histopathologically confirmed non-caseating granuloma in <em>extraneural</em> tissue consistent with sarcoidosis<br>
+    <span class="lg">Definite NS:</span> Above + histopathologically confirmed non-caseating granulomatous inflammation consistent with NS in <em>neural</em> tissue<br><br>
+    <strong>Note:</strong> Extraneural biopsy confirmation elevates from Possible → Probable. Neural biopsy confirmation elevates from Possible/Probable → Definite. Neural biopsy carries significant risk and is reserved for cases where: (1) extraneural biopsy is not feasible or non-diagnostic, and (2) the diagnosis would change management.
+  </div>
+
+  <div class="tier-grid">
+    <div class="tier-card t-possible">
+      <div class="tier-label" style="color:var(--amber);">Possible</div>
+      <div class="tier-req">Clinical syndrome + imaging/CSF/EMG consistent with NS<br>+ Rigorous exclusion of mimics<br><em>No pathologic confirmation</em></div>
+    </div>
+    <div class="tier-card t-probable">
+      <div class="tier-label" style="color:var(--accent);">Probable</div>
+      <div class="tier-req">Possible criteria +<br>Non-caseating granuloma on <strong>extraneural</strong> biopsy consistent with sarcoidosis</div>
+    </div>
+    <div class="tier-card t-definite">
+      <div class="tier-label" style="color:var(--green);">Definite</div>
+      <div class="tier-req">Possible criteria +<br>Non-caseating granulomatous inflammation on <strong>neural tissue</strong> biopsy (brain/cord/meninges/nerve)</div>
+    </div>
+  </div>
+
+  <div class="slabel">Neural tissue biopsy result <span class="pill pill-g">ENABLES DEFINITE TIER</span></div>
+
+  <div class="crit" id="nbx-item">
+    <div class="crit-main">
+      <div class="crit-name">Neural tissue biopsy — brain parenchyma, meninges, spinal cord, peripheral nerve (sural), or muscle — result</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      <strong>CNS biopsy:</strong> Stereotactic brain biopsy or open biopsy of accessible parenchymal/meningeal lesion. Significant risk of neurological morbidity (hemorrhage, infection, neurological deficit) depending on location. Reserved for cases where extraneural biopsy is negative or not feasible and malignancy or infection cannot otherwise be excluded.<br><br>
+      <strong>Peripheral nerve biopsy (sural nerve):</strong> Lower morbidity. Shows granulomatous infiltration with or without vasculitis (necrotizing vasculitis indicates more aggressive disease). Fiber loss with axonal injury and/or demyelination.<br><br>
+      <strong>Muscle biopsy:</strong> Granulomas in 50–80% of asymptomatic sarcoidosis patients — yield is high even without clinical myopathy. Minimal morbidity. Consider as an add-on during any other surgical procedure or as a standalone procedure.<br><br>
+      <strong>Histopathologic caveat:</strong> Non-caseating granuloma in neural tissue does not automatically confirm NS. Granulomatous infections (MTB, Cryptococcus, Histoplasma) and rare granulomatous reactions to lymphoma must be excluded by special stains, cultures, and correlation.
+      <div class="cnote"><strong>Isolated NS:</strong> In ~1–17% of NS cases, no systemic sarcoidosis can be identified. If extraneural biopsy is unrevealing or no accessible extraneural site exists, neural biopsy is the only path to a non-Possible tier diagnosis. This is a recognized subset — the Definite tier explicitly allows for isolated NS with neural pathology alone (Stern 2018, JAMA Neurol 75:1547).</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setBx('nbx','pos')"  id="nbx-pos">✓ Neural biopsy — NCG consistent with NS</button>
+      <button class="abtn" onclick="setBx('nbx','neg')"  id="nbx-neg">✗ Neural biopsy — non-diagnostic or negative</button>
+      <button class="abtn" onclick="setBx('nbx','nd')"   id="nbx-nd">— Neural biopsy not performed</button>
+    </div>
+  </div>
+</div>
+
+<div id="vout"></div>
+<div class="doc-header">
+  <button class="doc-tog" onclick="toggleDoc()">▼ Documentation Note</button>
+  <button class="copy-btn" id="copy-btn" onclick="copyDoc()">⎘ Copy</button>
+</div>
+<div class="doc-body" id="dn"></div>
+<div class="nav-row">
+  <button class="nbtn ns" onclick="go(4)">← Back</button>
+  <button class="nbtn np" onclick="resetAll()">↺ New Evaluation</button>
+</div>
+</div>
+
+</div><!-- /app -->
+<script>
+const S = {
+  // Step 0 - clinical features
+  cn:null, men:null, par:null, myel:null, hyd:null, pnp:null,
+  // Step 1 - imaging
+  mri:null, spine:null, pet:null,
+  // Step 2 - labs
+  csf:null, csface:null, serum:null,
+  // Step 3 - systemic
+  chest:null, extra:null, sys:null,
+  // Step 4 - exclusions
+  infx:null, neo:null, demel:null,
+  // Step 5 - biopsy
+  nbx:null
+};
+let cur = 0;
+
+/* ── Clinical feature toggles ── */
+function setSx(k, v) {
+  S[k] = v;
+  const item = document.getElementById(k+'-item');
+  if(item) item.className = 'crit '+(v===true?'c-yes':v===false?'c-abs':'');
+  const yes = document.getElementById(k+'-yes');
+  const no  = document.getElementById(k+'-no');
+  if(yes){ yes.classList.remove('ay','an'); if(v===true)  yes.classList.add('ay'); }
+  if(no) { no.classList.remove('ay','an');  if(v===false) no.classList.add('an'); }
+  ui();
+}
+
+/* ── Imaging toggles ── */
+function setImg(k, v) {
+  S[k] = v;
+  const item = document.getElementById(k+'-item');
+  if(item){
+    item.className = 'crit';
+    if(v==='yes') item.classList.add('c-yes');
+    else if(v==='no') item.classList.add('c-no');
+    else if(v==='aty') item.classList.add('c-part');
+    else item.classList.add('c-abs');
+  }
+  ['yes','no','aty','nd','na'].forEach(x=>{
+    const b = document.getElementById(k+'-'+x);
+    if(b) b.classList.remove('ay','an','aw','aa');
+  });
+  const map = {yes:'ay', no:'an', aty:'aw', nd:'aa', na:'aa'};
+  const btn = document.getElementById(k+'-'+v);
+  if(btn) btn.classList.add(map[v]||'aa');
+  ui();
+}
+
+/* ── Lab toggles ── */
+function setLab(k, v) {
+  S[k] = v;
+  const item = document.getElementById(k+'-item');
+  if(item){
+    item.className = 'crit';
+    if(v==='supp'||v==='pos') item.classList.add('c-yes');
+    else if(v==='incon') item.classList.add('c-part');
+    else if(v==='norm'||v==='neg') item.classList.add('c-abs');
+    else item.classList.add('c-abs');
+  }
+  ['supp','pos','norm','neg','incon','nd'].forEach(x=>{
+    const b = document.getElementById(k+'-'+x);
+    if(b) b.classList.remove('ay','an','aw','aa','ab');
+  });
+  const map = {supp:'ay',pos:'ay',norm:'aa',neg:'aa',incon:'aw',nd:'aa'};
+  const btn = document.getElementById(k+'-'+v);
+  if(btn) btn.classList.add(map[v]||'aa');
+  ui();
+}
+
+/* ── Systemic toggles ── */
+function setSys(k, v) {
+  S[k] = v;
+  const item = document.getElementById(k+'-item');
+  if(item){
+    item.className = 'crit';
+    if(v==='yes'||v==='pos') item.classList.add('c-yes');
+    else if(v==='no'||v==='neg') item.classList.add('c-no');
+    else if(v==='aty') item.classList.add('c-part');
+    else item.classList.add('c-abs');
+  }
+  ['yes','no','pos','neg','aty','nd','pend'].forEach(x=>{
+    const b = document.getElementById(k+'-'+x);
+    if(b) b.classList.remove('ay','an','aw','aa','ab');
+  });
+  const map = {yes:'ay',pos:'ay',no:'an',neg:'an',aty:'aw',nd:'aa',pend:'ab'};
+  const btn = document.getElementById(k+'-'+v);
+  if(btn) btn.classList.add(map[v]||'aa');
+  ui();
+}
+
+/* ── Exclusion toggles ── */
+function setExcl(k, v) {
+  S[k] = v;
+  const item = document.getElementById(k+'-item');
+  if(item){
+    item.className = 'crit';
+    if(v==='done'||v==='neg'||v==='na') item.classList.add('c-yes');
+    else if(v==='pos') item.classList.add('c-no');
+    else if(v==='part') item.classList.add('c-part');
+    else item.classList.add('c-abs');
+  }
+  ['done','neg','na','pos','part','nd'].forEach(x=>{
+    const b = document.getElementById(k+'-'+x);
+    if(b) b.classList.remove('ay','an','aw','aa');
+  });
+  const map = {done:'ay',neg:'ay',na:'ay',pos:'an',part:'aw',nd:'aa'};
+  const btn = document.getElementById(k+'-'+v);
+  if(btn) btn.classList.add(map[v]||'aa');
+  ui();
+}
+
+/* ── Biopsy toggle ── */
+function setBx(k, v) {
+  S[k] = v;
+  const item = document.getElementById(k+'-item');
+  if(item){
+    item.className = 'crit';
+    if(v==='pos') item.classList.add('c-yes');
+    else if(v==='neg') item.classList.add('c-no');
+    else item.classList.add('c-abs');
+  }
+  ['pos','neg','nd'].forEach(x=>{
+    const b = document.getElementById(k+'-'+x);
+    if(b) b.classList.remove('ay','an','aa');
+  });
+  const map = {pos:'ay', neg:'an', nd:'aa'};
+  const btn = document.getElementById(k+'-'+v);
+  if(btn) btn.classList.add(map[v]||'aa');
+  if(cur===5) rv();
+  ui();
+}
+
+/* ── Scoring / prerequisite logic ── */
+function anySxSelected() {
+  return [S.cn,S.men,S.par,S.myel,S.hyd,S.pnp].some(v=>v!==null);
+}
+function clinicalSyndromePresent() {
+  return [S.cn,S.men,S.par,S.myel,S.hyd,S.pnp].some(v=>v===true);
+}
+function imagingSupports() {
+  return S.mri==='yes' || S.spine==='yes';
+}
+function exclusionsClear() {
+  const inf = S.infx;
+  const neo = S.neo;
+  const dem = S.demel;
+  const infOk = inf==='done';
+  const neoOk = neo==='done';
+  const demOk = dem==='neg'||dem==='na';
+  return infOk && neoOk && demOk;
+}
+function exclusionsFailed() {
+  return S.infx==='pos' || S.neo==='pos' || S.demel==='pos';
+}
+function getDxTier() {
+  if(!clinicalSyndromePresent()) return 'no-syndrome';
+  if(!imagingSupports()) return 'possible-no-imaging'; // still possible if clinical
+  if(exclusionsFailed()) return 'excluded';
+  // Definite
+  if(S.nbx==='pos' && exclusionsClear()) return 'definite';
+  // Probable
+  if(S.sys==='pos' && exclusionsClear()) return 'probable';
+  // Possible with exclusions done
+  if(exclusionsClear()) return 'possible';
+  // Possible with exclusions partial
+  if([S.infx,S.neo,S.demel].some(v=>v!==null)) return 'possible-incomplete';
+  return 'insufficient';
+}
+
+/* ── Feedback UI ── */
+function ui() {
+  // Step 0
+  const a0=document.getElementById('a0'), n0=document.getElementById('n0');
+  const cnt = [S.cn,S.men,S.par,S.myel,S.hyd,S.pnp].filter(v=>v===true).length;
+  if(cnt>0){
+    sa(a0,'agold','◈ '+cnt+' neurological feature'+(cnt>1?'s':'')+' selected. Proceed to neuroimaging evaluation.');
+    n0.disabled=false;
+  } else if(anySxSelected()){
+    sa(a0,'awn','⚠ No neurological features confirmed as present. Clinical syndrome prerequisite not met.');
+    n0.disabled=true;
+  } else { ha(a0); n0.disabled=true; }
+
+  // Step 1
+  const a1=document.getElementById('a1');
+  if(imagingSupports()) sa(a1,'aok','✓ MRI findings consistent with NS. Imaging prerequisite component supported.');
+  else if(S.mri==='no' && S.spine==='no') sa(a1,'awn','⚠ Imaging does not support NS pattern. Clinical syndrome alone may still meet Possible tier if mimics are excluded. Consider FDG-PET/CT to identify systemic sites.');
+  else if(S.mri||S.spine||S.pet) sa(a1,'ainf','ⓘ Imaging data recorded. Proceed to CSF and lab evaluation.');
+  else ha(a1);
+
+  // Step 2
+  const a2=document.getElementById('a2');
+  if(S.csf==='incon') sa(a2,'awn','⚠ CSF findings inconsistent with NS — OCBs present or features raising infection concern. Reassess before proceeding. Do not start immunosuppression without clearing infectious causes.');
+  else if(S.csf==='supp') sa(a2,'aok','✓ CSF profile supportive of NS (pleocytosis, elevated protein, no OCBs).');
+  else if(S.csf==='norm') sa(a2,'ainf','ⓘ Normal CSF. Does not exclude NS — particularly in cranial neuropathy or peripheral neuropathy presentations.');
+  else ha(a2);
+
+  // Step 3
+  const a3=document.getElementById('a3');
+  if(S.sys==='pos') sa(a3,'aok','✓ Extraneural non-caseating granuloma confirmed. This enables the Probable tier once exclusions are completed.');
+  else if(S.sys==='neg') sa(a3,'awn','⚠ No extraneural histopathologic confirmation. Diagnosis limited to Possible tier unless neural biopsy is performed (Definite tier).');
+  else if(S.sys==='pend') sa(a3,'ainf','ⓘ Biopsy pending. Await result before finalizing diagnostic tier.');
+  else if(S.chest||S.extra) sa(a3,'ainf','ⓘ Systemic findings recorded. Proceed to exclusion of mimics.');
+  else ha(a3);
+
+  // Step 4
+  const a4=document.getElementById('a4');
+  if(exclusionsFailed()) sa(a4,'aerr','✗ Alternative diagnosis identified or not yet excluded — NS diagnosis cannot be established. Treat the identified diagnosis and reassess.');
+  else if(exclusionsClear()) sa(a4,'aok','✓ Infectious, neoplastic, and demyelinating causes excluded. Exclusion prerequisite met for all Stern 2018 tiers.');
+  else if([S.infx,S.neo,S.demel].some(v=>v!==null)) sa(a4,'awn','⚠ Exclusion workup incomplete. Do not start immunosuppression until infectious and neoplastic causes are sufficiently excluded.');
+  else ha(a4);
+}
+
+function rv() {
+  const tier = getDxTier();
+  const cls = {definite:'vdef',probable:'vprob',possible:'vposs','possible-no-imaging':'vposs','possible-incomplete':'vposs',excluded:'vneg',insufficient:'vund','no-syndrome':'vund'};
+  const titles = {
+    definite:'Definite Neurosarcoidosis',
+    probable:'Probable Neurosarcoidosis',
+    possible:'Possible Neurosarcoidosis',
+    'possible-no-imaging':'Possible Neurosarcoidosis (Imaging Pending / Not Supportive)',
+    'possible-incomplete':'Possible Neurosarcoidosis (Exclusion Workup Incomplete)',
+    excluded:'NS Diagnosis Not Supportable',
+    insufficient:'Insufficient Data — Clinical Syndrome Not Established',
+    'no-syndrome':'No Clinical Syndrome Selected'
+  };
+  const descs = {
+    definite:'Clinical syndrome + imaging/CSF/EMG consistent with NS + rigorous exclusion of mimics + histopathologically confirmed non-caseating granulomatous inflammation in neural tissue consistent with sarcoidosis. This is the highest tier of diagnostic certainty under Stern et al. 2018 (JAMA Neurol 75:1546).',
+    probable:'Clinical syndrome + imaging/CSF/EMG consistent with NS + rigorous exclusion of mimics + histopathologically confirmed non-caseating granuloma in extraneural tissue consistent with sarcoidosis. Neural biopsy not required for this tier. Probable NS is the most common tier in clinical practice.',
+    possible:'Clinical syndrome + imaging/CSF/EMG consistent with NS + rigorous exclusion of other causes completed — but no pathologic confirmation of granulomatous disease (neural or extraneural). Possible NS is a clinical diagnosis based on pattern recognition and exclusion alone.',
+    'possible-no-imaging':'Clinical syndrome present consistent with NS and exclusion of mimics completed, but supportive imaging not yet confirmed. Possible tier may be appropriate if clinical syndrome is typical. Pursue additional imaging (FDG-PET/CT, spinal MRI) and systemic biopsy.',
+    'possible-incomplete':'Clinical syndrome and imaging support NS, but exclusion of infectious and/or neoplastic causes is incomplete. Do NOT start immunosuppression until exclusion workup is sufficiently completed — particularly for infections. Tier cannot be finalized.',
+    excluded:'An alternative diagnosis has been identified (infection, malignancy, or definitive demyelinating disease) or cannot be excluded. NS diagnosis is not supportable at this time. Re-evaluate after alternative diagnosis is addressed.',
+    insufficient:'No neurological features have been confirmed as present. The clinical syndrome prerequisite for all Stern 2018 tiers has not been met. Return to Step 1.',
+    'no-syndrome':'No syndrome selected. Return to Step 1 and characterize the presenting neurological syndrome.'
+  };
+
+  let html = `<div class="vban ${cls[tier]||'vund'}"><div class="vban-head">
+    <div class="vlbl">Stern BJ et al. · JAMA Neurology 2018;75:1546–1553 · Neurosarcoidosis Consortium Consensus Group</div>
+    <div class="vtitle">${titles[tier]||'Indeterminate'}</div>
+    <div class="vdesc">${descs[tier]||''}</div>
+  </div></div>`;
+
+  // Summary grid
+  html+=`<div class="sum-grid">`;
+  html+=`<div class="sblock"><div class="sbtitle">Clinical Syndrome &amp; Imaging</div>`;
+  const sxMap = {cn:'Cranial neuropathy',men:'Meningitis syndrome',par:'Parenchymal brain lesion',myel:'Myelopathy / radiculopathy',hyd:'Hydrocephalus',pnp:'Peripheral neuropathy / myopathy'};
+  Object.entries(sxMap).forEach(([k,nm])=>{
+    const v=S[k]; const dc=v===true?'dg':v===false?'dgr':'dgr'; const tc=v===true?'tg':'tgr';
+    html+=`<div class="srow"><div class="dot ${dc}"></div><div class="sname">${nm}</div><div class="stag ${tc}">${v===true?'Present':v===false?'Absent':'—'}</div></div>`;
+  });
+  const imgMap={yes:'Consistent with NS',aty:'Abnormal / atypical',no:'Normal / not consistent',nd:'Not performed'};
+  html+=`<div class="srow"><div class="dot ${S.mri==='yes'?'dy':S.mri==='no'?'dr':'dgr'}"></div><div class="sname">Brain MRI</div><div class="stag ${S.mri==='yes'?'ty':S.mri==='no'?'tr':'tgr'}">${imgMap[S.mri]||'—'}</div></div>`;
+  html+=`<div class="srow"><div class="dot ${S.spine==='yes'?'dy':S.spine==='no'?'dr':'dgr'}"></div><div class="sname">Spine MRI</div><div class="stag ${S.spine==='yes'?'ty':S.spine==='no'?'tr':'tgr'}">${S.spine==='yes'?'Consistent (LETM/trident)':S.spine==='no'?'Not consistent':S.spine==='na'?'N/A':'—'}</div></div>`;
+  html+=`<div class="srow"><div class="dot ${S.pet==='yes'?'dy':'dgr'}"></div><div class="sname">FDG-PET systemic sites</div><div class="stag ${S.pet==='yes'?'ty':'tgr'}">${S.pet==='yes'?'FDG-avid sites found':S.pet==='no'?'Negative':'—'}</div></div>`;
+  html+=`</div>`;
+
+  html+=`<div class="sblock"><div class="sbtitle">Biopsy &amp; Exclusions</div>`;
+  const csfLbl={supp:'Supportive (pleocytosis, ↑protein)',norm:'Normal CSF',incon:'Inconsistent (OCBs/glucose)',nd:'Not performed'};
+  html+=`<div class="srow"><div class="dot ${S.csf==='supp'?'dy':S.csf==='incon'?'da':'dgr'}"></div><div class="sname">CSF analysis</div><div class="stag ${S.csf==='supp'?'ty':S.csf==='incon'?'ta':'tgr'}">${csfLbl[S.csf]||'—'}</div></div>`;
+  html+=`<div class="srow"><div class="dot ${S.chest==='yes'?'dy':S.chest==='no'?'dr':'dgr'}"></div><div class="sname">Chest CT / BHA</div><div class="stag ${S.chest==='yes'?'ty':S.chest==='no'?'tr':'tgr'}">${S.chest==='yes'?'BHA / sarcoid pattern':S.chest==='no'?'Normal':'—'}</div></div>`;
+  html+=`<div class="srow"><div class="dot ${S.sys==='pos'?'dy':S.sys==='neg'?'dr':'dgr'}"></div><div class="sname">Extraneural biopsy (NCG)</div><div class="stag ${S.sys==='pos'?'ty':S.sys==='neg'?'tr':'tgr'}">${S.sys==='pos'?'Confirmed NCG':S.sys==='neg'?'Not confirmed':S.sys==='pend'?'Pending':'—'}</div></div>`;
+  html+=`<div class="srow"><div class="dot ${S.nbx==='pos'?'dg':S.nbx==='neg'?'dr':'dgr'}"></div><div class="sname">Neural biopsy (NCG)</div><div class="stag ${S.nbx==='pos'?'tg':S.nbx==='neg'?'tr':'tgr'}">${S.nbx==='pos'?'Confirmed NCG in neural tissue':S.nbx==='neg'?'Non-diagnostic':'Not performed'}</div></div>`;
+  html+=`<div class="srow"><div class="dot ${S.infx==='done'?'dg':S.infx==='pos'?'dr':'dgr'}"></div><div class="sname">Infectious exclusion</div><div class="stag ${S.infx==='done'?'tg':S.infx==='pos'?'tr':S.infx==='part'?'ta':'tgr'}">${S.infx==='done'?'Complete — negative':S.infx==='pos'?'Infection identified':S.infx==='part'?'Partial':'—'}</div></div>`;
+  html+=`<div class="srow"><div class="dot ${S.neo==='done'?'dg':S.neo==='pos'?'dr':'dgr'}"></div><div class="sname">Neoplastic exclusion</div><div class="stag ${S.neo==='done'?'tg':S.neo==='pos'?'tr':S.neo==='part'?'ta':'tgr'}">${S.neo==='done'?'Complete — negative':S.neo==='pos'?'Neoplastic process identified':S.neo==='part'?'Incomplete':'—'}</div></div>`;
+  html+=`</div></div>`;
+
+  document.getElementById('vout').innerHTML = html;
+  buildDoc(titles[tier]||'Indeterminate', tier);
+}
+
+function buildDoc(vt, tier) {
+  const cnt = [S.cn,S.men,S.par,S.myel,S.hyd,S.pnp].filter(v=>v===true).length;
+  let note = `COGNITIVE NEUROLOGY / NEUROIMMUNOLOGY CONSULTATION\nNeurosarcoidosis Diagnostic Assessment — Stern et al. 2018 Criteria\nStern BJ et al. Definition and Consensus Diagnostic Criteria for Neurosarcoidosis:\nFrom the Neurosarcoidosis Consortium Consensus Group. JAMA Neurol. 2018;75(12):1546–1553.\nDate: ${new Date().toLocaleDateString()}\n\nDIAGNOSTIC TIER: ${vt}\n\nCLINICAL SYNDROME (Step 1 — Prerequisite for all tiers):\n  Cranial neuropathy: ${S.cn===true?'Present':S.cn===false?'Absent':'Not assessed'}\n  Meningitis syndrome: ${S.men===true?'Present':S.men===false?'Absent':'Not assessed'}\n  Parenchymal brain lesion / encephalopathy / seizures: ${S.par===true?'Present':S.par===false?'Absent':'Not assessed'}\n  Myelopathy / radiculopathy: ${S.myel===true?'Present':S.myel===false?'Absent':'Not assessed'}\n  Hydrocephalus: ${S.hyd===true?'Present':S.hyd===false?'Absent':'Not assessed'}\n  Peripheral neuropathy / myopathy: ${S.pnp===true?'Present':S.pnp===false?'Absent':'Not assessed'}\n  Total neurological features present: ${cnt}\n\nNEUROIMAGING (Step 2):\n  Brain MRI with gadolinium: ${S.mri==='yes'?'Consistent with NS':S.mri==='aty'?'Abnormal, atypical/non-specific':S.mri==='no'?'Normal / not consistent':'Not performed'}\n  Spine MRI with gadolinium: ${S.spine==='yes'?'Consistent with NS (LETM, trident sign, nodular enhancement)':S.spine==='no'?'Normal / not consistent with NS':S.spine==='na'?'Not applicable (no spinal symptoms)':'Not performed'}\n  FDG-PET/CT (systemic): ${S.pet==='yes'?'FDG-avid systemic sites identified':S.pet==='no'?'No FDG-avid systemic sites':'Not performed'}\n\nCSF AND LABORATORY (Step 3):\n  CSF analysis: ${S.csf==='supp'?'Supportive of NS (lymphocytic pleocytosis, elevated protein, OCBs absent)':S.csf==='norm'?'Normal CSF (does not exclude NS)':S.csf==='incon'?'Inconsistent — OCBs present or infection concern':'Not performed / pending'}\n  CSF ACE / sIL-2R: ${S.csface==='pos'?'Elevated (supportive)':S.csface==='neg'?'Normal':'Not performed'}\n  Serum markers (ACE, calcium): ${S.serum==='supp'?'Supportive (elevated ACE and/or hypercalcemia/uria)':S.serum==='norm'?'Normal / non-diagnostic':'Not performed / pending'}\n\nSYSTEMIC EVALUATION (Step 4):\n  Chest CT / BHA: ${S.chest==='yes'?'Bilateral hilar adenopathy or pulmonary infiltrates consistent with sarcoidosis':S.chest==='no'?'Normal chest CT':S.chest==='aty'?'Abnormal / atypical':'Not performed'}\n  Extraneural systemic findings: ${S.extra==='yes'?'Present (uveitis, skin, parotid, or other)':S.extra==='no'?'None identified':'Not assessed'}\n  Extraneural tissue biopsy: ${S.sys==='pos'?'POSITIVE — Non-caseating granuloma confirmed in extraneural tissue':S.sys==='neg'?'Non-diagnostic / not performed':S.sys==='pend'?'Pending':'Not performed'}\n\nEXCLUSION OF MIMICS (Step 5):\n  Infectious exclusion (TB, fungal, syphilis, HIV, Lyme): ${S.infx==='done'?'Complete — negative':S.infx==='pos'?'INFECTION IDENTIFIED':S.infx==='part'?'Partial — some tests pending':'Not yet initiated'}\n  Neoplastic exclusion (PCNSL, leptomeningeal malignancy): ${S.neo==='done'?'Complete — negative':S.neo==='pos'?'NEOPLASTIC PROCESS IDENTIFIED':S.neo==='part'?'Incomplete — awaiting results':'Not assessed'}\n  Demyelinating disease exclusion (MS, AQP4/MOG): ${S.demel==='neg'?'AQP4-IgG and MOG-IgG negative, OCBs absent':S.demel==='pos'?'Demyelinating disease identified or not excluded':S.demel==='part'?'Testing incomplete':S.demel==='na'?'Not applicable':'Not assessed'}\n\nNEURAL TISSUE BIOPSY (Step 6):\n  Neural biopsy result: ${S.nbx==='pos'?'POSITIVE — Non-caseating granulomatous inflammation consistent with NS in neural tissue':S.nbx==='neg'?'Non-diagnostic / negative':'Not performed'}\n\nFINAL DIAGNOSTIC TIER: ${vt}\n\nDiagnostic tier definitions (Stern et al. JAMA Neurol 2018):\n  Possible: Clinical + MRI/CSF/EMG-NCS consistent with NS + rigorous exclusion of other causes; NO pathologic confirmation\n  Probable: Possible criteria + histopathologic NCG on extraneural tissue biopsy consistent with sarcoidosis\n  Definite: Possible criteria + histopathologic NCG consistent with NS on neural tissue biopsy\n\nKey reference: Stern BJ, Royal W, Gelfand JM, et al. Definition and Consensus Diagnostic Criteria for\nNeurosarcoidosis: From the Neurosarcoidosis Consortium Consensus Group. JAMA Neurology. 2018;75(12):1546-1553.`;
+  document.getElementById('dn').textContent = note;
+}
+
+function sa(el,cls,msg){ if(!el)return; el.className='alrt show '+cls; el.innerHTML=msg; }
+function ha(el){ if(el) el.classList.remove('show'); }
+
+function goTab(n) { if(n===cur) return; go(n); }
+
+function go(n) {
+  document.getElementById('s'+cur).classList.remove('active');
+  document.getElementById('s'+n).classList.add('active');
+  for(let i=0;i<6;i++){
+    const d=document.getElementById('st'+i);
+    d.classList.remove('active','done');
+    if(i<n) d.classList.add('done');
+    else if(i===n) d.classList.add('active');
+  }
+  cur=n;
+  document.getElementById('pf').style.width=((n/5)*100)+'%';
+  if(n===5) rv();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function xp(btn){
+  const d=btn.closest('.crit').querySelector('.crit-detail');
+  if(!d) return;
+  const o=d.classList.toggle('open');
+  btn.textContent=o?'close ▴':'details ▾';
+}
+
+function toggleDoc(){
+  const body=document.getElementById('dn'),btn=document.getElementById('copy-btn'),tog=document.querySelector('.doc-tog');
+  if(!body) return;
+  const open=body.classList.toggle('open');
+  if(tog) tog.textContent=open?'▲ Documentation Note':'▼ Documentation Note';
+  if(btn) btn.classList.toggle('visible',open);
+}
+
+function copyDoc(){
+  const body=document.getElementById('dn'),btn=document.getElementById('copy-btn');
+  if(!body) return;
+  const text=body.textContent||body.innerText;
+  navigator.clipboard.writeText(text)
+    .then(()=>{if(btn){btn.textContent='✓ Copied';btn.classList.add('copied');setTimeout(()=>{btn.textContent='⎘ Copy';btn.classList.remove('copied');},2000);}})
+    .catch(()=>{const ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);if(btn){btn.textContent='✓ Copied';btn.classList.add('copied');setTimeout(()=>{btn.textContent='⎘ Copy';btn.classList.remove('copied');},2000);}});
+}
+
+function resetAll(){
+  Object.keys(S).forEach(k=>S[k]=null);
+  document.querySelectorAll('.crit').forEach(el=>el.className='crit');
+  document.querySelectorAll('.abtn').forEach(b=>b.classList.remove('ay','an','ag','ab','aa','aw'));
+  document.querySelectorAll('.crit-detail').forEach(d=>d.classList.remove('open'));
+  document.querySelectorAll('.xbtn').forEach(b=>b.textContent='details ▾');
+  ['a0','a1','a2','a3','a4'].forEach(id=>{const el=document.getElementById(id);if(el)el.classList.remove('show');});
+  document.getElementById('vout').innerHTML='';
+  const dn=document.getElementById('dn');if(dn)dn.classList.remove('open');
+  const cb=document.getElementById('copy-btn');if(cb)cb.classList.remove('visible','copied');
+  const tog=document.querySelector('.doc-tog');if(tog)tog.textContent='▼ Documentation Note';
+  go(0);
+  document.getElementById('n0').disabled=true;
+}
+
+ui();
+</script>
+</body>
+</html>
