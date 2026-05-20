@@ -1,0 +1,1085 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IIH Diagnostic Navigator · Friedman 2013 / Modified Dandy Criteria</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@300;400;500;600;700&family=Lexend:wght@300;400;500;600&display=swap');
+
+:root {
+  --bg:        #080d14;
+  --card:      #0e1623;
+  --card2:     #141f30;
+  --border:    #1e3048;
+  --border2:   #2a4668;
+  --green:     #3fb950;
+  --green-bg:  rgba(63,185,80,0.10);
+  --green-bd:  rgba(63,185,80,0.35);
+  --red:       #f85149;
+  --red-bg:    rgba(248,81,73,0.10);
+  --red-bd:    rgba(248,81,73,0.35);
+  --amber:     #e3b341;
+  --amber-bg:  rgba(227,179,65,0.10);
+  --amber-bd:  rgba(227,179,65,0.35);
+  --blue:      #58a6ff;
+  --blue-bg:   rgba(88,166,255,0.10);
+  --blue-bd:   rgba(88,166,255,0.35);
+  --purple:    #bc8cff;
+  --purple-bg: rgba(188,140,255,0.10);
+  --purple-bd: rgba(188,140,255,0.35);
+  /* IIH accent: bright sky blue */
+  --accent:    #4fc3f7;
+  --accent-bg: rgba(79,195,247,0.10);
+  --accent-bd: rgba(79,195,247,0.35);
+  --accent2:   #0288d1;
+  --text:      #dce8f5;
+  --text2:     #8bafc8;
+  --text3:     #4a6a88;
+  --sans:  'Lexend', 'Inter', system-ui, sans-serif;
+  --mono:  'IBM Plex Mono', monospace;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg); color: var(--text); font-family: var(--sans); font-size: 14px; line-height: 1.5; min-height: 100vh; }
+.app { max-width: 960px; margin: 0 auto; padding: 0 20px 80px; }
+
+/* HEADER */
+header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+.h-title { font-size: 19px; font-weight: 700; }
+.h-title span { color: var(--accent); }
+.h-sub { font-family: var(--sans); font-size: 11px; color: var(--text3); margin-top: 3px; line-height: 1.6; }
+.h-credit { font-family: var(--sans); font-size: 11px; color: var(--text3); margin-top: 2px; }
+.reset-btn { background: var(--card2); border: 1px solid var(--border); color: var(--text2); font-family: var(--sans); font-size: 12px; padding: 6px 14px; cursor: pointer; border-radius: 4px; transition: all 0.15s; white-space: nowrap; font-weight: 500; }
+.reset-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+/* PROGRESS */
+.prog-track { height: 3px; background: var(--border); margin-bottom: 20px; border-radius: 2px; }
+.prog-fill { height: 100%; background: linear-gradient(90deg, var(--accent2), var(--accent)); border-radius: 2px; transition: width 0.4s ease; box-shadow: 0 0 8px rgba(79,195,247,0.5); }
+
+/* STEP TABS */
+.steps { display: grid; grid-template-columns: repeat(6,1fr); border: 1px solid var(--border); border-radius: 8px; margin-bottom: 20px; overflow: hidden; background: var(--card); }
+.stab { padding: 8px 3px 9px; text-align: center; font-family: var(--sans); font-size: 10px; color: var(--text3); border-right: 1px solid var(--border); transition: all 0.2s; cursor: pointer; background: var(--card); line-height: 1.3; }
+.stab:nth-child(6n) { border-right: none; }
+.stab .sn { display: flex; align-items: center; justify-content: center; width: 20px; height: 20px; border-radius: 50%; background: var(--card2); border: 1px solid var(--border); font-size: 10px; font-weight: 700; margin: 0 auto 3px; transition: all 0.2s; }
+.stab .slbl { display: block; font-size: 9px; font-weight: 600; line-height: 1.3; }
+.stab.active { color: var(--accent); background: var(--accent-bg); }
+.stab.active .sn { background: var(--accent); color: #080d14; border-color: var(--accent); }
+.stab.done { color: var(--green); }
+.stab.done .sn { background: var(--green); color: #080d14; border-color: var(--green); }
+.stab:hover:not(.active) { background: var(--card2); }
+
+/* CARD */
+.card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 22px; margin-bottom: 12px; }
+.ctitle { font-size: 13px; font-weight: 700; font-family: var(--sans); margin-bottom: 3px; }
+.csub { font-size: 12px; color: var(--text2); margin-bottom: 16px; line-height: 1.5; }
+
+/* SECTION LABEL */
+.slabel { display: flex; align-items: center; gap: 8px; font-family: var(--sans); font-size: 11px; font-weight: 600; color: var(--text); margin-bottom: 9px; padding-bottom: 6px; border-bottom: 1px solid var(--border); }
+.pill { font-size: 9px; padding: 1px 7px; border-radius: 20px; border: 1px solid; margin-left: auto; font-family: var(--sans); letter-spacing: 0.04em; text-transform: uppercase; }
+.pill-r { border-color: var(--red);    color: var(--red);    background: var(--red-bg); }
+.pill-a { border-color: var(--amber);  color: var(--amber);  background: var(--amber-bg); }
+.pill-b { border-color: var(--accent); color: var(--accent); background: var(--accent-bg); }
+.pill-g { border-color: var(--green);  color: var(--green);  background: var(--green-bg); }
+.pill-p { border-color: var(--purple); color: var(--purple); background: var(--purple-bg); }
+
+/* CRITERION ROW */
+.crit { border: 1px solid var(--border); border-radius: 6px; margin-bottom: 5px; overflow: hidden; transition: border-color 0.15s, background 0.15s; }
+.crit.c-yes  { border-color: var(--green-bd);  background: var(--green-bg); }
+.crit.c-no   { border-color: var(--red-bd);    background: var(--red-bg); }
+.crit.c-blue { border-color: var(--accent-bd); background: var(--accent-bg); }
+.crit.c-abs  { border-color: var(--border2);   background: var(--card2); }
+.crit.c-part { border-color: var(--amber-bd);  background: var(--amber-bg); }
+
+.crit-main { display: flex; align-items: center; gap: 10px; padding: 10px 13px; }
+.crit-name { flex: 1; font-size: 13px; font-weight: 500; color: var(--text); line-height: 1.3; }
+.xbtn { background: var(--purple-bg); border: 1px solid var(--purple-bd); color: var(--purple); font-size: 11px; cursor: pointer; padding: 2px 8px; font-family: var(--sans); white-space: nowrap; transition: all 0.15s; flex-shrink: 0; border-radius: 3px; font-weight: 500; }
+.xbtn:hover { background: var(--purple); color: #080d14; border-color: var(--purple); }
+
+.crit-detail { display: none; padding: 10px 13px 12px; font-size: 12px; color: var(--text); line-height: 1.65; border-top: 1px solid var(--border); font-family: var(--sans); }
+.crit-detail.open { display: block; }
+.cnote { margin-top: 8px; padding: 8px 11px; background: var(--card2); border-left: 3px solid var(--border2); font-family: var(--sans); font-size: 11px; color: var(--text2); line-height: 1.75; border-radius: 0 3px 3px 0; }
+.cnote strong { color: var(--text); }
+
+/* BUTTON ROW */
+.brow { display: flex; border-top: 1px solid var(--border); flex-wrap: wrap; }
+.abtn { flex: 1; min-width: 100px; padding: 9px 10px; background: none; border: none; border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); color: var(--text2); font-family: var(--sans); font-size: 12px; cursor: pointer; transition: all 0.12s; font-weight: 400; line-height: 1.4; text-align: left; }
+.abtn:last-child { border-right: none; }
+.abtn:hover { background: var(--card2); color: var(--text); }
+.abtn.ay  { background: var(--green-bg);  color: var(--green);  font-weight: 700; }
+.abtn.an  { background: var(--red-bg);    color: var(--red);    font-weight: 700; }
+.abtn.ab  { background: var(--accent-bg); color: var(--accent); font-weight: 700; }
+.abtn.aa  { background: var(--card2);     color: var(--text2);  font-weight: 700; }
+.abtn.aw  { background: var(--amber-bg);  color: var(--amber);  font-weight: 700; }
+.abtn.ap  { background: var(--purple-bg); color: var(--purple); font-weight: 700; }
+
+/* TWO-COL */
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; }
+@media (max-width: 600px) { .two-col { grid-template-columns: 1fr; } }
+
+/* ALERT */
+.alrt { padding: 9px 13px; border-radius: 5px; font-size: 12px; line-height: 1.55; margin-top: 12px; border-left: 3px solid; display: none; font-family: var(--sans); }
+.alrt.show { display: block; }
+.aok   { border-color: var(--green);  background: var(--green-bg);  color: #7ee787; }
+.awn   { border-color: var(--amber);  background: var(--amber-bg);  color: var(--amber); }
+.aerr  { border-color: var(--red);    background: var(--red-bg);    color: #ff7b72; }
+.ainf  { border-color: var(--blue);   background: var(--blue-bg);   color: var(--blue); }
+.ablue { border-color: var(--accent); background: var(--accent-bg); color: var(--accent); }
+
+/* LOGIC BOX */
+.lbox { background: var(--card2); border: 1px solid var(--border); border-radius: 5px; padding: 12px 15px; font-size: 12px; color: var(--text2); line-height: 1.75; margin-bottom: 14px; font-family: var(--sans); }
+.lbox strong { color: var(--text); }
+.lp { color: var(--accent);  font-weight: 600; }
+.lg { color: var(--green);   font-weight: 600; }
+.la { color: var(--amber);   font-weight: 600; }
+.lr { color: var(--red);     font-weight: 600; }
+.lb { color: var(--blue);    font-weight: 600; }
+
+/* TIER CARDS */
+.tier-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 8px; margin-bottom: 14px; }
+.tier-grid-4 { display: grid; grid-template-columns: repeat(2,1fr); gap: 8px; margin-bottom: 14px; }
+@media (max-width: 640px) { .tier-grid, .tier-grid-4 { grid-template-columns: 1fr; } }
+.tier-card { border: 1px solid var(--border); border-radius: 6px; padding: 13px; }
+.tier-card.t-def    { border-color: var(--green-bd);  background: var(--green-bg); }
+.tier-card.t-prob   { border-color: var(--accent-bd); background: var(--accent-bg); }
+.tier-card.t-wop    { border-color: var(--amber-bd);  background: var(--amber-bg); }
+.tier-card.t-sugg   { border-color: var(--blue-bd);   background: var(--blue-bg); }
+.tier-label { font-size: 14px; font-weight: 700; font-family: var(--sans); margin-bottom: 4px; }
+.tier-req   { font-size: 11px; color: var(--text2); line-height: 1.55; font-family: var(--sans); }
+
+/* Frisen scale grid */
+.frisen-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 6px; margin-bottom: 14px; }
+@media (max-width: 600px) { .frisen-grid { grid-template-columns: 1fr; } }
+.frisen-card { border: 1px solid var(--border); border-radius: 5px; padding: 10px 12px; cursor: pointer; transition: all 0.15s; background: var(--card2); }
+.frisen-card:hover { border-color: var(--border2); }
+.frisen-card.fsel { border-color: var(--accent-bd); background: var(--accent-bg); }
+.frisen-card.fsel-sev { border-color: var(--red-bd); background: var(--red-bg); }
+.frisen-num { font-size: 20px; font-weight: 700; font-family: var(--mono); }
+.frisen-name { font-size: 10px; color: var(--text2); margin-top: 1px; }
+.frisen-desc { font-size: 10px; color: var(--text3); line-height: 1.45; margin-top: 4px; }
+
+/* NAV */
+.nav-row { display: flex; justify-content: space-between; align-items: center; margin-top: 20px; gap: 10px; }
+.nbtn { padding: 9px 22px; border-radius: 5px; font-family: var(--sans); font-size: 13px; border: 1px solid; cursor: pointer; font-weight: 600; transition: all 0.15s; }
+.np { background: var(--accent); border-color: var(--accent); color: #080d14; font-weight: 700; }
+.np:hover { background: #87d8f8; border-color: #87d8f8; }
+.np:disabled { opacity: 0.3; cursor: not-allowed; }
+.ns { background: transparent; border-color: var(--border2); color: var(--text2); }
+.ns:hover { border-color: var(--text); color: var(--text); }
+
+/* SCREEN */
+.screen { display: none; }
+.screen.active { display: block; animation: fu 0.25s ease; }
+@keyframes fu { from { opacity:0; transform:translateY(5px); } to { opacity:1; transform:translateY(0); } }
+
+/* VERDICT */
+.vban { border-radius: 8px; padding: 22px 26px; margin-bottom: 16px; border: 2px solid; }
+.vdef  { border-color: var(--green);  background: var(--green-bg); }
+.vprob { border-color: var(--accent); background: var(--accent-bg); }
+.vwop  { border-color: var(--amber);  background: var(--amber-bg); }
+.vsugg { border-color: var(--blue);   background: var(--blue-bg); }
+.vneg  { border-color: var(--red);    background: var(--red-bg); }
+.vund  { border-color: var(--border2);background: var(--card2); }
+.vban-head { text-align: center; margin-bottom: 14px; }
+.vlbl { font-family: var(--mono); font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase; opacity: 0.6; margin-bottom: 5px; }
+.vtitle { font-size: 22px; font-weight: 700; margin-bottom: 6px; }
+.vdef  .vtitle { color: var(--green); }
+.vprob .vtitle { color: var(--accent); }
+.vwop  .vtitle { color: var(--amber); }
+.vsugg .vtitle { color: var(--blue); }
+.vneg  .vtitle { color: var(--red); }
+.vund  .vtitle { color: var(--text2); }
+.vdesc { font-size: 12px; color: var(--text2); line-height: 1.7; max-width: 640px; margin: 0 auto; font-family: var(--sans); }
+
+/* SUMMARY */
+.sum-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+@media (max-width: 580px) { .sum-grid { grid-template-columns: 1fr; } }
+.sblock { background: var(--card); border: 1px solid var(--border); border-radius: 6px; overflow: hidden; }
+.sbtitle { font-family: var(--sans); font-size: 11px; font-weight: 600; padding: 7px 11px; border-bottom: 1px solid var(--border); color: var(--text); background: var(--card2); }
+.srow { display: flex; align-items: flex-start; gap: 8px; padding: 6px 11px; border-bottom: 1px solid var(--border); font-size: 12px; font-family: var(--sans); }
+.srow:last-child { border-bottom: none; }
+.dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; margin-top: 4px; }
+.dg { background: var(--green); } .dr { background: var(--red); }
+.db { background: var(--accent); } .da { background: var(--amber); }
+.dp { background: var(--purple); } .dgr{ background: var(--text3); }
+.sname { flex: 1; color: var(--text); line-height: 1.4; }
+.stag { font-family: var(--mono); font-size: 9px; padding: 1px 7px; border-radius: 10px; border: 1px solid; white-space: nowrap; }
+.tg { border-color: var(--green-bd);  color: var(--green); }
+.tr { border-color: var(--red-bd);    color: var(--red); }
+.tb { border-color: var(--accent-bd); color: var(--accent); }
+.ta { border-color: var(--amber-bd);  color: var(--amber); }
+.tbl{ border-color: var(--blue-bd);   color: var(--blue); }
+.tgr{ border-color: var(--border2);   color: var(--text3); }
+
+/* DOC NOTE */
+.doc-header { display: flex; align-items: center; gap: 8px; margin-bottom: 5px; }
+.doc-tog { flex: 1; text-align: left; background: var(--card2); border: 1px solid var(--border2); border-radius: 5px; color: var(--text2); font-family: var(--sans); font-size: 13px; padding: 8px 13px; cursor: pointer; transition: all 0.15s; }
+.doc-tog:hover { border-color: var(--accent); color: var(--accent); }
+.copy-btn { background: var(--card2); border: 1px solid var(--border2); border-radius: 5px; color: var(--text2); font-family: var(--sans); font-size: 12px; padding: 8px 14px; cursor: pointer; white-space: nowrap; transition: all 0.15s; display: none; }
+.copy-btn.visible { display: block; }
+.copy-btn:hover { border-color: var(--green); color: var(--green); }
+.copy-btn.copied { border-color: var(--green); color: var(--green); background: var(--green-bg); }
+.doc-body { display: none; background: var(--card2); border: 1px solid var(--border2); border-radius: 5px; padding: 13px 15px; font-family: var(--mono); font-size: 11px; color: var(--text2); line-height: 1.85; white-space: pre-wrap; margin-bottom: 12px; }
+.doc-body.open { display: block; }
+</style>
+</head>
+<body>
+<div class="app">
+
+<header>
+  <div>
+    <div class="h-title">Idiopathic Intracranial Hypertension · <span>Diagnostic Navigator</span></div>
+    <div class="h-sub">Friedman DI, Liu GT, Digre KB · Neurology 2013;81:1159–1165 · Modified Dandy / Revised Pseudotumor Cerebri Syndrome Criteria · For educator use only</div>
+    <div class="h-credit">Designed by Daniel Short, MD</div>
+  </div>
+  <button class="reset-btn" onclick="resetAll()">↺ Reset</button>
+</header>
+
+<div class="prog-track"><div class="prog-fill" id="pf" style="width:0%"></div></div>
+
+<div class="steps">
+  <div class="stab active" id="st0" onclick="goTab(0)"><span class="sn">1</span><span class="slbl">Symptoms</span></div>
+  <div class="stab" id="st1" onclick="goTab(1)"><span class="sn">2</span><span class="slbl">Optic Nerve</span></div>
+  <div class="stab" id="st2" onclick="goTab(2)"><span class="sn">3</span><span class="slbl">Neuroimaging</span></div>
+  <div class="stab" id="st3" onclick="goTab(3)"><span class="sn">4</span><span class="slbl">CSF Pressure</span></div>
+  <div class="stab" id="st4" onclick="goTab(4)"><span class="sn">5</span><span class="slbl">Exclusions</span></div>
+  <div class="stab" id="st5" onclick="goTab(5)"><span class="sn">6</span><span class="slbl">Verdict</span></div>
+</div>
+
+<!-- ══ SCREEN 0: SYMPTOMS ══ -->
+<div class="screen active" id="s0">
+<div class="card">
+  <div class="ctitle" style="color:var(--accent);">Step 1 · Symptoms and Clinical Context</div>
+  <div class="csub">IIH is a syndrome of raised intracranial pressure without an identifiable structural, vascular, or metabolic cause, and with normal CSF composition. Classic demographics: young (20s–40s), female (~90%), obese (BMI ≥30). Incidence in obese women of childbearing age: ~22/100,000. Overall US incidence has more than doubled since 2002 (now ~2.4/100,000), closely tracking the obesity epidemic.</div>
+
+  <div class="lbox">
+    <strong>Symptoms of raised ICP in IIH — characteristic pattern:</strong><br>
+    <span class="lp">Headache (94%):</span> Daily or near-daily; non-specific but often positional (worse supine, bending forward, Valsalva), pulsatile, bifrontal or periorbital. Frequently the presenting complaint. Does not fully resolve with standard analgesics.<br>
+    <span class="lp">Transient visual obscurations (TVOs, ~72%):</span> Seconds-long episodes of monocular or binocular grey-out/blackout triggered by posture change, Valsalva, or bright light. Pathognomonic of papilledema from any cause — not specific to IIH.<br>
+    <span class="lp">Pulsatile tinnitus (~52%):</span> Whooshing or heartbeat synchronous sound in one or both ears — reflects pulsatile transmission of elevated venous pressure into the sigmoid/transverse sinus region. Cessation with ipsilateral jugular compression is characteristic.<br>
+    <span class="la">Diplopia (~18%):</span> Typically from unilateral or bilateral CN VI palsy (false localizing sign of raised ICP) — causes horizontal diplopia, worse at distance.<br>
+    <span class="la">Visual loss:</span> Permanent if untreated. ~25% of IIH patients develop significant visual field loss; severe visual loss in ~5–10%. The major morbidity of IIH — "benign intracranial hypertension" is a misnomer and strongly discouraged.
+  </div>
+
+  <div class="slabel">Presenting symptoms — select all present <span class="pill pill-r">SELECT ALL THAT APPLY</span></div>
+
+  <div class="two-col">
+  <div class="crit" id="ha-item">
+    <div class="crit-main">
+      <div class="crit-name">Headache (daily or near-daily; often positional, worsened by Valsalva or lying down)</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      IIH headache is non-specific — it can mimic migraine, tension-type, or new daily persistent headache. Key distinguishing features from primary headache: positional component (worse supine), Valsalva aggravation, improvement with CSF drainage at LP, association with papilledema. The IIH headache does NOT have a classic "thunderclap" presentation (consider subarachnoid hemorrhage if so). Morning worsening is common. Headache may improve modestly with weight loss before papilledema fully resolves.
+      <div class="cnote"><strong>Overdiagnosis risk:</strong> Fisayo et al. (Neurology 2016) found IIH overdiagnosis in ~40% of referred patients at a tertiary center, most commonly due to CSF pressure measured in a non-lateral-decubitus position, anxious or tense patients, or headache attributed to borderline CSF pressure without papilledema. Strict adherence to diagnostic criteria is essential.</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setSx('ha',true)"  id="ha-yes">✓ Present</button>
+      <button class="abtn" onclick="setSx('ha',false)" id="ha-no">✗ Absent</button>
+    </div>
+  </div>
+
+  <div class="crit" id="tvo-item">
+    <div class="crit-main">
+      <div class="crit-name">Transient visual obscurations (TVOs) — seconds-long monocular/binocular greying or blackout of vision, positionally triggered</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      TVOs are brief (seconds) episodes of monocular or binocular visual loss or greying, typically triggered by change in position (standing, bending forward) or Valsalva maneuver. They reflect transient ischemia of the papilledematous optic nerve from sudden ICP spikes. Present in ~72% of IIH with papilledema. TVOs are a marker of active papilledema with some degree of optic nerve ischemia. Persistent or prolonged visual loss (minutes to permanent) is more concerning and requires urgent evaluation. Distinguish from amaurosis fugax (embolic, carotid disease) — TVOs are typically bilateral, very brief, and positionally triggered.
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setSx('tvo',true)"  id="tvo-yes">✓ Present</button>
+      <button class="abtn" onclick="setSx('tvo',false)" id="tvo-no">✗ Absent</button>
+    </div>
+  </div>
+
+  <div class="crit" id="tinnitus-item">
+    <div class="crit-main">
+      <div class="crit-name">Pulsatile tinnitus — synchronous with heartbeat; often unilateral; may cease with ipsilateral jugular vein compression</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      Pulsatile tinnitus (PT) in IIH reflects turbulent blood flow in the transverse/sigmoid sinus from elevated venous sinus pressure or stenosis. Present in ~52% of IIH. The characteristic cessation with ipsilateral internal jugular vein compression is a bedside test worth performing. PT can also be caused by dural arteriovenous fistula (DAVF) — important to exclude with MRA/MRV if PT is prominent and persistent, particularly when atypical for IIH. DAVFs classically cause an objective bruit (heard with a stethoscope over the mastoid or orbit) and can cause pulsatile tinnitus without raised ICP.
+      <div class="cnote"><strong>Differentiate from DAVF:</strong> Dural AV fistulas can cause pulsatile tinnitus, papilledema, and raised ICP mimicking IIH. MRV may show a draining vein but formal DSA is the gold standard for exclusion in high-suspicion cases (prominent PT, focal bruit, asymmetric symptoms).</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setSx('tinnitus',true)"  id="tinnitus-yes">✓ Present</button>
+      <button class="abtn" onclick="setSx('tinnitus',false)" id="tinnitus-no">✗ Absent</button>
+    </div>
+  </div>
+
+  <div class="crit" id="diplopia-item">
+    <div class="crit-main">
+      <div class="crit-name">Diplopia / CN VI palsy — horizontal diplopia worse at distance; unilateral or bilateral abducens palsy (false localizing sign)</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      CN VI (abducens) palsy is the only focal neurological sign permitted under the Friedman 2013 criteria — it is a recognized false localizing sign of raised ICP, caused by stretching of the nerve over the petrous ridge as the brainstem herniates slightly downward. Unilateral or bilateral CN VI palsy in IIH does not imply a structural lesion at the level of the pons. The Friedman 2013 criteria explicitly allow CN VI palsy without papilledema to establish "Definite IIH without papilledema" if CSF pressure ≥25 cmH₂O and imaging criteria are met. No other focal neurological deficits are permitted — their presence mandates further workup for an alternative diagnosis.
+      <div class="cnote"><strong>Key rule:</strong> Any focal neurological finding other than CN VI palsy (e.g., CN III, IV, facial palsy, long tract signs, cerebellar findings, altered consciousness) requires exclusion of a structural/vascular cause before IIH can be diagnosed. Under no version of the criteria is any other focal neurological deficit consistent with "typical" IIH.</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setSx('diplopia',true)"  id="diplopia-yes">✓ CN VI palsy present (horizontal diplopia)</button>
+      <button class="abtn" onclick="setSx('diplopia',false)" id="diplopia-no">✗ Absent</button>
+    </div>
+  </div>
+
+  <div class="crit" id="otherfocal-item">
+    <div class="crit-main">
+      <div class="crit-name">Other focal neurological signs (any CN other than VI, long tract signs, cerebellar signs, altered consciousness, seizures)</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      The presence of any focal neurological sign other than unilateral or bilateral CN VI palsy is an exclusion criterion under all versions of the IIH diagnostic criteria. Such findings require comprehensive neuroimaging (MRI with contrast, MRV, possibly DSA) to exclude intracranial mass, venous sinus thrombosis, meningitis, encephalitis, or a structural cause of raised ICP. If found, the diagnosis of IIH should not be made until these are excluded.
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setSx('otherfocal',false)" id="otherfocal-no">✓ Absent (no other focal signs)</button>
+      <button class="abtn" onclick="setSx('otherfocal',true)"  id="otherfocal-yes">✗ Present — IIH criteria not met until excluded</button>
+    </div>
+  </div>
+
+  <div class="crit" id="demo-item">
+    <div class="crit-main">
+      <div class="crit-name">Patient demographics — typical (female, childbearing age, obese/overweight) or atypical (male, lean, elderly, child)</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      <strong>Typical IIH:</strong> Female, age 15–44, BMI ≥30. Accounts for ~90% of IIH. Risk increases linearly with BMI — incidence 6.8/100,000 in women BMI 18.5–24.9, rising to 22/100,000 in women BMI ≥25. Recent weight gain (even in non-obese patients) is an independent risk factor.<br><br>
+      <strong>Atypical IIH (require broader exclusion workup):</strong><br>
+      • Males: secondary causes more common — ensure androgen use, sleep apnea, and structural causes are excluded<br>
+      • Postmenopausal women or age >44<br>
+      • BMI <30 (lean IIH): consider secondary causes — hypervitaminosis A, medications, endocrine disease, dural venous fistula<br>
+      • Children prepubertal: CSF pressure thresholds differ; prepubertal children may have IIH without obesity; sedation-adjusted OP norms apply<br>
+      • Atypical patients require MRV in addition to standard MRI (Friedman 2013 explicit recommendation)
+      <div class="cnote"><strong>Friedman 2013 imaging rule:</strong> For typical patients (obese female of childbearing age), MRI brain with and without gadolinium is sufficient. For atypical patients (male, non-obese, elderly, child, or any patient with atypical features), MRI brain with and without gadolinium PLUS MRV (MR venography) is required to exclude venous sinus thrombosis and other secondary causes.</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setSx('demo','typical')"  id="demo-typical">Typical (female, obese, childbearing age)</button>
+      <button class="abtn" onclick="setSx('demo','atypical')" id="demo-atypical">Atypical (male, lean, elderly, child, or other)</button>
+    </div>
+  </div>
+  </div>
+
+  <div id="a0" class="alrt"></div>
+  <div class="nav-row"><div></div><button class="nbtn np" id="n0" onclick="go(1)" disabled>Next: Optic Nerve Exam →</button></div>
+</div>
+</div>
+
+<!-- ══ SCREEN 1: OPTIC NERVE / PAPILLEDEMA ══ -->
+<div class="screen" id="s1">
+<div class="card">
+  <div class="ctitle" style="color:var(--accent);">Step 2 · Optic Nerve Examination — Papilledema Assessment</div>
+  <div class="csub">Papilledema (optic disc swelling from raised ICP) is the cardinal objective sign of IIH. Its presence and severity directly determine which diagnostic tier applies under Friedman 2013 criteria. Formal dilated fundus examination by an experienced ophthalmologist or neuro-ophthalmologist is required. OCT RNFL thickness and serial visual fields are essential for monitoring.</div>
+
+  <div class="lbox">
+    <strong>Frisén grading scale for papilledema (Frisén 1982 — used in IIHTT trial):</strong><br>
+    <span class="lp">Grade 0:</span> Normal optic disc — C-shaped halo of blurred margin nasal edge only (physiologic variant). No papilledema.<br>
+    <span class="lp">Grade 1 (Subtle):</span> C-shaped halo with temporal gap; peripapillary radial nerve fiber striations; no disc elevation<br>
+    <span class="lp">Grade 2 (Low grade):</span> Circumferential halo; elevation of nasal border; no major vessel obscuration<br>
+    <span class="lp">Grade 3 (Moderate):</span> Obscuration of ≥1 major vessel segment; elevation of all borders; halo with irregular outer fringe<br>
+    <span class="la">Grade 4 (Marked):</span> Complete obscuration of a major vessel on disc; full disc elevation; expansion of halo<br>
+    <span class="lr">Grade 5 (Severe):</span> Obscuration of all vessels on/off disc; dome-shaped protrusion of optic nerve head<br><br>
+    <strong>OCT peripapillary RNFL thickness:</strong> Most sensitive objective quantitative measure of papilledema degree and treatment response. IIHTT substudy showed acetazolamide + weight loss significantly reduced RNFL (175µm vs. 89µm reduction at 6 months, p=0.001). Normal RNFL ≤ ~100µm; papilledema typically >150µm; severe >250µm.
+  </div>
+
+  <div class="slabel">Papilledema grade (Frisén scale) — select grade <span class="pill pill-r">REQUIRED — DETERMINES DIAGNOSTIC TIER</span></div>
+
+  <div class="frisen-grid">
+    <div class="frisen-card" id="f0" onclick="setFrisen(0)">
+      <div class="frisen-num" style="color:var(--text2);">0</div>
+      <div class="frisen-name" style="color:var(--text2);">Normal</div>
+      <div class="frisen-desc">No papilledema. Physiologic C-shaped halo only if present.</div>
+    </div>
+    <div class="frisen-card" id="f1" onclick="setFrisen(1)">
+      <div class="frisen-num" style="color:var(--accent);">1</div>
+      <div class="frisen-name" style="color:var(--accent);">Subtle</div>
+      <div class="frisen-desc">C-shaped halo with temporal gap; peripapillary nerve fiber striations; no elevation</div>
+    </div>
+    <div class="frisen-card" id="f2" onclick="setFrisen(2)">
+      <div class="frisen-num" style="color:var(--accent);">2</div>
+      <div class="frisen-name" style="color:var(--accent);">Low Grade</div>
+      <div class="frisen-desc">Circumferential halo; nasal border elevation; no vessel obscuration</div>
+    </div>
+    <div class="frisen-card" id="f3" onclick="setFrisen(3)">
+      <div class="frisen-num" style="color:var(--amber);">3</div>
+      <div class="frisen-name" style="color:var(--amber);">Moderate</div>
+      <div class="frisen-desc">≥1 major vessel segment obscured; all border elevation; irregular halo fringe</div>
+    </div>
+    <div class="frisen-card" id="f4" onclick="setFrisen(4)">
+      <div class="frisen-num" style="color:var(--red);">4</div>
+      <div class="frisen-name" style="color:var(--red);">Marked</div>
+      <div class="frisen-desc">Full disc elevation; major vessel on disc fully obscured; expanded halo</div>
+    </div>
+    <div class="frisen-card" id="f5" onclick="setFrisen(5)">
+      <div class="frisen-num" style="color:var(--red);">5</div>
+      <div class="frisen-name" style="color:var(--red);">Severe</div>
+      <div class="frisen-desc">All vessels on and off disc obscured; dome-shaped protrusion — vision at immediate risk</div>
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:14px;">Visual field testing <span class="pill pill-b">ESSENTIAL FOR MONITORING AND TREATMENT DECISIONS</span></div>
+
+  <div class="crit" id="vf-item">
+    <div class="crit-main">
+      <div class="crit-name">Visual field results — automated perimetry (Humphrey 24-2 or 30-2) or Goldmann perimetry</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      Visual field defects occur in ~96% of IIH patients with papilledema on Goldmann perimetry and ~92% on automated perimetry. The most common pattern is inferior nasal field loss (arcuate defects, nasal steps), reflecting inferonasal RNFL bundle vulnerability. Enlarged blind spot (due to disc edema distorting the peripapillary retina) is common — largely reversible with treatment.<br><br>
+      <strong>IIHTT visual field data:</strong> PMD (perimetric mean deviation) −2 to −7 dB (mild loss) was the entry criterion. Acetazolamide + diet improved PMD significantly vs. placebo + diet (mean improvement 0.7 dB vs. 0.3 dB, p=0.0257). Central/paracentral defects in ~14% — representing more severe optic nerve injury.<br><br>
+      <strong>Visual acuity is insensitive:</strong> Normal Snellen acuity does not exclude significant visual field loss. Perimetry is the standard for detecting and monitoring IIH-related visual loss. Serial visual fields are mandatory for management decisions.
+      <div class="cnote"><strong>Treatment trigger (urgent/emergent):</strong> Any visual field defect approaching fixation (central/paracentral loss), acuity reduction below 20/40, or rapidly progressive visual loss (over days) requires urgent intervention — ONSF (optic nerve sheath fenestration) or CSF diversion procedure. Do not rely solely on LP alone for vision-threatening IIH.</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setVF('normal')"   id="vf-normal">✓ Normal (or enlarged blind spot only)</button>
+      <button class="abtn" onclick="setVF('mild')"     id="vf-mild">⚠ Mild loss (PMD −2 to −7 dB; inferonasal)</button>
+      <button class="abtn" onclick="setVF('mod')"      id="vf-mod">⚠ Moderate loss (PMD −7 to −15 dB)</button>
+      <button class="abtn" onclick="setVF('severe')"   id="vf-severe">✗ Severe / central threat (PMD &lt;−15 dB or central loss)</button>
+      <button class="abtn" onclick="setVF('nd')"       id="vf-nd">— Not yet performed</button>
+    </div>
+  </div>
+
+  <div id="a1" class="alrt"></div>
+  <div class="nav-row">
+    <button class="nbtn ns" onclick="go(0)">← Back</button>
+    <button class="nbtn np" onclick="go(2)">Next: Neuroimaging →</button>
+  </div>
+</div>
+</div>
+
+<!-- ══ SCREEN 2: NEUROIMAGING ══ -->
+<div class="screen" id="s2">
+<div class="card">
+  <div class="ctitle" style="color:var(--accent);">Step 3 · Neuroimaging — MRI Brain ± MRV</div>
+  <div class="csub">Neuroimaging serves two purposes in IIH: (1) exclusion of mass lesions, hydrocephalus, and venous sinus thrombosis; (2) identification of positive MRI signs of raised ICP that support the diagnosis, particularly in IIH without papilledema. Friedman 2013 criteria specify the minimum imaging required.</div>
+
+  <div class="lbox">
+    <strong>Friedman 2013 imaging requirements:</strong><br>
+    <span class="lp">Typical patients (obese female of childbearing age):</span> MRI brain with AND without gadolinium (no MRV required if clinical picture is typical and MRI is normal)<br>
+    <span class="lp">Atypical patients (male, non-obese, elderly, child, atypical features):</span> MRI brain with AND without gadolinium PLUS MR venography (MRV) to exclude CVST<br><br>
+    <strong>MRI signs of raised ICP (supporting IIH — especially relevant in IIHWOP):</strong><br>
+    <span class="la">Empty sella / partial empty sella:</span> CSF herniation through the diaphragma sella, compressing pituitary; highly prevalent in IIH<br>
+    <span class="la">Flattening of posterior sclera (globe flattening):</span> CSF pressure transmitted to posterior globe via the optic nerve sheath space<br>
+    <span class="la">Distension of perioptic subarachnoid space:</span> Prominent CSF around optic nerve sheaths on fat-saturated MRI<br>
+    <span class="la">Transverse venous sinus stenosis (TVS):</span> Narrowing of one or both transverse sinuses — present in ~93% of IIH (vs. 7% of controls). May be bilateral. Cause vs. consequence is debated; may be a therapeutic target (venous stenting)
+  </div>
+
+  <div class="slabel">MRI brain with/without contrast — parenchymal and structural assessment <span class="pill pill-r">REQUIRED — MANDATORY EXCLUSION STEP</span></div>
+
+  <div class="crit" id="mri-item">
+    <div class="crit-main">
+      <div class="crit-name">MRI brain result — parenchyma, ventricles, meninges, gadolinium enhancement</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      Required findings for IIH: Normal brain parenchyma; no hydrocephalus (may see slit ventricles — acceptable); no mass lesion; no abnormal meningeal enhancement (excludes meningitis, carcinomatous meningitis, granulomatous disease). Ventricular size is typically small or normal — the high ICP prevents ventricular dilation. Empty sella and optic nerve sheath distension are expected positive findings consistent with IIH and are not exclusionary abnormalities.<br><br>
+      <strong>What would exclude IIH (require alternative diagnosis):</strong> Enhancing parenchymal lesion, white matter abnormalities suggesting demyelination, ependymal/leptomeningeal enhancement, true hydrocephalus (enlarged ventricles from obstruction or malabsorption), mass effect, or any other structural abnormality.
+      <div class="cnote"><strong>Slit ventricles:</strong> Very small ventricles on MRI can be seen in IIH — this was specifically identified in the original Modified Dandy criteria as an acceptable finding. Do not confuse small ventricles with hydrocephalus. Slit-like ventricles are a sign of diffuse cerebral edema or high ICP compressing ventricular walls.</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setImg('mri','normal')" id="mri-normal">✓ Normal (or slit ventricles / empty sella only)</button>
+      <button class="abtn" onclick="setImg('mri','iihsigns')" id="mri-iihsigns">✓ IIH MRI signs present (empty sella, globe flattening, perioptic CSF, sinus stenosis)</button>
+      <button class="abtn" onclick="setImg('mri','abnormal')" id="mri-abnormal">✗ Structural abnormality — IIH cannot be diagnosed</button>
+      <button class="abtn" onclick="setImg('mri','nd')" id="mri-nd">— Not yet performed</button>
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:14px;">MR venography (MRV) — cerebral venous sinus patency <span class="pill pill-a">REQUIRED FOR ATYPICAL PATIENTS; CONSIDER IN ALL</span></div>
+
+  <div class="crit" id="mrv-item">
+    <div class="crit-main">
+      <div class="crit-name">MRV result — venous sinus thrombosis, dural AV fistula, intrinsic stenosis vs. secondary stenosis from raised ICP</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      Cerebral venous sinus thrombosis (CVST) can present identically to IIH — headache, papilledema, raised ICP, and CN VI palsy. Excluding CVST is mandatory before diagnosing IIH; this requires MRV (or CT venography). MRV findings in true CVST: absence of flow void in a dural sinus (superior sagittal, transverse, or sigmoid); intraluminal filling defect; collateral venous channels.<br><br>
+      <strong>Transverse sinus stenosis (TSS) in IIH:</strong> TSS is a very common incidental finding in IIH (~93%) and may represent either a secondary phenomenon (raised ICP collapsing the compliant sinus walls) or a primary contributor to raised venous pressure. TSS alone on MRV does not constitute "CVST" — it is an expected IIH finding. True thrombosis (filling defect in the sinus, especially in the superior sagittal sinus) is exclusionary.
+      <div class="cnote"><strong>Clinical decision:</strong> Friedman 2013 explicitly requires MRV in atypical patients. Many experts recommend MRV in all patients with suspected IIH given the clinical overlap with CVST and the relatively low cost. A positive DSA (digital subtraction angiography) is the gold standard for DAVF exclusion — consider if pulsatile tinnitus is prominent or objective bruit is heard.</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setImg('mrv','normal')"   id="mrv-normal">✓ No CVST — patent sinuses (TSS acceptable)</button>
+      <button class="abtn" onclick="setImg('mrv','thrombosis')" id="mrv-thrombosis">✗ CVST identified — IIH excluded, treat CVST</button>
+      <button class="abtn" onclick="setImg('mrv','nd')"       id="mrv-nd">— MRV not performed (typical patient / pending)</button>
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:14px;">MRI signs of raised ICP — count of positive signs <span class="pill pill-b">REQUIRED FOR IIHWOP SUGGESTED TIER: ≥3 OF 4</span></div>
+
+  <div class="crit" id="mrisigns-item">
+    <div class="crit-main">
+      <div class="crit-name">Positive MRI signs of elevated ICP — how many of the four are present? (Empty sella, posterior globe flattening, perioptic CSF distension, transverse sinus stenosis)</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      The four MRI signs formalized in Friedman 2013 for IIHWOP diagnosis:<br>
+      1. <strong>Empty sella or partial empty sella</strong> — CSF herniates through diaphragma sella, flattening pituitary; highly specific for chronic elevated ICP<br>
+      2. <strong>Flattening of posterior aspect of globes</strong> — bilateral posterior scleral flattening visible on axial MRI; reflects transmitted CSF pressure via optic nerve sheath<br>
+      3. <strong>Distension of perioptic subarachnoid space</strong> — tortuous or enlarged optic nerve sheaths; best seen on fat-suppressed orbital MRI sequences<br>
+      4. <strong>Transverse venous sinus stenosis</strong> — unilateral or bilateral narrowing of transverse sinuses on MRV or MR TOF sequences<br><br>
+      A retrospective validation study found ≥3/4 signs has sensitivity ~39% but specificity ~91% for IIH (positive predictive value ~95%). Required for "Suggested IIH without papilledema" tier.
+      <div class="cnote"><strong>From Korsbæk et al. 2023 (Cephalalgia):</strong> For the presence of ≥3/4 MRI signs, sensitivity was 39.2% and specificity was 91.3% (PPV 95.2%, NPV 25.3%). The low sensitivity means negative MRI does not exclude IIH. High specificity means ≥3 signs strongly supports the diagnosis when present.</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setImg('mrisigns','3plus')" id="mrisigns-3plus">✓ ≥3 of 4 signs present (empty sella, globe flattening, perioptic CSF, TVS)</button>
+      <button class="abtn" onclick="setImg('mrisigns','1to2')"  id="mrisigns-1to2">⚠ 1–2 signs present</button>
+      <button class="abtn" onclick="setImg('mrisigns','none')"  id="mrisigns-none">✗ None of the 4 signs present</button>
+      <button class="abtn" onclick="setImg('mrisigns','nd')"    id="mrisigns-nd">— Not formally assessed</button>
+    </div>
+  </div>
+
+  <div id="a2" class="alrt"></div>
+  <div class="nav-row">
+    <button class="nbtn ns" onclick="go(1)">← Back</button>
+    <button class="nbtn np" onclick="go(3)">Next: CSF Pressure →</button>
+  </div>
+</div>
+</div>
+
+<!-- ══ SCREEN 3: CSF PRESSURE ══ -->
+<div class="screen" id="s3">
+<div class="card">
+  <div class="ctitle" style="color:var(--accent);">Step 4 · Lumbar Puncture — Opening Pressure and CSF Composition</div>
+  <div class="csub">LP with opening pressure measurement is required for IIH diagnosis. Critically, the measurement must be performed with the patient in the lateral decubitus position with legs extended (not in fetal position) — seated or anxious patients yield falsely elevated pressures and are a major source of overdiagnosis. Normal CSF composition is required for all IIH tiers.</div>
+
+  <div class="lbox">
+    <strong>CSF opening pressure thresholds (Friedman 2013 — lateral decubitus, legs extended):</strong><br>
+    <span class="lp">≥25 cmH₂O (250 mmH₂O):</span> Required for Definite IIH with papilledema, Definite IIHWOP with CN VI palsy, and Suggested IIHWOP tiers<br>
+    <span class="la">20–24.9 cmH₂O:</span> Borderline — required for Probable IIH with papilledema tier (papilledema present but CSF pressure not reaching 25 cmH₂O)<br>
+    <span class="la">Children (sedated/awake):</span> Normal is up to 28 cmH₂O in children (Avery et al. 2010); thresholds differ from adults<br>
+    <span class="la">Obese adults:</span> Mean OP ~20.5 cmH₂O in obese asymptomatic adults (Corbett and Mehta 1983) — the 25 cmH₂O threshold still applies<br><br>
+    <strong>Measurement technique matters enormously:</strong> Patient anxiety, Valsalva, flexed legs, or sitting position significantly elevate measured OP. This is the single most common source of false-positive IIH diagnosis (Fisayo et al. Neurology 2016). Ensure lateral decubitus with legs extended and patient calm before recording OP.<br><br>
+    <strong>CSF composition:</strong> Must be normal (normal cell count, protein, glucose). Abnormal CSF — pleocytosis, elevated protein, hypoglycorrhachia, or positive infectious/cytology studies — requires evaluation for meningitis, inflammatory disease, or malignancy.
+  </div>
+
+  <div class="slabel">CSF opening pressure — lateral decubitus, legs extended <span class="pill pill-r">REQUIRED</span></div>
+
+  <div class="crit" id="op-item">
+    <div class="crit-main">
+      <div class="crit-name">Lumbar puncture opening pressure (cmH₂O) — measured in strict lateral decubitus position</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      <strong>Position requirement:</strong> Patient must be in left lateral decubitus, hips and knees extended (not flexed into chest). Correct position lowers OP by 5–15 cmH₂O vs. fetal position. Patient must be calm — Valsalva, coughing, or breath-holding during measurement artificially elevates OP.<br><br>
+      <strong>Borderline pressure (20–24.9 cmH₂O):</strong> These patients with papilledema meet criteria for "Probable IIH" per Friedman 2013. The borderline range is clinically important — papilledema in the absence of definitive OP elevation still requires thorough exclusion of other causes and clinical follow-up. Repeat LP or ICP monitoring may clarify.<br><br>
+      <strong>Normal OP (&lt;20 cmH₂O) with papilledema:</strong> Must prompt evaluation for other causes of papilledema — bilateral optic disc drusen (pseudopapilledema), optic neuritis, infiltrative optic neuropathy, malignant hypertension, hypercapnia. "Probable IIH" requires papilledema with OP 20–24.9; if OP is truly normal, IIH is not supported.
+      <div class="cnote"><strong>Overdiagnosis data — Fisayo et al. Neurology 2016:</strong> In a referral cohort, 40% of patients diagnosed with IIH had been incorrectly diagnosed. Key errors: (1) OP measured in a non-standard position, (2) disc appearance misclassified as papilledema when it was pseudopapilledema (drusen, tilted discs), (3) CSF pressure accepted as elevated on suboptimal measurement. OCT B-scan of the disc and orbital ultrasound for drusen should be performed when papilledema is uncertain.</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setOP('high')"     id="op-high">✓ ≥25 cmH₂O (250 mmH₂O)</button>
+      <button class="abtn" onclick="setOP('border')"   id="op-border">⚠ 20–24.9 cmH₂O (borderline)</button>
+      <button class="abtn" onclick="setOP('normal')"   id="op-normal">✗ &lt;20 cmH₂O (normal)</button>
+      <button class="abtn" onclick="setOP('nd')"       id="op-nd">— LP not yet performed</button>
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:14px;">CSF composition <span class="pill pill-r">MUST BE NORMAL FOR IIH DIAGNOSIS</span></div>
+
+  <div class="crit" id="csfcomp-item">
+    <div class="crit-main">
+      <div class="crit-name">CSF cell count, protein, glucose — normal required; also send infectious/malignant studies if clinically indicated</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      Normal CSF composition is required by ALL versions of the IIH/IIH diagnostic criteria (original Dandy, Modified Dandy, Friedman 2002, Friedman 2013). Any of the following is abnormal and excludes IIH: WBC >5 cells/µL, elevated protein (>45 mg/dL), low glucose, xanthochromia, or positive culture, cytology, or malignant cells.<br><br>
+      <strong>If CSF abnormal, consider:</strong> Meningitis (bacterial, viral, fungal, TB), carcinomatous meningitis, neurosarcoidosis, lymphoma, or inflammatory CNS disease. These may cause raised ICP with papilledema and can mimic IIH clinically.<br><br>
+      <strong>Routine CSF studies at LP for suspected IIH:</strong> Opening pressure (recorded first), cell count with differential, total protein, glucose (with concurrent serum glucose), Gram stain and culture, and any additional studies based on clinical suspicion (cryptococcal antigen, AFB smear/culture, VDRL, cytology, flow cytometry if lymphoma concern).
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setCSF('normal')"  id="csfcomp-normal">✓ Normal composition (cell count, protein, glucose all normal)</button>
+      <button class="abtn" onclick="setCSF('abnormal')" id="csfcomp-abnormal">✗ Abnormal — IIH cannot be diagnosed; evaluate for meningitis/malignancy</button>
+      <button class="abtn" onclick="setCSF('nd')"      id="csfcomp-nd">— LP not yet performed</button>
+    </div>
+  </div>
+
+  <div id="a3" class="alrt"></div>
+  <div class="nav-row">
+    <button class="nbtn ns" onclick="go(2)">← Back</button>
+    <button class="nbtn np" onclick="go(4)">Next: Exclusion of Secondary Causes →</button>
+  </div>
+</div>
+</div>
+
+<!-- ══ SCREEN 4: EXCLUSIONS ══ -->
+<div class="screen" id="s4">
+<div class="card">
+  <div class="ctitle" style="color:var(--accent);">Step 5 · Exclusion of Secondary Causes and Alternative Diagnoses</div>
+  <div class="csub">IIH is a diagnosis of exclusion. The "idiopathic" designation requires that all identifiable secondary causes of intracranial hypertension have been rigorously excluded. Secondary causes must be excluded before applying the "idiopathic" label — if a cause is found, the diagnosis is "pseudotumor cerebri secondary to [cause]," not IIH.</div>
+
+  <div class="lbox">
+    <strong>Secondary causes of intracranial hypertension (pseudotumor cerebri syndrome — secondary):</strong><br>
+    <span class="lr">Venous:</span> Cerebral venous sinus thrombosis (CVST), dural AV fistula (DAVF), venous outflow obstruction (bilateral jugular vein thrombosis, radical neck dissection, superior mediastinal obstruction)<br>
+    <span class="lr">Medications (most common secondary cause to exclude):</span> Tetracyclines (minocycline, doxycycline), vitamin A / retinoids (isotretinoin, all-trans retinoic acid), growth hormone, anabolic steroids, corticosteroid withdrawal, levothyroxine excess (especially in children), lithium, amiodarone, cyclosporine, nalidixic acid, danazol, progestin-only contraceptives<br>
+    <span class="la">Endocrine / metabolic:</span> Hypothyroidism (especially untreated), Addison's disease, hypoparathyroidism, PCOS, Cushing's syndrome (excess or withdrawal), anemia, chronic renal failure<br>
+    <span class="la">Structural:</span> Chiari malformation type I (can cause papilledema via altered CSF dynamics), intracranial mass (tumor, abscess, cyst), hydrocephalus<br>
+    <span class="la">Infective/inflammatory:</span> Chronic meningitis (TB, crypto, sarcoid), post-meningitic arachnoiditis, viral encephalitis, Behçet's disease
+  </div>
+
+  <div class="slabel">Medication and substance review <span class="pill pill-r">CRITICAL — MOST ACTIONABLE SECONDARY CAUSE</span></div>
+
+  <div class="crit" id="meds-item">
+    <div class="crit-main">
+      <div class="crit-name">Review of current medications — tetracyclines, retinoids (isotretinoin), vitamin A supplements, growth hormone, steroids, oral contraceptives, lithium</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      Drug-induced intracranial hypertension (DIIH) is an important secondary cause. The offending drug should be discontinued if clinically feasible — this is the most actionable intervention and may resolve the condition.<br><br>
+      <strong>Highest-risk medications:</strong><br>
+      • <strong>Tetracyclines (minocycline, doxycycline):</strong> Most common antibiotic cause — particularly minocycline for acne in young women (the same demographic as IIH). Mechanism unclear but may relate to effects on CSF dynamics or vitamin A pathway.<br>
+      • <strong>Retinoids / vitamin A:</strong> Isotretinoin (Accutane) for acne. Hypervitaminosis A from supplements or liver (polar bear liver). All-trans retinoic acid for leukemia treatment.<br>
+      • <strong>Corticosteroid withdrawal:</strong> Paradoxically, abrupt steroid discontinuation after chronic use can precipitate IH. Initial IH during high-dose steroids is a separate effect.<br>
+      • <strong>Growth hormone:</strong> Supplementation in children and adults — discontinue and monitor.<br>
+      • <strong>Levothyroxine excess:</strong> Particularly in children — check thyroid function.
+      <div class="cnote"><strong>Management if medication is causative:</strong> Discontinue the offending agent. Treat with acetazolamide and weight management as for idiopathic cases while awaiting resolution. In cases with vision-threatening papilledema, ONSF or shunting may still be required even if the offending drug is discontinued. The diagnosis becomes "pseudotumor cerebri secondary to [drug]" rather than IIH.</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setExcl('meds','clear')"  id="meds-clear">✓ No IH-associated medications identified</button>
+      <button class="abtn" onclick="setExcl('meds','found')"  id="meds-found">⚠ IH-associated medication identified — secondary PTC</button>
+      <button class="abtn" onclick="setExcl('meds','stopped')" id="meds-stopped">ⓘ IH drug stopped; monitoring for resolution</button>
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:14px;">Endocrine and metabolic workup <span class="pill pill-a">OBTAIN IN ALL ATYPICAL AND IN STANDARD WORKUP</span></div>
+
+  <div class="crit" id="endo-item">
+    <div class="crit-main">
+      <div class="crit-name">Thyroid function (TSH), morning cortisol / ACTH stim test (if Addison's suspected), calcium/PTH (hypoparathyroidism), CBC (anemia), renal function</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      <strong>Hypothyroidism:</strong> Can cause raised ICP and papilledema, particularly when severely undertreated. TSH should be checked in all IIH workups. Correcting hypothyroidism may resolve the IH.<br><br>
+      <strong>Addison's disease:</strong> Adrenal insufficiency is associated with IH — mechanism possibly related to altered mineralocorticoid balance and sodium/water handling. Associated with IIH in case series and case reports.<br><br>
+      <strong>Anemia:</strong> Severe anemia (iron deficiency, sickle cell) has been associated with raised ICP, possibly via compensatory venous engorgement. Check CBC in all IIH patients.<br><br>
+      <strong>Chronic renal failure:</strong> Uremia and dialysis-related fluid shifts can contribute to raised ICP. Less commonly a sole cause but worth considering in appropriate context.
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setExcl('endo','normal')" id="endo-normal">✓ Endocrine / metabolic workup normal</button>
+      <button class="abtn" onclick="setExcl('endo','found')"  id="endo-found">⚠ Secondary endocrine/metabolic cause found</button>
+      <button class="abtn" onclick="setExcl('endo','nd')"     id="endo-nd">— Pending / not yet performed</button>
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:14px;">Pseudopapilledema exclusion — is the disc swelling truly papilledema? <span class="pill pill-r">CRITICAL — MAJOR SOURCE OF OVERDIAGNOSIS</span></div>
+
+  <div class="crit" id="pseudo-item">
+    <div class="crit-main">
+      <div class="crit-name">Exclude pseudopapilledema — optic disc drusen (buried or superficial), tilted discs, disc elevation from other causes</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      Optic disc drusen (ODD) are calcified hyaline deposits within the optic nerve that can cause the disc to appear elevated, mimicking papilledema. ODD prevalence is ~2% of the general population. Distinguishing true papilledema from pseudopapilledema is critical — misclassification is the second most common cause of IIH overdiagnosis (Fisayo et al. 2016).<br><br>
+      <strong>Features suggesting TRUE papilledema (vs. ODD):</strong> Peripapillary flame hemorrhages; venous engorgement; absence of spontaneous venous pulsations (SVP); disc hyperemia; nerve fiber layer hemorrhages; lumbar puncture elevated OP. OCT enhanced depth imaging (EDI-OCT) can visualize buried drusen as hyperreflective bodies.<br><br>
+      <strong>Tests for pseudopapilledema:</strong> B-scan orbital ultrasound (highly sensitive for drusen — hyperechoic signal at optic nerve head at low gain); OCT optic nerve head; fundus autofluorescence (surface drusen appear autofluorescent); fundus fluorescein angiography (ODD show late autofluorescence without disc hyperfluorescence typical of papilledema).
+      <div class="cnote"><strong>SVP (spontaneous venous pulsations):</strong> Presence of SVP on funduscopy suggests ICP is not markedly elevated (SVP are absent when ICP exceeds ~20 cmH₂O). Absence of SVP is not specific for raised ICP (SVP are absent in ~20% of normal individuals). Do not use SVP alone to diagnose or exclude papilledema.</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setExcl('pseudo','confirmed')" id="pseudo-confirmed">✓ True papilledema confirmed (or disc swelling absent)</button>
+      <button class="abtn" onclick="setExcl('pseudo','drusen')"    id="pseudo-drusen">✗ Pseudopapilledema / disc drusen identified — not papilledema</button>
+      <button class="abtn" onclick="setExcl('pseudo','uncertain')" id="pseudo-uncertain">⚠ Disc appearance uncertain — further workup required</button>
+    </div>
+  </div>
+
+  <div id="a4" class="alrt"></div>
+  <div class="nav-row">
+    <button class="nbtn ns" onclick="go(3)">← Back</button>
+    <button class="nbtn np" onclick="go(5)">Generate Verdict →</button>
+  </div>
+</div>
+</div>
+
+<!-- ══ SCREEN 5: VERDICT ══ -->
+<div class="screen" id="s5">
+  <div id="vout"></div>
+  <div class="doc-header">
+    <button class="doc-tog" onclick="toggleDoc()">▼ Documentation Note</button>
+    <button class="copy-btn" id="copy-btn" onclick="copyDoc()">⎘ Copy</button>
+  </div>
+  <div class="doc-body" id="dn"></div>
+  <div class="nav-row">
+    <button class="nbtn ns" onclick="go(4)">← Back</button>
+    <button class="nbtn np" onclick="resetAll()">↺ New Evaluation</button>
+  </div>
+</div>
+
+</div><!-- /app -->
+<script>
+const S = {
+  // Symptoms
+  ha:null, tvo:null, tinnitus:null, diplopia:null, otherfocal:null, demo:null,
+  // Optic nerve
+  frisen:null, vf:null,
+  // Imaging
+  mri:null, mrv:null, mrisigns:null,
+  // CSF
+  op:null, csf:null,
+  // Exclusions
+  meds:null, endo:null, pseudo:null
+};
+let cur = 0;
+
+function setSx(k, v) {
+  S[k] = v;
+  const item = document.getElementById(k+'-item');
+  if(item) {
+    item.className = 'crit';
+    if(v===true) item.classList.add('c-yes');
+    else if(v===false) item.classList.add('c-abs');
+    else if(v==='typical') item.classList.add('c-blue');
+    else if(v==='atypical') item.classList.add('c-part');
+  }
+  ['yes','no','typical','atypical'].forEach(x => {
+    const b = document.getElementById(k+'-'+x);
+    if(b) b.classList.remove('ay','an','ab','aw');
+  });
+  const map = {true:'ay',false:'an',typical:'ab',atypical:'aw'};
+  const keyStr = String(v);
+  const b2 = document.getElementById(k+'-'+(v===true?'yes':v===false?'no':keyStr));
+  if(b2) b2.classList.add(map[keyStr]||'ab');
+  ui();
+}
+
+function setFrisen(grade) {
+  S.frisen = grade;
+  for(let i=0;i<=5;i++) {
+    const c = document.getElementById('f'+i);
+    if(c) { c.className = 'frisen-card'; }
+  }
+  const el = document.getElementById('f'+grade);
+  if(el) el.className = 'frisen-card '+(grade>=4?'fsel-sev':'fsel');
+  ui();
+}
+
+function setVF(v) {
+  S.vf = v;
+  const item = document.getElementById('vf-item');
+  if(item) {
+    item.className = 'crit';
+    if(v==='normal') item.classList.add('c-yes');
+    else if(v==='mild'||v==='mod') item.classList.add('c-part');
+    else if(v==='severe') item.classList.add('c-no');
+    else item.classList.add('c-abs');
+  }
+  ['normal','mild','mod','severe','nd'].forEach(x => {
+    const b = document.getElementById('vf-'+x);
+    if(b) b.classList.remove('ay','aw','an','aa');
+  });
+  const map = {normal:'ay',mild:'aw',mod:'aw',severe:'an',nd:'aa'};
+  const b2 = document.getElementById('vf-'+v);
+  if(b2) b2.classList.add(map[v]||'aa');
+  ui();
+}
+
+function setImg(k, v) {
+  S[k] = v;
+  const item = document.getElementById(k+'-item');
+  if(item) {
+    item.className = 'crit';
+    if(v==='normal'||v==='iihsigns'||v==='3plus') item.classList.add('c-yes');
+    else if(v==='abnormal'||v==='thrombosis') item.classList.add('c-no');
+    else if(v==='1to2') item.classList.add('c-part');
+    else item.classList.add('c-abs');
+  }
+  ['normal','iihsigns','abnormal','nd','thrombosis','3plus','1to2','none'].forEach(x => {
+    const b = document.getElementById(k+'-'+x);
+    if(b) b.classList.remove('ay','an','ab','aw','aa');
+  });
+  const map = {normal:'ay',iihsigns:'ab','3plus':'ay',abnormal:'an',thrombosis:'an','1to2':'aw',none:'an',nd:'aa'};
+  const b2 = document.getElementById(k+'-'+v);
+  if(b2) b2.classList.add(map[v]||'aa');
+  ui();
+}
+
+function setOP(v) {
+  S.op = v;
+  const item = document.getElementById('op-item');
+  if(item) {
+    item.className = 'crit';
+    if(v==='high') item.classList.add('c-yes');
+    else if(v==='border') item.classList.add('c-part');
+    else if(v==='normal') item.classList.add('c-no');
+    else item.classList.add('c-abs');
+  }
+  ['high','border','normal','nd'].forEach(x => {
+    const b = document.getElementById('op-'+x);
+    if(b) b.classList.remove('ay','aw','an','aa');
+  });
+  const map = {high:'ay',border:'aw',normal:'an',nd:'aa'};
+  const b2 = document.getElementById('op-'+v);
+  if(b2) b2.classList.add(map[v]||'aa');
+  ui();
+}
+
+function setCSF(v) {
+  S.csf = v;
+  const item = document.getElementById('csfcomp-item');
+  if(item) {
+    item.className = 'crit';
+    if(v==='normal') item.classList.add('c-yes');
+    else if(v==='abnormal') item.classList.add('c-no');
+    else item.classList.add('c-abs');
+  }
+  ['normal','abnormal','nd'].forEach(x => {
+    const b = document.getElementById('csfcomp-'+x);
+    if(b) b.classList.remove('ay','an','aa');
+  });
+  const map = {normal:'ay',abnormal:'an',nd:'aa'};
+  const b2 = document.getElementById('csfcomp-'+v);
+  if(b2) b2.classList.add(map[v]||'aa');
+  ui();
+}
+
+function setExcl(k, v) {
+  S[k] = v;
+  const item = document.getElementById(k+'-item');
+  if(item) {
+    item.className = 'crit';
+    if(v==='clear'||v==='normal'||v==='confirmed'||v==='stopped') item.classList.add('c-yes');
+    else if(v==='found'||v==='drusen') item.classList.add('c-no');
+    else if(v==='uncertain'||v==='nd') item.classList.add('c-part');
+  }
+  ['clear','normal','confirmed','stopped','found','drusen','uncertain','nd'].forEach(x => {
+    const b = document.getElementById(k+'-'+x);
+    if(b) b.classList.remove('ay','an','aw','aa','ab');
+  });
+  const map = {clear:'ay',normal:'ay',confirmed:'ay',stopped:'ab',found:'an',drusen:'an',uncertain:'aw',nd:'aa'};
+  const b2 = document.getElementById(k+'-'+v);
+  if(b2) b2.classList.add(map[v]||'aa');
+  ui();
+}
+
+/* ── Diagnostic logic ── */
+function hasPapilledema()    { return S.frisen !== null && S.frisen >= 1; }
+function opHigh()            { return S.op === 'high'; }
+function opBorder()          { return S.op === 'border'; }
+function imagingClear()      { return S.mri !== 'abnormal' && S.mrv !== 'thrombosis'; }
+function imagingDone()       { return S.mri !== null && S.mri !== 'nd'; }
+function csfNormal()         { return S.csf === 'normal'; }
+function exclusionsFailed()  { return S.meds==='found' || S.endo==='found' || S.pseudo==='drusen'; }
+function exclusionsOk()      { return (S.meds==='clear'||S.meds==='stopped') && (S.endo==='normal') && (S.pseudo==='confirmed'); }
+function hasCN6()            { return S.diplopia === true; }
+function mriSignsPos()       { return S.mrisigns === '3plus'; }
+function noOtherFocal()      { return S.otherfocal === false; }
+
+function getDxTier() {
+  if(S.otherfocal===true) return 'focal-signs';
+  if(S.mri==='abnormal') return 'structural';
+  if(S.mrv==='thrombosis') return 'cvst';
+  if(S.csf==='abnormal') return 'csf-abnormal';
+  if(S.pseudo==='drusen') return 'pseudopapilledema';
+  if(S.meds==='found' || S.endo==='found') return 'secondary';
+
+  const hasPap = hasPapilledema();
+  const hiOP = opHigh();
+  const borderOP = opBorder();
+  const imgOk = imagingClear() && imagingDone();
+  const csfOk = csfNormal();
+
+  // Definite IIH (with papilledema)
+  if(hasPap && hiOP && imgOk && csfOk && exclusionsOk()) return 'definite';
+  // Probable IIH (papilledema + borderline OP)
+  if(hasPap && borderOP && imgOk && csfOk && exclusionsOk()) return 'probable';
+  // Definite IIH without papilledema (CN VI palsy path)
+  if(!hasPap && hasCN6() && hiOP && imgOk && csfOk && exclusionsOk()) return 'definite-wop';
+  // Suggested IIH without papilledema (≥3 MRI signs)
+  if(!hasPap && !hasCN6() && hiOP && mriSignsPos() && imgOk && csfOk && exclusionsOk()) return 'suggested-wop';
+  // Probable with papilledema but exclusions incomplete
+  if(hasPap && (hiOP||borderOP) && imgOk && csfOk) return 'probable-incomplete';
+  // Insufficient data
+  return 'insufficient';
+}
+
+/* ── UI feedback ── */
+function ui() {
+  const a0=document.getElementById('a0'), n0=document.getElementById('n0');
+  const sxPresent = [S.ha,S.tvo,S.tinnitus,S.diplopia].some(v=>v===true);
+  if(S.otherfocal===true) { sa(a0,'aerr','✗ Other focal neurological signs present. IIH requires absence of localizing signs (except CN VI palsy). Pursue structural imaging urgently.'); n0.disabled=false; }
+  else if(sxPresent) { sa(a0,'ablue','◈ Symptoms consistent with raised ICP recorded. Proceed to optic nerve examination.'); n0.disabled=false; }
+  else if([S.ha,S.tvo,S.tinnitus,S.diplopia,S.otherfocal].some(v=>v!==null)) { sa(a0,'awn','⚠ No ICP symptoms confirmed. IIH less likely but not excluded — papilledema on exam can be the presenting finding.'); n0.disabled=true; }
+  else { ha(a0); n0.disabled=true; }
+
+  const a1=document.getElementById('a1');
+  if(S.frisen!==null) {
+    if(S.frisen===0) sa(a1,'awn','ⓘ No papilledema (Frisén Grade 0). If IIH is still suspected (elevated OP + symptoms), evaluate for IIHWOP pathways: CN VI palsy or ≥3 MRI signs required.');
+    else if(S.frisen>=4) sa(a1,'aerr','⚠ Frisén Grade '+S.frisen+' — severe/marked papilledema. Vision at risk. Urgent treatment decision required. Consider ONSF or CSF diversion if vision is deteriorating.');
+    else sa(a1,'aok','✓ Papilledema confirmed (Frisén Grade '+S.frisen+'). Proceed to neuroimaging — MRI with/without gadolinium required before LP.');
+  } else ha(a1);
+  if(S.vf==='severe') sa(a1,'aerr','✗ Severe visual field loss / central threat — urgent intervention threshold reached. Ophthalmology/neurology co-management required.');
+
+  const a2=document.getElementById('a2');
+  if(S.mri==='abnormal') sa(a2,'aerr','✗ Structural abnormality on MRI — IIH cannot be diagnosed. Evaluate the structural finding.');
+  else if(S.mrv==='thrombosis') sa(a2,'aerr','✗ Cerebral venous sinus thrombosis identified — treat CVST, not IIH. Anticoagulation workup required.');
+  else if((S.mri==='normal'||S.mri==='iihsigns')&&S.mrv!=='thrombosis') sa(a2,'aok','✓ Neuroimaging does not show a structural cause of raised ICP. Proceed to LP.');
+  else if(S.mri||S.mrv||S.mrisigns) sa(a2,'ainf','ⓘ Imaging data recorded. Complete neuroimaging assessment before LP.');
+  else ha(a2);
+
+  const a3=document.getElementById('a3');
+  if(S.csf==='abnormal') sa(a3,'aerr','✗ Abnormal CSF composition — IIH excluded. Evaluate for infectious, inflammatory, or malignant cause of raised ICP.');
+  else if(S.op==='high'&&S.csf==='normal') sa(a3,'aok','✓ LP criteria met — OP ≥25 cmH₂O with normal CSF composition. Proceed to exclusion of secondary causes.');
+  else if(S.op==='border'&&S.csf==='normal') sa(a3,'awn','⚠ Borderline OP (20–24.9 cmH₂O) with papilledema — meets threshold for Probable IIH if other criteria met. Ensure measurement technique was correct (lateral decubitus, legs extended, patient calm).');
+  else if(S.op==='normal') sa(a3,'aerr','✗ Normal OP (<20 cmH₂O). IIH criteria for elevated ICP not met. If papilledema is present, evaluate for other causes (disc drusen, optic neuritis, malignant HTN).');
+  else if(S.op||S.csf) sa(a3,'ainf','ⓘ CSF data recorded. Proceed to exclusion of secondary causes.');
+  else ha(a3);
+
+  const a4=document.getElementById('a4');
+  if(exclusionsFailed()) sa(a4,'aerr','✗ Secondary cause identified — diagnosis is pseudotumor cerebri secondary to [cause], not IIH. Address the underlying cause.');
+  else if(S.pseudo==='uncertain') sa(a4,'awn','⚠ Disc appearance uncertain. Perform B-scan ultrasound or OCT enhanced depth imaging to exclude optic disc drusen (pseudopapilledema) before diagnosing IIH.');
+  else if(exclusionsOk()) sa(a4,'aok','✓ No secondary cause identified. Idiopathic designation supported.');
+  else if(S.meds||S.endo||S.pseudo) sa(a4,'ainf','ⓘ Exclusion workup ongoing. Proceed to verdict when complete.');
+  else ha(a4);
+}
+
+/* ── Verdict ── */
+function rv() {
+  const tier = getDxTier();
+  const vtMap = {
+    definite:        'Definite IIH (with Papilledema)',
+    probable:        'Probable IIH (Borderline Opening Pressure)',
+    'definite-wop':  'Definite IIH Without Papilledema (CN VI Palsy)',
+    'suggested-wop': 'Suggested IIH Without Papilledema (MRI Signs)',
+    'probable-incomplete': 'IIH Criteria Partially Met — Exclusion Incomplete',
+    'focal-signs':   'IIH Criteria Not Met — Other Focal Signs Present',
+    structural:      'Structural Cause Identified — IIH Excluded',
+    cvst:            'Cerebral Venous Sinus Thrombosis — Not IIH',
+    'csf-abnormal':  'Abnormal CSF — IIH Excluded',
+    pseudopapilledema: 'Pseudopapilledema — Not True Papilledema',
+    secondary:       'Secondary Pseudotumor Cerebri (Not IIH)',
+    insufficient:    'Insufficient Data — Workup Incomplete'
+  };
+  const vclsMap = {
+    definite:'vdef', probable:'vprob', 'definite-wop':'vwop', 'suggested-wop':'vsugg',
+    'probable-incomplete':'vsugg', 'focal-signs':'vneg', structural:'vneg',
+    cvst:'vneg', 'csf-abnormal':'vneg', pseudopapilledema:'vneg',
+    secondary:'vneg', insufficient:'vund'
+  };
+  const vdMap = {
+    definite:'Papilledema (Frisén Grade ≥1) confirmed + CSF opening pressure ≥25 cmH₂O (lateral decubitus) + normal CSF composition + normal neuroimaging (no structural/vascular cause) + no secondary cause identified. Meets Friedman 2013 / Modified Dandy criteria for Definite IIH. Treatment: weight loss counseling + acetazolamide titration (per IIHTT: significant improvement in perimetric mean deviation, papilledema grade, and CSF pressure). Serial visual fields and OCT RNFL monitoring are essential.',
+    probable:'Papilledema confirmed + borderline CSF opening pressure 20–24.9 cmH₂O + normal CSF + normal neuroimaging + no secondary cause. Meets Probable IIH tier (Friedman 2013). Confirm measurement technique (strict lateral decubitus, legs extended). Consider repeat LP or 24-hour ICP monitoring. Treat as IIH and monitor closely.',
+    'definite-wop':'No papilledema + CN VI palsy + CSF opening pressure ≥25 cmH₂O + normal CSF + normal neuroimaging (including MRV) + no secondary cause. Meets Definite IIH Without Papilledema (IIHWOP) criteria (Friedman 2013). CN VI palsy is the only permitted focal sign under IIH criteria. Treat as IIH; re-examine optic discs at follow-up as papilledema may develop.',
+    'suggested-wop':'No papilledema + no CN VI palsy + CSF OP ≥25 cmH₂O + ≥3 of 4 IIH MRI signs (empty sella, posterior globe flattening, perioptic CSF distension, transverse sinus stenosis) + normal CSF + normal neuroimaging + no secondary cause. Meets Suggested IIHWOP tier (Friedman 2013). Clinical certainty is lower at this tier — IIH is "suggested" and requires clinical follow-up. Treat if symptoms warrant.',
+    'probable-incomplete':'Clinical and LP criteria for IIH partially met, but exclusion of secondary causes is incomplete. Do not finalize diagnosis until medication review, endocrine workup, and pseudopapilledema assessment are complete. Proceed with exclusion workup.',
+    'focal-signs':'Focal neurological signs other than CN VI palsy are present. IIH diagnostic criteria cannot be met. Urgent MRI with gadolinium and MRV are required to exclude intracranial mass, CVST, meningitis, or encephalitis.',
+    structural:'Structural abnormality on neuroimaging. IIH diagnosis excluded. Evaluate and manage the identified structural cause.',
+    cvst:'Cerebral venous sinus thrombosis identified on MRV. This is not IIH — ICP elevation is secondary to venous outflow obstruction. Initiate anticoagulation per CVST guidelines (EUSI/AHA). Neurological and hematological workup for thrombophilia indicated.',
+    'csf-abnormal':'Abnormal CSF composition excludes IIH. Investigate for infectious, inflammatory, or malignant cause of raised ICP and abnormal CSF.',
+    pseudopapilledema:'Optic disc drusen or other pseudopapilledema identified — the appearance of disc swelling is not true papilledema. The diagnosis of IIH requires true papilledema (or CN VI palsy/MRI signs for IIHWOP). Evaluate ODD independently; no treatment for raised ICP is required.',
+    secondary:'A secondary cause of intracranial hypertension has been identified. The correct diagnosis is "pseudotumor cerebri secondary to [cause]," not IIH. Address the underlying cause — drug discontinuation, hormonal correction, or venous intervention as applicable.',
+    insufficient:'Insufficient data to determine diagnostic tier. Complete the assessment — LP with accurate OP measurement, neuroimaging, and secondary cause exclusion are required.'
+  };
+
+  const fLabel = S.frisen!==null?['Normal','Grade 1 — Subtle','Grade 2 — Low Grade','Grade 3 — Moderate','Grade 4 — Marked','Grade 5 — Severe'][S.frisen]:'Not assessed';
+  const fColor = S.frisen>=4?'var(--red)':S.frisen>=3?'var(--amber)':S.frisen>=1?'var(--accent)':'var(--text2)';
+  const vfLabel = {normal:'Normal / Enlarged blind spot only',mild:'Mild loss (PMD −2 to −7 dB)',mod:'Moderate loss (PMD −7 to −15 dB)',severe:'Severe / central threat',nd:'Not performed'};
+
+  let html = `<div class="vban ${vclsMap[tier]||'vund'}"><div class="vban-head">
+    <div class="vlbl">Friedman DI, Liu GT, Digre KB · Neurology 2013;81:1159–1165 · Modified Dandy Criteria</div>
+    <div class="vtitle">${vtMap[tier]||'Indeterminate'}</div>
+    <div class="vdesc">${vdMap[tier]||''}</div>
+  </div></div>`;
+
+  // Diagnostic tier reference card
+  html+=`<div class="card" style="margin-bottom:12px;"><div class="ctitle" style="color:var(--accent);margin-bottom:10px;">Friedman 2013 Diagnostic Tiers — Reference</div>
+  <div class="tier-grid-4">
+    <div class="tier-card t-def"><div class="tier-label" style="color:var(--green);">Definite IIH</div><div class="tier-req">Papilledema + OP ≥25 cmH₂O + normal CSF + normal MRI + no secondary cause</div></div>
+    <div class="tier-card t-prob"><div class="tier-label" style="color:var(--accent);">Probable IIH</div><div class="tier-req">Papilledema + OP 20–24.9 cmH₂O + normal CSF + normal MRI + no secondary cause</div></div>
+    <div class="tier-card t-wop"><div class="tier-label" style="color:var(--amber);">Definite IIHWOP</div><div class="tier-req">No papilledema + CN VI palsy + OP ≥25 + normal CSF + normal MRI + no secondary cause</div></div>
+    <div class="tier-card t-sugg"><div class="tier-label" style="color:var(--blue);">Suggested IIHWOP</div><div class="tier-req">No papilledema + no CN VI + OP ≥25 + ≥3 MRI signs + normal CSF + no secondary cause</div></div>
+  </div></div>`;
+
+  // Summary grid
+  html+=`<div class="sum-grid">`;
+  html+=`<div class="sblock"><div class="sbtitle">Clinical &amp; Optic Nerve</div>`;
+  const sxItems = [['Headache','ha'],['TVOs','tvo'],['Pulsatile tinnitus','tinnitus'],['CN VI palsy / diplopia','diplopia']];
+  sxItems.forEach(([nm,k])=>{
+    const v=S[k]; const dc=v===true?'db':'dgr'; const tc=v===true?'tb':'tgr';
+    html+=`<div class="srow"><div class="dot ${dc}"></div><div class="sname">${nm}</div><div class="stag ${tc}">${v===true?'Present':v===false?'Absent':'—'}</div></div>`;
+  });
+  html+=`<div class="srow"><div class="dot" style="background:${fColor}"></div><div class="sname">Papilledema (Frisén)</div><div class="stag" style="border-color:${fColor};color:${fColor};">${fLabel}</div></div>`;
+  html+=`<div class="srow"><div class="dot ${S.vf==='normal'?'dg':S.vf==='severe'?'dr':S.vf?'da':'dgr'}"></div><div class="sname">Visual field</div><div class="stag ${S.vf==='normal'?'tg':S.vf==='severe'?'tr':S.vf?'ta':'tgr'}">${vfLabel[S.vf]||'—'}</div></div>`;
+  html+=`<div class="srow"><div class="dot ${S.demo==='typical'?'db':'dgr'}"></div><div class="sname">Demographics</div><div class="stag ${S.demo==='typical'?'tb':S.demo==='atypical'?'ta':'tgr'}">${S.demo==='typical'?'Typical':S.demo==='atypical'?'Atypical — MRV required':'—'}</div></div>`;
+  html+=`</div>`;
+
+  html+=`<div class="sblock"><div class="sbtitle">LP, Imaging &amp; Exclusions</div>`;
+  const opLbl = {high:'≥25 cmH₂O',border:'20–24.9 cmH₂O (borderline)',normal:'<20 cmH₂O (normal)',nd:'Not performed'};
+  html+=`<div class="srow"><div class="dot ${S.op==='high'?'dg':S.op==='border'?'da':S.op==='normal'?'dr':'dgr'}"></div><div class="sname">CSF opening pressure</div><div class="stag ${S.op==='high'?'tg':S.op==='border'?'ta':S.op==='normal'?'tr':'tgr'}">${opLbl[S.op]||'—'}</div></div>`;
+  html+=`<div class="srow"><div class="dot ${S.csf==='normal'?'dg':S.csf==='abnormal'?'dr':'dgr'}"></div><div class="sname">CSF composition</div><div class="stag ${S.csf==='normal'?'tg':S.csf==='abnormal'?'tr':'tgr'}">${S.csf==='normal'?'Normal':S.csf==='abnormal'?'Abnormal':'—'}</div></div>`;
+  html+=`<div class="srow"><div class="dot ${S.mri==='normal'||S.mri==='iihsigns'?'dg':S.mri==='abnormal'?'dr':'dgr'}"></div><div class="sname">Brain MRI</div><div class="stag ${S.mri==='normal'||S.mri==='iihsigns'?'tg':S.mri==='abnormal'?'tr':'tgr'}">${S.mri==='normal'?'Normal':S.mri==='iihsigns'?'IIH signs present':S.mri==='abnormal'?'Structural abnormality':'—'}</div></div>`;
+  html+=`<div class="srow"><div class="dot ${S.mrv==='normal'?'dg':S.mrv==='thrombosis'?'dr':'dgr'}"></div><div class="sname">MRV (venous sinuses)</div><div class="stag ${S.mrv==='normal'?'tg':S.mrv==='thrombosis'?'tr':'tgr'}">${S.mrv==='normal'?'No CVST (patent)':S.mrv==='thrombosis'?'CVST identified':'—'}</div></div>`;
+  html+=`<div class="srow"><div class="dot ${S.mrisigns==='3plus'?'db':S.mrisigns==='none'?'dr':'dgr'}"></div><div class="sname">MRI IIH signs (≥3/4)</div><div class="stag ${S.mrisigns==='3plus'?'tb':S.mrisigns==='none'?'tr':'tgr'}">${S.mrisigns==='3plus'?'≥3/4 present':S.mrisigns==='1to2'?'1–2/4':S.mrisigns==='none'?'None':'—'}</div></div>`;
+  const exLbl={clear:'None identified',found:'Secondary cause found',stopped:'Drug stopped — monitoring',normal:'Normal',confirmed:'True papilledema',drusen:'Pseudopapilledema',uncertain:'Uncertain'};
+  html+=`<div class="srow"><div class="dot ${S.meds==='clear'||S.meds==='stopped'?'dg':S.meds==='found'?'dr':'dgr'}"></div><div class="sname">Medication review</div><div class="stag ${S.meds==='clear'||S.meds==='stopped'?'tg':S.meds==='found'?'tr':'tgr'}">${exLbl[S.meds]||'—'}</div></div>`;
+  html+=`<div class="srow"><div class="dot ${S.pseudo==='confirmed'?'dg':S.pseudo==='drusen'?'dr':'dgr'}"></div><div class="sname">Pseudopapilledema excluded</div><div class="stag ${S.pseudo==='confirmed'?'tg':S.pseudo==='drusen'?'tr':S.pseudo==='uncertain'?'ta':'tgr'}">${exLbl[S.pseudo]||'—'}</div></div>`;
+  html+=`</div></div>`;
+
+  document.getElementById('vout').innerHTML = html;
+  buildDoc(vtMap[tier]||'Indeterminate', tier);
+}
+
+function buildDoc(vt, tier) {
+  const fLabel = S.frisen!==null?['Grade 0 — Normal','Grade 1 — Subtle','Grade 2 — Low Grade','Grade 3 — Moderate','Grade 4 — Marked','Grade 5 — Severe'][S.frisen]:'Not assessed';
+  const opLbl = {high:'≥25 cmH₂O — meets criterion',border:'20–24.9 cmH₂O — borderline (Probable IIH threshold)',normal:'<20 cmH₂O — normal (does not meet criterion)',nd:'Not yet performed'};
+  const vfLbl = {normal:'Normal (or enlarged blind spot only)',mild:'Mild loss (PMD −2 to −7 dB)',mod:'Moderate loss (PMD −7 to −15 dB)',severe:'Severe / central threat (PMD < −15 dB or central loss)',nd:'Not performed'};
+  let note = `NEURO-OPHTHALMOLOGY / NEUROLOGY CONSULTATION\nIdiopathic Intracranial Hypertension — Diagnostic Assessment\nFriedman DI, Liu GT, Digre KB. Revised diagnostic criteria for the pseudotumor cerebri syndrome\nin adults and children. Neurology. 2013;81(13):1159–1165. doi:10.1212/WNL.0b013e3182a55f17\nDate: ${new Date().toLocaleDateString()}\n\nDIAGNOSTIC TIER: ${vt}\n\nCLINICAL PRESENTATION:\n  Headache: ${S.ha===true?'Present':S.ha===false?'Absent':'Not assessed'}\n  Transient visual obscurations (TVOs): ${S.tvo===true?'Present':S.tvo===false?'Absent':'Not assessed'}\n  Pulsatile tinnitus: ${S.tinnitus===true?'Present':S.tinnitus===false?'Absent':'Not assessed'}\n  CN VI palsy / diplopia: ${S.diplopia===true?'Present':S.diplopia===false?'Absent':'Not assessed'}\n  Other focal neurological signs: ${S.otherfocal===true?'PRESENT (IIH criteria not met until excluded)':S.otherfocal===false?'Absent':'Not assessed'}\n  Patient demographics: ${S.demo==='typical'?'Typical (female, obese, childbearing age)':S.demo==='atypical'?'Atypical (male, lean, elderly, or child) — MRV required':'Not assessed'}\n\nOPTIC NERVE EXAMINATION:\n  Papilledema (Frisén grading): ${fLabel}\n  Visual field testing: ${vfLbl[S.vf]||'Not performed'}\n\nNEUROIMAGING:\n  Brain MRI with and without gadolinium: ${S.mri==='normal'?'Normal':S.mri==='iihsigns'?'Normal parenchyma with IIH-associated MRI signs (empty sella, globe flattening, perioptic CSF, transverse sinus stenosis)':S.mri==='abnormal'?'ABNORMAL — structural cause identified':'Not performed'}\n  MR Venography: ${S.mrv==='normal'?'No cerebral venous sinus thrombosis':S.mrv==='thrombosis'?'CVST IDENTIFIED':S.mrv==='nd'?'Not performed':'Not performed'}\n  IIH MRI signs (of 4): ${S.mrisigns==='3plus'?'≥3/4 present (empty sella, globe flattening, perioptic CSF distension, transverse sinus stenosis)':S.mrisigns==='1to2'?'1–2 of 4 present':S.mrisigns==='none'?'None of 4 present':'Not formally assessed'}\n\nLUMBAR PUNCTURE:\n  Opening pressure: ${opLbl[S.op]||'Not performed'}\n  Note: Pressure must be measured in lateral decubitus, legs extended, patient calm.\n  CSF composition: ${S.csf==='normal'?'NORMAL (cell count, protein, glucose all normal)':S.csf==='abnormal'?'ABNORMAL — excludes IIH; evaluate for infectious/inflammatory/malignant cause':'Not performed'}\n\nSECONDARY CAUSE EXCLUSION:\n  Medication review (tetracyclines, retinoids, vitamin A, steroids, GH, OCP): ${S.meds==='clear'?'No IH-associated medications':S.meds==='found'?'IH-associated medication identified — secondary PTC':S.meds==='stopped'?'Causative medication discontinued; monitoring for resolution':'Not yet completed'}\n  Endocrine/metabolic workup (TSH, cortisol, calcium, CBC): ${S.endo==='normal'?'Normal':S.endo==='found'?'Secondary endocrine/metabolic cause identified':'Not yet completed'}\n  Pseudopapilledema exclusion: ${S.pseudo==='confirmed'?'True papilledema confirmed':S.pseudo==='drusen'?'PSEUDOPAPILLEDEMA identified (disc drusen) — not true papilledema':S.pseudo==='uncertain'?'Disc appearance uncertain — further workup required (B-scan ultrasound, EDI-OCT)':'Not yet assessed'}\n\nFINAL DIAGNOSTIC TIER (Friedman 2013):\n  ${vt}\n\nTier definitions:\n  Definite IIH: Papilledema + OP ≥25 cmH₂O + normal CSF + normal MRI + no secondary cause\n  Probable IIH: Papilledema + OP 20–24.9 cmH₂O + normal CSF + normal MRI + no secondary cause\n  Definite IIHWOP: No papilledema + CN VI palsy + OP ≥25 + normal CSF + normal MRI + no 2° cause\n  Suggested IIHWOP: No papilledema + no CN VI + OP ≥25 + ≥3/4 MRI signs + normal CSF + no 2° cause\n\nKey references:\n  Friedman DI, Liu GT, Digre KB. Neurology 2013;81:1159–1165.\n  Wall M et al. (IIHTT). Jama 2014;311(16):1641–1651 (acetazolamide + weight loss vs. placebo).\n  Fisayo A et al. Overdiagnosis of IIH. Neurology 2016;86:341–350.\n  Korsbæk JJ et al. Diagnosis of IIH: A proposal for evidence-based diagnostic criteria. Cephalalgia 2023;43.`;
+  document.getElementById('dn').textContent = note;
+}
+
+function sa(el,cls,msg){ if(!el)return; el.className='alrt show '+cls; el.innerHTML=msg; }
+function ha(el){ if(el) el.classList.remove('show'); }
+
+function goTab(n) { if(n===cur) return; go(n); }
+function go(n) {
+  document.getElementById('s'+cur).classList.remove('active');
+  document.getElementById('s'+n).classList.add('active');
+  for(let i=0;i<6;i++){
+    const d=document.getElementById('st'+i);
+    d.classList.remove('active','done');
+    if(i<n) d.classList.add('done');
+    else if(i===n) d.classList.add('active');
+  }
+  cur=n;
+  document.getElementById('pf').style.width=((n/5)*100)+'%';
+  if(n===5) rv();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function xp(btn){
+  const d=btn.closest('.crit').querySelector('.crit-detail');
+  if(!d) return;
+  const o=d.classList.toggle('open');
+  btn.textContent=o?'close ▴':'details ▾';
+}
+
+function toggleDoc(){
+  const body=document.getElementById('dn'),btn=document.getElementById('copy-btn'),tog=document.querySelector('.doc-tog');
+  if(!body) return;
+  const open=body.classList.toggle('open');
+  if(tog) tog.textContent=open?'▲ Documentation Note':'▼ Documentation Note';
+  if(btn) btn.classList.toggle('visible',open);
+}
+
+function copyDoc(){
+  const body=document.getElementById('dn'),btn=document.getElementById('copy-btn');
+  if(!body) return;
+  const text=body.textContent||body.innerText;
+  navigator.clipboard.writeText(text)
+    .then(()=>{if(btn){btn.textContent='✓ Copied';btn.classList.add('copied');setTimeout(()=>{btn.textContent='⎘ Copy';btn.classList.remove('copied');},2000);}})
+    .catch(()=>{const ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);if(btn){btn.textContent='✓ Copied';btn.classList.add('copied');setTimeout(()=>{btn.textContent='⎘ Copy';btn.classList.remove('copied');},2000);}});
+}
+
+function resetAll(){
+  Object.keys(S).forEach(k=>S[k]=null);
+  document.querySelectorAll('.crit').forEach(el=>el.className='crit');
+  document.querySelectorAll('.abtn').forEach(b=>b.classList.remove('ay','an','ab','aa','aw','ap'));
+  document.querySelectorAll('.crit-detail').forEach(d=>d.classList.remove('open'));
+  document.querySelectorAll('.xbtn').forEach(b=>b.textContent='details ▾');
+  document.querySelectorAll('.frisen-card').forEach(c=>c.className='frisen-card');
+  ['a0','a1','a2','a3','a4'].forEach(id=>{const el=document.getElementById(id);if(el)el.classList.remove('show');});
+  document.getElementById('vout').innerHTML='';
+  const dn=document.getElementById('dn');if(dn)dn.classList.remove('open');
+  const cb=document.getElementById('copy-btn');if(cb)cb.classList.remove('visible','copied');
+  const tog=document.querySelector('.doc-tog');if(tog)tog.textContent='▼ Documentation Note';
+  go(0);
+  document.getElementById('n0').disabled=true;
+}
+
+ui();
+</script>
+</body>
+</html>
