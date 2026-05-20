@@ -1,0 +1,1097 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Myasthenia Gravis Diagnostic Navigator · MGFA Classification</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@300;400;500;600;700&family=Lexend:wght@300;400;500;600&display=swap');
+
+:root {
+  --bg:        #0d1117;
+  --card:      #161b22;
+  --card2:     #1c2330;
+  --border:    #2a3a4a;
+  --border2:   #3a5060;
+  --green:     #4ade80;
+  --green-bg:  rgba(74,222,128,0.10);
+  --green-bd:  rgba(74,222,128,0.35);
+  --red:       #f87171;
+  --red-bg:    rgba(248,113,113,0.10);
+  --red-bd:    rgba(248,113,113,0.35);
+  --amber:     #fbbf24;
+  --amber-bg:  rgba(251,191,36,0.10);
+  --amber-bd:  rgba(251,191,36,0.35);
+  --blue:      #60a5fa;
+  --blue-bg:   rgba(96,165,250,0.10);
+  --blue-bd:   rgba(96,165,250,0.35);
+  --purple:    #c084fc;
+  --purple-bg: rgba(192,132,252,0.10);
+  --purple-bd: rgba(192,132,252,0.35);
+  /* MG accent: spring green - titles and interactive elements only */
+  --accent:    #6ee7b7;
+  --accent-bg: rgba(110,231,183,0.10);
+  --accent-bd: rgba(110,231,183,0.35);
+  --accent2:   #059669;
+  --text:      #e6edf3;
+  --text2:     #aab4c0;
+  --text3:     #6e7f94;
+  --sans:  'Lexend', 'Inter', system-ui, sans-serif;
+  --mono:  'IBM Plex Mono', monospace;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg); color: var(--text); font-family: var(--sans); font-size: 14px; line-height: 1.5; min-height: 100vh; }
+.app { max-width: 960px; margin: 0 auto; padding: 0 20px 80px; }
+
+/* HEADER */
+header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+.h-title { font-size: 19px; font-weight: 700; }
+.h-title span { color: var(--accent); }
+.h-sub { font-family: var(--sans); font-size: 11px; color: var(--text3); margin-top: 3px; line-height: 1.6; }
+.h-credit { font-family: var(--sans); font-size: 11px; color: var(--text3); margin-top: 2px; }
+.reset-btn { background: var(--card2); border: 1px solid var(--border); color: var(--text2); font-family: var(--sans); font-size: 12px; padding: 6px 14px; cursor: pointer; border-radius: 4px; transition: all 0.15s; white-space: nowrap; font-weight: 500; }
+.reset-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+/* PROGRESS */
+.prog-track { height: 3px; background: var(--border); margin-bottom: 20px; border-radius: 2px; }
+.prog-fill { height: 100%; background: linear-gradient(90deg, var(--accent2), var(--accent)); border-radius: 2px; transition: width 0.4s ease; box-shadow: 0 0 8px rgba(110,231,183,0.5); }
+
+/* STEP TABS */
+.steps { display: grid; grid-template-columns: repeat(6,1fr); border: 1px solid var(--border); border-radius: 8px; margin-bottom: 20px; overflow: hidden; background: var(--card); }
+.stab { padding: 8px 3px 9px; text-align: center; font-family: var(--sans); font-size: 10px; color: var(--text3); border-right: 1px solid var(--border); transition: all 0.2s; cursor: pointer; background: var(--card); line-height: 1.3; }
+.stab:nth-child(6n) { border-right: none; }
+.stab .sn { display: flex; align-items: center; justify-content: center; width: 20px; height: 20px; border-radius: 50%; background: var(--card2); border: 1px solid var(--border); font-size: 10px; font-weight: 700; margin: 0 auto 3px; transition: all 0.2s; }
+.stab .slbl { display: block; font-size: 9px; font-weight: 600; line-height: 1.3; }
+.stab.active { color: var(--accent); background: var(--accent-bg); }
+.stab.active .sn { background: var(--accent); color: #060e08; border-color: var(--accent); }
+.stab.done { color: var(--green); }
+.stab.done .sn { background: var(--green); color: #060e08; border-color: var(--green); }
+.stab:hover:not(.active) { background: var(--card2); }
+
+/* CARD */
+.card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 22px; margin-bottom: 12px; }
+.ctitle { font-size: 13px; font-weight: 700; font-family: var(--sans); margin-bottom: 3px; }
+.csub { font-size: 12px; color: var(--text2); margin-bottom: 16px; line-height: 1.5; }
+
+/* SECTION LABEL */
+.slabel { display: flex; align-items: center; gap: 8px; font-family: var(--sans); font-size: 11px; font-weight: 600; color: var(--text); margin-bottom: 9px; padding-bottom: 6px; border-bottom: 1px solid var(--border); }
+.pill { font-size: 9px; padding: 1px 7px; border-radius: 20px; border: 1px solid; margin-left: auto; font-family: var(--sans); letter-spacing: 0.04em; text-transform: uppercase; }
+.pill-r { border-color: var(--red);    color: var(--red);    background: var(--red-bg); }
+.pill-a { border-color: var(--amber);  color: var(--amber);  background: var(--amber-bg); }
+.pill-g { border-color: var(--accent); color: var(--accent); background: var(--accent-bg); }
+.pill-p { border-color: var(--purple); color: var(--purple); background: var(--purple-bg); }
+.pill-b { border-color: var(--blue);   color: var(--blue);   background: var(--blue-bg); }
+
+/* CRITERION ROW */
+.crit { border: 1px solid var(--border); border-radius: 6px; margin-bottom: 5px; overflow: hidden; transition: border-color 0.15s, background 0.15s; }
+.crit.c-yes  { border-color: var(--green-bd);  background: var(--green-bg); }
+.crit.c-no   { border-color: var(--red-bd);    background: var(--red-bg); }
+.crit.c-teal { border-color: var(--accent-bd); background: var(--accent-bg); }
+.crit.c-abs  { border-color: var(--border2);   background: var(--card2); }
+.crit.c-part { border-color: var(--amber-bd);  background: var(--amber-bg); }
+.crit.c-blue { border-color: var(--blue-bd);   background: var(--blue-bg); }
+
+.crit-main { display: flex; align-items: center; gap: 10px; padding: 10px 13px; }
+.crit-name { flex: 1; font-size: 13px; font-weight: 500; color: var(--text); line-height: 1.3; }
+.xbtn { background: var(--purple-bg); border: 1px solid var(--purple-bd); color: var(--purple); font-size: 11px; cursor: pointer; padding: 2px 8px; font-family: var(--sans); white-space: nowrap; transition: all 0.15s; flex-shrink: 0; border-radius: 3px; font-weight: 500; }
+.xbtn:hover { background: var(--purple); color: #060e08; border-color: var(--purple); }
+
+.crit-detail { display: none; padding: 10px 13px 12px; font-size: 12px; color: var(--text); line-height: 1.65; border-top: 1px solid var(--border); font-family: var(--sans); }
+.crit-detail.open { display: block; }
+.cnote { margin-top: 8px; padding: 8px 11px; background: var(--card2); border-left: 3px solid var(--border2); font-family: var(--sans); font-size: 11px; color: var(--text2); line-height: 1.75; border-radius: 0 3px 3px 0; }
+.cnote strong { color: var(--text); }
+
+/* BUTTON ROW */
+.brow { display: flex; border-top: 1px solid var(--border); flex-wrap: wrap; }
+.abtn { flex: 1; min-width: 100px; padding: 9px 10px; background: none; border: none; border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); color: var(--text2); font-family: var(--sans); font-size: 12px; cursor: pointer; transition: all 0.12s; font-weight: 400; line-height: 1.4; text-align: left; }
+.abtn:last-child { border-right: none; }
+.abtn:hover { background: var(--card2); color: var(--text); }
+.abtn.ay  { background: var(--green-bg);  color: var(--green);  font-weight: 700; }
+.abtn.an  { background: var(--red-bg);    color: var(--red);    font-weight: 700; }
+.abtn.at  { background: var(--accent-bg); color: var(--accent); font-weight: 700; }
+.abtn.ab  { background: var(--blue-bg);   color: var(--blue);   font-weight: 700; }
+.abtn.aa  { background: var(--card2);     color: var(--text2);  font-weight: 700; }
+.abtn.aw  { background: var(--amber-bg);  color: var(--amber);  font-weight: 700; }
+
+/* TWO-COL */
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; }
+@media (max-width: 600px) { .two-col { grid-template-columns: 1fr; } }
+
+/* ALERT */
+.alrt { padding: 9px 13px; border-radius: 5px; font-size: 12px; line-height: 1.55; margin-top: 12px; border-left: 3px solid; display: none; font-family: var(--sans); }
+.alrt.show { display: block; }
+.aok   { border-color: var(--green);  background: var(--green-bg);  color: var(--green); }
+.awn   { border-color: var(--amber);  background: var(--amber-bg);  color: var(--amber); }
+.aerr  { border-color: var(--red);    background: var(--red-bg);    color: var(--red); }
+.ainf  { border-color: var(--blue);   background: var(--blue-bg);   color: var(--blue); }
+.ateal { border-color: var(--accent); background: var(--accent-bg); color: var(--accent); }
+
+/* LOGIC BOX */
+.lbox { background: var(--card2); border: 1px solid var(--border); border-radius: 5px; padding: 12px 15px; font-size: 12px; color: var(--text2); line-height: 1.75; margin-bottom: 14px; font-family: var(--sans); }
+.lbox strong { color: var(--text); }
+.lp { color: var(--accent);  font-weight: 600; }
+.lg { color: var(--green);   font-weight: 600; }
+.la { color: var(--amber);   font-weight: 600; }
+.lr { color: var(--red);     font-weight: 600; }
+.lb { color: var(--blue);    font-weight: 600; }
+
+/* MGFA CLASS GRID */
+.mgfa-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 6px; margin-bottom: 14px; }
+@media (max-width: 640px) { .mgfa-grid { grid-template-columns: 1fr; } }
+.mgfa-card { border: 1px solid var(--border); border-radius: 6px; padding: 11px 13px; cursor: pointer; transition: all 0.2s; background: var(--card2); }
+.mgfa-card:hover { border-color: var(--border2); }
+.mgfa-card.msel   { border-color: var(--accent-bd); background: var(--accent-bg); }
+.mgfa-card.msel-w { border-color: var(--amber-bd);  background: var(--amber-bg); }
+.mgfa-card.msel-r { border-color: var(--red-bd);    background: var(--red-bg); }
+.mgfa-num  { font-size: 18px; font-weight: 700; font-family: var(--mono); }
+.mgfa-name { font-size: 10px; color: var(--text2); margin-top: 1px; font-family: var(--sans); }
+.mgfa-desc { font-size: 10px; color: var(--text3); line-height: 1.45; margin-top: 5px; font-family: var(--sans); }
+
+/* NAV */
+.nav-row { display: flex; justify-content: space-between; align-items: center; margin-top: 20px; gap: 10px; }
+.nbtn { padding: 9px 22px; border-radius: 5px; font-family: var(--sans); font-size: 13px; border: 1px solid; cursor: pointer; font-weight: 600; transition: all 0.15s; }
+.np { background: var(--accent); border-color: var(--accent); color: #060e08; font-weight: 700; }
+.np:hover { background: #a7f3d0; border-color: #a7f3d0; }
+.np:disabled { opacity: 0.3; cursor: not-allowed; }
+.ns { background: transparent; border-color: var(--border2); color: var(--text2); }
+.ns:hover { border-color: var(--text); color: var(--text); }
+
+/* SCREEN */
+.screen { display: none; }
+.screen.active { display: block; animation: fu 0.25s ease; }
+@keyframes fu { from { opacity:0; transform:translateY(5px); } to { opacity:1; transform:translateY(0); } }
+
+/* VERDICT */
+.vban { border-radius: 8px; padding: 22px 26px; margin-bottom: 16px; border: 2px solid; }
+.vconf { border-color: var(--green);  background: var(--green-bg); }
+.vlike { border-color: var(--accent); background: var(--accent-bg); }
+.vpart { border-color: var(--amber);  background: var(--amber-bg); }
+.vcris { border-color: var(--red);    background: var(--red-bg); }
+.vund  { border-color: var(--border2);background: var(--card2); }
+.vban-head { text-align: center; margin-bottom: 14px; }
+.vlbl { font-family: var(--mono); font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase; opacity: 0.6; margin-bottom: 5px; }
+.vtitle { font-size: 22px; font-weight: 700; margin-bottom: 6px; }
+.vconf .vtitle { color: var(--green); }
+.vlike .vtitle { color: var(--accent); }
+.vpart .vtitle { color: var(--amber); }
+.vcris .vtitle { color: var(--red); }
+.vund  .vtitle { color: var(--text2); }
+.vdesc { font-size: 12px; color: var(--text2); line-height: 1.7; max-width: 640px; margin: 0 auto; font-family: var(--sans); }
+
+/* SUMMARY */
+.sum-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+@media (max-width: 580px) { .sum-grid { grid-template-columns: 1fr; } }
+.sblock { background: var(--card); border: 1px solid var(--border); border-radius: 6px; overflow: hidden; }
+.sbtitle { font-family: var(--sans); font-size: 11px; font-weight: 600; padding: 7px 11px; border-bottom: 1px solid var(--border); color: var(--text); background: var(--card2); }
+.srow { display: flex; align-items: flex-start; gap: 8px; padding: 6px 11px; border-bottom: 1px solid var(--border); font-size: 12px; font-family: var(--sans); }
+.srow:last-child { border-bottom: none; }
+.dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; margin-top: 4px; }
+.dg { background: var(--green); } .dr { background: var(--red); }
+.dt { background: var(--accent); } .db { background: var(--blue); }
+.da { background: var(--amber); } .dgr{ background: var(--text3); }
+.sname { flex: 1; color: var(--text); line-height: 1.4; }
+.stag { font-family: var(--mono); font-size: 9px; padding: 1px 7px; border-radius: 10px; border: 1px solid; white-space: nowrap; }
+.tg { border-color: var(--green-bd);  color: var(--green); }
+.tr { border-color: var(--red-bd);    color: var(--red); }
+.tt { border-color: var(--accent-bd); color: var(--accent); }
+.tb { border-color: var(--blue-bd);   color: var(--blue); }
+.ta { border-color: var(--amber-bd);  color: var(--amber); }
+.tgr{ border-color: var(--border2);   color: var(--text3); }
+
+/* DOC NOTE */
+.doc-header { display: flex; align-items: center; gap: 8px; margin-bottom: 5px; }
+.doc-tog { flex: 1; text-align: left; background: var(--card2); border: 1px solid var(--border2); border-radius: 5px; color: var(--text2); font-family: var(--sans); font-size: 13px; padding: 8px 13px; cursor: pointer; transition: all 0.15s; }
+.doc-tog:hover { border-color: var(--accent); color: var(--accent); }
+.copy-btn { background: var(--card2); border: 1px solid var(--border2); border-radius: 5px; color: var(--text2); font-family: var(--sans); font-size: 12px; padding: 8px 14px; cursor: pointer; white-space: nowrap; transition: all 0.15s; display: none; }
+.copy-btn.visible { display: block; }
+.copy-btn:hover { border-color: var(--green); color: var(--green); }
+.copy-btn.copied { border-color: var(--green); color: var(--green); background: var(--green-bg); }
+.doc-body { display: none; background: var(--card2); border: 1px solid var(--border2); border-radius: 5px; padding: 13px 15px; font-family: var(--mono); font-size: 11px; color: var(--text2); line-height: 1.85; white-space: pre-wrap; margin-bottom: 12px; }
+.doc-body.open { display: block; }
+</style>
+</head>
+<body>
+<div class="app">
+
+<header>
+  <div>
+    <div class="h-title">Myasthenia Gravis · <span>Diagnostic Navigator</span></div>
+    <div class="h-sub">Jaretzki A et al. · Ann Thorac Surg 2000 (MGFA Classification) · Osserman & Genkins 1971 · For educator use only</div>
+    <div class="h-credit">Designed by Daniel Short, MD</div>
+  </div>
+  <button class="reset-btn" onclick="resetAll()">↺ Reset</button>
+</header>
+
+<div class="prog-track"><div class="prog-fill" id="pf" style="width:0%"></div></div>
+
+<div class="steps">
+  <div class="stab active" id="st0" onclick="goTab(0)"><span class="sn">1</span><span class="slbl">Clinical Features</span></div>
+  <div class="stab" id="st1" onclick="goTab(1)"><span class="sn">2</span><span class="slbl">Bedside Tests</span></div>
+  <div class="stab" id="st2" onclick="goTab(2)"><span class="sn">3</span><span class="slbl">Serology</span></div>
+  <div class="stab" id="st3" onclick="goTab(3)"><span class="sn">4</span><span class="slbl">Electrophysiology</span></div>
+  <div class="stab" id="st4" onclick="goTab(4)"><span class="sn">5</span><span class="slbl">Thymus / Staging</span></div>
+  <div class="stab" id="st5" onclick="goTab(5)"><span class="sn">6</span><span class="slbl">Crisis / Verdict</span></div>
+</div>
+
+<!-- ══ SCREEN 0: CLINICAL FEATURES ══ -->
+<div class="screen active" id="s0">
+<div class="card">
+  <div class="ctitle" style="color:var(--accent);">Step 1 · Clinical Features and MGFA Classification</div>
+  <div class="csub">MG is an autoimmune disorder of the neuromuscular junction (NMJ) characterized by fatigable, fluctuating skeletal muscle weakness — typically worse with exertion and later in the day, improving with rest. The hallmark is fatigability: weakness that worsens with sustained or repeated activity. Prevalence ~20/100,000; bimodal onset (young women 2nd–3rd decade; older men 6th–7th decade).</div>
+
+  <div class="lbox">
+    <strong>Cardinal features of MG — always ask about fatigability pattern:</strong><br>
+    <span class="lp">Ocular (most common onset ~50%):</span> Ptosis (asymmetric, variable, Cogan's lid twitch sign), diplopia (painless, variable — no fixed pattern like CN III palsy)<br>
+    <span class="lp">Bulbar:</span> Dysarthria (nasal quality, worsens with prolonged speech), dysphagia (solids and liquids), fatigable chewing (jaw drop with prolonged eating), dysphonia<br>
+    <span class="lp">Limb / axial:</span> Proximal > distal weakness; neck flexor weakness (chin-on-chest test); deltoid/hip flexor fatigability<br>
+    <span class="lp">Respiratory:</span> Dyspnea on exertion, orthopnea (diaphragm weakness), inability to lie flat<br><br>
+    <strong>Key differentiating features from other NMJ / motor disorders:</strong> Sensory systems entirely spared; reflexes normal; no autonomic dysfunction (distinguishes from Lambert-Eaton); weakness worsens with sustained activity (distinguishes from Lambert-Eaton where strength briefly improves with exercise — "facilitation"); no fasciculations (distinguishes from ALS).
+  </div>
+
+  <div class="slabel">Muscle groups affected — select all present <span class="pill pill-r">SELECT ALL THAT APPLY</span></div>
+
+  <div class="two-col">
+  <div class="crit" id="ocular-item">
+    <div class="crit-main">
+      <div class="crit-name">Ocular weakness — ptosis (unilateral/bilateral, variable), diplopia (painless, intermittent or persistent)</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      Ptosis in MG is characteristically variable and asymmetric. <strong>Enhanced ptosis sign:</strong> manually elevating one ptotic lid increases ptosis of the opposite lid (disinhibition of the levator). <strong>Cogan's lid twitch:</strong> upward twitch of the lid when returning gaze from downgaze to primary position — sensitive for MG-related ptosis. <strong>Fatigable ptosis:</strong> sustained upgaze worsens ptosis within 30–60 seconds. Diplopia in MG does not conform to a single cranial nerve distribution — it is variable, intermittent, and may change with sustained lateral gaze.
+      <div class="cnote"><strong>Pupil is always spared in MG.</strong> Pupillary involvement rules out MG and points to CN III compression (aneurysm), Horner's syndrome, or pharmacologic dilation. Always examine pupils in diplopia presentations.</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setFeat('ocular',true)"  id="ocular-yes">✓ Present</button>
+      <button class="abtn" onclick="setFeat('ocular',false)" id="ocular-no">✗ Absent</button>
+    </div>
+  </div>
+
+  <div class="crit" id="bulbar-item">
+    <div class="crit-main">
+      <div class="crit-name">Bulbar weakness — nasal dysarthria, dysphagia, fatigable chewing, dysphonia, jaw drop with prolonged eating</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      Bulbar MG carries the highest risk of aspiration and respiratory compromise. <strong>Nasal speech ("hot potato voice"):</strong> Velopharyngeal incompetence causes nasal escape — worsens during sustained counting to 50 or longer sentences. <strong>Dysphagia:</strong> both liquids and solids — aspiration risk especially for thin liquids. <strong>Jaw drop:</strong> bilateral masseter fatigue causes inability to keep mouth closed during prolonged chewing — ask patients if they need to support their jaw with their hand when eating. MuSK-antibody positive MG has a predilection for severe bulbar and facial involvement with relatively preserved limb strength.
+      <div class="cnote"><strong>MuSK-MG clinical features:</strong> MuSK-positive MG (5–10% of generalized MG) typically presents with prominent bulbar, facial, and respiratory weakness, often with tongue and facial muscle atrophy in advanced disease. Ocular involvement is less prominent. Edrophonium test is frequently negative or equivocal in MuSK-MG. RNS may show decrement predominantly in facial muscles.</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setFeat('bulbar',true)"  id="bulbar-yes">✓ Present</button>
+      <button class="abtn" onclick="setFeat('bulbar',false)" id="bulbar-no">✗ Absent</button>
+    </div>
+  </div>
+
+  <div class="crit" id="limb-item">
+    <div class="crit-main">
+      <div class="crit-name">Limb or axial weakness — proximal > distal; neck flexor weakness; deltoid/hip flexor fatigability; arm abduction count test</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      Limb weakness in MG is predominantly proximal — difficulty rising from a chair, climbing stairs, raising arms above head. <strong>Arm abduction fatigue test:</strong> sustained arm abduction at 90° — time to fatigue <60 seconds is abnormal. <strong>Neck flexor weakness (chin-to-chest test):</strong> inability to lift the head off the pillow or hold chin to chest against resistance — correlates with respiratory muscle weakness and is an important warning sign. Reflexes are normal. Distal strength is usually preserved.
+      <div class="cnote"><strong>Neck flexor and respiratory correlation:</strong> Neck flexor weakness in MG correlates with diaphragmatic weakness — if a patient has difficulty with neck flexion, respiratory muscle assessment (FVC, NIF) should be performed urgently. Together, neck flexion weakness and bulbar involvement in an MG patient at risk for crisis should prompt ICU evaluation.</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setFeat('limb',true)"  id="limb-yes">✓ Present</button>
+      <button class="abtn" onclick="setFeat('limb',false)" id="limb-no">✗ Absent</button>
+    </div>
+  </div>
+
+  <div class="crit" id="resp-item">
+    <div class="crit-main">
+      <div class="crit-name">Respiratory weakness — dyspnea on exertion, orthopnea, short sentences, tachypnea, paradoxical breathing, reduced breath count</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      Respiratory muscle involvement in MG can progress rapidly without warning. <strong>Breath count test (single breath count, SBC):</strong> patient counts aloud in one breath in a normal speaking voice — normal ≥25; ≤15 suggests significant respiratory weakness. <strong>Single breath hold time (SBHT):</strong> inability to hold breath >10 seconds is abnormal. <strong>FVC (forced vital capacity):</strong> most sensitive bedside respiratory metric — normal ≥20 mL/kg; FVC <20 mL/kg prompts ICU admission. <strong>NIF (negative inspiratory force):</strong> <−30 cmH₂O indicates impending failure. <strong>Critical thresholds (20/30 rule):</strong> FVC <20 mL/kg → ICU; NIF worse than −30 cmH₂O → BiPAP consideration; NIF worse than −20 cmH₂O → intubation threshold.
+      <div class="cnote"><strong>Do NOT rely on SpO₂ or ABG for early warning in MG crisis.</strong> Hypoxemia and hypercapnia develop only immediately before respiratory arrest in neuromuscular failure — they are very late signs. Serial FVC and NIF measurements every 4–6 hours are required in admitted MG patients with any respiratory symptoms.</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setFeat('resp',true)"  id="resp-yes">✓ Present</button>
+      <button class="abtn" onclick="setFeat('resp',false)" id="resp-no">✗ Absent</button>
+    </div>
+  </div>
+  </div>
+
+  <div class="slabel" style="margin-top:14px;">MGFA Clinical Classification — select current class <span class="pill pill-g">REQUIRED — DETERMINES MANAGEMENT PATHWAY</span></div>
+
+  <div class="mgfa-grid">
+    <div class="mgfa-card" id="mc-I" onclick="setMGFA('I')">
+      <div class="mgfa-num" style="color:var(--accent);">I</div>
+      <div class="mgfa-name">Ocular Only</div>
+      <div class="mgfa-desc">Ocular muscle weakness ± eye closure weakness. All other muscles normal.</div>
+    </div>
+    <div class="mgfa-card" id="mc-IIa" onclick="setMGFA('IIa')">
+      <div class="mgfa-num" style="color:var(--accent);">IIa</div>
+      <div class="mgfa-name">Mild — Limb/Axial</div>
+      <div class="mgfa-desc">Mild generalized weakness predominantly affecting limb/axial muscles. Lesser oropharyngeal involvement.</div>
+    </div>
+    <div class="mgfa-card" id="mc-IIb" onclick="setMGFA('IIb')">
+      <div class="mgfa-num" style="color:var(--accent);">IIb</div>
+      <div class="mgfa-name">Mild — Bulbar/Resp</div>
+      <div class="mgfa-desc">Mild generalized weakness predominantly affecting oropharyngeal/respiratory muscles. Lesser limb/axial involvement.</div>
+    </div>
+    <div class="mgfa-card" id="mc-IIIa" onclick="setMGFA('IIIa')">
+      <div class="mgfa-num" style="color:var(--amber);">IIIa</div>
+      <div class="mgfa-name">Moderate — Limb/Axial</div>
+      <div class="mgfa-desc">Moderate generalized weakness predominantly limb/axial.</div>
+    </div>
+    <div class="mgfa-card" id="mc-IIIb" onclick="setMGFA('IIIb')">
+      <div class="mgfa-num" style="color:var(--amber);">IIIb</div>
+      <div class="mgfa-name">Moderate — Bulbar/Resp</div>
+      <div class="mgfa-desc">Moderate weakness predominantly oropharyngeal/respiratory.</div>
+    </div>
+    <div class="mgfa-card" id="mc-IVa" onclick="setMGFA('IVa')">
+      <div class="mgfa-num" style="color:var(--red);">IVa</div>
+      <div class="mgfa-name">Severe — Limb/Axial</div>
+      <div class="mgfa-desc">Severe generalized weakness predominantly limb/axial. High crisis risk.</div>
+    </div>
+    <div class="mgfa-card" id="mc-IVb" onclick="setMGFA('IVb')">
+      <div class="mgfa-num" style="color:var(--red);">IVb</div>
+      <div class="mgfa-name">Severe — Bulbar/Resp</div>
+      <div class="mgfa-desc">Severe weakness predominantly bulbar/respiratory. Requires intubation/feeding tube consideration.</div>
+    </div>
+    <div class="mgfa-card" id="mc-V" onclick="setMGFA('V')">
+      <div class="mgfa-num" style="color:var(--red);">V</div>
+      <div class="mgfa-name">Crisis / Intubation</div>
+      <div class="mgfa-desc">Requires intubation ± mechanical ventilation (not for routine postoperative management).</div>
+    </div>
+    <div class="mgfa-card" id="mc-nd" onclick="setMGFA('nd')">
+      <div class="mgfa-num" style="color:var(--text3);">—</div>
+      <div class="mgfa-name">Not yet classified</div>
+      <div class="mgfa-desc">Assessment incomplete</div>
+    </div>
+  </div>
+
+  <div id="a0" class="alrt"></div>
+  <div class="nav-row"><div></div><button class="nbtn np" id="n0" onclick="go(1)" disabled>Next: Bedside Tests →</button></div>
+</div>
+</div>
+
+<!-- ══ SCREEN 1: BEDSIDE TESTS ══ -->
+<div class="screen" id="s1">
+<div class="card">
+  <div class="ctitle" style="color:var(--accent);">Step 2 · Bedside Diagnostic Tests</div>
+  <div class="csub">Several bedside tests can support the diagnosis of MG before or in addition to serology and electrophysiology. The ice pack test and fatigable ptosis test are especially useful in acute settings where formal testing is unavailable. The edrophonium (Tensilon) test has largely been superseded but remains in use in some centers.</div>
+
+  <div class="lbox">
+    <strong>Fatigability test principle:</strong> All bedside tests exploit the defining feature of MG — neuromuscular transmission failure worsens with sustained or repeated activity and partially recovers with rest or cooling.<br><br>
+    <span class="lp">Sustained upgaze test:</span> Ask patient to maintain upgaze for 60–90 seconds — ptosis worsens (sensitivity ~75% for ocular MG)<br>
+    <span class="lp">Simpson fatigability (sustained upgaze 2 min):</span> Positive if ptosis worsens within 2 minutes of sustained upgaze<br>
+    <span class="lp">Curtain sign:</span> Manual elevation of one ptotic lid increases ptosis in the other — bilateral levator inhibition mechanism
+  </div>
+
+  <div class="slabel">Ice pack test <span class="pill pill-g">PREFERRED BEDSIDE TEST — SAFE, NO MEDICATIONS</span></div>
+
+  <div class="crit" id="ice-item">
+    <div class="crit-main">
+      <div class="crit-name">Ice pack test — ice applied over closed ptotic eye for 2 minutes; positive if ptosis improves ≥2 mm</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      Mechanism: Cooling reduces acetylcholinesterase activity, increasing ACh availability at the NMJ. Cooling may also directly improve neuromuscular transmission efficiency. <strong>Technique:</strong> Measure baseline ptosis (MRD1 — distance from midpupil to upper lid margin). Apply ice pack over closed eyelid(s) for 2 minutes. Immediately recheck MRD1. Positive: ≥2 mm improvement in ptosis.<br><br>
+      <strong>Performance:</strong> Meta-analyses report sensitivity ~77–94% and specificity ~96–100% for ocular MG. The high specificity makes it very useful — a positive result strongly supports MG. The test is essentially risk-free (no medications, no cardiovascular risk). Preferred first bedside test in any patient with ptosis of uncertain cause.
+      <div class="cnote"><strong>Pitfall:</strong> False positives can occur with Horner's syndrome (cold-induced sympathomimetic effect on Müller's muscle) and rarely other conditions. If the test is positive without other features of MG, confirm with serology and electrophysiology.</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setTest('ice','pos')"  id="ice-pos">✓ Positive (≥2 mm ptosis improvement)</button>
+      <button class="abtn" onclick="setTest('ice','neg')"  id="ice-neg">✗ Negative</button>
+      <button class="abtn" onclick="setTest('ice','na')"   id="ice-na">— No ptosis / not applicable</button>
+      <button class="abtn" onclick="setTest('ice','nd')"   id="ice-nd">— Not performed</button>
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:14px;">Fatigability tests — sustained upgaze, arm abduction, neck flexion <span class="pill pill-g">PERFORM AT BEDSIDE</span></div>
+
+  <div class="crit" id="fatigue-item">
+    <div class="crit-main">
+      <div class="crit-name">Fatigability demonstrated on examination — sustained upgaze (ptosis), sustained arm abduction, or neck flexor weakness on hold testing</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      <strong>Sustained upgaze (60–120 sec):</strong> Worsening ptosis confirms fatigability. Record time to ptosis onset.<br>
+      <strong>Arm abduction (shoulder at 90°, 60–120 sec):</strong> Time to arm drop — abnormal if <60 seconds, strongly abnormal if <30 seconds.<br>
+      <strong>Neck flexion hold:</strong> Patient lifts head off pillow against resistance — sustained head lift weakness or rapid fatigue is characteristic. Neck flexors are more sensitive than neck extensors in MG.<br>
+      <strong>Speech fatigability:</strong> Ask patient to count to 50 or read aloud — nasal quality and dysarthria worsen progressively.
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setTest('fatigue','pos')" id="fatigue-pos">✓ Fatigability demonstrated</button>
+      <button class="abtn" onclick="setTest('fatigue','neg')" id="fatigue-neg">✗ No fatigability on testing</button>
+      <button class="abtn" onclick="setTest('fatigue','nd')"  id="fatigue-nd">— Not formally tested</button>
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:14px;">Edrophonium (Tensilon) test — if performed <span class="pill pill-a">USE WITH ATROPINE READY — CARDIOVASCULAR MONITORING REQUIRED</span></div>
+
+  <div class="crit" id="edro-item">
+    <div class="crit-main">
+      <div class="crit-name">Edrophonium test (IV short-acting AChE inhibitor, 2 mg test dose then 8 mg) — assess for unequivocal improvement in a clearly defined, measurable weakness</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      <strong>Sensitivity 83.5%, specificity 87.7%</strong> (Finsterer et al. 2026, n=182 confirmed MG patients and 324 controls — retrospective case-control). Adverse events in 11.5% (91.4% mild — fasciculations, nausea, lacrimation, bradycardia). Serious events are rare but include bronchospasm, severe bradycardia, and syncope — atropine 0.4 mg IV must be immediately available.<br><br>
+      <strong>Test protocol:</strong> (1) Establish a clear, measurable endpoint (ptosis degree by ruler, diplopia improvement, arm abduction time). (2) IV access + cardiac monitor. (3) 2 mg test dose. (4) If no response after 45 seconds and no severe cholinergic reaction: 8 mg (may repeat in 2 mg increments). (5) Observe for 5 minutes for definite improvement.<br><br>
+      <strong>MuSK-MG caveat:</strong> Edrophonium sensitivity is lower in MuSK-antibody positive MG — negative test does NOT exclude MG if serology or SFEMG is pending.
+      <div class="cnote"><strong>Practical point:</strong> The edrophonium test has largely been supplanted by serology (AChR/MuSK antibodies) and SFEMG for formal diagnosis. However, it remains clinically useful for rapid bedside confirmation in acute settings, particularly for ptosis or diplopia that can be objectively measured. Do not use it as the sole diagnostic test.</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setTest('edro','pos')" id="edro-pos">✓ Unequivocal improvement (positive)</button>
+      <button class="abtn" onclick="setTest('edro','neg')" id="edro-neg">✗ No unequivocal improvement (negative)</button>
+      <button class="abtn" onclick="setTest('edro','eq')"  id="edro-eq">⚠ Equivocal response</button>
+      <button class="abtn" onclick="setTest('edro','nd')"  id="edro-nd">— Not performed</button>
+    </div>
+  </div>
+
+  <div id="a1" class="alrt"></div>
+  <div class="nav-row">
+    <button class="nbtn ns" onclick="go(0)">← Back</button>
+    <button class="nbtn np" onclick="go(2)">Next: Serology →</button>
+  </div>
+</div>
+</div>
+
+<!-- ══ SCREEN 2: SEROLOGY ══ -->
+<div class="screen" id="s2">
+<div class="card">
+  <div class="ctitle" style="color:var(--accent);">Step 3 · Serological Testing — Antibody Panel</div>
+  <div class="csub">Antibody testing is the cornerstone of MG diagnosis — positive results are highly specific and define immunologic subtype, which guides therapy (especially complement inhibitors, B-cell therapies). A structured sequential antibody testing approach is recommended: AChR first (most common), then MuSK if AChR-negative, then LRP4 if both negative.</div>
+
+  <div class="lbox">
+    <strong>MG antibody prevalence (from pooled data):</strong><br>
+    <span class="lp">AChR antibodies:</span> ~85% of all MG (RIPA gold standard); 80–85% sensitivity for generalized MG; 50–70% for purely ocular MG. Specificity essentially 100% — false positives are extremely rare (may occur in thymoma without clinical MG, D-penicillamine use, rarely Lambert-Eaton). Three subtypes: binding (most sensitive), blocking, and modulating.<br>
+    <span class="lp">MuSK antibodies:</span> ~40–70% of AChR-negative generalized MG (5–10% of all MG). IgG4 predominantly. Predilection for bulbar/facial/respiratory phenotype. Negative RNS more common. Responds to rituximab. RIPA standard; CBA more sensitive.<br>
+    <span class="lp">LRP4 antibodies:</span> ~1–5% of double-seronegative (AChR-/MuSK-) MG. Clinical utility of commercial LRP4 testing is debated (lower specificity). Consider in double-seronegative MG with confirmed NMJ disorder on SFEMG.<br>
+    <span class="la">Seronegative MG (true triple-negative):</span> ~2–5% after standard RIPA. Higher-sensitivity cell-based assay (CBA) for clustered AChR/MuSK detects antibodies in ~40–50% of RIPA-seronegative cases. Repeat AChR-binding at 12 months (15% seroconvert within 1 year).
+  </div>
+
+  <div class="slabel">AChR antibody (acetylcholine receptor) <span class="pill pill-r">FIRST TEST — HIGHEST YIELD</span></div>
+
+  <div class="crit" id="achr-item">
+    <div class="crit-main">
+      <div class="crit-name">AChR binding antibody (RIPA) — standard gold standard. If negative, also consider AChR-modulating and AChR-blocking antibodies.</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      AChR-binding antibody by radioimmunoassay (RIPA) is the standard diagnostic test — sensitivity 80–85% for generalized MG, 50–70% for purely ocular MG. Positive result is essentially pathognomonic for MG (>99% specificity). <strong>Titer does not correlate with disease severity</strong> — do not use titer alone to guide treatment intensity. However, falling titers may be a useful marker of response to long-term immunosuppression or thymectomy at the population level.<br><br>
+      <strong>Cell-based assay (CBA) for clustered AChR:</strong> More sensitive than RIPA for seronegative cases — detects antibodies in some RIPA-negative MG patients. Available at specialized labs (Mayo, Oxford).
+      <div class="cnote"><strong>Titin and RyR antibodies:</strong> Anti-titin (striated muscle antibody) — positive in ~25–30% of MG overall; in MG patients &lt;60 years, strongly predicts thymoma. Anti-ryanodine receptor (RyR) antibody — also predicts thymoma and is associated with more severe disease. These are not diagnostic but are important for thymoma risk stratification.</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setAb('achr','pos')"  id="achr-pos">✓ AChR-Ab positive</button>
+      <button class="abtn" onclick="setAb('achr','neg')"  id="achr-neg">✗ AChR-Ab negative</button>
+      <button class="abtn" onclick="setAb('achr','nd')"   id="achr-nd">— Not yet performed</button>
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:14px;">MuSK antibody (muscle-specific kinase) — test if AChR-negative <span class="pill pill-a">SECOND TEST — IF AChR NEGATIVE</span></div>
+
+  <div class="crit" id="musk-item">
+    <div class="crit-main">
+      <div class="crit-name">MuSK-IgG4 antibody (RIPA or CBA) — predominantly bulbar/facial/respiratory phenotype; lower edrophonium sensitivity</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      MuSK-MG clinical profile: predominantly female; prominent bulbar (nasal voice, severe dysphagia), facial, and neck weakness; tongue atrophy and facial muscle wasting may develop; limb weakness milder; respiratory failure more abrupt. Crisis risk is high relative to MGFA class. <strong>Edrophonium test often negative or equivocal</strong> — AChE inhibitors may worsen some MuSK-MG patients. RNS shows decrement more reliably in facial muscles than limb muscles. <strong>Treatment:</strong> MuSK-MG responds better to rituximab than to standard immunosuppressants; eculizumab is also effective.
+      <div class="cnote"><strong>MuSK testing is not indicated if AChR is positive.</strong> MuSK antibodies very rarely coexist with AChR antibodies. Test sequentially: AChR first, MuSK second if AChR negative. Some institutions also test for MuSK CBA (live cell-based assay) which has higher sensitivity than RIPA for MuSK-IgG.</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setAb('musk','pos')"  id="musk-pos">✓ MuSK-Ab positive</button>
+      <button class="abtn" onclick="setAb('musk','neg')"  id="musk-neg">✗ MuSK-Ab negative</button>
+      <button class="abtn" onclick="setAb('musk','skip')" id="musk-skip">— Not tested (AChR positive)</button>
+      <button class="abtn" onclick="setAb('musk','nd')"   id="musk-nd">— Pending</button>
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:14px;">LRP4 and seronegative MG workup <span class="pill pill-a">IF AChR AND MuSK BOTH NEGATIVE</span></div>
+
+  <div class="crit" id="lrp4-item">
+    <div class="crit-main">
+      <div class="crit-name">LRP4 antibody, CBA testing, and plan for seronegative confirmed MG (electrodiagnosis required)</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      In double-seronegative (AChR−/MuSK−) MG: (1) Confirm NMJ disorder by SFEMG — essential. (2) Consider LRP4 CBA — clinical utility debated; clinical evidence for specificity in seronegative MG is limited. (3) Repeat AChR-binding antibody at 12 months — ~15% seroconvert. (4) Higher-sensitivity RIPAs and CBA for clustered AChR/MuSK at specialized labs (e.g., Oxford Neuroimmunology, Mayo). (5) Consider congenital myasthenic syndrome (CMS) genetic panel if onset in childhood, family history, or refractory to immunosuppression.
+      <div class="cnote"><strong>Agrin antibodies:</strong> Present in some triple-negative MG patients — investigational but promising biomarker. Not available for routine clinical testing. Titin, agrin, cortactin, and Kv1.4 antibodies are all associated with subsets of MG but are research-level tests.</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setAb('lrp4','pos')"   id="lrp4-pos">✓ LRP4-Ab positive (or CBA-clustered AChR/MuSK positive)</button>
+      <button class="abtn" onclick="setAb('lrp4','neg')"   id="lrp4-neg">✗ Triple-seronegative — NMJ disorder requires electrophysiology</button>
+      <button class="abtn" onclick="setAb('lrp4','skip')"  id="lrp4-skip">— Not indicated (AChR or MuSK positive)</button>
+      <button class="abtn" onclick="setAb('lrp4','nd')"    id="lrp4-nd">— Pending</button>
+    </div>
+  </div>
+
+  <div id="a2" class="alrt"></div>
+  <div class="nav-row">
+    <button class="nbtn ns" onclick="go(1)">← Back</button>
+    <button class="nbtn np" onclick="go(3)">Next: Electrophysiology →</button>
+  </div>
+</div>
+</div>
+
+<!-- ══ SCREEN 3: ELECTROPHYSIOLOGY ══ -->
+<div class="screen" id="s3">
+<div class="card">
+  <div class="ctitle" style="color:var(--accent);">Step 4 · Electrophysiological Testing — RNS and SFEMG</div>
+  <div class="csub">Electrophysiology confirms a primary postsynaptic NMJ disorder when antibody testing is negative or equivocal. SFEMG is the most sensitive test for MG (80–100% for generalized, 93% for ocular). RNS is less sensitive but more widely available. Both tests have important limitations and must be interpreted in clinical context.</div>
+
+  <div class="lbox">
+    <strong>Electrophysiologic tests compared:</strong><br>
+    <span class="lp">RNS (repetitive nerve stimulation):</span> Stimulate nerve at 2–5 Hz for a train of stimuli; measure CMAP amplitude decrement. Significant decrement: ≥10% decline from 1st to 4th response. Sensitivity: 50–70% for generalized MG; ~20–50% for purely ocular MG. Specificity: high for postsynaptic NMJ disorder. Test proximal muscles (trapezius, nasalis, orbicularis oculi) to improve sensitivity.<br>
+    <span class="lp">SFEMG (single-fiber EMG):</span> Records jitter (variability in interpotential interval between pairs of muscle fibers from the same motor unit). Increased jitter (+/- blocking) is the most sensitive measure of NMJ dysfunction. Sensitivity 80–100% for generalized MG; 93% for ocular MG. Highly operator-dependent and technically demanding. Normal SFEMG in a clinically affected muscle essentially excludes a NMJ disorder.
+  </div>
+
+  <div class="slabel">Repetitive nerve stimulation (RNS) <span class="pill pill-g">WIDELY AVAILABLE — TEST PROXIMAL + FACIAL MUSCLES</span></div>
+
+  <div class="crit" id="rns-item">
+    <div class="crit-main">
+      <div class="crit-name">RNS at 2–5 Hz — CMAP decrement ≥10% between 1st and 4th response in at least one muscle</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      <strong>Technique:</strong> Stimulate at 3 Hz (or 2–5 Hz) for a train of 5–10 stimuli; measure amplitude/area of the 4th response relative to the 1st. A ≥10% decrement is abnormal. Repeat after brief exercise (10 seconds) — post-exercise facilitation (amplitude increase) confirms NMJ disorder. Distal muscles (ADM, hypothenar) have lower sensitivity — test trapezius, nasalis, frontalis, deltoid for better yield in MG.<br><br>
+      <strong>Sensitivity by disease extent:</strong> Generalized MG ~50–70%; ocular MG ~20–50%. Normal RNS does not exclude MG — negative RNS with suspected MG should proceed to SFEMG.
+      <div class="cnote"><strong>Post-exercise CMAP facilitation:</strong> In Lambert-Eaton myasthenic syndrome (LEMS), RNS shows abnormal decrement at low rate AND dramatic facilitation after brief exercise or high-frequency stimulation (≥100% CMAP amplitude increase). This pattern distinguishes LEMS from MG and should be specifically sought when the pretest probability of LEMS is considered (middle-aged smoker, males, proximal limb weakness, reduced/absent reflexes that recover post-exercise).</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setEDX('rns','pos')" id="rns-pos">✓ Decrement ≥10% in ≥1 muscle (postsynaptic NMJ pattern)</button>
+      <button class="abtn" onclick="setEDX('rns','lems')" id="rns-lems">⚠ Facilitation pattern — consider LEMS</button>
+      <button class="abtn" onclick="setEDX('rns','neg')" id="rns-neg">✗ Normal — no significant decrement</button>
+      <button class="abtn" onclick="setEDX('rns','nd')"  id="rns-nd">— Not performed</button>
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:14px;">Single-fiber EMG (SFEMG) <span class="pill pill-r">MOST SENSITIVE TEST — REQUIRED IF RNS NORMAL AND AB NEGATIVE</span></div>
+
+  <div class="crit" id="sfemg-item">
+    <div class="crit-main">
+      <div class="crit-name">SFEMG — increased jitter (mean consecutive difference >55 µs) ± blocking in clinically affected muscle; or abnormal jitter in ≥2 of 20 pairs</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      SFEMG records action potential discharge from individual muscle fibers of the same motor unit. <strong>Jitter:</strong> variability (standard deviation) of the interpotential interval (IPI) between two simultaneously firing single fibers — reflects NMJ transmission safety factor. Normal mean jitter ~15–55 µs depending on age and muscle. <strong>Blocking:</strong> complete failure of one fiber to discharge with a given stimulus — indicates severe NMJ transmission failure. Present in higher-grade MG.<br><br>
+      <strong>Key rules:</strong> SFEMG must be performed in a clinically weak or affected muscle. Normal SFEMG in the clinically affected muscle essentially rules out MG at that moment. Test the frontalis (for ocular MG) or EDC (extensor digitorum communis) for generalized MG. Sensitivity for generalized MG: 80–100%; for ocular MG: 93%.
+      <div class="cnote"><strong>SFEMG is positive in many other neuromuscular disorders</strong> — it is sensitive but not specific for MG alone. Increased jitter also occurs in ALS, myopathy, Lambert-Eaton, congenital myasthenic syndromes, and other NMJ disorders. Clinical context determines interpretation. A normal SFEMG in a clinically affected muscle is the most powerful negative finding in the MG workup.</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setEDX('sfemg','pos')" id="sfemg-pos">✓ Increased jitter ± blocking (NMJ disorder confirmed)</button>
+      <button class="abtn" onclick="setEDX('sfemg','neg')" id="sfemg-neg">✗ Normal (NMJ disorder very unlikely in this muscle)</button>
+      <button class="abtn" onclick="setEDX('sfemg','nd')"  id="sfemg-nd">— Not performed</button>
+    </div>
+  </div>
+
+  <div id="a3" class="alrt"></div>
+  <div class="nav-row">
+    <button class="nbtn ns" onclick="go(2)">← Back</button>
+    <button class="nbtn np" onclick="go(4)">Next: Thymus / Staging →</button>
+  </div>
+</div>
+</div>
+
+<!-- ══ SCREEN 4: THYMUS + STAGING ══ -->
+<div class="screen" id="s4">
+<div class="card">
+  <div class="ctitle" style="color:var(--accent);">Step 5 · Thymic Imaging, Osserman Staging, and Subgroup Classification</div>
+  <div class="csub">Thymic pathology is present in ~90% of AChR-positive MG patients — thymic hyperplasia in ~70% and thymoma in ~10–15%. Chest CT or MRI is mandatory in all newly diagnosed MG. The Osserman classification (modified) remains historically important and is still used in some centers alongside MGFA.</div>
+
+  <div class="lbox">
+    <strong>Osserman classification (modified Osserman & Genkins 1971) — historical but widely used:</strong><br>
+    <span class="lp">Stage I:</span> Ocular only — limited to ptosis and diplopia<br>
+    <span class="lp">Stage IIA:</span> Mild generalized — slow onset, no crisis; predominantly limb<br>
+    <span class="lp">Stage IIB:</span> Moderate generalized — skeletal, bulbar involvement; no crisis; no respiratory<br>
+    <span class="lp">Stage III:</span> Acute fulminant — respiratory crisis; high thymoma association<br>
+    <span class="lp">Stage IV:</span> Late severe — develops from stages I–IIB; respiratory ± severe generalized<br><br>
+    <strong>MGFA classification (Jaretzki 2000) is the current standard</strong> for clinical research and trial enrollment. Osserman staging is preserved here for historical context and clinical familiarity.
+  </div>
+
+  <div class="slabel">Chest CT / MRI — thymic imaging <span class="pill pill-r">MANDATORY IN ALL NEWLY DIAGNOSED MG</span></div>
+
+  <div class="crit" id="thymus-item">
+    <div class="crit-main">
+      <div class="crit-name">CT chest (or MRI mediastinum) — thymic hyperplasia, thymoma, or normal thymus</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      <strong>Thymic hyperplasia:</strong> Diffuse symmetric enlargement of thymus. Present in ~70% of AChR-positive MG, especially in young women. CT: smooth symmetric enlargement, no mass. Lymphofollicular hyperplasia — germinal centers with B cells are the proposed source of AChR autoantibodies. Thymectomy is recommended for non-thymomatous generalized AChR-positive MG in patients 18–65 (MGTX trial showed significantly better outcomes vs. immunosuppression alone over 3 years).<br><br>
+      <strong>Thymoma:</strong> Soft tissue mass in anterior mediastinum. Present in ~10–15% of MG. CT sensitivity ~75%, specificity ~62% (CT has significant inter-observer variability in distinguishing thymoma from hyperplasia). <strong>Thymectomy is mandatory for all thymoma regardless of MG severity</strong> — risk of malignant transformation and local invasion. Thymoma WHO classification (A, AB, B1, B2, B3, C) predicts prognosis. Anti-titin antibody in MG patients &lt;60 years strongly predicts thymoma.
+      <div class="cnote"><strong>MRI for thymic imaging:</strong> Chemical shift MRI (in-phase vs. out-of-phase) has better sensitivity for distinguishing thymoma from hyperplasia than CT alone — fat suppression with signal drop-off on out-of-phase imaging favors hyperplasia; no signal drop = thymoma. Consider MRI if CT is equivocal. FDG-PET is reserved for invasive or recurrent thymoma evaluation.</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setThymus('hyper')"   id="thymus-hyper">Thymic hyperplasia (no mass)</button>
+      <button class="abtn" onclick="setThymus('thymoma')" id="thymus-thymoma">Thymoma identified (mass lesion)</button>
+      <button class="abtn" onclick="setThymus('normal')"  id="thymus-normal">Normal / atrophic thymus</button>
+      <button class="abtn" onclick="setThymus('nd')"      id="thymus-nd">— CT/MRI not yet performed</button>
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:14px;">MG subgroup classification — guides treatment selection <span class="pill pill-g">CRITICAL FOR THERAPY CHOICE</span></div>
+
+  <div class="crit" id="subgroup-item">
+    <div class="crit-main">
+      <div class="crit-name">MG immunologic subgroup — determines treatment priorities (thymectomy, complement inhibition, B-cell therapy)</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      <strong>AChR-positive, non-thymomatous, early-onset (&lt;50y, predominantly female):</strong> Strong thymic hyperplasia association. Thymectomy recommended. Responds to standard immunosuppression (pyridostigmine, steroids, azathioprine/mycophenolate). Eculizumab (anti-C5) and ravulizumab FDA-approved.<br><br>
+      <strong>AChR-positive with thymoma:</strong> Thymectomy mandatory (all stages). MG may persist or worsen after thymectomy. Anti-titin/RyR antibodies common. Require long-term immunosuppression.<br><br>
+      <strong>AChR-positive, late-onset (&gt;50y, M=F):</strong> Thymic atrophy (no hyperplasia). Thymectomy benefit is less clear in this group. Complement inhibitors effective.<br><br>
+      <strong>MuSK-positive:</strong> Thymectomy NOT routinely recommended (no thymic pathology). Rituximab preferred immunosuppressant. Complement inhibitors may be less effective (different pathomechanism — IgG4, not complement-mediated).<br><br>
+      <strong>Seronegative (triple-negative):</strong> Diagnosis requires SFEMG. Management as per clinical phenotype.
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setSubgroup('achr-nthym')"  id="sub-achr-nthym">AChR+ / Non-thymomatous</button>
+      <button class="abtn" onclick="setSubgroup('achr-thym')"   id="sub-achr-thym">AChR+ / Thymoma</button>
+      <button class="abtn" onclick="setSubgroup('musk')"        id="sub-musk">MuSK+ (AChR−)</button>
+      <button class="abtn" onclick="setSubgroup('seroneg')"     id="sub-seroneg">Seronegative / Triple−</button>
+      <button class="abtn" onclick="setSubgroup('nd')"          id="sub-nd">— Pending antibody results</button>
+    </div>
+  </div>
+
+  <div id="a4" class="alrt"></div>
+  <div class="nav-row">
+    <button class="nbtn ns" onclick="go(3)">← Back</button>
+    <button class="nbtn np" onclick="go(5)">Next: Crisis Assessment / Verdict →</button>
+  </div>
+</div>
+</div>
+
+<!-- ══ SCREEN 5: CRISIS + VERDICT ══ -->
+<div class="screen" id="s5">
+<div class="card" style="margin-bottom:12px;">
+  <div class="ctitle" style="color:var(--accent);">Step 6 · Crisis Assessment — Myasthenic vs. Cholinergic Crisis</div>
+  <div class="csub">Myasthenic crisis (MC) occurs in ~15–20% of MG patients and requires ICU admission, respiratory monitoring, and rapid immunotherapy. Distinguishing MC from cholinergic crisis (excess pyridostigmine) is critical — they have opposite treatments. Both can cause respiratory failure and bulbar weakness, making differentiation essential.</div>
+
+  <div class="lbox">
+    <strong>Myasthenic crisis vs. Cholinergic crisis — key differentiators:</strong><br>
+    <span class="lp">Myasthenic crisis:</span> Caused by under-stimulation (severe MG exacerbation). Worsening weakness + bulbar + respiratory. NO excess cholinergic signs. Treat: hold pyridostigmine during intubation (secretions), PLEX or IVIG, steroids after airway secured.<br>
+    <span class="lr">Cholinergic crisis:</span> Caused by excess pyridostigmine (≥120 mg q3h is suspicious threshold). Weakness AND: miosis (small pupils), excessive secretions (SLUDGE: salivation, lacrimation, urination, defecation, GI cramps, emesis), bradycardia, muscle fasciculations, diaphoresis. Treat: hold all cholinesterase inhibitors; atropine for muscarinic symptoms; supportive care / ventilation.<br><br>
+    <span class="la">Common MC triggers (memorize):</span> Infection (URI most common), aspiration pneumonia, medication changes (dose reduction), drugs that worsen MG (aminoglycosides, fluoroquinolones, β-blockers, magnesium, neuromuscular blocking agents), surgery/anesthesia, stress, thyroid disease, tapering steroids too quickly, pregnancy.
+  </div>
+
+  <div class="slabel">Crisis status assessment <span class="pill pill-r">EMERGENCY — ASSESS IMMEDIATELY IF RESPIRATORY SYMPTOMS</span></div>
+
+  <div class="crit" id="crisis-item">
+    <div class="crit-main">
+      <div class="crit-name">Current respiratory and functional status — is this a crisis presentation?</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      <strong>Impending crisis — admit to ICU:</strong> FVC &lt;20 mL/kg OR NIF worse than −30 cmH₂O OR serial decline in FVC/NIF OR tachypnea + accessory muscle use + inability to count to 20 in one breath.<br><br>
+      <strong>Intubation thresholds:</strong> NIF worse than −20 cmH₂O + respiratory distress. FVC &lt;10–15 mL/kg + distress. Increasing work of breathing, hypercapnia, or inability to protect airway. <strong>Do NOT use SpO₂ or ABG as primary criteria — these are late signs.</strong><br><br>
+      <strong>RSI for intubation in MG:</strong> Use non-depolarizing NMB (rocuronium 0.6 mg/kg — ~50% reduced dose vs. standard). Avoid succinylcholine — patients are RESISTANT (due to reduced receptor density; require ~2.6× normal dose) and prolonged blockade is unpredictable. Avoid magnesium (worsens NMJ block). Sugammadex available for rapid reversal of rocuronium.
+      <div class="cnote"><strong>Treatment of myasthenic crisis:</strong> (1) Secure airway if indicated. (2) Hold pyridostigmine (reduces secretions during intubation; can resume pre-extubation). (3) PLEX (5 sessions over 7–10 days; 40–60 mL/kg/session) OR IVIG (2 g/kg over 2–5 days) — equivalent efficacy; PLEX acts faster (3–5 days) vs. IVIG (5–10 days). (4) Steroids after airway secured (IV methylprednisolone or oral prednisone). (5) Treat precipitating cause. (6) Avoid drugs that worsen NMJ transmission.</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setCrisis('none')"    id="crisis-none">✓ No crisis — stable, non-respiratory</button>
+      <button class="abtn" onclick="setCrisis('impend')"  id="crisis-impend">⚠ Impending crisis — FVC/NIF declining; ICU monitoring</button>
+      <button class="abtn" onclick="setCrisis('mc')"      id="crisis-mc">✗ Myasthenic crisis — intubated or severe respiratory failure</button>
+      <button class="abtn" onclick="setCrisis('chol')"    id="crisis-chol">✗ Cholinergic crisis — SLUDGE features + excessive pyridostigmine</button>
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:14px;">Drugs to avoid in MG — has the patient received any? <span class="pill pill-r">CRITICAL SAFETY CHECK</span></div>
+
+  <div class="crit" id="drugs-item">
+    <div class="crit-main">
+      <div class="crit-name">High-risk medications that can precipitate or worsen MG crisis — review medication list</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      <strong>HIGH RISK — may precipitate crisis / strongly avoid:</strong><br>
+      • <strong>Aminoglycosides</strong> (gentamicin, tobramycin, neomycin) — potent NMJ blockade; avoid if possible<br>
+      • <strong>Fluoroquinolones</strong> (ciprofloxacin, levofloxacin, moxifloxacin) — multiple reports of MG exacerbation<br>
+      • <strong>Magnesium sulfate</strong> (IV) — directly impairs presynaptic ACh release; dangerous in MG (tocolysis, eclampsia)<br>
+      • <strong>Neuromuscular blocking agents</strong> (vecuronium, atracurium) — dramatically prolonged blockade; reduce dose by ~50%<br>
+      • <strong>D-penicillamine</strong> — can induce de novo drug-induced MG (AChR antibodies)<br>
+      • <strong>Beta-blockers</strong> (systemic) — may worsen NMJ transmission<br>
+      • <strong>Chloroquine / hydroxychloroquine</strong> — controversial; case reports of worsening<br>
+      <strong>MODERATE RISK — use with caution:</strong> Macrolides (azithromycin), procainamide, quinine, lithium, phenytoin, ACE inhibitors (cough can worsen aspiration risk)<br>
+      <strong>SAFE TO USE:</strong> Standard corticosteroids, IVIG, pyridostigmine, azathioprine, mycophenolate, rituximab, eculizumab, efgartigimod, rozanolixizumab
+      <div class="cnote"><strong>Checkpoint inhibitor (immune checkpoint) immunotherapy:</strong> PD-1/PD-L1 inhibitors (pembrolizumab, nivolumab, atezolizumab) can precipitate de novo MG or dramatically worsen pre-existing MG — often severe, refractory, and rapidly fatal. Report cases involving ocular/bulbar/respiratory crisis. If oncologic therapy is required in an MG patient, neurology co-management is essential.</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setDrugs('clear')"  id="drugs-clear">✓ No high-risk medications identified</button>
+      <button class="abtn" onclick="setDrugs('found')"  id="drugs-found">⚠ High-risk medication identified / received</button>
+      <button class="abtn" onclick="setDrugs('nd')"     id="drugs-nd">— Medication review incomplete</button>
+    </div>
+  </div>
+</div>
+
+<div id="vout"></div>
+<div class="doc-header">
+  <button class="doc-tog" onclick="toggleDoc()">▼ Documentation Note</button>
+  <button class="copy-btn" id="copy-btn" onclick="copyDoc()">⎘ Copy</button>
+</div>
+<div class="doc-body" id="dn"></div>
+<div class="nav-row">
+  <button class="nbtn ns" onclick="go(4)">← Back</button>
+  <button class="nbtn np" onclick="resetAll()">↺ New Evaluation</button>
+</div>
+</div>
+
+</div><!-- /app -->
+<script>
+const S = {
+  // Clinical
+  ocular:null, bulbar:null, limb:null, resp:null, mgfa:null,
+  // Bedside
+  ice:null, fatigue:null, edro:null,
+  // Serology
+  achr:null, musk:null, lrp4:null,
+  // EDX
+  rns:null, sfemg:null,
+  // Thymus / staging
+  thymus:null, subgroup:null,
+  // Crisis
+  crisis:null, drugs:null
+};
+let cur = 0;
+
+function setFeat(k,v) {
+  S[k]=v;
+  const item=document.getElementById(k+'-item');
+  if(item){ item.className='crit '+(v===true?'c-yes':v===false?'c-abs':''); }
+  const yes=document.getElementById(k+'-yes');
+  const no=document.getElementById(k+'-no');
+  if(yes){ yes.classList.remove('ay','an'); if(v===true) yes.classList.add('ay'); }
+  if(no) { no.classList.remove('ay','an');  if(v===false) no.classList.add('an'); }
+  ui();
+}
+
+function setMGFA(cls) {
+  S.mgfa=cls;
+  document.querySelectorAll('.mgfa-card').forEach(c=>c.className='mgfa-card');
+  const el=document.getElementById('mc-'+cls);
+  if(el) {
+    const sev = ['IVa','IVb','V'].includes(cls);
+    const mod = ['IIIa','IIIb'].includes(cls);
+    el.className='mgfa-card '+(sev?'msel-r':mod?'msel-w':'msel');
+  }
+  ui();
+}
+
+function setTest(k,v) {
+  S[k]=v;
+  const item=document.getElementById(k+'-item');
+  if(item){
+    item.className='crit';
+    if(v==='pos') item.classList.add('c-yes');
+    else if(v==='neg') item.classList.add('c-no');
+    else if(v==='eq') item.classList.add('c-part');
+    else item.classList.add('c-abs');
+  }
+  ['pos','neg','eq','na','nd'].forEach(x=>{ const b=document.getElementById(k+'-'+x); if(b) b.classList.remove('ay','an','aw','aa','at'); });
+  const map={pos:'ay',neg:'an',eq:'aw',na:'aa',nd:'aa'};
+  const btn=document.getElementById(k+'-'+v); if(btn) btn.classList.add(map[v]||'aa');
+  ui();
+}
+
+function setAb(k,v) {
+  S[k]=v;
+  const item=document.getElementById(k+'-item');
+  if(item){
+    item.className='crit';
+    if(v==='pos') item.classList.add('c-yes');
+    else if(v==='neg') item.classList.add('c-no');
+    else if(v==='skip') item.classList.add('c-abs');
+    else item.classList.add('c-abs');
+  }
+  ['pos','neg','skip','nd'].forEach(x=>{ const b=document.getElementById(k+'-'+x); if(b) b.classList.remove('ay','an','at','aa'); });
+  const map={pos:'ay',neg:'an',skip:'aa',nd:'aa'};
+  const btn=document.getElementById(k+'-'+v); if(btn) btn.classList.add(map[v]||'aa');
+  ui();
+}
+
+function setEDX(k,v) {
+  S[k]=v;
+  const item=document.getElementById(k+'-item');
+  if(item){
+    item.className='crit';
+    if(v==='pos') item.classList.add('c-yes');
+    else if(v==='neg') item.classList.add('c-no');
+    else if(v==='lems') item.classList.add('c-part');
+    else item.classList.add('c-abs');
+  }
+  ['pos','neg','lems','nd'].forEach(x=>{ const b=document.getElementById(k+'-'+x); if(b) b.classList.remove('ay','an','aw','aa'); });
+  const map={pos:'ay',neg:'an',lems:'aw',nd:'aa'};
+  const btn=document.getElementById(k+'-'+v); if(btn) btn.classList.add(map[v]||'aa');
+  ui();
+}
+
+function setThymus(v) {
+  S.thymus=v;
+  const item=document.getElementById('thymus-item');
+  if(item){
+    item.className='crit';
+    if(v==='thymoma') item.classList.add('c-no');
+    else if(v==='hyper') item.classList.add('c-part');
+    else if(v==='normal') item.classList.add('c-abs');
+    else item.classList.add('c-abs');
+  }
+  ['hyper','thymoma','normal','nd'].forEach(x=>{ const b=document.getElementById('thymus-'+x); if(b) b.classList.remove('ay','an','aw','aa','at'); });
+  const map={hyper:'aw',thymoma:'an',normal:'aa',nd:'aa'};
+  const btn=document.getElementById('thymus-'+v); if(btn) btn.classList.add(map[v]||'aa');
+  ui();
+}
+
+function setSubgroup(v) {
+  S.subgroup=v;
+  const item=document.getElementById('subgroup-item');
+  if(item){
+    item.className='crit';
+    if(v==='achr-nthym'||v==='musk') item.classList.add('c-teal');
+    else if(v==='achr-thym') item.classList.add('c-part');
+    else if(v==='seroneg') item.classList.add('c-blue');
+    else item.classList.add('c-abs');
+  }
+  ['achr-nthym','achr-thym','musk','seroneg','nd'].forEach(x=>{ const b=document.getElementById('sub-'+x); if(b) b.classList.remove('ay','an','aw','ab','aa','at'); });
+  const map={'achr-nthym':'at','achr-thym':'aw','musk':'at','seroneg':'ab',nd:'aa'};
+  const btn=document.getElementById('sub-'+v); if(btn) btn.classList.add(map[v]||'aa');
+  if(cur===5) rv();
+  ui();
+}
+
+function setCrisis(v) {
+  S.crisis=v;
+  const item=document.getElementById('crisis-item');
+  if(item){
+    item.className='crit';
+    if(v==='none') item.classList.add('c-yes');
+    else if(v==='impend') item.classList.add('c-part');
+    else if(v==='mc'||v==='chol') item.classList.add('c-no');
+  }
+  ['none','impend','mc','chol'].forEach(x=>{ const b=document.getElementById('crisis-'+x); if(b) b.classList.remove('ay','aw','an'); });
+  const map={none:'ay',impend:'aw',mc:'an',chol:'an'};
+  const btn=document.getElementById('crisis-'+v); if(btn) btn.classList.add(map[v]||'aw');
+  if(cur===5) rv();
+  ui();
+}
+
+function setDrugs(v) {
+  S.drugs=v;
+  const item=document.getElementById('drugs-item');
+  if(item){
+    item.className='crit';
+    if(v==='clear') item.classList.add('c-yes');
+    else if(v==='found') item.classList.add('c-no');
+    else item.classList.add('c-abs');
+  }
+  ['clear','found','nd'].forEach(x=>{ const b=document.getElementById('drugs-'+x); if(b) b.classList.remove('ay','an','aa'); });
+  const map={clear:'ay',found:'an',nd:'aa'};
+  const btn=document.getElementById('drugs-'+v); if(btn) btn.classList.add(map[v]||'aa');
+  if(cur===5) rv();
+  ui();
+}
+
+/* ── Diagnostic confidence ── */
+function getAbStatus() {
+  if(S.achr==='pos') return 'achr';
+  if(S.musk==='pos') return 'musk';
+  if(S.lrp4==='pos') return 'lrp4';
+  if(S.achr==='neg'&&S.musk==='neg') return 'seroneg';
+  return 'unknown';
+}
+function edxPos() { return S.rns==='pos'||S.sfemg==='pos'; }
+function clinicalFeaturesPresent() { return [S.ocular,S.bulbar,S.limb,S.resp].some(v=>v===true); }
+
+function getDxLevel() {
+  const abStatus=getAbStatus();
+  const clin=clinicalFeaturesPresent();
+  if(!clin) return 'insufficient';
+  // Confirmed MG: antibody + clinical OR antibody + EDX
+  if((abStatus==='achr'||abStatus==='musk'||abStatus==='lrp4')&&clin) return 'confirmed';
+  // Confirmed seronegative with SFEMG
+  if(abStatus==='seroneg'&&S.sfemg==='pos'&&clin) return 'confirmed-sn';
+  // Likely MG: positive bedside + EDX without serology yet
+  if((S.ice==='pos'||S.edro==='pos')&&edxPos()&&clin) return 'likely';
+  // Possible: clinical + 1 positive test
+  if(clin&&(S.ice==='pos'||S.edro==='pos'||edxPos())) return 'possible';
+  // Crisis takes priority regardless
+  if(S.crisis==='mc') return 'crisis';
+  if(S.crisis==='chol') return 'cholinergic';
+  return 'insufficient';
+}
+
+/* ── UI feedback ── */
+function ui() {
+  // Step 0
+  const a0=document.getElementById('a0'), n0=document.getElementById('n0');
+  const cnt=[S.ocular,S.bulbar,S.limb,S.resp].filter(v=>v===true).length;
+  if(S.mgfa&&S.mgfa!=='nd') {
+    const sev=['IVa','IVb','V'].includes(S.mgfa);
+    const mod=['IIIa','IIIb'].includes(S.mgfa);
+    const msg='MGFA Class '+S.mgfa+' selected. '+(sev?'⚠ Severe class — ensure ICU evaluation, respiratory monitoring, and urgent immunotherapy planning.':mod?'Moderate class — immunotherapy optimization required.':'Proceed to diagnostic testing.');
+    sa(a0,sev?'aerr':mod?'awn':'ateal',msg);
+    n0.disabled=false;
+  } else if(cnt>0) { sa(a0,'ateal','◈ '+cnt+' muscle group'+(cnt>1?'s':'')+' affected. Select MGFA class to continue.'); n0.disabled=false; }
+  else { ha(a0); n0.disabled=true; }
+
+  // Step 1
+  const a1=document.getElementById('a1');
+  if(S.ice==='pos') sa(a1,'aok','✓ Ice pack test positive — NMJ dysfunction strongly supported. Specificity ~96–100% for MG. Proceed to serology and electrodiagnosis.');
+  else if(S.edro==='pos') sa(a1,'aok','✓ Edrophonium test positive (sensitivity 83.5%, specificity 87.7%). Confirm with serology and SFEMG.');
+  else if(S.edro==='eq') sa(a1,'awn','⚠ Equivocal edrophonium response. Proceed to serology and SFEMG — do not diagnose MG solely on edrophonium.');
+  else if(S.fatigue==='pos') sa(a1,'ateal','◈ Fatigability demonstrated — consistent with MG. Proceed to objective testing.');
+  else if([S.ice,S.fatigue,S.edro].some(v=>v!==null)) sa(a1,'ainf','ⓘ Bedside tests recorded. Proceed to serological testing.');
+  else ha(a1);
+
+  // Step 2
+  const a2=document.getElementById('a2');
+  const ab=getAbStatus();
+  if(ab==='achr') sa(a2,'aok','✓ AChR antibody positive — essentially pathognomonic for MG (specificity >99%). MG diagnosis confirmed.');
+  else if(ab==='musk') sa(a2,'aok','✓ MuSK antibody positive — MG confirmed (MuSK subtype). Note: edrophonium less reliable; rituximab preferred for immunosuppression.');
+  else if(ab==='lrp4') sa(a2,'aok','✓ LRP4 antibody positive — supports MG in appropriate clinical context. Confirm with SFEMG.');
+  else if(ab==='seroneg') sa(a2,'awn','⚠ Triple-seronegative (AChR−/MuSK−/LRP4−). SFEMG in a clinically affected muscle is required to confirm NMJ disorder. Consider CBA and repeat AChR at 12 months.');
+  else if(S.achr) sa(a2,'ainf','ⓘ Serology partially complete. Proceed to electrophysiology while awaiting results.');
+  else ha(a2);
+
+  // Step 3
+  const a3=document.getElementById('a3');
+  if(S.rns==='lems') sa(a3,'awn','⚠ Facilitation pattern on RNS — Lambert-Eaton myasthenic syndrome more likely than MG. Obtain VGCC antibody. Do NOT assume MG.');
+  else if(S.sfemg==='pos') sa(a3,'aok','✓ SFEMG positive — NMJ disorder confirmed. Combined with compatible clinical features, MG diagnosis is strongly supported.');
+  else if(S.sfemg==='neg') sa(a3,'aerr','✗ Normal SFEMG in clinically affected muscle — MG is very unlikely at this time. Reconsider diagnosis.');
+  else if(S.rns==='pos') sa(a3,'aok','✓ RNS decrement ≥10% — postsynaptic NMJ disorder confirmed. Supportive of MG in appropriate clinical context.');
+  else if(S.rns||S.sfemg) sa(a3,'ainf','ⓘ Electrophysiology data recorded.');
+  else ha(a3);
+
+  // Step 4
+  const a4=document.getElementById('a4');
+  if(S.thymus==='thymoma') sa(a4,'aerr','⚠ Thymoma identified — thymectomy is mandatory regardless of MG severity. Surgical oncology and thoracic surgery referral required.');
+  else if(S.thymus==='hyper') sa(a4,'awn','ⓘ Thymic hyperplasia — thymectomy recommended for AChR+ non-thymomatous generalized MG aged 18–65 (MGTX trial evidence).');
+  else if(S.thymus==='normal') sa(a4,'ateal','✓ No thymic mass. In late-onset or MuSK+ MG, normal thymus is expected — thymectomy benefit is less established.');
+  else if(S.subgroup) sa(a4,'ainf','ⓘ Subgroup recorded. Obtain thymic imaging before finalizing management plan.');
+  else ha(a4);
+}
+
+/* ── Verdict ── */
+function rv() {
+  const lvl=getDxLevel();
+  const mgfaLabel={
+    I:'Class I (Ocular only)', IIa:'Class IIa (Mild — Limb/Axial)', IIb:'Class IIb (Mild — Bulbar/Resp)',
+    IIIa:'Class IIIa (Moderate — Limb/Axial)', IIIb:'Class IIIb (Moderate — Bulbar/Resp)',
+    IVa:'Class IVa (Severe — Limb/Axial)', IVb:'Class IVb (Severe — Bulbar/Resp)', V:'Class V (Crisis / Intubation)', nd:'Not classified'
+  };
+  const abDesc = {
+    achr:'AChR-antibody positive — MG confirmed',
+    musk:'MuSK-antibody positive — MG confirmed (MuSK subtype)',
+    lrp4:'LRP4-antibody positive — MG supported',
+    seroneg:'Triple-seronegative — SFEMG required for confirmation',
+    unknown:'Serology pending'
+  };
+  const vtMap = {
+    confirmed:'MG Confirmed — Antibody-Positive',
+    'confirmed-sn':'MG Confirmed — Seronegative (SFEMG)',
+    crisis:'Myasthenic Crisis — MGFA Class V — EMERGENCY',
+    cholinergic:'Cholinergic Crisis — Hold AChE Inhibitors — EMERGENCY',
+    likely:'MG Likely — Bedside + Electrodiagnostic Support',
+    possible:'MG Possible — Partial Diagnostic Evidence',
+    insufficient:'Insufficient Data'
+  };
+  const vclsMap={confirmed:'vconf','confirmed-sn':'vconf',crisis:'vcris',cholinergic:'vcris',likely:'vlike',possible:'vpart',insufficient:'vund'};
+  const vdMap={
+    confirmed:'Characteristic fatigable weakness + positive antibody testing (AChR or MuSK). MG diagnosis confirmed. Classify by MGFA class, determine immunologic subgroup, obtain thymic imaging, and initiate appropriate treatment (pyridostigmine ± immunosuppression ± thymectomy).',
+    'confirmed-sn':'Characteristic fatigable weakness + negative AChR/MuSK/LRP4 antibodies + positive SFEMG in clinically affected muscle. Seronegative MG confirmed by electrodiagnosis. Repeat AChR-binding at 12 months (~15% seroconvert). CBA for clustered AChR/MuSK recommended. Consider MGTX trial criteria for thymectomy discussion.',
+    crisis:'MGFA Class V — intubation required or severe respiratory failure present. This is a medical emergency. Admit to ICU. Hold pyridostigmine. Initiate PLEX (5 sessions/7–10 days, 40–60 mL/kg/session) or IVIG (2 g/kg over 2–5 days). Steroids after airway secured. Identify and treat precipitating cause. Avoid neuromuscular blockers (use reduced dose non-depolarizing agents); avoid aminoglycosides, fluoroquinolones, magnesium.',
+    cholinergic:'Cholinergic crisis — caused by excess acetylcholinesterase inhibitor (typically pyridostigmine ≥120 mg q3h). HOLD ALL AChE inhibitors immediately. Signs: SLUDGE (salivation, lacrimation, urination, defecation, GI cramps, emesis) + miosis + fasciculations + bradycardia. Treat muscarinic symptoms with atropine IV. Secure airway if respiratory failure. Do NOT give more pyridostigmine.',
+    likely:'Compatible clinical features + positive bedside test (ice/edrophonium) + EDX evidence. MG is highly likely. Confirm with antibody testing. Initiate workup and empirical treatment discussion based on clinical urgency.',
+    possible:'Some supportive evidence for MG — one or more positive tests but incomplete workup. Continue evaluation. Consider empirical pyridostigmine trial if clinical picture is compelling while awaiting serology and SFEMG.',
+    insufficient:'Insufficient data to determine diagnostic confidence. Complete clinical feature assessment, serology, and electrophysiology.'
+  };
+
+  let html=`<div class="vban ${vclsMap[lvl]||'vund'}"><div class="vban-head">
+    <div class="vlbl">MGFA Clinical Classification · Jaretzki A et al. · Ann Thorac Surg 2000;70:327–334</div>
+    <div class="vtitle">${vtMap[lvl]||'Indeterminate'}</div>
+    <div class="vdesc">${vdMap[lvl]||''}</div>
+  </div></div>`;
+
+  html+=`<div class="sum-grid">`;
+  html+=`<div class="sblock"><div class="sbtitle">Clinical &amp; Bedside</div>`;
+  [['Ocular weakness','ocular'],['Bulbar weakness','bulbar'],['Limb/axial weakness','limb'],['Respiratory symptoms','resp']].forEach(([nm,k])=>{
+    const v=S[k]; const dc=v===true?'dt':'dgr'; const tc=v===true?'tt':'tgr';
+    html+=`<div class="srow"><div class="dot ${dc}"></div><div class="sname">${nm}</div><div class="stag ${tc}">${v===true?'Present':v===false?'Absent':'—'}</div></div>`;
+  });
+  const mgfaColor=S.mgfa&&['IVa','IVb','V'].includes(S.mgfa)?'tr':S.mgfa&&['IIIa','IIIb'].includes(S.mgfa)?'ta':'tt';
+  html+=`<div class="srow"><div class="dot ${S.mgfa&&S.mgfa!=='nd'?'dt':'dgr'}"></div><div class="sname">MGFA Class</div><div class="stag ${S.mgfa&&S.mgfa!=='nd'?mgfaColor:'tgr'}">${mgfaLabel[S.mgfa]||'—'}</div></div>`;
+  html+=`<div class="srow"><div class="dot ${S.ice==='pos'?'dg':S.ice==='neg'?'dr':'dgr'}"></div><div class="sname">Ice pack test</div><div class="stag ${S.ice==='pos'?'tg':S.ice==='neg'?'tr':'tgr'}">${S.ice==='pos'?'Positive':S.ice==='neg'?'Negative':'—'}</div></div>`;
+  html+=`<div class="srow"><div class="dot ${S.edro==='pos'?'dg':S.edro==='neg'?'dr':'dgr'}"></div><div class="sname">Edrophonium test</div><div class="stag ${S.edro==='pos'?'tg':S.edro==='neg'?'tr':S.edro==='eq'?'ta':'tgr'}">${S.edro==='pos'?'Positive':S.edro==='neg'?'Negative':S.edro==='eq'?'Equivocal':'—'}</div></div>`;
+  html+=`</div>`;
+
+  html+=`<div class="sblock"><div class="sbtitle">Serology, EDX &amp; Thymus</div>`;
+  html+=`<div class="srow"><div class="dot ${S.achr==='pos'?'dg':S.achr==='neg'?'dr':'dgr'}"></div><div class="sname">AChR antibody</div><div class="stag ${S.achr==='pos'?'tg':S.achr==='neg'?'tr':'tgr'}">${S.achr==='pos'?'Positive (MG confirmed)':S.achr==='neg'?'Negative':'—'}</div></div>`;
+  html+=`<div class="srow"><div class="dot ${S.musk==='pos'?'dg':S.musk==='neg'?'dr':'dgr'}"></div><div class="sname">MuSK antibody</div><div class="stag ${S.musk==='pos'?'tg':S.musk==='neg'?'tr':'tgr'}">${S.musk==='pos'?'Positive':S.musk==='neg'?'Negative':S.musk==='skip'?'Not tested (AChR+)':'—'}</div></div>`;
+  html+=`<div class="srow"><div class="dot ${S.rns==='pos'?'dg':S.rns==='neg'?'dr':S.rns==='lems'?'da':'dgr'}"></div><div class="sname">RNS</div><div class="stag ${S.rns==='pos'?'tg':S.rns==='neg'?'tr':S.rns==='lems'?'ta':'tgr'}">${S.rns==='pos'?'Decrement ≥10%':S.rns==='neg'?'Normal':S.rns==='lems'?'Facilitation (→LEMS)':'—'}</div></div>`;
+  html+=`<div class="srow"><div class="dot ${S.sfemg==='pos'?'dg':S.sfemg==='neg'?'dr':'dgr'}"></div><div class="sname">SFEMG</div><div class="stag ${S.sfemg==='pos'?'tg':S.sfemg==='neg'?'tr':'tgr'}">${S.sfemg==='pos'?'Jitter/blocking — NMJ+':S.sfemg==='neg'?'Normal':'—'}</div></div>`;
+  const thymusLabel={hyper:'Thymic hyperplasia',thymoma:'Thymoma — surgery needed',normal:'Normal/atrophic',nd:'Not performed'};
+  html+=`<div class="srow"><div class="dot ${S.thymus==='thymoma'?'dr':S.thymus==='hyper'?'da':S.thymus==='normal'?'dt':'dgr'}"></div><div class="sname">Thymic imaging</div><div class="stag ${S.thymus==='thymoma'?'tr':S.thymus==='hyper'?'ta':S.thymus==='normal'?'tt':'tgr'}">${thymusLabel[S.thymus]||'—'}</div></div>`;
+  const crisisLabel={none:'Stable',impend:'Impending crisis — ICU',mc:'Myasthenic crisis — intubated',chol:'Cholinergic crisis'};
+  html+=`<div class="srow"><div class="dot ${S.crisis==='none'?'dg':S.crisis?'dr':'dgr'}"></div><div class="sname">Crisis status</div><div class="stag ${S.crisis==='none'?'tg':S.crisis?'tr':'tgr'}">${crisisLabel[S.crisis]||'—'}</div></div>`;
+  html+=`</div></div>`;
+
+  document.getElementById('vout').innerHTML=html;
+  buildDoc(vtMap[lvl]||'Indeterminate', lvl);
+}
+
+function buildDoc(vt, lvl) {
+  const mgfaFull={I:'Class I — Ocular only',IIa:'Class IIa — Mild, limb/axial predominant',IIb:'Class IIb — Mild, bulbar/respiratory predominant',IIIa:'Class IIIa — Moderate, limb/axial',IIIb:'Class IIIb — Moderate, bulbar/respiratory',IVa:'Class IVa — Severe, limb/axial',IVb:'Class IVb — Severe, bulbar/respiratory',V:'Class V — Crisis / Intubation',nd:'Not yet classified'};
+  let note=`NEUROLOGY CONSULTATION — MYASTHENIA GRAVIS EVALUATION\nMGFA Clinical Classification (Jaretzki A et al. Ann Thorac Surg 2000;70:327–334)\nOsserman & Genkins Modified Staging (1971)\nDate: ${new Date().toLocaleDateString()}\n\nDIAGNOSTIC LEVEL: ${vt}\n\nCLINICAL FEATURES:\n  Ocular weakness (ptosis/diplopia): ${S.ocular===true?'Present':S.ocular===false?'Absent':'Not assessed'}\n  Bulbar weakness (dysarthria/dysphagia/chewing): ${S.bulbar===true?'Present':S.bulbar===false?'Absent':'Not assessed'}\n  Limb/axial weakness (proximal, neck flexors): ${S.limb===true?'Present':S.limb===false?'Absent':'Not assessed'}\n  Respiratory weakness (dyspnea/orthopnea/FVC decline): ${S.resp===true?'Present':S.resp===false?'Absent':'Not assessed'}\n\nMGFA CLASSIFICATION: ${mgfaFull[S.mgfa]||'Not classified'}\n  Note: Class V reserved for patients requiring intubation ± mechanical ventilation (not routine post-op management).\n\nBEDSIDE TESTS:\n  Ice pack test: ${S.ice==='pos'?'POSITIVE (≥2 mm ptosis improvement — sensitivity ~77–94%, specificity ~96–100%)':S.ice==='neg'?'Negative':S.ice==='na'?'Not applicable (no ptosis)':'Not performed'}\n  Fatigability testing (sustained upgaze/arm abduction/neck flexion): ${S.fatigue==='pos'?'Fatigability demonstrated':S.fatigue==='neg'?'No fatigability on testing':'Not formally performed'}\n  Edrophonium (Tensilon) test: ${S.edro==='pos'?'POSITIVE — unequivocal improvement (sensitivity 83.5%, specificity 87.7%)':S.edro==='neg'?'Negative':S.edro==='eq'?'Equivocal':'Not performed'}\n\nSEROLOGY:\n  AChR binding antibody: ${S.achr==='pos'?'POSITIVE (pathognomonic — specificity >99%)':S.achr==='neg'?'Negative':'Pending'}\n  MuSK antibody: ${S.musk==='pos'?'POSITIVE (MuSK-MG subtype — rituximab preferred; thymectomy NOT routinely recommended)':S.musk==='neg'?'Negative':S.musk==='skip'?'Not indicated (AChR positive)':'Pending'}\n  LRP4 antibody / CBA: ${S.lrp4==='pos'?'Positive':S.lrp4==='neg'?'Negative (triple-seronegative)':S.lrp4==='skip'?'Not indicated':'Not performed'}\n\nELECTROPHYSIOLOGY:\n  Repetitive nerve stimulation (RNS 2–5 Hz): ${S.rns==='pos'?'POSITIVE — decrement ≥10% (postsynaptic NMJ disorder)':S.rns==='lems'?'FACILITATION PATTERN — Lambert-Eaton myasthenic syndrome; check VGCC antibodies':S.rns==='neg'?'Normal — does not exclude MG':'Not performed'}\n  SFEMG (jitter analysis): ${S.sfemg==='pos'?'POSITIVE — increased jitter ± blocking (NMJ disorder confirmed; sensitivity 80–100% for generalized, 93% for ocular MG)':S.sfemg==='neg'?'NORMAL — NMJ disorder unlikely in tested muscle (effectively excludes MG at this site)':'Not performed'}\n\nTHYMIC IMAGING AND SUBGROUP:\n  Chest CT/MRI thymus: ${S.thymus==='thymoma'?'THYMOMA IDENTIFIED — thymectomy MANDATORY regardless of MG severity':S.thymus==='hyper'?'Thymic hyperplasia — thymectomy recommended in AChR+ non-thymomatous generalized MG age 18–65 (MGTX trial)':S.thymus==='normal'?'Normal/atrophic thymus':'Not yet performed'}\n  MG immunologic subgroup: ${{'achr-nthym':'AChR+, non-thymomatous (thymectomy recommended if generalized, age 18–65)','achr-thym':'AChR+, thymomatous (mandatory thymectomy)','musk':'MuSK-MG (no thymectomy; rituximab preferred)','seroneg':'Seronegative — SFEMG-confirmed (repeat AChR at 12 months; consider CBA)','nd':'Pending antibody results'}[S.subgroup]||'Not classified'}\n\nCRISIS ASSESSMENT:\n  Current status: ${{'none':'Stable — no respiratory crisis','impend':'IMPENDING CRISIS — ICU admission; serial FVC/NIF q4–6h; BiPAP ready','mc':'MYASTHENIC CRISIS — MGFA Class V; intubation ± MV; PLEX or IVIG; hold pyridostigmine during intubation','chol':'CHOLINERGIC CRISIS — HOLD ALL AChE inhibitors; atropine for muscarinic symptoms; airway management'}[S.crisis]||'Not assessed'}\n  High-risk medications: ${S.drugs==='clear'?'None identified':S.drugs==='found'?'HIGH-RISK MEDICATION IDENTIFIED — review and address':'Not yet reviewed'}\n\nFINAL DIAGNOSTIC LEVEL: ${vt}\n\nMGFA CLASSIFICATION REFERENCE (Jaretzki 2000):\n  I: Ocular only | IIa: Mild-limb | IIb: Mild-bulbar | IIIa: Mod-limb | IIIb: Mod-bulbar | IVa: Sev-limb | IVb: Sev-bulbar | V: Crisis\nModified Osserman Staging: I-Ocular | IIA-Mild generalized | IIB-Moderate generalized | III-Acute fulminant | IV-Late severe\n\nKey references:\n  Jaretzki A et al. MGFA classification. Ann Thorac Surg 2000;70:327.\n  Evoli A. Myasthenia gravis. Curr Opin Neurol 2017.\n  Howard JF et al. (ADAPT) eculizumab for MG. Lancet Neurol 2017;16:976–986.\n  Wolfe GI et al. (MGTX) thymectomy for non-thymomatous MG. NEJM 2016;375:511–522.\n  Claytor B, Li Y. Myasthenic crisis. Muscle Nerve 2023.`;
+  document.getElementById('dn').textContent=note;
+}
+
+function sa(el,cls,msg){ if(!el)return; el.className='alrt show '+cls; el.innerHTML=msg; }
+function ha(el){ if(el) el.classList.remove('show'); }
+
+function goTab(n){ if(n===cur)return; go(n); }
+function go(n){
+  document.getElementById('s'+cur).classList.remove('active');
+  document.getElementById('s'+n).classList.add('active');
+  for(let i=0;i<6;i++){const d=document.getElementById('st'+i);d.classList.remove('active','done');if(i<n)d.classList.add('done');else if(i===n)d.classList.add('active');}
+  cur=n;
+  document.getElementById('pf').style.width=((n/5)*100)+'%';
+  if(n===5) rv();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function xp(btn){
+  const d=btn.closest('.crit').querySelector('.crit-detail');
+  if(!d)return;
+  const o=d.classList.toggle('open');
+  btn.textContent=o?'close ▴':'details ▾';
+}
+
+function toggleDoc(){
+  const body=document.getElementById('dn'),btn=document.getElementById('copy-btn'),tog=document.querySelector('.doc-tog');
+  if(!body)return;
+  const open=body.classList.toggle('open');
+  if(tog)tog.textContent=open?'▲ Documentation Note':'▼ Documentation Note';
+  if(btn)btn.classList.toggle('visible',open);
+}
+
+function copyDoc(){
+  const body=document.getElementById('dn'),btn=document.getElementById('copy-btn');
+  if(!body)return;
+  const text=body.textContent||body.innerText;
+  navigator.clipboard.writeText(text)
+    .then(()=>{if(btn){btn.textContent='✓ Copied';btn.classList.add('copied');setTimeout(()=>{btn.textContent='⎘ Copy';btn.classList.remove('copied');},2000);}})
+    .catch(()=>{const ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);if(btn){btn.textContent='✓ Copied';btn.classList.add('copied');setTimeout(()=>{btn.textContent='⎘ Copy';btn.classList.remove('copied');},2000);}});
+}
+
+function resetAll(){
+  Object.keys(S).forEach(k=>S[k]=null);
+  document.querySelectorAll('.crit').forEach(el=>el.className='crit');
+  document.querySelectorAll('.abtn').forEach(b=>b.classList.remove('ay','an','at','ab','aa','aw'));
+  document.querySelectorAll('.crit-detail').forEach(d=>d.classList.remove('open'));
+  document.querySelectorAll('.xbtn').forEach(b=>b.textContent='details ▾');
+  document.querySelectorAll('.mgfa-card').forEach(c=>c.className='mgfa-card');
+  ['a0','a1','a2','a3','a4'].forEach(id=>{const el=document.getElementById(id);if(el)el.classList.remove('show');});
+  document.getElementById('vout').innerHTML='';
+  const dn=document.getElementById('dn');if(dn)dn.classList.remove('open');
+  const cb=document.getElementById('copy-btn');if(cb)cb.classList.remove('visible','copied');
+  const tog=document.querySelector('.doc-tog');if(tog)tog.textContent='▼ Documentation Note';
+  go(0);
+  document.getElementById('n0').disabled=true;
+}
+
+ui();
+</script>
+</body>
+</html>
