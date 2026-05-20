@@ -1,0 +1,1266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Frontotemporal Dementia (FTD) Diagnostic Navigator · Gorno-Tempini 2011</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@300;400;500;600;700&family=Lexend:wght@300;400;500;600&display=swap');
+
+:root {
+  --bg:        #0d1117;
+  --card:      #161b22;
+  --card2:     #1c2330;
+  --border:    #3a4556;
+  --border2:   #4a5f7a;
+  --green:     #3fb950;
+  --green-bg:  rgba(63,185,80,0.10);
+  --green-bd:  rgba(63,185,80,0.35);
+  --red:       #f85149;
+  --red-bg:    rgba(248,81,73,0.10);
+  --red-bd:    rgba(248,81,73,0.35);
+  --amber:     #e3b341;
+  --amber-bg:  rgba(227,179,65,0.10);
+  --amber-bd:  rgba(227,179,65,0.35);
+  --blue:      #58a6ff;
+  --blue-bg:   rgba(88,166,255,0.10);
+  --blue-bd:   rgba(88,166,255,0.35);
+  --purple:    #bc8cff;
+  --purple-bg: rgba(188,140,255,0.10);
+  --purple-bd: rgba(188,140,255,0.35);
+  /* FTD accent: cool gray/silver replacing AD's purple-dominant scheme */
+  --accent:    #c9d1d9;
+  --accent-bg: rgba(201,209,217,0.10);
+  --accent-bd: rgba(201,209,217,0.35);
+  --accent2:   #8b949e;
+  --text:      #e6edf3;
+  --text2:     #aab4c0;
+  --text3:     #6e7f94;
+  --sans:  'Lexend', 'Inter', system-ui, sans-serif;
+  --mono:  'IBM Plex Mono', monospace;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg); color: var(--text); font-family: var(--sans); font-size: 14px; line-height: 1.5; min-height: 100vh; }
+.app { max-width: 960px; margin: 0 auto; padding: 0 20px 80px; }
+
+/* HEADER */
+header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+.h-title { font-size: 19px; font-weight: 700; }
+.h-title span { color: var(--accent); }
+.h-sub { font-family: var(--sans); font-size: 11px; color: var(--text3); margin-top: 3px; line-height: 1.6; }
+.h-credit { font-family: var(--sans); font-size: 11px; color: var(--text3); margin-top: 2px; }
+.reset-btn { background: var(--card2); border: 1px solid var(--border); color: var(--text2); font-family: var(--sans); font-size: 12px; padding: 6px 14px; cursor: pointer; border-radius: 4px; transition: all 0.15s; white-space: nowrap; font-weight: 500; }
+.reset-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+/* PROGRESS */
+.prog-track { height: 3px; background: var(--border); margin-bottom: 20px; border-radius: 2px; }
+.prog-fill { height: 100%; background: linear-gradient(90deg, var(--accent2), var(--accent)); border-radius: 2px; transition: width 0.4s ease; box-shadow: 0 0 6px rgba(201,209,217,0.3); }
+
+/* STEP TABS */
+.steps { display: grid; grid-template-columns: repeat(6, 1fr); border: 1px solid var(--border); border-radius: 8px; margin-bottom: 20px; overflow: hidden; background: var(--card); }
+.stab { padding: 8px 3px 9px; text-align: center; font-family: var(--sans); font-size: 10px; color: var(--text3); border-right: 1px solid var(--border); transition: all 0.2s; cursor: pointer; background: var(--card); line-height: 1.3; }
+.stab:nth-child(6n) { border-right: none; }
+.stab .sn { display: flex; align-items: center; justify-content: center; width: 20px; height: 20px; border-radius: 50%; background: var(--card2); border: 1px solid var(--border); font-size: 10px; font-weight: 700; margin: 0 auto 3px; transition: all 0.2s; }
+.stab .slbl { display: block; font-size: 9px; font-weight: 600; letter-spacing: 0; line-height: 1.3; }
+.stab.active { color: var(--accent); background: var(--accent-bg); }
+.stab.active .sn { background: var(--accent); color: #0d1117; border-color: var(--accent); }
+.stab.done { color: var(--green); }
+.stab.done .sn { background: var(--green); color: #0d1117; border-color: var(--green); }
+.stab:hover:not(.active) { background: var(--card2); }
+
+/* CARD */
+.card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 22px; margin-bottom: 12px; }
+.ctitle { font-size: 13px; font-weight: 700; font-family: var(--sans); letter-spacing: 0; text-transform: none; margin-bottom: 3px; }
+.csub { font-size: 12px; color: var(--text2); margin-bottom: 16px; line-height: 1.5; }
+
+/* SECTION LABEL */
+.slabel { display: flex; align-items: center; gap: 8px; font-family: var(--sans); font-size: 11px; font-weight: 600; color: var(--text); letter-spacing: 0; text-transform: none; margin-bottom: 9px; padding-bottom: 6px; border-bottom: 1px solid var(--border); }
+.pill { font-size: 9px; padding: 1px 7px; border-radius: 20px; border: 1px solid; margin-left: auto; font-family: var(--sans); letter-spacing: 0.04em; text-transform: uppercase; }
+.pill-r { border-color: var(--red);    color: var(--red);    background: var(--red-bg); }
+.pill-a { border-color: var(--amber);  color: var(--amber);  background: var(--amber-bg); }
+.pill-p { border-color: var(--purple); color: var(--purple); background: var(--purple-bg); }
+.pill-g { border-color: var(--green);  color: var(--green);  background: var(--green-bg); }
+.pill-s { border-color: var(--accent); color: var(--accent); background: var(--accent-bg); }
+
+/* CRITERION ROW */
+.crit { border: 1px solid var(--border); border-radius: 6px; margin-bottom: 5px; overflow: hidden; transition: border-color 0.15s, background 0.15s; }
+.crit.c-yes  { border-color: var(--green-bd);  background: var(--green-bg); }
+.crit.c-no   { border-color: var(--red-bd);    background: var(--red-bg); }
+.crit.c-pres { border-color: var(--accent-bd); background: var(--accent-bg); }
+.crit.c-abs  { border-color: var(--border2);   background: var(--card2); }
+.crit.c-part { border-color: var(--amber-bd);  background: var(--amber-bg); }
+.crit.c-blue { border-color: var(--blue-bd);   background: var(--blue-bg); }
+
+.crit-main { display: flex; align-items: center; gap: 10px; padding: 10px 13px; }
+.crit-name { flex: 1; font-size: 13px; font-weight: 500; color: var(--text); line-height: 1.3; }
+.xbtn { background: var(--purple-bg); border: 1px solid var(--purple-bd); color: var(--purple); font-size: 11px; cursor: pointer; padding: 2px 8px; font-family: var(--sans); white-space: nowrap; transition: all 0.15s; flex-shrink: 0; border-radius: 3px; font-weight: 500; }
+.xbtn:hover { background: var(--purple); color: #0d1117; border-color: var(--purple); }
+
+.crit-detail { display: none; padding: 10px 13px 12px; font-size: 12px; color: var(--text); line-height: 1.65; border-top: 1px solid var(--border); }
+.crit-detail.open { display: block; }
+.cnote { margin-top: 8px; padding: 8px 11px; background: var(--card2); border-left: 3px solid var(--border2); font-family: var(--sans); font-size: 11px; color: var(--text2); line-height: 1.75; border-radius: 0 3px 3px 0; }
+.cnote strong { color: var(--text); }
+
+/* BUTTON ROW */
+.brow { display: flex; border-top: 1px solid var(--border); }
+.abtn { flex: 1; padding: 9px 10px; background: none; border: none; border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); color: var(--text2); font-family: var(--sans); font-size: 12px; cursor: pointer; transition: all 0.12s; text-transform: none; letter-spacing: 0; font-weight: 400; line-height: 1.4; text-align: left; }
+.abtn:last-child { border-right: none; }
+.abtn:hover { background: var(--card2); color: var(--text); }
+.abtn.ay  { background: var(--green-bg);  color: var(--green);  font-weight: 700; }
+.abtn.an  { background: var(--red-bg);    color: var(--red);    font-weight: 700; }
+.abtn.ap  { background: var(--accent-bg); color: var(--accent); font-weight: 700; }
+.abtn.ab  { background: var(--blue-bg);   color: var(--blue);   font-weight: 700; }
+.abtn.aa  { background: var(--card2);     color: var(--text2);  font-weight: 700; }
+.abtn.aw  { background: var(--amber-bg);  color: var(--amber);  font-weight: 700; }
+
+/* TWO-COL */
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; }
+@media (max-width: 600px) { .two-col { grid-template-columns: 1fr; } }
+
+/* ALERT */
+.alrt { padding: 9px 13px; border-radius: 5px; font-size: 12px; line-height: 1.55; margin-top: 12px; border-left: 3px solid; display: none; }
+.alrt.show { display: block; }
+.aok   { border-color: var(--green);  background: var(--green-bg);  color: #7ee787; }
+.awn   { border-color: var(--amber);  background: var(--amber-bg);  color: var(--amber); }
+.aerr  { border-color: var(--red);    background: var(--red-bg);    color: #ff7b72; }
+.ainf  { border-color: var(--blue);   background: var(--blue-bg);   color: var(--blue); }
+.asilv { border-color: var(--accent); background: var(--accent-bg); color: var(--accent); }
+
+/* LOGIC BOX */
+.lbox { background: var(--card2); border: 1px solid var(--border); border-radius: 5px; padding: 12px 15px; font-size: 12px; color: var(--text2); line-height: 1.75; margin-bottom: 14px; }
+.lbox strong { color: var(--text); }
+.lp { color: var(--accent); font-weight: 600; }
+.lg { color: var(--green);  font-weight: 600; }
+.la { color: var(--amber);  font-weight: 600; }
+.lr { color: var(--red);    font-weight: 600; }
+.lb { color: var(--blue);   font-weight: 600; }
+
+/* TALLY / CHIP */
+.tally { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+.chip { display: flex; align-items: center; gap: 5px; padding: 5px 11px; border-radius: 20px; font-family: var(--mono); font-size: 11px; border: 1px solid var(--border); background: var(--card2); color: var(--text2); }
+.chip .n { font-size: 14px; font-weight: 700; }
+.cp { border-color: var(--accent-bd); background: var(--accent-bg); color: var(--accent); }
+.cg { border-color: var(--green-bd);  background: var(--green-bg);  color: var(--green); }
+.cb { border-color: var(--blue-bd);   background: var(--blue-bg);   color: var(--blue); }
+.ca { border-color: var(--amber-bd);  background: var(--amber-bg);  color: var(--amber); }
+
+/* SYNDROME GRID */
+.syn-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 8px; margin-bottom: 14px; }
+@media (max-width: 640px) { .syn-grid { grid-template-columns: 1fr; } }
+.syn-card { border: 1px solid var(--border); border-radius: 6px; overflow: hidden; cursor: pointer; transition: all 0.2s; }
+.syn-card:hover { border-color: var(--border2); }
+.syn-card.sel-s { border-color: var(--accent-bd); background: var(--accent-bg); }
+.syn-card.sel-g { border-color: var(--green-bd);  background: var(--green-bg); }
+.syn-card.sel-b { border-color: var(--blue-bd);   background: var(--blue-bg); }
+.syn-card.sel-a { border-color: var(--amber-bd);  background: var(--amber-bg); }
+.syn-card.sel-r { border-color: var(--red-bd);    background: var(--red-bg); }
+.syn-header { padding: 10px 12px 6px; }
+.syn-abbr { font-size: 18px; font-weight: 700; font-family: var(--mono); }
+.syn-name { font-size: 11px; color: var(--text2); font-family: var(--sans); }
+.syn-body { padding: 0 12px 10px; font-size: 11px; color: var(--text2); line-height: 1.5; }
+.syn-tag { font-family: var(--sans); font-size: 9px; padding: 1px 7px; border-radius: 10px; border: 1px solid; display: inline-block; margin-top: 4px; }
+
+/* FEAT COUNT BADGE */
+.feat-badge { display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 50%; font-size: 12px; font-weight: 700; font-family: var(--mono); border: 2px solid; margin-left: 6px; flex-shrink: 0; }
+.fb-none { border-color: var(--border2); color: var(--text3); background: var(--card2); }
+.fb-part { border-color: var(--amber-bd); color: var(--amber); background: var(--amber-bg); }
+.fb-ok   { border-color: var(--green-bd); color: var(--green); background: var(--green-bg); }
+
+/* NAV */
+.nav-row { display: flex; justify-content: space-between; align-items: center; margin-top: 20px; gap: 10px; }
+.nbtn { padding: 9px 22px; border-radius: 5px; font-family: var(--sans); font-size: 13px; letter-spacing: 0; text-transform: none; border: 1px solid; cursor: pointer; font-weight: 600; transition: all 0.15s; }
+.np { background: var(--accent); border-color: var(--accent); color: #0d1117; font-weight: 700; }
+.np:hover { background: #e6edf3; border-color: #e6edf3; }
+.np:disabled { opacity: 0.3; cursor: not-allowed; }
+.ns { background: transparent; border-color: var(--border2); color: var(--text2); }
+.ns:hover { border-color: var(--text); color: var(--text); }
+
+/* SCREEN */
+.screen { display: none; }
+.screen.active { display: block; animation: fu 0.25s ease; }
+@keyframes fu { from { opacity:0; transform:translateY(5px); } to { opacity:1; transform:translateY(0); } }
+
+/* VERDICT */
+.vban { border-radius: 8px; padding: 22px 26px; margin-bottom: 16px; border: 2px solid; }
+.vpos  { border-color: var(--accent);  background: var(--accent-bg); }
+.vposs { border-color: var(--amber);   background: var(--amber-bg); }
+.vneg  { border-color: var(--red);     background: var(--red-bg); }
+.vund  { border-color: var(--blue);    background: var(--blue-bg); }
+.vban-head { text-align: center; margin-bottom: 14px; }
+.vlbl { font-family: var(--mono); font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase; opacity: 0.6; margin-bottom: 5px; }
+.vtitle { font-size: 22px; font-weight: 700; margin-bottom: 6px; letter-spacing: -0.01em; }
+.vpos  .vtitle { color: var(--accent); }
+.vposs .vtitle { color: var(--amber); }
+.vneg  .vtitle { color: var(--red); }
+.vund  .vtitle { color: var(--blue); }
+.vdesc { font-size: 12px; color: var(--text2); line-height: 1.7; max-width: 620px; margin: 0 auto; }
+
+/* SUMMARY */
+.sum-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+@media (max-width: 580px) { .sum-grid { grid-template-columns: 1fr; } }
+.sblock { background: var(--card); border: 1px solid var(--border); border-radius: 6px; overflow: hidden; }
+.sbtitle { font-family: var(--sans); font-size: 11px; font-weight: 600; letter-spacing: 0; text-transform: none; padding: 7px 11px; border-bottom: 1px solid var(--border); color: var(--text); background: var(--card2); }
+.srow { display: flex; align-items: flex-start; gap: 8px; padding: 6px 11px; border-bottom: 1px solid var(--border); font-size: 12px; }
+.srow:last-child { border-bottom: none; }
+.dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; margin-top: 4px; }
+.dg { background: var(--green); } .dr { background: var(--red); }
+.dp { background: var(--accent); } .db { background: var(--blue); }
+.da { background: var(--amber); } .dgr{ background: var(--text3); }
+.sname { flex: 1; color: var(--text); line-height: 1.4; }
+.stag { font-family: var(--mono); font-size: 9px; padding: 1px 7px; border-radius: 10px; border: 1px solid; white-space: nowrap; }
+.tg { border-color: var(--green-bd);  color: var(--green); }
+.tr { border-color: var(--red-bd);    color: var(--red); }
+.tp { border-color: var(--accent-bd); color: var(--accent); }
+.tb { border-color: var(--blue-bd);   color: var(--blue); }
+.ta { border-color: var(--amber-bd);  color: var(--amber); }
+.tgr{ border-color: var(--border2);   color: var(--text3); }
+
+/* DOC NOTE */
+.doc-header { display: flex; align-items: center; gap: 8px; margin-bottom: 5px; }
+.doc-tog { flex: 1; text-align: left; background: var(--card2); border: 1px solid var(--border2); border-radius: 5px; color: var(--text2); font-family: var(--sans); font-size: 13px; padding: 8px 13px; cursor: pointer; transition: all 0.15s; }
+.doc-tog:hover { border-color: var(--accent); color: var(--accent); }
+.copy-btn { background: var(--card2); border: 1px solid var(--border2); border-radius: 5px; color: var(--text2); font-family: var(--sans); font-size: 12px; padding: 8px 14px; cursor: pointer; white-space: nowrap; transition: all 0.15s; display: none; }
+.copy-btn.visible { display: block; }
+.copy-btn:hover { border-color: var(--green); color: var(--green); }
+.copy-btn.copied { border-color: var(--green); color: var(--green); background: var(--green-bg); }
+.doc-body { display: none; background: var(--card2); border: 1px solid var(--border2); border-radius: 5px; padding: 13px 15px; font-family: var(--mono); font-size: 11px; color: var(--text2); line-height: 1.85; white-space: pre-wrap; margin-bottom: 12px; }
+.doc-body.open { display: block; }
+</style>
+</head>
+<body>
+<div class="app">
+
+<header>
+  <div>
+    <div class="h-title">Frontotemporal Dementia (FTD) Diagnostic Navigator · <span>Gorno-Tempini 2011</span></div>
+    <div class="h-sub">Rascovsky K et al. · Brain 2011;134:2456–2477 · Gorno-Tempini ML et al. · Neurology 2011;76:1006–1014 · For educator use only</div>
+    <div class="h-credit">Designed by Daniel Short, MD</div>
+  </div>
+  <button class="reset-btn" onclick="resetAll()">↺ Reset</button>
+</header>
+
+<div class="prog-track"><div class="prog-fill" id="pf" style="width:0%"></div></div>
+
+<div class="steps">
+  <div class="stab active" id="st0" onclick="goTab(0)" title="Go to step 1"><span class="sn">1</span><span class="slbl">Syndrome</span></div>
+  <div class="stab" id="st1" onclick="goTab(1)" title="Go to step 2"><span class="sn">2</span><span class="slbl">Core Symptoms</span></div>
+  <div class="stab" id="st2" onclick="goTab(2)" title="Go to step 3"><span class="sn">3</span><span class="slbl">Exclusions</span></div>
+  <div class="stab" id="st3" onclick="goTab(3)" title="Go to step 4"><span class="sn">4</span><span class="slbl">Imaging</span></div>
+  <div class="stab" id="st4" onclick="goTab(4)" title="Go to step 5"><span class="sn">5</span><span class="slbl">Genetics</span></div>
+  <div class="stab" id="st5" onclick="goTab(5)" title="Go to step 6"><span class="sn">6</span><span class="slbl">Verdict</span></div>
+</div>
+
+<!-- ══ SCREEN 0: SYNDROME SELECTION ══ -->
+<div class="screen active" id="s0">
+<div class="card">
+  <div class="ctitle" style="color:var(--accent);">Step 1 · Select Clinical Syndrome</div>
+  <div class="csub">FTD encompasses a clinically heterogeneous group of syndromes united by frontotemporal lobar degeneration (FTLD). The two dominant phenotypic clusters are behavioral (bvFTD) and language (primary progressive aphasia — PPA). Each has distinct criteria, neuroimaging signatures, and pathologic correlates. Select the primary presenting syndrome.</div>
+
+  <div class="lbox">
+    <strong>FTLD overview:</strong> FTD is the second most common cause of early-onset dementia (onset age 45–65 years) after early-onset AD. Estimated prevalence 15–22 per 100,000 (ages 45–65). FTLD accounts for ~5–17% of autopsy-confirmed dementia cases presenting before age 70.<br><br>
+    <span class="lp">bvFTD (~50–60% of FTD):</span> Progressive behavioural and personality change with relative preservation of episodic memory. Core behavioral features emerge first.<br>
+    <span class="lp">svPPA (~15–20%):</span> Progressive loss of semantic knowledge (word meaning, object recognition). Fluent, anomic speech; severely impaired single-word comprehension.<br>
+    <span class="lp">nfvPPA (~20–25%):</span> Progressive effortful, non-fluent speech with agrammatism; apraxia of speech; intact comprehension of single words.<br>
+    <span class="la">lvPPA (~25–30% of PPA):</span> Impaired sentence repetition; anomia; posterior perisylvian/parietal atrophy. Most closely associated with AD pathology — amyloid PET frequently positive.
+  </div>
+
+  <div class="slabel">Select primary syndrome <span class="pill pill-r">REQUIRED</span></div>
+
+  <div class="syn-grid">
+    <div class="syn-card" id="synd-bvftd" onclick="setSyndrome('bvftd')">
+      <div class="syn-header"><div class="syn-abbr" style="color:var(--accent);">bvFTD</div><div class="syn-name">Behavioral Variant</div></div>
+      <div class="syn-body">Personality change, disinhibition, apathy, loss of empathy, stereotypies, hyperorality<br><span class="syn-tag" style="border-color:var(--accent-bd);color:var(--accent);">TDP-43 / tau / FUS</span></div>
+    </div>
+    <div class="syn-card" id="synd-svppa" onclick="setSyndrome('svppa')">
+      <div class="syn-header"><div class="syn-abbr" style="color:var(--blue);">svPPA</div><div class="syn-name">Semantic Variant PPA</div></div>
+      <div class="syn-body">Fluent, empty speech; loss of word meaning; surface dyslexia/dysgraphia; prosopagnosia<br><span class="syn-tag" style="border-color:var(--blue-bd);color:var(--blue);">TDP-43 type C</span></div>
+    </div>
+    <div class="syn-card" id="synd-nfvppa" onclick="setSyndrome('nfvppa')">
+      <div class="syn-header"><div class="syn-abbr" style="color:var(--green);">nfvPPA</div><div class="syn-name">Nonfluent/Agrammatic PPA</div></div>
+      <div class="syn-body">Non-fluent, effortful speech; agrammatism; apraxia of speech; phonemic errors<br><span class="syn-tag" style="border-color:var(--green-bd);color:var(--green);">Tau (CBD/PSP / 4R)</span></div>
+    </div>
+    <div class="syn-card" id="synd-lvppa" onclick="setSyndrome('lvppa')">
+      <div class="syn-header"><div class="syn-abbr" style="color:var(--amber);">lvPPA</div><div class="syn-name">Logopenic Variant PPA</div></div>
+      <div class="syn-body">Impaired sentence repetition; anomia; single-word comprehension preserved; posterior atrophy<br><span class="syn-tag" style="border-color:var(--amber-bd);color:var(--amber);">AD pathology (~90%)</span></div>
+    </div>
+  </div>
+
+  <div id="a0" class="alrt"></div>
+  <div class="nav-row"><div></div><button class="nbtn np" id="n0" onclick="go(1)" disabled>Next: Core Symptoms/Features →</button></div>
+</div>
+</div>
+
+<!-- ══ SCREEN 1: CORE FEATURES ══ -->
+<div class="screen" id="s1">
+<div class="card">
+  <div class="ctitle" style="color:var(--accent);" id="s1-title">Step 2 · Core Diagnostic Features</div>
+  <div class="csub" id="s1-sub">Assess core features for the selected syndrome. Features must show progressive deterioration — not a single static examination finding.</div>
+
+  <!-- bvFTD FEATURES -->
+  <div id="bvftd-features">
+    <div class="lbox">
+      <strong>bvFTD progressive deterioration prerequisite (Rascovsky et al. 2011, Brain 134:2456–2477):</strong><br>
+      <span class="lp">Prerequisite A:</span> Shows progressive deterioration of behaviour and/or cognition by observation or history (as provided by a knowledgeable informant). This must be met before any feature count applies.<br><br>
+      <strong>Diagnostic thresholds:</strong><br>
+      <span class="lg">Possible bvFTD:</span> ≥3 of 6 core features (from F1–F6 below)<br>
+      <span class="lp">Probable bvFTD:</span> Possible bvFTD + significant functional decline + frontal/temporal neuroimaging<br>
+      <span class="lb">Definite FTLD pathology:</span> Possible/probable bvFTD + histopathologic or genetic confirmation<br><br>
+      <strong>Diagnostic performance (autopsy-confirmed cohort, n=239, Harris et al. Neurology 2013):</strong> Possible bvFTD: sensitivity 95%, specificity 82%. Probable bvFTD: sensitivity 85%, specificity 95%. New FTDC criteria improved sensitivity vs. 1998 Neary criteria (86% vs. 53%, Rascovsky 2011 original validation).
+    </div>
+
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+      <div class="slabel" style="flex:1;margin-bottom:0;border-bottom:none;">Core behavioral features — select all present <span class="pill pill-r">≥3 of 6 REQUIRED for Possible</span></div>
+      <div class="feat-badge fb-none" id="feat-count">0</div>
+    </div>
+
+    <div class="crit" id="f1-item">
+      <div class="crit-main">
+        <div class="crit-name">F1 · Early behavioural disinhibition (one of: socially inappropriate behaviour, loss of manners/decorum, impulsive/reckless/careless actions)</div>
+        <button class="xbtn" onclick="xp(this)">details ▾</button>
+      </div>
+      <div class="crit-detail">
+        Disinhibition is the most specific early bvFTD feature when confirmed in an early-onset dementia cohort (specificity ~90% in autopsy series). Examples: making inappropriate comments to strangers, shoplifting, public urination, inappropriate sexual remarks, loss of social tact, reckless financial decisions. In late-onset frontal syndromes the specificity is lower due to overlap with depression, AD, and vascular disease.
+        <div class="cnote"><strong>Frequency (Rascovsky 2011, n=203 FTLD cases):</strong> Behavioural disinhibition present in ~73% at clinical presentation in FTLD-confirmed cohort. Sensitivity of F1 alone: ~65% for possible bvFTD diagnosis.</div>
+      </div>
+      <div class="brow">
+        <button class="abtn" onclick="setFeat('f1',true)"  id="f1-yes">✓ Present (informant-confirmed)</button>
+        <button class="abtn" onclick="setFeat('f1',false)" id="f1-no">✗ Absent / insufficient evidence</button>
+      </div>
+    </div>
+
+    <div class="crit" id="f2-item">
+      <div class="crit-main">
+        <div class="crit-name">F2 · Early apathy or inertia (persistent reduction in motivation, spontaneous behaviour, and/or social engagement; not explained by psychiatric illness)</div>
+        <button class="xbtn" onclick="xp(this)">details ▾</button>
+      </div>
+      <div class="crit-detail">
+        Apathy is the single most common bvFTD feature (~80–90% prevalence). However, it has <em>low specificity</em> — also seen in depression, major psychosis, other dementias, and frontal lesions from any cause. Its value in diagnosis is primarily as one of 3 required features combined with more specific criteria. Distinguished from depression by absence of sustained dysphoria, vegetative symptoms, or response to antidepressants. "Early" = within first 3 years of symptom onset.
+        <div class="cnote"><strong>Pitfall:</strong> Apathy alone should NEVER be used to diagnose bvFTD. The 2025 Piguet et al. (Alzheimer's & Dementia) review recommends adding social cognition impairment as a core criterion given its high discriminating value vs. other conditions.</div>
+      </div>
+      <div class="brow">
+        <button class="abtn" onclick="setFeat('f2',true)"  id="f2-yes">✓ Present</button>
+        <button class="abtn" onclick="setFeat('f2',false)" id="f2-no">✗ Absent</button>
+      </div>
+    </div>
+
+    <div class="crit" id="f3-item">
+      <div class="crit-main">
+        <div class="crit-name">F3 · Early loss of sympathy or empathy (diminished response to others' needs and feelings, decreased interest in others, decreased social interest/personal warmth)</div>
+        <button class="xbtn" onclick="xp(this)">details ▾</button>
+      </div>
+      <div class="crit-detail">
+        Loss of empathy and sympathy is among the most specific bvFTD features when present early. In one autopsy-confirmed early-onset cohort, early loss of sympathy/empathy had specificity of ~90%. Manifests as coldness or indifference to family members, failure to respond to distressing events, apparent selfishness, and lack of interest in others. Mediated by right-dominant temporal and orbitofrontal/insular damage. Early loss of empathy is a proposed core feature addition in the evolving 2025 criteria revision (Piguet et al. 2025).
+        <div class="cnote"><strong>Clinical tip:</strong> Ask informants: "Has there been a change in warmth toward family?" "Does s/he respond to others' distress the way they used to?" "Does s/he seem to 'care less' about others?" This feature can be subtle early but informants typically confirm it when asked directly.</div>
+      </div>
+      <div class="brow">
+        <button class="abtn" onclick="setFeat('f3',true)"  id="f3-yes">✓ Present</button>
+        <button class="abtn" onclick="setFeat('f3',false)" id="f3-no">✗ Absent</button>
+      </div>
+    </div>
+
+    <div class="crit" id="f4-item">
+      <div class="crit-main">
+        <div class="crit-name">F4 · Perseverative, stereotyped, or compulsive/ritualistic behaviour (simple repetitive movements, complex compulsive/ritualistic behaviours, stereotypy of speech)</div>
+        <button class="xbtn" onclick="xp(this)">details ▾</button>
+      </div>
+      <div class="crit-detail">
+        Stereotypy has high specificity (~85%) for bvFTD in autopsy-confirmed early-onset cohorts. May present as: simple repetitive movements (rubbing, tapping, clapping), complex compulsive rituals (hoarding, counting, ordering), rigid adherence to routines, fixed daily schedules, or repetitive use of the same phrases (verbal stereotypy). These behaviours may initially be mistaken for OCD or anxiety disorders. Stereotyped speech — using the same words or phrases repetitively — is particularly characteristic.
+        <div class="cnote"><strong>Differential:</strong> OCD onset in mid-to-late life without family history is atypical and should prompt FTD workup. The "phenocopy" bvFTD syndrome (static or slowly progressive behavioural change without imaging or pathologic confirmation) often lacks F4 — its absence in the context of F1–F3 should raise doubt about the diagnosis.</div>
+      </div>
+      <div class="brow">
+        <button class="abtn" onclick="setFeat('f4',true)"  id="f4-yes">✓ Present</button>
+        <button class="abtn" onclick="setFeat('f4',false)" id="f4-no">✗ Absent</button>
+      </div>
+    </div>
+
+    <div class="crit" id="f5-item">
+      <div class="crit-main">
+        <div class="crit-name">F5 · Hyperorality and dietary changes (altered food preferences, overeating, binge eating, oral exploration, food fads, consumption of non-food items)</div>
+        <button class="xbtn" onclick="xp(this)">details ▾</button>
+      </div>
+      <div class="crit-detail">
+        Orbitofrontal and insular cortex degeneration drives hyperorality. Dietary changes are an early discriminating feature. May include: preference for sweet/carbohydrate foods, overeating formerly disliked foods, eating from others' plates, mouthing non-food objects (pica), excessive alcohol or cigarette use. Marked weight gain may occur. Hyperorality is part of the broader Klüver-Bucy-like syndrome seen in severe bilateral temporal lobe involvement.
+        <div class="cnote"><strong>Key differentiator from AD:</strong> Pronounced hyperorality and dietary change early in the course strongly favors FTD over AD, particularly if episodic memory is relatively preserved. This feature is less common in early AD.</div>
+      </div>
+      <div class="brow">
+        <button class="abtn" onclick="setFeat('f5',true)"  id="f5-yes">✓ Present</button>
+        <button class="abtn" onclick="setFeat('f5',false)" id="f5-no">✗ Absent</button>
+      </div>
+    </div>
+
+    <div class="crit" id="f6-item">
+      <div class="crit-main">
+        <div class="crit-name">F6 · Neuropsychological profile — executive dysfunction with relative sparing of episodic memory and visuospatial functions (on formal testing)</div>
+        <button class="xbtn" onclick="xp(this)">details ▾</button>
+      </div>
+      <div class="crit-detail">
+        Typical profile: deficits on frontal/executive tests (Trails B, verbal fluency, go/no-go, phonemic fluency) with relative preservation of episodic memory (delayed recall) and visuospatial function (Rey-O copy, VOSP). Standard cognitive screens (MMSE, MoCA) can be normal or near-normal in early bvFTD. <em>Important caveat (Piguet et al. 2025, Alzheimer's & Dementia):</em> A 2025 multicenter review of 100+ bvFTD cases found that memory and visuospatial deficits are actually common in bvFTD and do not preclude the diagnosis — the authors propose removing "relative sparing of episodic memory" (F2) and "relative sparing of visuospatial skills" (F3) from the core criteria in future revisions. Currently, however, the 2011 criteria remain clinically operative.
+        <div class="cnote"><strong>Key tests:</strong> Frontal Assessment Battery (FAB); FrSBe or Cambridge Behavioural Inventory-Revised (CBI-R) for informant-rated behaviour; Trail Making B; phonemic verbal fluency (FAS). Memory impairment in bvFTD is often a secondary encoding deficit, not a true hippocampal/storage failure — recognition may be preserved despite poor free recall.</div>
+      </div>
+      <div class="brow">
+        <button class="abtn" onclick="setFeat('f6',true)"  id="f6-yes">✓ Present (executive deficits, relative memory/visuospatial sparing)</button>
+        <button class="abtn" onclick="setFeat('f6',false)" id="f6-no">✗ Absent / memory and visuospatial prominently impaired</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- svPPA FEATURES -->
+  <div id="svppa-features" style="display:none;">
+    <div class="lbox">
+      <strong>svPPA classification (Gorno-Tempini et al. 2011, Neurology 76:1006–1014):</strong><br>
+      <span class="lp">Diagnosis requires:</span> Both core features (C1 AND C2) must be present, plus at least 3 of 4 supportive features (S1–S4).<br>
+      <span class="la">Imaging-supported:</span> Above PLUS expected atrophy pattern on MRI or FDG-PET/SPECT<br>
+      Pathologic correlate: FTLD-TDP type C in ~80–90% of autopsy-confirmed cases. MAPT tau in minority.
+    </div>
+
+    <div class="slabel">Core features — BOTH required <span class="pill pill-r">BOTH C1 + C2 REQUIRED</span></div>
+
+    <div class="crit" id="sc1-item">
+      <div class="crit-main">
+        <div class="crit-name">C1 · Impaired confrontation naming (severe anomia — inability to name objects or pictures when shown)</div>
+        <button class="xbtn" onclick="xp(this)">details ▾</button>
+      </div>
+      <div class="crit-detail">
+        Confrontation naming is the cardinal feature — often the earliest and most prominent deficit. Object naming is severely impaired; the patient cannot provide the name and typically gives a semantic substitute (e.g., "thing you use for cutting" for "scissors") or a circumlocution. Boston Naming Test scores are markedly reduced. Naming errors in svPPA are semantic, not phonemic (no phonemic paraphasias as seen in nfvPPA/lvPPA).
+        <div class="cnote"><strong>Typical pattern:</strong> Severely impaired naming of low-frequency items initially; high-frequency items fail as disease progresses. The patient often says "I know what it is, I just can't say the word" — reflecting preserved visual object recognition with failed word-to-concept mapping.</div>
+      </div>
+      <div class="brow">
+        <button class="abtn" onclick="setFeat('sc1',true)"  id="sc1-yes">✓ Severely impaired naming</button>
+        <button class="abtn" onclick="setFeat('sc1',false)" id="sc1-no">✗ Naming preserved</button>
+      </div>
+    </div>
+
+    <div class="crit" id="sc2-item">
+      <div class="crit-main">
+        <div class="crit-name">C2 · Impaired single-word comprehension (inability to understand the meaning of individual words — e.g., "What is a ferret?")</div>
+        <button class="xbtn" onclick="xp(this)">details ▾</button>
+      </div>
+      <div class="crit-detail">
+        Semantic knowledge loss is the defining feature of svPPA — the patient loses the stored meaning of words and concepts. This is distinct from lvPPA, where single-word comprehension is typically preserved. Tests: Pyramids and Palm Trees (PPT) — severely impaired; WASI vocabulary — impaired; picture-to-word matching for low-frequency items — impaired. Sentence comprehension may be deceptively intact early because the patient understands sentence structure but not lexical content.
+        <div class="cnote"><strong>Key differentiator from nfvPPA/lvPPA:</strong> Both nfvPPA and lvPPA have preserved single-word comprehension. If single-word comprehension is clearly impaired, this points strongly to svPPA (or severely advanced disease in another PPA variant).</div>
+      </div>
+      <div class="brow">
+        <button class="abtn" onclick="setFeat('sc2',true)"  id="sc2-yes">✓ Impaired single-word comprehension</button>
+        <button class="abtn" onclick="setFeat('sc2',false)" id="sc2-no">✗ Single-word comprehension preserved</button>
+      </div>
+    </div>
+
+    <div class="slabel" style="margin-top:14px;">Supportive features — ≥3 of 4 required <span class="pill pill-a">AT LEAST 3/4</span></div>
+
+    <div class="two-col">
+    <div class="crit" id="ss1-item">
+      <div class="crit-main"><div class="crit-name">S1 · Impaired object knowledge (particularly for low-frequency items) — failure on object knowledge tests</div><button class="xbtn" onclick="xp(this)">details ▾</button></div>
+      <div class="crit-detail">Tests: Pyramids and Palm Trees; picture-to-picture or word-to-picture matching; familiarity judgments. Low-frequency items (e.g., rare animals) fail before high-frequency items. Correlates with anterior temporal lobe degeneration.</div>
+      <div class="brow"><button class="abtn" onclick="setFeat('ss1',true)" id="ss1-yes">✓ Present</button><button class="abtn" onclick="setFeat('ss1',false)" id="ss1-no">✗ Absent</button></div>
+    </div>
+    <div class="crit" id="ss2-item">
+      <div class="crit-main"><div class="crit-name">S2 · Surface dyslexia or dysgraphia (regularisation errors: reading/spelling words by phonological rules, not by lexical storage)</div><button class="xbtn" onclick="xp(this)">details ▾</button></div>
+      <div class="crit-detail">Surface dyslexia: irregular words (e.g., "yacht," "pint") are mispronounced by regularisation ("yaht", "pynt"). Reflects loss of the lexical reading route as semantic knowledge degrades. Surface dysgraphia similarly produces regularisation errors in spelling. Present in >70% of svPPA cases — a robust supportive feature.</div>
+      <div class="brow"><button class="abtn" onclick="setFeat('ss2',true)" id="ss2-yes">✓ Present</button><button class="abtn" onclick="setFeat('ss2',false)" id="ss2-no">✗ Absent</button></div>
+    </div>
+    <div class="crit" id="ss3-item">
+      <div class="crit-main"><div class="crit-name">S3 · Spared repetition of words and non-words (repetition is intact — contrast with lvPPA)</div></div>
+      <div class="brow"><button class="abtn" onclick="setFeat('ss3',true)" id="ss3-yes">✓ Repetition spared</button><button class="abtn" onclick="setFeat('ss3',false)" id="ss3-no">✗ Repetition impaired</button></div>
+    </div>
+    <div class="crit" id="ss4-item">
+      <div class="crit-main"><div class="crit-name">S4 · Spared speech production (fluent, grammatically correct speech — no agrammatism, no articulatory distortion)</div></div>
+      <div class="brow"><button class="abtn" onclick="setFeat('ss4',true)" id="ss4-yes">✓ Speech fluent/grammatical</button><button class="abtn" onclick="setFeat('ss4',false)" id="ss4-no">✗ Speech impaired</button></div>
+    </div>
+    </div>
+  </div>
+
+  <!-- nfvPPA FEATURES -->
+  <div id="nfvppa-features" style="display:none;">
+    <div class="lbox">
+      <strong>nfvPPA classification (Gorno-Tempini et al. 2011):</strong><br>
+      <span class="lp">Diagnosis requires:</span> At least one of two core features (C1 OR C2), plus at least 2 of 3 supportive features (S1–S3).<br>
+      <span class="la">Imaging-supported:</span> Above PLUS left posterior frontal/insula atrophy or hypoperfusion<br>
+      Pathologic correlate: FTLD-tau in ~70% (PSP- or CBD-type 4R tau most common); FTLD-TDP in ~20%.
+    </div>
+
+    <div class="slabel">Core features — at least 1 of 2 required <span class="pill pill-a">C1 OR C2 (OR BOTH)</span></div>
+
+    <div class="crit" id="nc1-item">
+      <div class="crit-main">
+        <div class="crit-name">C1 · Agrammatism in language production (omission/substitution of grammatical morphemes; simplified sentence structures; telegraphic speech)</div>
+        <button class="xbtn" onclick="xp(this)">details ▾</button>
+      </div>
+      <div class="crit-detail">
+        Agrammatism: simplified sentence structure, omission of function words, incorrect verb morphology (e.g., "She go store yesterday"), production of shorter utterances. Important to distinguish from alexia/agraphia. Assessed during spontaneous speech and connected speech samples. Related to left inferior frontal gyrus (Broca's area) and left supplementary motor area degeneration. May co-occur with apraxia of speech.
+        <div class="cnote"><strong>Assessment tip:</strong> Ask the patient to describe a complex scene (e.g., Cookie Theft picture). Look for grammatical simplification, omitted function words, and telegraphic utterances. Preserved sentence comprehension differentiates nfvPPA from svPPA.</div>
+      </div>
+      <div class="brow">
+        <button class="abtn" onclick="setFeat('nc1',true)"  id="nc1-yes">✓ Agrammatism present</button>
+        <button class="abtn" onclick="setFeat('nc1',false)" id="nc1-no">✗ Grammar intact</button>
+      </div>
+    </div>
+
+    <div class="crit" id="nc2-item">
+      <div class="crit-main">
+        <div class="crit-name">C2 · Apraxia of speech (effortful, halting speech; distorted sound substitutions; groping or trial-and-error articulatory movements)</div>
+        <button class="xbtn" onclick="xp(this)">details ▾</button>
+      </div>
+      <div class="crit-detail">
+        Apraxia of speech (AOS) is a motor programming/planning disorder — distinct from dysarthria (muscular weakness) or aphasia (linguistic). Features: distorted consonant substitutions, articulatory groping, inconsistent errors that worsen with longer/more complex words, slow and effortful rate, prosodic abnormalities, islands of error-free production. Can occur without agrammatism (primary AOS, typically tau pathology — often PSP or CBD). Key clue: the patient struggles with multisyllabic words more than monosyllabic ones.
+        <div class="cnote"><strong>Key data:</strong> AOS is strongly predictive of underlying tau pathology — particularly PSP-tau and CBD-tau. In a Mayo Clinic series, the combination of AOS and agrammatism was associated with tau (PSP or CBD) pathology in ~70% of autopsy cases.</div>
+      </div>
+      <div class="brow">
+        <button class="abtn" onclick="setFeat('nc2',true)"  id="nc2-yes">✓ Apraxia of speech present</button>
+        <button class="abtn" onclick="setFeat('nc2',false)" id="nc2-no">✗ Speech motor programming intact</button>
+      </div>
+    </div>
+
+    <div class="slabel" style="margin-top:14px;">Supportive features — ≥2 of 3 required <span class="pill pill-a">AT LEAST 2/3</span></div>
+
+    <div class="crit" id="ns1-item">
+      <div class="crit-main"><div class="crit-name">S1 · Impaired comprehension of syntactically complex sentences (difficulty with passive, embedded clauses, or other non-canonical sentence structures)</div><button class="xbtn" onclick="xp(this)">details ▾</button></div>
+      <div class="crit-detail">Single-word comprehension is typically preserved in nfvPPA (this distinguishes it from svPPA). However, complex sentence structures (e.g., "The dog was chased by the cat — who ran away?") are difficult because their processing requires holding grammatical structure in working memory. Tests: CYCLE-R, Northwestern Assessment of Verbs and Sentences (NAVS).</div>
+      <div class="brow"><button class="abtn" onclick="setFeat('ns1',true)" id="ns1-yes">✓ Complex sentence comprehension impaired</button><button class="abtn" onclick="setFeat('ns1',false)" id="ns1-no">✗ Single-word and sentence comprehension preserved</button></div>
+    </div>
+
+    <div class="two-col">
+    <div class="crit" id="ns2-item">
+      <div class="crit-main"><div class="crit-name">S2 · Spared single-word comprehension (individual word meaning is understood)</div></div>
+      <div class="brow"><button class="abtn" onclick="setFeat('ns2',true)" id="ns2-yes">✓ Preserved</button><button class="abtn" onclick="setFeat('ns2',false)" id="ns2-no">✗ Impaired</button></div>
+    </div>
+    <div class="crit" id="ns3-item">
+      <div class="crit-main"><div class="crit-name">S3 · Spared object knowledge (semantic memory for objects intact)</div></div>
+      <div class="brow"><button class="abtn" onclick="setFeat('ns3',true)" id="ns3-yes">✓ Preserved</button><button class="abtn" onclick="setFeat('ns3',false)" id="ns3-no">✗ Impaired</button></div>
+    </div>
+    </div>
+  </div>
+
+  <!-- lvPPA FEATURES -->
+  <div id="lvppa-features" style="display:none;">
+    <div class="lbox">
+      <strong>lvPPA classification (Gorno-Tempini et al. 2011):</strong><br>
+      <span class="la">Diagnosis requires:</span> Both core features (C1 AND C2), plus at least 3 of 4 supportive features (S1–S4).<br>
+      <span class="la">Imaging-supported:</span> Above PLUS posterior perisylvian and/or parietal atrophy or hypoperfusion<br>
+      <span class="lr">Critical consideration:</span> lvPPA is most commonly caused by AD pathology (~85–90% in autopsy and amyloid PET series). Amyloid PET is frequently positive. FTLD-tau is an uncommon cause. Consider AD biomarker testing.
+    </div>
+
+    <div class="slabel">Core features — BOTH required <span class="pill pill-r">BOTH C1 + C2 REQUIRED</span></div>
+
+    <div class="crit" id="lc1-item">
+      <div class="crit-main">
+        <div class="crit-name">C1 · Impaired single-word retrieval in spontaneous speech and naming (anomia; struggles to find words in connected speech and on formal naming tests)</div>
+        <button class="xbtn" onclick="xp(this)">details ▾</button>
+      </div>
+      <div class="crit-detail">
+        Anomia is prominent in all PPA variants but is particularly marked in lvPPA in spontaneous conversation and narrative speech. The patient frequently pauses, uses fillers ("um," "you know"), or circumlocutes. Unlike svPPA, the patient retains knowledge of the word's meaning — they know the concept but cannot access the phonological form. Boston Naming Test is impaired, typically moderately. Phonemic cues often help (distinguishing from svPPA where conceptual knowledge is lost).
+      </div>
+      <div class="brow">
+        <button class="abtn" onclick="setFeat('lc1',true)"  id="lc1-yes">✓ Anomia present in spontaneous speech and naming</button>
+        <button class="abtn" onclick="setFeat('lc1',false)" id="lc1-no">✗ Word retrieval intact</button>
+      </div>
+    </div>
+
+    <div class="crit" id="lc2-item">
+      <div class="crit-main">
+        <div class="crit-name">C2 · Impaired repetition of sentences and phrases (difficulty repeating multi-word sentences; single-word repetition relatively preserved)</div>
+        <button class="xbtn" onclick="xp(this)">details ▾</button>
+      </div>
+      <div class="crit-detail">
+        Impaired sentence repetition is the cardinal discriminating feature of lvPPA — distinguishing it from svPPA and nfvPPA. The phonological loop deficit (left posterior perisylvian region) causes breakdown with longer, more complex sentences. Single words and short phrases may be repeated accurately. Western Aphasia Battery (WAB) repetition subtest is typically impaired. <em>Note (Josephs et al. 2024, Neurology):</em> Updated Mayo analysis advocates for "moderate/severe" repetition deficit as a core requirement to tighten pathologic correlation with AD.
+        <div class="cnote"><strong>AUC for lvPPA + amyloid PET:</strong> In meta-analyses, amyloid PET positivity in clinically defined lvPPA ranges from 75–95%, making this the PPA variant most likely to have underlying AD pathology. CSF or plasma p-tau217 testing is clinically reasonable.</div>
+      </div>
+      <div class="brow">
+        <button class="abtn" onclick="setFeat('lc2',true)"  id="lc2-yes">✓ Sentence/phrase repetition impaired</button>
+        <button class="abtn" onclick="setFeat('lc2',false)" id="lc2-no">✗ Repetition intact</button>
+      </div>
+    </div>
+
+    <div class="slabel" style="margin-top:14px;">Supportive features — ≥3 of 4 required <span class="pill pill-a">AT LEAST 3/4</span></div>
+
+    <div class="two-col">
+    <div class="crit" id="ls1-item">
+      <div class="crit-main"><div class="crit-name">S1 · Speech errors in spontaneous speech and naming (phonemic paraphasias — sound-level errors, not articulatory)</div><button class="xbtn" onclick="xp(this)">details ▾</button></div>
+      <div class="crit-detail">Phonemic paraphasias (sound substitutions/additions — e.g., "lampoon" for "lampshade") reflect posterior perisylvian dysfunction. Unlike the articulatory groping of apraxia of speech, these are linguistic errors occurring without visible articulatory struggle.</div>
+      <div class="brow"><button class="abtn" onclick="setFeat('ls1',true)" id="ls1-yes">✓ Phonemic paraphasias present</button><button class="abtn" onclick="setFeat('ls1',false)" id="ls1-no">✗ Absent</button></div>
+    </div>
+    <div class="crit" id="ls2-item">
+      <div class="crit-main"><div class="crit-name">S2 · Spared single-word comprehension and object knowledge (understanding of individual word meaning is preserved)</div></div>
+      <div class="brow"><button class="abtn" onclick="setFeat('ls2',true)" id="ls2-yes">✓ Preserved</button><button class="abtn" onclick="setFeat('ls2',false)" id="ls2-no">✗ Impaired</button></div>
+    </div>
+    <div class="crit" id="ls3-item">
+      <div class="crit-main"><div class="crit-name">S3 · Spared motor speech (no apraxia of speech — speech production is not effortful or distorted at the articulatory level)</div></div>
+      <div class="brow"><button class="abtn" onclick="setFeat('ls3',true)" id="ls3-yes">✓ Speech motor production intact</button><button class="abtn" onclick="setFeat('ls3',false)" id="ls3-no">✗ Motor speech impaired</button></div>
+    </div>
+    <div class="crit" id="ls4-item">
+      <div class="crit-main"><div class="crit-name">S4 · Absence of frank agrammatism (grammatical structure in connected speech and writing is preserved or minimally affected)</div></div>
+      <div class="brow"><button class="abtn" onclick="setFeat('ls4',true)" id="ls4-yes">✓ Grammar preserved</button><button class="abtn" onclick="setFeat('ls4',false)" id="ls4-no">✗ Agrammatism present</button></div>
+    </div>
+    </div>
+  </div>
+
+  <div id="a1" class="alrt"></div>
+  <div class="nav-row">
+    <button class="nbtn ns" onclick="go(0)">← Back</button>
+    <button class="nbtn np" onclick="go(2)">Next: Exclusion Criteria →</button>
+  </div>
+</div>
+</div>
+
+<!-- ══ SCREEN 2: EXCLUSIONS ══ -->
+<div class="screen" id="s2">
+<div class="card">
+  <div class="ctitle" style="color:var(--accent);">Step 3 · Exclusion Criteria</div>
+  <div class="csub">The following criteria, if present, should raise doubt about an FTD diagnosis. They do not necessarily exclude FTD absolutely, but substantially lower diagnostic confidence. For bvFTD specifically, Rascovsky et al. 2011 identifies both mandatory exclusions and features that make the diagnosis highly unlikely.</div>
+
+  <div class="lbox">
+    <strong>General FTLD exclusion criteria (apply to bvFTD and all PPA variants):</strong><br>
+    <span class="lr">Mandatory:</span> Symptoms better explained by a non-neurodegenerative or non-psychiatric medical disorder (stroke, tumor, metabolic, inflammatory)<br>
+    <span class="lr">Mandatory:</span> Biomarker evidence definitively showing alternative pathology — e.g., amyloid PET clearly positive in bvFTD (strongly suggests AD behavioral variant or lvPPA)<br>
+    <span class="la">Relative:</span> Prominent early episodic memory impairment and spatial disorientation in bvFTD (raises AD concern). Note: this is now a relative rather than absolute exclusion in 2011 criteria.
+  </div>
+
+  <div class="slabel">Mandatory exclusion criteria <span class="pill pill-r">ANY = STRONGLY RECONSIDER</span></div>
+
+  <div class="crit" id="exc1-item">
+    <div class="crit-main">
+      <div class="crit-name">Pattern better explained by another neurological, psychiatric, or medical disorder (e.g., stroke, CNS tumor, encephalitis, severe systemic disease)</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      Rule out: focal stroke or strategic infarct (frontal, thalamic); CNS tumor (frontal glioma, meningioma, lymphoma); autoimmune/inflammatory encephalitis (VGKC-complex, NMDAR — can mimic bvFTD with behavioral change); severe psychiatric disorder (late-onset mania, schizophrenia, severe depression). Systematic workup: brain MRI with contrast, basic metabolic panel, TSH, B12, RPR/VDRL, HIV, consider autoimmune antibody panel if atypical or rapid.
+      <div class="cnote"><strong>Psychiatric mimics:</strong> Psychiatric disorders (late-onset bipolar, severe depression, OCD) are the most common cause of bvFTD misdiagnosis. The "FTD phenocopy" — patients meeting behavioral criteria without imaging change or FTLD pathology — often represents primary psychiatric disease. Functional decline (CDR-FTD) and imaging change are the critical differentiators.</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setExcl('exc1','no')"  id="exc1-no">✓ No alternative diagnosis identified</button>
+      <button class="abtn" onclick="setExcl('exc1','yes')" id="exc1-yes">✗ Alternative diagnosis present or likely</button>
+      <button class="abtn" onclick="setExcl('exc1','nd')"  id="exc1-nd">— Workup incomplete</button>
+    </div>
+  </div>
+
+  <div class="crit" id="exc2-item">
+    <div class="crit-main">
+      <div class="crit-name">Biomarker evidence clearly inconsistent with FTD/FTLD (e.g., amyloid PET clearly positive — especially relevant in bvFTD and lvPPA)</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      A clearly positive amyloid PET in a patient with bvFTD phenotype substantially raises concern for behavioral variant AD (bvAD) rather than FTLD. In lvPPA, amyloid positivity (~85–90%) is the expected finding and is consistent with the diagnosis (lvPPA due to AD). In svPPA and nfvPPA, amyloid positivity is less common but does not absolutely exclude FTLD — co-pathology is possible. CSF p-tau/Aβ42 ratio, plasma p-tau217, and amyloid PET remain important tools for excluding AD as the underlying pathology in FTD syndromes.
+      <div class="cnote"><strong>FTLD-specific biomarkers under development:</strong> Plasma GFAP is elevated in GRN mutation carriers. Plasma progranulin is markedly reduced (~50% of normal) in GRN haploinsufficiency — a useful screening test. TDP-43 biomarkers remain investigational. NfL is elevated in symptomatic FTD vs. primary psychiatric disease but is non-specific across neurodegenerative conditions.</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setExcl('exc2','no')"   id="exc2-no">✓ Biomarkers consistent with FTD (or not performed)</button>
+      <button class="abtn" onclick="setExcl('exc2','lvok')" id="exc2-lvok">ⓘ Amyloid PET positive — lvPPA context (consistent)</button>
+      <button class="abtn" onclick="setExcl('exc2','yes')"  id="exc2-yes">✗ Biomarkers clearly favor alternative pathology</button>
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:14px;">Functional decline assessment (required for Probable bvFTD) <span class="pill pill-a">PROBABLE REQUIRES THIS</span></div>
+
+  <div class="crit" id="func-item">
+    <div class="crit-main">
+      <div class="crit-name">Significant functional decline (by caregiver report or CDR-FTD/FTLD-CDR ≥0.5) OR patient continues to fulfill all professional/personal roles without significant impairment</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      Functional decline differentiates probable from possible bvFTD and is critical for excluding "phenocopy" cases — patients with behavioral features but no imaging change and no functional decline who often have primary psychiatric disease. Instruments: CDR-FTD (frontotemporal dementia-specific; includes 6 boxes including memory, orientation, judgment, community affairs, home/hobbies, personal care); Functional Activities Questionnaire (FAQ); ADCS-ADL. Even in early disease, subtle functional changes should be documentable by an informant.
+      <div class="cnote"><strong>Clinical data:</strong> In a prospective bvFTD cohort, patients without functional decline and without imaging change at 2 years had a >70% rate of non-neurodegenerative diagnosis on long-term follow-up (phenocopy). Functional change is the strongest single predictor of true FTLD pathology when imaging is equivocal.</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setExcl('func','yes')" id="func-yes">✓ Significant functional decline confirmed</button>
+      <button class="abtn" onclick="setExcl('func','no')"  id="func-no">✗ No significant functional decline (yet)</button>
+    </div>
+  </div>
+
+  <div id="a2" class="alrt"></div>
+  <div class="nav-row">
+    <button class="nbtn ns" onclick="go(1)">← Back</button>
+    <button class="nbtn np" onclick="go(3)">Next: Neuroimaging →</button>
+  </div>
+</div>
+</div>
+
+<!-- ══ SCREEN 3: NEUROIMAGING ══ -->
+<div class="screen" id="s3">
+<div class="card">
+  <div class="ctitle" style="color:var(--accent);">Step 4 · Neuroimaging</div>
+  <div class="csub">Neuroimaging supports syndrome classification and is required for "imaging-supported" or "probable" levels of diagnostic certainty. MRI (structural) and FDG-PET (metabolic) provide complementary information. Pattern recognition by an experienced neurologist or neuroradiologist is essential.</div>
+
+  <div class="lbox">
+    <strong>FDG-PET diagnostic performance in FTD (pooled data):</strong> Sensitivity 47–90%, specificity 68–98% for distinguishing FTD from AD — wide ranges reflect differences in syndrome subtype and clinical context. Hypometabolism typically precedes structural atrophy on MRI by months to years. Sensitivity and specificity both highest in bvFTD vs. AD comparisons using anterior cingulate + frontal hypometabolism patterns.<br><br>
+    <span class="lp">MRI structural atrophy:</span> Present in ~70% of bvFTD cases; absence does not exclude FTD (especially early disease). Right-predominant or bilateral symmetric frontal/anterior temporal atrophy is typical. Frontal atrophy visible on MRI: ~70% of bvFTD. Symmetric vs. asymmetric pattern varies by underlying pathology.
+  </div>
+
+  <div class="slabel">MRI structural findings <span class="pill pill-s">REQUIRED FOR PROBABLE bvFTD / IMAGING-SUPPORTED PPA</span></div>
+
+  <div class="crit" id="mri-item">
+    <div class="crit-main">
+      <div class="crit-name">MRI/CT pattern of atrophy consistent with syndrome</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      Expected patterns by syndrome:<br>
+      <strong>bvFTD:</strong> Bilateral (often asymmetric) frontal and anterior temporal atrophy — orbitofrontal, medial prefrontal, anterior cingulate, anterior insula. May be predominantly right-sided. Posterior regions (parietal, occipital) are relatively spared.<br>
+      <strong>svPPA:</strong> Anterior temporal lobe atrophy — bilateral but typically left &gt; right (or right &gt; left). Temporal poles distinctly atrophied. May include amygdala, perirhinal cortex.<br>
+      <strong>nfvPPA:</strong> Left posterior frontal and insular atrophy. Left inferior frontal gyrus (Broca's area), supplementary motor area, left anterior insula.<br>
+      <strong>lvPPA:</strong> Posterior perisylvian and/or inferior parietal atrophy — left-dominant angular gyrus, supramarginal gyrus, posterior superior temporal gyrus. More posterior than other FTD variants.
+      <div class="cnote"><strong>MRI tip:</strong> Frontotemporal atrophy in bvFTD is typically accompanied by disproportionate white matter involvement. Posterior cortical sparing (intact occipital lobes) is a useful feature distinguishing bvFTD from posterior cortical atrophy (AD variant). If parietal > frontal atrophy, reconsider bvFTD diagnosis.</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setImg('mri','yes')"   id="mri-yes">✓ Atrophy consistent with syndrome</button>
+      <button class="abtn" onclick="setImg('mri','aty')"   id="mri-aty">⚠ Atrophy present but atypical pattern</button>
+      <button class="abtn" onclick="setImg('mri','no')"    id="mri-no">✗ No relevant atrophy / normal MRI</button>
+      <button class="abtn" onclick="setImg('mri','nd')"    id="mri-nd">— Not performed</button>
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:14px;">FDG-PET or SPECT <span class="pill pill-s">SUPPORTS PROBABLE / ADDS CONFIDENCE</span></div>
+
+  <div class="crit" id="pet-item">
+    <div class="crit-main">
+      <div class="crit-name">FDG-PET (or SPECT perfusion) — frontal/anterior temporal hypometabolism or hypoperfusion</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      FDG-PET shows hypometabolism in frontal and anterior temporal cortices with relative sparing of posterior regions (parietal, occipital). In bvFTD: bilateral medial and lateral prefrontal cortex, anterior/mid-cingulate, bilateral insula, and caudate nuclei are most affected. In svPPA: anterior temporal (L &gt; R) hypometabolism predominates. In nfvPPA: left posterior frontal and perisylvian hypometabolism. In lvPPA: posterior perisylvian/inferior parietal (left-dominant) — may closely resemble AD hypometabolism pattern. Hypometabolism may antedate detectable MRI atrophy, making FDG-PET valuable in early disease.
+      <div class="cnote"><strong>Amyloid PET:</strong> Negative amyloid PET strongly supports FTLD (not AD) — useful in bvFTD and nfvPPA where AD pathology is less common. A meta-analysis (2024 AJNR) found pooled FDG-PET sensitivity 0.86 (95% CI 0.80–0.91) and specificity 0.85 (95% CI 0.79–0.90) for FTD vs. other dementias; ASL-MRI performed inferiorly (sensitivity ~0.75).</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setImg('pet','yes')"  id="pet-yes">✓ Consistent hypometabolism/hypoperfusion pattern</button>
+      <button class="abtn" onclick="setImg('pet','no')"   id="pet-no">✗ Normal / inconsistent pattern</button>
+      <button class="abtn" onclick="setImg('pet','nd')"   id="pet-nd">— Not performed</button>
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:14px;">Amyloid PET (particularly relevant for lvPPA / suspected bvAD) <span class="pill pill-a">IMPORTANT IN lvPPA AND ATYPICAL bvFTD</span></div>
+
+  <div class="crit" id="amypet-item">
+    <div class="crit-main">
+      <div class="crit-name">Amyloid PET — relevant when AD co-pathology or bvAD is in the differential</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      Amyloid PET positivity frequencies by syndrome (approximate clinical cohort data):<br>
+      <strong>bvFTD:</strong> ~10–15% positive — a positive result strongly suggests behavioral variant AD (bvAD) rather than FTLD<br>
+      <strong>svPPA:</strong> ~10–15% positive — usually coincidental co-pathology or misclassification<br>
+      <strong>nfvPPA:</strong> ~15–25% positive — co-pathology possible; does not rule out concurrent tau pathology<br>
+      <strong>lvPPA:</strong> ~85–90% positive — expected; reflects underlying AD as primary pathology
+      <div class="cnote"><strong>Key decision point:</strong> Amyloid PET negative in any FTD syndrome provides strong support for FTLD-TDP or FTLD-tau as underlying pathology, helping stratify for future disease-modifying trials. Negative amyloid PET in bvFTD can also help exclude the bvAD phenocopy.</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setImg('amypet','neg')"   id="amypet-neg">✓ Negative — supports FTLD pathology</button>
+      <button class="abtn" onclick="setImg('amypet','pos')"   id="amypet-pos">✗ Positive — raises AD concern (expected in lvPPA)</button>
+      <button class="abtn" onclick="setImg('amypet','nd')"    id="amypet-nd">— Not performed</button>
+    </div>
+  </div>
+
+  <div id="a3" class="alrt"></div>
+  <div class="nav-row">
+    <button class="nbtn ns" onclick="go(2)">← Back</button>
+    <button class="nbtn np" onclick="go(4)">Next: Genetic Workup →</button>
+  </div>
+</div>
+</div>
+
+<!-- ══ SCREEN 4: GENETICS ══ -->
+<div class="screen" id="s4">
+<div class="card">
+  <div class="ctitle" style="color:var(--accent);">Step 5 · Genetic Workup and Family History</div>
+  <div class="csub">FTD is one of the most heritable dementias. A pathogenic monogenic cause is found in approximately 10–40% of patients depending on cohort and family history. Genetic diagnosis enables presymptomatic testing in family members, establishes a definite pathologic diagnosis, and is critical for clinical trial eligibility as targeted therapies develop.</div>
+
+  <div class="lbox">
+    <strong>Major genetic causes (North American and European cohorts):</strong><br>
+    <span class="lp">C9orf72 hexanucleotide repeat expansion (GGGGCC):</span> Most common genetic cause of FTD in Western populations. 6–30% of all FTD; ~40% of familial FTD. Accounts for ~50% of genetic bvFTD. Associated with both FTD and ALS (FTD-ALS overlap in ~15% of C9orf72 FTD). Clinical: bvFTD ± ALS; psychiatric features (psychosis, paranoia) common. Pathology: FTLD-TDP type B. Duration averages 6.4 years.<br>
+    <span class="lp">GRN (progranulin) mutation:</span> Haploinsufficiency (loss-of-function). 1–16% of all FTD; ~15% of familial FTD. Pathology: FTLD-TDP type A. Phenotype: heterogeneous — bvFTD, nfvPPA, corticobasal syndrome. Often asymmetric parietal atrophy. Plasma progranulin markedly reduced (~50% normal) — useful inexpensive screen.<br>
+    <span class="lp">MAPT (microtubule-associated protein tau):</span> 3–14% of all FTD; ~10–15% of familial FTD. Pathology: FTLD-tau. Phenotype: heterogeneous — bvFTD, PSP-like, CBS-like, parkinsonism. Typically autosomal dominant with high penetrance. Family history of dementia with parkinsonism is a key clue.
+  </div>
+
+  <div class="slabel">Family history <span class="pill pill-s">INFORMS PRE-TEST PROBABILITY</span></div>
+
+  <div class="crit" id="fhx-item">
+    <div class="crit-main">
+      <div class="crit-name">Family history of dementia, FTD, ALS, or parkinsonism in first-degree relative</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      Autosomal dominant family history (parent or sibling with dementia, especially early-onset) is the strongest predictor of a monogenic cause. Key clues in history: dementia + parkinsonism in family (MAPT); dementia + ALS in family (C9orf72); dementia + psychiatric features or psychosis (C9orf72); multiple generations with dementia (any of three major genes). Incomplete penetrance occurs, especially in GRN. Even apparently sporadic FTD can harbor a pathogenic variant — particularly in younger onset (age &lt;60) cases.
+      <div class="cnote"><strong>GENFI consortium data (n=3,401 mutation carriers):</strong> Symptomatic mutation carriers first present with bvFTD in ~74%, language variant in ~16%, and motor presentations in ~10%. Age at onset: C9orf72 median 58y; GRN median 63y; MAPT median 49y. Disease duration: MAPT longest (~9–10y), C9orf72 shortest (~6.4y).</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setGene('fhx','pos')"  id="fhx-pos">✓ Positive family history (≥1 first-degree relative)</button>
+      <button class="abtn" onclick="setGene('fhx','neg')"  id="fhx-neg">✗ No family history identified</button>
+      <button class="abtn" onclick="setGene('fhx','unk')"  id="fhx-unk">? Unknown / family history unavailable</button>
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:14px;">Genetic testing status <span class="pill pill-s">ENABLES DEFINITE DIAGNOSIS</span></div>
+
+  <div class="crit" id="gtest-item">
+    <div class="crit-main">
+      <div class="crit-name">Genetic panel result — C9orf72, GRN, MAPT (at minimum); TBK1, FUS, TARDBP for extended panel</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      Standard clinical panel includes: <strong>C9orf72 repeat expansion PCR/Southern blot</strong> (normal &lt;25 repeats; pathogenic typically &gt;400); <strong>GRN sequencing</strong> (pathogenic loss-of-function variants; also check plasma progranulin — &lt;125 ng/mL in symptomatic, &lt;90 ng/mL in presymptomatic); <strong>MAPT sequencing</strong> (exon/intron mutations and splicing variants). Extended panels include TBK1, TARDBP, FUS, VCP, CHCHD10. In a German multicenter cohort (n=509), diagnostic yield of genetic testing was 18.1% overall. Among familial cases, yield is 30–50%. C9orf72 most common (n=47), followed by GRN (n=26), MAPT (n=11), TBK1 (n=5).
+      <div class="cnote"><strong>When to test:</strong> Strong family history, onset age &lt;60, FTD-ALS overlap, psychiatric prodrome, or clinical trial participation. Per current AFTD and EFNS guidance, genetic counseling should precede testing in presymptomatic family members. A positive genetic result upgrades diagnostic certainty to "with definite pathology" (Rascovsky criteria) or "with definite pathology" (Gorno-Tempini criteria).</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setGene('gtest','pos')"  id="gtest-pos">✓ Pathogenic variant identified</button>
+      <button class="abtn" onclick="setGene('gtest','neg')"  id="gtest-neg">✗ No pathogenic variant found</button>
+      <button class="abtn" onclick="setGene('gtest','vus')"  id="gtest-vus">⚠ VUS / variant of uncertain significance</button>
+      <button class="abtn" onclick="setGene('gtest','nd')"   id="gtest-nd">— Not performed</button>
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:14px;">Motor features — FTD-ALS and FTD-Parkinsonism overlap <span class="pill pill-a">MODIFIES PATHOLOGIC PREDICTION</span></div>
+
+  <div class="crit" id="motor-item">
+    <div class="crit-main">
+      <div class="crit-name">Co-existing motor neuron disease (MND/ALS) or parkinsonism (PSP-like, CBS-like features)</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      Motor features markedly narrow the pathologic differential:<br>
+      <strong>FTD + ALS (MND):</strong> Strongly predicts C9orf72 expansion (~50% of FTD-ALS) or TDP-43 pathology (FTLD-TDP). ALS may precede, co-occur, or follow FTD. Upper and lower motor neuron signs on exam — EMG/NCS often required.<br>
+      <strong>FTD + PSP-like parkinsonism (vertical gaze palsy, axial rigidity, falls):</strong> Predicts FTLD-tau (4R tau: PSP-tau type). MAPT mutation possible; sporadic 4R-tauopathy also.<br>
+      <strong>FTD + Corticobasal syndrome (CBS: limb apraxia, alien limb, cortical sensory loss, asymmetric rigidity):</strong> CBD-tau (4R) most common; also FTLD-TDP, FTLD-FUS. MAPT mutation possible.
+      <div class="cnote"><strong>FTD-ALS co-occurrence rate:</strong> Approximately 15% of FTD patients develop ALS; ~50% of ALS patients show cognitive/behavioral changes meeting FTD criteria. In C9orf72 expansion carriers, concurrent FTD + ALS is seen in ~20% of cases.</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setGene('motor','als')"  id="motor-als">✓ ALS/MND signs (LMN+UMN)</button>
+      <button class="abtn" onclick="setGene('motor','psp')"  id="motor-psp">✓ PSP-like parkinsonism</button>
+      <button class="abtn" onclick="setGene('motor','cbs')"  id="motor-cbs">✓ Corticobasal syndrome features</button>
+      <button class="abtn" onclick="setGene('motor','no')"   id="motor-no">✗ No motor features</button>
+    </div>
+  </div>
+
+  <div id="a4" class="alrt"></div>
+  <div class="nav-row">
+    <button class="nbtn ns" onclick="go(3)">← Back</button>
+    <button class="nbtn np" onclick="go(5)">Generate Verdict →</button>
+  </div>
+</div>
+</div>
+
+<!-- ══ SCREEN 5: VERDICT ══ -->
+<div class="screen" id="s5">
+  <div id="vout"></div>
+  <div class="doc-header">
+    <button class="doc-tog" onclick="toggleDoc()">▼ Documentation Note</button>
+    <button class="copy-btn" id="copy-btn" onclick="copyDoc()">⎘ Copy</button>
+  </div>
+  <div class="doc-body" id="dn"></div>
+  <div class="nav-row">
+    <button class="nbtn ns" onclick="go(4)">← Back</button>
+    <button class="nbtn np" onclick="resetAll()">↺ New Evaluation</button>
+  </div>
+</div>
+
+</div><!-- /app -->
+<script>
+const S = {
+  syndrome: null,
+  // bvFTD features
+  f1:null,f2:null,f3:null,f4:null,f5:null,f6:null,
+  // svPPA
+  sc1:null,sc2:null,ss1:null,ss2:null,ss3:null,ss4:null,
+  // nfvPPA
+  nc1:null,nc2:null,ns1:null,ns2:null,ns3:null,
+  // lvPPA
+  lc1:null,lc2:null,ls1:null,ls2:null,ls3:null,ls4:null,
+  // exclusions
+  exc1:null, exc2:null, func:null,
+  // imaging
+  mri:null, pet:null, amypet:null,
+  // genetics
+  fhx:null, gtest:null, motor:null
+};
+let cur = 0;
+
+function setSyndrome(s) {
+  S.syndrome = s;
+  // reset all features
+  ['f1','f2','f3','f4','f5','f6','sc1','sc2','ss1','ss2','ss3','ss4','nc1','nc2','ns1','ns2','ns3','lc1','lc2','ls1','ls2','ls3','ls4'].forEach(k=>S[k]=null);
+  ['bvftd','svppa','nfvppa','lvppa'].forEach(id=>{
+    const el=document.getElementById('synd-'+id);
+    if(el) el.className='syn-card';
+  });
+  const colors={bvftd:'sel-s',svppa:'sel-b',nfvppa:'sel-g',lvppa:'sel-a'};
+  const el=document.getElementById('synd-'+s);
+  if(el) el.className='syn-card '+colors[s];
+  // show correct feature set
+  ['bvftd','svppa','nfvppa','lvppa'].forEach(id=>{
+    const el=document.getElementById(id+'-features');
+    if(el) el.style.display=(id===s)?'block':'none';
+  });
+  updateFeatCount();
+  ui();
+}
+
+function setFeat(k,v) {
+  S[k]=v;
+  const item=document.getElementById(k+'-item');
+  if(item) item.className='crit '+(v===true?'c-yes':v===false?'c-no':'c-abs');
+  const yes=document.getElementById(k+'-yes');
+  const no=document.getElementById(k+'-no');
+  if(yes){yes.classList.remove('ay','an');if(v===true)yes.classList.add('ay');}
+  if(no){no.classList.remove('ay','an');if(v===false)no.classList.add('an');}
+  updateFeatCount();
+  ui();
+}
+
+function setExcl(k,v) {
+  S[k]=v;
+  const item=document.getElementById(k+'-item');
+  if(item){
+    item.className='crit';
+    if(v==='yes') item.classList.add('c-no');
+    else if(v==='no'||v==='lvok') item.classList.add('c-yes');
+    else item.classList.add('c-abs');
+  }
+  ['yes','no','nd','lvok'].forEach(x=>{
+    const b=document.getElementById(k+'-'+x);
+    if(b) b.classList.remove('ay','an','aa','ap');
+  });
+  const map={yes:'an',no:'ay',nd:'aa',lvok:'ab'};
+  const btn=document.getElementById(k+'-'+v);
+  if(btn) btn.classList.add(map[v]||'aa');
+  ui();
+}
+
+function setImg(k,v) {
+  S[k]=v;
+  const item=document.getElementById(k+'-item');
+  if(item){
+    item.className='crit';
+    if(v==='yes'||v==='neg') item.classList.add('c-yes');
+    else if(v==='no'||v==='pos') item.classList.add('c-no');
+    else if(v==='aty') item.classList.add('c-part');
+    else item.classList.add('c-abs');
+  }
+  ['yes','no','nd','neg','pos','aty'].forEach(x=>{
+    const b=document.getElementById(k+'-'+x);
+    if(b) b.classList.remove('ay','an','aa','aw');
+  });
+  const map={yes:'ay',neg:'ay',no:'an',pos:'an',nd:'aa',aty:'aw'};
+  const btn=document.getElementById(k+'-'+v);
+  if(btn) btn.classList.add(map[v]||'aa');
+  ui();
+}
+
+function setGene(k,v) {
+  S[k]=v;
+  const item=document.getElementById(k+'-item');
+  if(item){
+    item.className='crit';
+    if(v==='pos'||v==='als'||v==='psp'||v==='cbs') item.classList.add('c-pres');
+    else if(v==='neg'||v==='no') item.classList.add('c-abs');
+    else item.classList.add('c-part');
+  }
+  ['pos','neg','vus','nd','unk','als','psp','cbs','no'].forEach(x=>{
+    const b=document.getElementById(k+'-'+x);
+    if(b) b.classList.remove('ay','an','aa','aw','ap');
+  });
+  const map={pos:'ap',als:'ap',psp:'ap',cbs:'ap',neg:'an',no:'an',vus:'aw',nd:'aa',unk:'aa'};
+  const btn=document.getElementById(k+'-'+v);
+  if(btn) btn.classList.add(map[v]||'aa');
+  ui();
+}
+
+function updateFeatCount() {
+  const badge=document.getElementById('feat-count');
+  if(!badge||S.syndrome!=='bvftd') return;
+  const cnt=['f1','f2','f3','f4','f5','f6'].filter(k=>S[k]===true).length;
+  badge.textContent=cnt;
+  badge.className='feat-badge '+(cnt>=3?'fb-ok':cnt>0?'fb-part':'fb-none');
+}
+
+function bvftdFeatCount() { return ['f1','f2','f3','f4','f5','f6'].filter(k=>S[k]===true).length; }
+function svppaCore()    { return S.sc1===true && S.sc2===true; }
+function svppaSupp()    { return ['ss1','ss2','ss3','ss4'].filter(k=>S[k]===true).length; }
+function nfvppaCore()   { return S.nc1===true || S.nc2===true; }
+function nfvppaSupp()   { return ['ns1','ns2','ns3'].filter(k=>S[k]===true).length; }
+function lvppaCore()    { return S.lc1===true && S.lc2===true; }
+function lvppaSupp()    { return ['ls1','ls2','ls3','ls4'].filter(k=>S[k]===true).length; }
+function exclusionFail(){ return S.exc1==='yes' || S.exc2==='yes'; }
+function hasImaging()   { return (S.mri==='yes'||S.pet==='yes'); }
+function hasPathology() { return S.gtest==='pos'; }
+
+function getDxLevel() {
+  if(!S.syndrome) return null;
+  if(exclusionFail()) return 'excluded';
+  if(S.syndrome==='bvftd') {
+    if(hasPathology()) return 'definite';
+    const cnt=bvftdFeatCount();
+    if(cnt<3) return 'insufficient';
+    if(hasImaging() && S.func==='yes') return 'probable';
+    return 'possible';
+  }
+  if(S.syndrome==='svppa') {
+    if(hasPathology()) return 'definite';
+    if(!svppaCore()||svppaSupp()<3) return 'insufficient';
+    if(hasImaging()) return 'imaging-supported';
+    return 'clinical';
+  }
+  if(S.syndrome==='nfvppa') {
+    if(hasPathology()) return 'definite';
+    if(!nfvppaCore()||nfvppaSupp()<2) return 'insufficient';
+    if(hasImaging()) return 'imaging-supported';
+    return 'clinical';
+  }
+  if(S.syndrome==='lvppa') {
+    if(hasPathology()) return 'definite';
+    if(!lvppaCore()||lvppaSupp()<3) return 'insufficient';
+    if(hasImaging()) return 'imaging-supported';
+    return 'clinical';
+  }
+  return null;
+}
+
+function synLabel(s) {
+  const m={bvftd:'Behavioral Variant FTD (bvFTD)',svppa:'Semantic Variant PPA (svPPA)',nfvppa:'Nonfluent/Agrammatic PPA (nfvPPA)',lvppa:'Logopenic Variant PPA (lvPPA)'};
+  return m[s]||s;
+}
+
+function rv() {
+  const lvl=getDxLevel();
+  const syn=S.syndrome;
+  let vcls='', vt='', vd='';
+  if(!syn||lvl===null) { vcls='vund'; vt='Syndrome Not Selected'; vd='Return to Step 1 and select a clinical syndrome.'; }
+  else if(lvl==='excluded') {
+    vcls='vneg'; vt='FTD Diagnosis Not Supported';
+    vd='One or more exclusion criteria are met — either an alternative diagnosis accounts for the presentation, or biomarker evidence is clearly inconsistent with FTLD pathology. Reconsider the differential diagnosis.';
+  } else if(lvl==='insufficient') {
+    vcls='vund'; vt='Insufficient Criteria for '+synLabel(syn);
+    if(syn==='bvftd') vd='Only '+bvftdFeatCount()+' of 6 bvFTD core features confirmed (≥3 required for possible bvFTD). Progressive deterioration must also be established by informant history. Review each feature with an informant; consider neuropsychological testing.';
+    else vd='Core and/or supportive feature requirements are not yet met for '+synLabel(syn)+'. Review feature criteria and ensure formal speech/language testing has been performed.';
+  } else if(lvl==='possible') {
+    vcls='vposs'; vt='Possible bvFTD';
+    vd='≥3 of 6 core bvFTD features confirmed. Criteria for possible bvFTD are met (Rascovsky et al. 2011). Neuroimaging consistent with bvFTD and/or significant functional decline not yet confirmed — required for probable bvFTD. Psychiatric phenocopy is a meaningful differential at this level.';
+  } else if(lvl==='probable') {
+    vcls='vpos'; vt='Probable bvFTD';
+    vd='Possible bvFTD criteria met + significant functional decline + frontal/anterior temporal neuroimaging findings consistent with bvFTD. Probable bvFTD has sensitivity 85%, specificity 95% vs. autopsy-confirmed FTLD (Harris et al. Neurology 2013). Genetic testing should be considered.';
+  } else if(lvl==='clinical') {
+    vcls='vposs'; vt='Clinical Diagnosis: '+synLabel(syn);
+    vd='Core and supportive language/behavioral features are met for '+synLabel(syn)+'. This is a clinical diagnosis without imaging support. Imaging support (MRI atrophy or FDG-PET hypometabolism in expected distribution) is needed to upgrade to imaging-supported level.';
+  } else if(lvl==='imaging-supported') {
+    vcls='vpos'; vt='Imaging-Supported: '+synLabel(syn);
+    vd='Clinical criteria AND expected neuroimaging pattern confirmed for '+synLabel(syn)+'. This represents the highest level of clinical certainty without pathologic or genetic confirmation.';
+  } else if(lvl==='definite') {
+    vcls='vpos'; vt='Definite FTLD Pathology: '+synLabel(syn);
+    vd='Pathogenic genetic variant confirmed. This establishes a definite neuropathologic diagnosis. Pathologic prediction: '+getPathPrediction()+'. Genetic counseling for first-degree family members should be arranged.';
+  }
+
+  let html=`<div class="vban ${vcls}"><div class="vban-head">
+    <div class="vlbl">FTDC / Gorno-Tempini 2011 · Rascovsky et al. Brain 2011 · Gorno-Tempini et al. Neurology 2011</div>
+    <div class="vtitle">${vt}</div>
+    <div class="vdesc">${vd}</div>
+  </div></div>`;
+
+  // Feature / criterion summary
+  html+=`<div class="sum-grid">`;
+  html+=`<div class="sblock"><div class="sbtitle">Clinical Criteria</div>`;
+
+  if(syn==='bvftd') {
+    const feats=[['F1 Disinhibition','f1'],['F2 Apathy/inertia','f2'],['F3 Loss empathy','f3'],['F4 Perseveration/stereotypy','f4'],['F5 Hyperorality','f5'],['F6 Dysexecutive profile','f6']];
+    feats.forEach(([nm,k])=>{
+      const v=S[k]; const dc=v===true?'dg':v===false?'dr':'dgr'; const tc=v===true?'tg':v===false?'tr':'tgr';
+      html+=`<div class="srow"><div class="dot ${dc}"></div><div class="sname">${nm}</div><div class="stag ${tc}">${v===true?'Present':v===false?'Absent':'—'}</div></div>`;
+    });
+    const cnt=bvftdFeatCount();
+    html+=`<div class="srow"><div class="dot ${cnt>=3?'dg':'dr'}"></div><div class="sname">Feature count</div><div class="stag ${cnt>=3?'tg':'tr'}">${cnt}/6 (≥3 req.)</div></div>`;
+    html+=`<div class="srow"><div class="dot ${S.func==='yes'?'dg':S.func==='no'?'dr':'dgr'}"></div><div class="sname">Functional decline</div><div class="stag ${S.func==='yes'?'tg':S.func==='no'?'tr':'tgr'}">${S.func==='yes'?'Confirmed':S.func==='no'?'Absent':'—'}</div></div>`;
+  } else if(syn==='svppa') {
+    [['C1 Confrontation naming','sc1'],['C2 Single-word comprehension','sc2'],['S1 Object knowledge','ss1'],['S2 Surface dyslexia/dysgraphia','ss2'],['S3 Repetition spared','ss3'],['S4 Speech fluent','ss4']].forEach(([nm,k])=>{
+      const v=S[k]; const dc=v===true?'dg':v===false?'dr':'dgr'; const tc=v===true?'tg':v===false?'tr':'tgr';
+      html+=`<div class="srow"><div class="dot ${dc}"></div><div class="sname">${nm}</div><div class="stag ${tc}">${v===true?'✓':v===false?'✗':'—'}</div></div>`;
+    });
+  } else if(syn==='nfvppa') {
+    [['C1 Agrammatism','nc1'],['C2 Apraxia of speech','nc2'],['S1 Complex sent. comprehension','ns1'],['S2 Single-word comprehension','ns2'],['S3 Object knowledge','ns3']].forEach(([nm,k])=>{
+      const v=S[k]; const dc=v===true?'dg':v===false?'dr':'dgr'; const tc=v===true?'tg':v===false?'tr':'tgr';
+      html+=`<div class="srow"><div class="dot ${dc}"></div><div class="sname">${nm}</div><div class="stag ${tc}">${v===true?'✓':v===false?'✗':'—'}</div></div>`;
+    });
+  } else if(syn==='lvppa') {
+    [['C1 Anomia','lc1'],['C2 Sentence repetition','lc2'],['S1 Phonemic paraphasias','ls1'],['S2 Single-word comprehension','ls2'],['S3 Motor speech spared','ls3'],['S4 Grammar preserved','ls4']].forEach(([nm,k])=>{
+      const v=S[k]; const dc=v===true?'dg':v===false?'dr':'dgr'; const tc=v===true?'tg':v===false?'tr':'tgr';
+      html+=`<div class="srow"><div class="dot ${dc}"></div><div class="sname">${nm}</div><div class="stag ${tc}">${v===true?'✓':v===false?'✗':'—'}</div></div>`;
+    });
+  }
+  html+=`</div>`;
+
+  html+=`<div class="sblock"><div class="sbtitle">Imaging &amp; Genetics</div>`;
+  const mriLbl={yes:'Consistent atrophy',aty:'Atypical pattern',no:'Normal / inconsistent',nd:'Not performed'};
+  const petLbl={yes:'Consistent hypometabolism',no:'Normal / inconsistent',nd:'Not performed'};
+  const amypLbl={neg:'Negative (favors FTLD)',pos:'Positive (AD concern / expected lvPPA)',nd:'Not performed'};
+  const gtLbl={pos:'Pathogenic variant identified',neg:'No pathogenic variant',vus:'VUS identified',nd:'Not performed'};
+  const motLbl={als:'ALS/MND co-features',psp:'PSP-like parkinsonism',cbs:'Corticobasal syndrome',no:'None'};
+
+  html+=`<div class="srow"><div class="dot ${S.mri==='yes'?'dg':S.mri==='no'?'dr':S.mri==='aty'?'da':'dgr'}"></div><div class="sname">MRI atrophy</div><div class="stag ${S.mri==='yes'?'tg':S.mri==='no'?'tr':S.mri==='aty'?'ta':'tgr'}">${mriLbl[S.mri]||'—'}</div></div>`;
+  html+=`<div class="srow"><div class="dot ${S.pet==='yes'?'dg':S.pet==='no'?'dr':'dgr'}"></div><div class="sname">FDG-PET/SPECT</div><div class="stag ${S.pet==='yes'?'tg':S.pet==='no'?'tr':'tgr'}">${petLbl[S.pet]||'—'}</div></div>`;
+  html+=`<div class="srow"><div class="dot ${S.amypet==='neg'?'dg':S.amypet==='pos'?'dr':'dgr'}"></div><div class="sname">Amyloid PET</div><div class="stag ${S.amypet==='neg'?'tg':S.amypet==='pos'?'tr':'tgr'}">${amypLbl[S.amypet]||'—'}</div></div>`;
+  html+=`<div class="srow"><div class="dot ${S.gtest==='pos'?'dp':S.gtest==='neg'?'dr':'dgr'}"></div><div class="sname">Genetic testing</div><div class="stag ${S.gtest==='pos'?'tp':S.gtest==='neg'?'tr':'tgr'}">${gtLbl[S.gtest]||'—'}</div></div>`;
+  html+=`<div class="srow"><div class="dot ${S.motor&&S.motor!=='no'?'da':'dgr'}"></div><div class="sname">Motor features</div><div class="stag ${S.motor&&S.motor!=='no'?'ta':'tgr'}">${motLbl[S.motor]||'—'}</div></div>`;
+  html+=`<div class="srow"><div class="dot ${S.exc1==='no'?'dg':S.exc1==='yes'?'dr':'dgr'}"></div><div class="sname">Exclusion criteria</div><div class="stag ${S.exc1==='no'?'tg':S.exc1==='yes'?'tr':'tgr'}">${S.exc1==='no'?'None met':S.exc1==='yes'?'Present':'—'}</div></div>`;
+  html+=`</div></div>`;
+
+  // Pathologic prediction box
+  const pred=getPathPrediction();
+  if(pred) {
+    html+=`<div class="card" style="margin-bottom:12px;"><div class="ctitle" style="color:var(--accent);margin-bottom:8px;">Expected Neuropathologic Substrate</div><div style="font-size:12px;color:var(--text2);line-height:1.75;">${pred}</div></div>`;
+  }
+
+  document.getElementById('vout').innerHTML=html;
+  buildDoc(vt,lvl);
+}
+
+function getPathPrediction() {
+  const s=S.syndrome; const g=S.gtest; const m=S.motor;
+  if(g==='pos') {
+    if(S.motor==='als') return '<strong>C9orf72 expansion</strong> confirmed. Pathology: FTLD-TDP type B. C9orf72 is the most common genetic cause of FTD in Western populations (6–30% of all FTD; ~50% of genetic bvFTD). FTD-ALS overlap in ~20% of C9orf72 cases. Disease duration averages 6.4 years.';
+    return '<strong>Pathogenic variant confirmed</strong> — pathology established per genetic result. Consult GENFI consortium data for phenotypic spectrum by gene. Consider presymptomatic testing and genetic counseling for first-degree family members.';
+  }
+  const preds = {
+    bvftd: '<strong>bvFTD:</strong> FTLD-TDP (types A, B, C) in ~50–60%; FTLD-tau (Pick\'s disease, CBD, PSP) in ~30–40%; FTLD-FUS in ~5–10%. C9orf72 expansion is the most common single genetic cause in sporadic/familial bvFTD in Western populations.',
+    svppa: '<strong>svPPA:</strong> FTLD-TDP type C in ~80–90% of autopsy cases. Sporadic TDP-43 type C is highly associated with svPPA — the most consistent clinicopathologic correlation in the FTLD spectrum. Genetic causes are uncommon.',
+    nfvppa: '<strong>nfvPPA:</strong> FTLD-tau in ~60–70% (PSP-tau ~50%; CBD-tau ~20%; Pick\'s tau ~5–10%). FTLD-TDP in ~20–25%. A pure apraxia of speech phenotype is most strongly associated with tau (PSP or CBD). MAPT mutation possible — genetic testing recommended.',
+    lvppa: '<strong>lvPPA:</strong> Alzheimer\'s disease pathology (amyloid + tau) in ~85–90% of autopsy-confirmed and amyloid PET series. FTLD-tau in ~10–15%. Amyloid PET testing is strongly recommended to confirm/exclude AD pathology and guide potential anti-amyloid therapy eligibility evaluation.'
+  };
+  return (preds[s]||null) + (m&&m!=='no'? '<br><br><strong>Motor feature implication:</strong> '+(m==='als'?'FTD-ALS overlap predicts TDP-43 pathology; check C9orf72 expansion. ~50% of FTD-ALS cases carry C9orf72.':m==='psp'?'PSP-like parkinsonism predicts underlying 4R-tau (PSP-type). MAPT testing recommended.':m==='cbs'?'Corticobasal syndrome features predict CBD-type 4R tau (~50%). Also consider AD (parietal atrophy), FTLD-TDP, FTLD-FUS. MAPT testing recommended.':''):'');
+}
+
+function ui() {
+  const a0=document.getElementById('a0'), n0=document.getElementById('n0');
+  if(S.syndrome) {
+    const msgs={bvftd:'Behavioral variant FTD selected. Proceed to assess core behavioral features (F1–F6). Progressive deterioration by informant history is required as a prerequisite.',svppa:'Semantic variant PPA selected. Both core features (C1 and C2) plus ≥3 of 4 supportive features required.',nfvppa:'Nonfluent/agrammatic PPA selected. At least one core feature (C1 or C2) plus ≥2 of 3 supportive features required.',lvppa:'Logopenic variant PPA selected. Both core features required plus ≥3 of 4 supportive features. Consider AD biomarker testing — lvPPA is most commonly caused by AD pathology (~85–90%).'};
+    sa(a0,'asilv',msgs[S.syndrome]||''); n0.disabled=false;
+  } else { ha(a0); n0.disabled=true; }
+
+  // Step 1 feedback
+  const a1=document.getElementById('a1');
+  if(S.syndrome==='bvftd') {
+    const cnt=bvftdFeatCount();
+    if(cnt>=3) sa(a1,'aok','✓ '+cnt+'/6 core bvFTD features present — meets threshold for possible bvFTD. Proceed to exclusion criteria and imaging.');
+    else if(cnt>0) sa(a1,'awn','⚠ '+cnt+'/6 features confirmed (≥3 required for possible bvFTD). Continue assessment — additional features may emerge.');
+    else if([S.f1,S.f2,S.f3,S.f4,S.f5,S.f6].some(v=>v!==null)) sa(a1,'aerr','✗ No bvFTD features confirmed yet. Review each criterion with an informant.');
+    else ha(a1);
+  } else if(S.syndrome==='svppa') {
+    const cok=svppaCore(); const scnt=svppaSupp();
+    if(cok&&scnt>=3) sa(a1,'aok','✓ Both core features + '+scnt+'/4 supportive features met — clinical svPPA criteria satisfied.');
+    else if(cok) sa(a1,'awn','Core features met. '+scnt+'/4 supportive features confirmed (≥3 required). Continue.');
+    else sa(a1,'awn','Core features incomplete — both C1 (naming) and C2 (single-word comprehension) must be present.');
+  } else if(S.syndrome==='nfvppa') {
+    const cok=nfvppaCore(); const scnt=nfvppaSupp();
+    if(cok&&scnt>=2) sa(a1,'aok','✓ Core feature(s) + '+scnt+'/3 supportive features met — clinical nfvPPA criteria satisfied.');
+    else if(cok) sa(a1,'awn','Core feature(s) met. '+scnt+'/3 supportive features confirmed (≥2 required).');
+    else sa(a1,'awn','Core features incomplete — at least C1 (agrammatism) or C2 (apraxia of speech) must be present.');
+  } else if(S.syndrome==='lvppa') {
+    const cok=lvppaCore(); const scnt=lvppaSupp();
+    if(cok&&scnt>=3) sa(a1,'aok','✓ Both core features + '+scnt+'/4 supportive features met — clinical lvPPA criteria satisfied. Strongly recommend amyloid PET or CSF/plasma AD biomarkers.');
+    else if(cok) sa(a1,'awn','Core features met. '+scnt+'/4 supportive features confirmed (≥3 required).');
+    else sa(a1,'awn','Core features incomplete — both C1 (anomia) and C2 (sentence repetition impairment) must be present.');
+  } else ha(a1);
+
+  // Step 2 exclusions
+  const a2=document.getElementById('a2');
+  if(S.exc1==='yes') sa(a2,'aerr','✗ Alternative diagnosis identified — FTD diagnosis not supportable until alternative etiology excluded or managed.');
+  else if(S.exc2==='yes') sa(a2,'aerr','✗ Biomarkers inconsistent with FTLD — reconsider diagnosis. If lvPPA, amyloid PET positivity is expected.');
+  else if(S.exc2==='lvok') sa(a2,'ainf','ⓘ Amyloid PET positive in lvPPA context — consistent with underlying AD pathology causing lvPPA. Consider AD biomarker workup for treatment eligibility.');
+  else if(S.func==='yes'&&S.exc1==='no') sa(a2,'aok','✓ No exclusion criteria met. Significant functional decline confirmed — supports upgrading to probable bvFTD if imaging criteria also met.');
+  else if(S.exc1==='no') sa(a2,'aok','✓ No exclusion criteria met.');
+  else ha(a2);
+
+  // Step 3 imaging
+  const a3=document.getElementById('a3');
+  if(S.mri==='yes'||S.pet==='yes') sa(a3,'aok','✓ Neuroimaging consistent with syndrome — required criterion for probable bvFTD or imaging-supported PPA is met.');
+  else if(S.mri==='no'&&S.pet==='no') sa(a3,'awn','⚠ Neuroimaging not consistent with FTD — diagnosis limited to possible/clinical level. Consider FDG-PET if MRI is unrevealing, as hypometabolism may precede atrophy.');
+  else if(S.mri==='aty') sa(a3,'awn','⚠ Atypical imaging pattern. Reassess syndrome classification or consider alternative diagnoses. Supplementary FDG-PET may clarify.');
+  else if([S.mri,S.pet].some(v=>v!==null)) ha(a3);
+  else ha(a3);
+
+  // Step 4 genetics
+  const a4=document.getElementById('a4');
+  if(S.gtest==='pos') sa(a4,'aok','✓ Pathogenic variant confirmed — upgrades to "definite FTLD pathology" per 2011 criteria. Genetic counseling for family members should be offered.');
+  else if(S.motor==='als') sa(a4,'awn','⚠ FTD-ALS overlap — strongly consider C9orf72 expansion testing if not already performed. ~50% of FTD-ALS carries C9orf72.');
+  else if(S.fhx==='pos') sa(a4,'ainf','ⓘ Positive family history — genetic testing strongly recommended. Consider comprehensive panel including C9orf72, GRN, MAPT, TBK1.');
+  else ha(a4);
+}
+
+function sa(el,cls,msg){ if(!el)return; el.className='alrt show '+cls; el.innerHTML=msg; }
+function ha(el){ if(el) el.classList.remove('show'); }
+
+function buildDoc(vt,lvl) {
+  const syn=S.syndrome; const synLbl=synLabel(syn);
+  const lvlMap={possible:'Possible',probable:'Probable',clinical:'Clinical (Imaging-Pending)',imaging_supported:'Imaging-Supported','imaging-supported':'Imaging-Supported',definite:'Definite FTLD Pathology',insufficient:'Insufficient Criteria',excluded:'Excluded — Alternative Diagnosis'};
+  let note=`COGNITIVE NEUROLOGY / MEMORY CONSULTATION\nFTD Diagnostic Assessment — FTDC & Gorno-Tempini 2011 Criteria\nRascovsky K et al. Brain 2011;134:2456–2477 (bvFTD)\nGorno-Tempini ML et al. Neurology 2011;76:1006–1014 (PPA variants)\nDate: ${new Date().toLocaleDateString()}\n\nSYNDROME: ${synLbl||'Not specified'}\nDIAGNOSTIC LEVEL: ${vt}\n\n`;
+
+  if(syn==='bvftd') {
+    note+=`bvFTD CORE FEATURES (Rascovsky FTDC 2011):\n  F1 Early disinhibition: ${S.f1===true?'Present':S.f1===false?'Absent':'Not assessed'}\n  F2 Early apathy/inertia: ${S.f2===true?'Present':S.f2===false?'Absent':'Not assessed'}\n  F3 Early loss of sympathy/empathy: ${S.f3===true?'Present':S.f3===false?'Absent':'Not assessed'}\n  F4 Perseverative/stereotyped/compulsive behavior: ${S.f4===true?'Present':S.f4===false?'Absent':'Not assessed'}\n  F5 Hyperorality and dietary changes: ${S.f5===true?'Present':S.f5===false?'Absent':'Not assessed'}\n  F6 Executive dysfunction (relative memory/visuospatial sparing): ${S.f6===true?'Present':S.f6===false?'Absent':'Not assessed'}\n  Total features present: ${bvftdFeatCount()}/6 (threshold: ≥3 for possible bvFTD)\n\n`;
+    note+=`FUNCTIONAL STATUS:\n  Significant functional decline: ${S.func==='yes'?'Confirmed (CDR-FTD/caregiver report)':S.func==='no'?'Absent':'Not assessed'}\n  Note: Functional decline + ≥3 features + consistent imaging = Probable bvFTD\n\n`;
+  } else if(syn==='svppa') {
+    note+=`svPPA CRITERIA (Gorno-Tempini 2011):\n  CORE: C1 Impaired confrontation naming: ${S.sc1===true?'Present':S.sc1===false?'Absent':'—'}\n  CORE: C2 Impaired single-word comprehension: ${S.sc2===true?'Present':S.sc2===false?'Absent':'—'}\n  SUPP: S1 Object knowledge impaired: ${S.ss1===true?'Present':S.ss1===false?'Absent':'—'}\n  SUPP: S2 Surface dyslexia/dysgraphia: ${S.ss2===true?'Present':S.ss2===false?'Absent':'—'}\n  SUPP: S3 Repetition spared: ${S.ss3===true?'Present':S.ss3===false?'Absent':'—'}\n  SUPP: S4 Speech fluent/grammatical: ${S.ss4===true?'Present':S.ss4===false?'Absent':'—'}\n  Supportive features: ${svppaSupp()}/4 (≥3 required)\n  Expected pathology: FTLD-TDP type C (~80–90% of autopsy-confirmed svPPA)\n\n`;
+  } else if(syn==='nfvppa') {
+    note+=`nfvPPA CRITERIA (Gorno-Tempini 2011):\n  CORE: C1 Agrammatism: ${S.nc1===true?'Present':S.nc1===false?'Absent':'—'}\n  CORE: C2 Apraxia of speech: ${S.nc2===true?'Present':S.nc2===false?'Absent':'—'}\n  SUPP: S1 Complex sentence comprehension impaired: ${S.ns1===true?'Present':S.ns1===false?'Absent':'—'}\n  SUPP: S2 Single-word comprehension spared: ${S.ns2===true?'Present':S.ns2===false?'Absent':'—'}\n  SUPP: S3 Object knowledge spared: ${S.ns3===true?'Present':S.ns3===false?'Absent':'—'}\n  Supportive features: ${nfvppaSupp()}/3 (≥2 required)\n  Expected pathology: FTLD-tau (~60–70%; PSP-type or CBD-type 4R tau most common)\n\n`;
+  } else if(syn==='lvppa') {
+    note+=`lvPPA CRITERIA (Gorno-Tempini 2011):\n  CORE: C1 Anomia in spontaneous speech/naming: ${S.lc1===true?'Present':S.lc1===false?'Absent':'—'}\n  CORE: C2 Impaired sentence/phrase repetition: ${S.lc2===true?'Present':S.lc2===false?'Absent':'—'}\n  SUPP: S1 Phonemic paraphasias: ${S.ls1===true?'Present':S.ls1===false?'Absent':'—'}\n  SUPP: S2 Single-word comprehension spared: ${S.ls2===true?'Present':S.ls2===false?'Absent':'—'}\n  SUPP: S3 Motor speech spared: ${S.ls3===true?'Present':S.ls3===false?'Absent':'—'}\n  SUPP: S4 Grammar preserved: ${S.ls4===true?'Present':S.ls4===false?'Absent':'—'}\n  Supportive features: ${lvppaSupp()}/4 (≥3 required)\n  Expected pathology: AD pathology (~85–90%) — amyloid PET/CSF/plasma AD biomarkers recommended\n\n`;
+  }
+
+  note+=`EXCLUSION CRITERIA:\n  Alternative diagnosis excluded: ${S.exc1==='no'?'Yes — no alternative identified':S.exc1==='yes'?'No — alternative diagnosis present':'Not assessed'}\n  Biomarker consistency: ${S.exc2==='no'?'Consistent with FTD/FTLD (or not performed)':S.exc2==='yes'?'Inconsistent — alternative pathology favored':S.exc2==='lvok'?'Amyloid PET positive — consistent with lvPPA (AD pathology)':'Not assessed'}\n\n`;
+
+  note+=`NEUROIMAGING:\n  MRI structural atrophy: ${S.mri==='yes'?'Consistent with syndrome':S.mri==='no'?'Normal/inconsistent':S.mri==='aty'?'Present but atypical pattern':'Not performed'}\n  FDG-PET / SPECT: ${S.pet==='yes'?'Consistent hypometabolism/hypoperfusion':S.pet==='no'?'Normal/inconsistent':'Not performed'}\n  Amyloid PET: ${S.amypet==='neg'?'Negative (supports FTLD, not AD)':S.amypet==='pos'?'Positive (AD concern — expected in lvPPA)':'Not performed'}\n\n`;
+
+  note+=`GENETIC WORKUP:\n  Family history (FTD/dementia/ALS): ${S.fhx==='pos'?'Positive (≥1 first-degree relative)':S.fhx==='neg'?'Negative':S.fhx==='unk'?'Unknown':'Not assessed'}\n  Genetic testing: ${S.gtest==='pos'?'Pathogenic variant identified':S.gtest==='neg'?'No pathogenic variant found':S.gtest==='vus'?'VUS (variant of uncertain significance)':'Not performed'}\n  Motor features: ${S.motor==='als'?'ALS/MND co-features present (consider C9orf72)':S.motor==='psp'?'PSP-like parkinsonism (predicts 4R tau)':S.motor==='cbs'?'Corticobasal syndrome features (predicts CBD-tau)':S.motor==='no'?'None':'Not assessed'}\n\n`;
+
+  note+=`DIAGNOSTIC LEVEL: ${vt}\nExpected pathology: ${getPathPrediction().replace(/<[^>]+>/g,'')}\n\nKEY REFERENCES:\n  Rascovsky K et al. Sensitivity of revised diagnostic criteria for bvFTD. Brain 2011;134:2456–2477.\n  Gorno-Tempini ML et al. Classification of primary progressive aphasia and its variants. Neurology 2011;76:1006–1014.\n  Harris JM et al. Sensitivity and specificity of FTDC criteria for bvFTD. Neurology 2013;80:1881.\n  Piguet O et al. Fourteen years later: Reviewing the diagnostic criteria for bvFTD. Alzheimer's & Dementia 2025.\n  Greaves CV, Rohrer JD. An update on genetic frontotemporal dementia. J Neurol 2019;266:2075–2086.`;
+
+  document.getElementById('dn').textContent=note;
+}
+
+function goTab(n) { if(n===cur) return; go(n); }
+
+function go(n) {
+  document.getElementById('s'+cur).classList.remove('active');
+  document.getElementById('s'+n).classList.add('active');
+  for(let i=0;i<6;i++){const d=document.getElementById('st'+i);d.classList.remove('active','done');if(i<n)d.classList.add('done');else if(i===n)d.classList.add('active');}
+  cur=n;
+  document.getElementById('pf').style.width=((n/5)*100)+'%';
+  if(n===5) rv();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function xp(btn){
+  const d=btn.closest('.crit').querySelector('.crit-detail');if(!d)return;
+  const o=d.classList.toggle('open');
+  btn.textContent=o?'close ▴':'details ▾';
+}
+
+function toggleDoc(){
+  const body=document.getElementById('dn'),btn=document.getElementById('copy-btn'),tog=document.querySelector('.doc-tog');
+  if(!body)return;
+  const open=body.classList.toggle('open');
+  if(tog)tog.textContent=open?'▲ Documentation Note':'▼ Documentation Note';
+  if(btn)btn.classList.toggle('visible',open);
+}
+
+function copyDoc(){
+  const body=document.getElementById('dn'),btn=document.getElementById('copy-btn');
+  if(!body)return;
+  const text=body.textContent||body.innerText;
+  navigator.clipboard.writeText(text).then(()=>{if(btn){btn.textContent='✓ Copied';btn.classList.add('copied');setTimeout(()=>{btn.textContent='⎘ Copy';btn.classList.remove('copied');},2000);}})
+  .catch(()=>{const ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);if(btn){btn.textContent='✓ Copied';btn.classList.add('copied');setTimeout(()=>{btn.textContent='⎘ Copy';btn.classList.remove('copied');},2000);}});
+}
+
+function resetAll(){
+  Object.keys(S).forEach(k=>S[k]=null);
+  document.querySelectorAll('.crit').forEach(el=>el.className='crit');
+  document.querySelectorAll('.abtn').forEach(b=>b.classList.remove('ay','an','ap','ab','aa','aw'));
+  document.querySelectorAll('.syn-card').forEach(el=>el.className='syn-card');
+  document.querySelectorAll('.crit-detail').forEach(d=>d.classList.remove('open'));
+  document.querySelectorAll('.xbtn').forEach(b=>b.textContent='details ▾');
+  ['a0','a1','a2','a3','a4'].forEach(id=>{const el=document.getElementById(id);if(el)el.classList.remove('show');});
+  ['bvftd','svppa','nfvppa','lvppa'].forEach(id=>{const el=document.getElementById(id+'-features');if(el)el.style.display='none';});
+  const dn=document.getElementById('dn');if(dn)dn.classList.remove('open');
+  const cb=document.getElementById('copy-btn');if(cb)cb.classList.remove('visible','copied');
+  const tog=document.querySelector('.doc-tog');if(tog)tog.textContent='▼ Documentation Note';
+  const badge=document.getElementById('feat-count');if(badge){badge.textContent='0';badge.className='feat-badge fb-none';}
+  go(0);
+  document.getElementById('n0').disabled=true;
+}
+
+ui();
+</script>
+</body>
+</html>
