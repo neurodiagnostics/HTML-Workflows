@@ -1,0 +1,963 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OSA Navigator &middot; Epworth &middot; STOP-BANG &middot; AHI &middot; Treatment</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Lexend:wght@300;400;500;600;700&display=swap');
+:root {
+  --bg:#0d1117; --card:#161b22; --card2:#1c2330; --border:#2a3a4a; --border2:#3a5060;
+  --green:#3fb950; --green-bg:rgba(63,185,80,.10); --green-bd:rgba(63,185,80,.35);
+  --red:#f87171; --red-bg:rgba(248,113,113,.10); --red-bd:rgba(248,113,113,.35);
+  --amber:#e3b341; --amber-bg:rgba(227,179,65,.10); --amber-bd:rgba(227,179,65,.35);
+  --blue:#58a6ff; --blue-bg:rgba(88,166,255,.10); --blue-bd:rgba(88,166,255,.35);
+  --purple:#bc8cff; --purple-bg:rgba(188,140,255,.10); --purple-bd:rgba(188,140,255,.35);
+  /* OSA accent: warm red — titles and interactive elements only */
+  --accent:#f87171; --accent-bg:rgba(248,113,113,.10); --accent-bd:rgba(248,113,113,.35);
+  --accent2:#b91c1c;
+  --text:#e6edf3; --text2:#aab4c0; --text3:#6e7f94;
+  --sans:'Lexend','Inter',system-ui,sans-serif; --mono:'IBM Plex Mono',monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:14px;line-height:1.5;min-height:100vh;}
+.app{max-width:960px;margin:0 auto;padding:0 20px 80px;}
+header{padding:24px 0 16px;border-bottom:1px solid var(--border);margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;}
+.h-title{font-size:19px;font-weight:700;font-family:var(--sans);}.h-title span{color:var(--accent);}
+.h-sub{font-size:11px;color:var(--text3);margin-top:3px;line-height:1.6;font-family:var(--sans);}
+.h-credit{font-size:11px;color:var(--text3);margin-top:2px;font-family:var(--sans);}
+.reset-btn{background:var(--card2);border:1px solid var(--border);color:var(--text2);font-family:var(--sans);font-size:12px;padding:6px 14px;cursor:pointer;border-radius:4px;transition:all .15s;white-space:nowrap;font-weight:500;}
+.reset-btn:hover{border-color:var(--accent);color:var(--accent);}
+.prog-track{height:3px;background:var(--border);margin-bottom:20px;border-radius:2px;}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--accent2),var(--accent));border-radius:2px;transition:width .4s ease;box-shadow:0 0 8px rgba(248,113,113,.4);}
+.steps{display:grid;grid-template-columns:repeat(6,1fr);border:1px solid var(--border);border-radius:8px;margin-bottom:20px;overflow:hidden;background:var(--card);}
+.stab{padding:8px 3px 9px;text-align:center;font-size:10px;color:var(--text3);border-right:1px solid var(--border);transition:all .2s;cursor:pointer;background:var(--card);line-height:1.3;font-family:var(--sans);}
+.stab:nth-child(6n){border-right:none;}
+.stab .sn{display:flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;background:var(--card2);border:1px solid var(--border);font-size:10px;font-weight:700;margin:0 auto 3px;transition:all .2s;font-family:var(--sans);}
+.stab .slbl{display:block;font-size:9px;font-weight:600;line-height:1.3;font-family:var(--sans);}
+.stab.active{color:var(--accent);background:var(--accent-bg);}
+.stab.active .sn{background:var(--accent);color:#0d1117;border-color:var(--accent);}
+.stab.done{color:var(--green);}.stab.done .sn{background:var(--green);color:#0d1117;border-color:var(--green);}
+.stab:hover:not(.active){background:var(--card2);}
+.card{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:22px;margin-bottom:12px;}
+.ctitle{font-size:13px;font-weight:700;margin-bottom:3px;font-family:var(--sans);}
+.csub{font-size:12px;color:var(--text2);margin-bottom:16px;line-height:1.5;font-family:var(--sans);}
+.slabel{display:flex;align-items:center;gap:8px;font-size:11px;font-weight:600;color:var(--text);margin-bottom:9px;padding-bottom:6px;border-bottom:1px solid var(--border);font-family:var(--sans);}
+.pill{font-size:9px;padding:1px 7px;border-radius:20px;border:1px solid;margin-left:auto;letter-spacing:.04em;text-transform:uppercase;font-family:var(--sans);}
+.pill-r{border-color:var(--red);color:var(--red);background:var(--red-bg);}
+.pill-a{border-color:var(--amber);color:var(--amber);background:var(--amber-bg);}
+.pill-p{border-color:var(--accent);color:var(--accent);background:var(--accent-bg);}
+.pill-g{border-color:var(--green);color:var(--green);background:var(--green-bg);}
+.pill-b{border-color:var(--blue);color:var(--blue);background:var(--blue-bg);}
+.crit{border:1px solid var(--border);border-radius:6px;margin-bottom:5px;overflow:hidden;transition:border-color .15s,background .15s;}
+.crit.c-yes{border-color:var(--green-bd);background:var(--green-bg);}
+.crit.c-no{border-color:var(--red-bd);background:var(--red-bg);}
+.crit.c-r{border-color:var(--accent-bd);background:var(--accent-bg);}
+.crit.c-abs{border-color:var(--border2);background:var(--card2);}
+.crit.c-part{border-color:var(--amber-bd);background:var(--amber-bg);}
+.crit.c-blue{border-color:var(--blue-bd);background:var(--blue-bg);}
+.crit-main{display:flex;align-items:center;gap:10px;padding:10px 13px;}
+.crit-name{flex:1;font-size:13px;font-weight:500;color:var(--text);line-height:1.3;font-family:var(--sans);}
+.xbtn{background:var(--purple-bg);border:1px solid var(--purple-bd);color:var(--purple);font-size:11px;cursor:pointer;padding:2px 8px;white-space:nowrap;transition:all .15s;flex-shrink:0;border-radius:3px;font-weight:500;font-family:var(--sans);}
+.xbtn:hover{background:var(--purple);color:#0d1117;border-color:var(--purple);}
+.crit-detail{display:none;padding:10px 13px 12px;font-size:12px;color:var(--text);line-height:1.65;border-top:1px solid var(--border);font-family:var(--sans);}
+.crit-detail.open{display:block;}
+.cnote{margin-top:8px;padding:8px 11px;background:var(--card2);border-left:3px solid var(--border2);font-size:11px;color:var(--text2);line-height:1.75;border-radius:0 3px 3px 0;font-family:var(--sans);}
+.cnote strong{color:var(--text);}
+.brow{display:flex;border-top:1px solid var(--border);flex-wrap:wrap;}
+.abtn{flex:1;min-width:60px;padding:9px 10px;background:none;border:none;border-right:1px solid var(--border);border-bottom:1px solid var(--border);color:var(--text2);font-family:var(--sans);font-size:11px;cursor:pointer;transition:all .12s;font-weight:400;line-height:1.4;text-align:left;}
+.abtn:last-child{border-right:none;}.abtn:hover{background:var(--card2);color:var(--text);}
+.abtn.ay{background:var(--green-bg);color:var(--green);font-weight:700;}
+.abtn.an{background:var(--red-bg);color:var(--red);font-weight:700;}
+.abtn.ar{background:var(--accent-bg);color:var(--accent);font-weight:700;}
+.abtn.ab{background:var(--blue-bg);color:var(--blue);font-weight:700;}
+.abtn.aa{background:var(--card2);color:var(--text2);font-weight:700;}
+.abtn.aw{background:var(--amber-bg);color:var(--amber);font-weight:700;}
+.alrt{padding:9px 13px;border-radius:5px;font-size:12px;line-height:1.55;margin-top:12px;border-left:3px solid;display:none;font-family:var(--sans);}
+.alrt.show{display:block;}
+.aok{border-color:var(--green);background:var(--green-bg);color:#7ee787;}
+.awn{border-color:var(--amber);background:var(--amber-bg);color:var(--amber);}
+.aerr{border-color:var(--red);background:var(--red-bg);color:#ff7b72;}
+.ainf{border-color:var(--blue);background:var(--blue-bg);color:var(--blue);}
+.ar{border-color:var(--accent);background:var(--accent-bg);color:var(--accent);}
+.lbox{background:var(--card2);border:1px solid var(--border);border-radius:5px;padding:12px 15px;font-size:12px;color:var(--text2);line-height:1.75;margin-bottom:14px;font-family:var(--sans);}
+.lbox strong{color:var(--text);}
+.lr{color:var(--accent);font-weight:600;} .lg{color:var(--green);font-weight:600;}
+.la{color:var(--amber);font-weight:600;} .lb{color:var(--blue);font-weight:600;}
+.lrd{color:var(--red);font-weight:600;}
+
+/* ESS question grid */
+.ess-grid{display:grid;grid-template-columns:1fr;gap:4px;margin-bottom:12px;}
+.ess-row{display:grid;grid-template-columns:1fr auto;align-items:center;gap:8px;background:var(--card2);border:1px solid var(--border);border-radius:5px;padding:9px 12px;transition:border-color .15s;}
+.ess-row.ess-sel{border-color:var(--accent-bd);background:var(--accent-bg);}
+.ess-q{font-size:12px;color:var(--text);font-family:var(--sans);}
+.ess-btns{display:flex;gap:3px;flex-shrink:0;}
+.ess-btn{width:30px;height:26px;border:1px solid var(--border);background:var(--card);color:var(--text3);border-radius:4px;cursor:pointer;font-size:11px;font-weight:600;transition:all .12s;font-family:var(--sans);}
+.ess-btn:hover{border-color:var(--border2);color:var(--text2);}
+.ess-btn.esel{background:var(--accent);color:#0d1117;border-color:var(--accent);}
+.ess-total{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--card2);border:1px solid var(--border);border-radius:6px;margin-bottom:12px;}
+.ess-total-label{font-size:12px;font-weight:600;color:var(--text);font-family:var(--sans);}
+.ess-score-num{font-size:24px;font-weight:700;font-family:var(--sans);}
+.ess-score-cat{font-size:10px;font-weight:600;font-family:var(--sans);margin-top:1px;}
+
+/* STOP-BANG grid */
+.sb-grid{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-bottom:12px;}
+@media(max-width:580px){.sb-grid{grid-template-columns:1fr;}}
+.sb-item{border:1px solid var(--border);border-radius:6px;overflow:hidden;transition:border-color .15s,background .15s;}
+.sb-item.sb-yes{border-color:var(--red-bd);background:var(--red-bg);}
+.sb-item.sb-no{border-color:var(--green-bd);background:var(--green-bg);}
+.sb-main{display:flex;align-items:center;gap:8px;padding:9px 12px;}
+.sb-letter{width:22px;height:22px;border-radius:50%;background:var(--accent);color:#0d1117;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:var(--sans);}
+.sb-item.sb-yes .sb-letter{background:var(--red);}
+.sb-item.sb-no .sb-letter{background:var(--green);}
+.sb-label{flex:1;font-size:12px;font-weight:500;color:var(--text);font-family:var(--sans);line-height:1.3;}
+.sb-sub{font-size:10px;color:var(--text3);font-family:var(--sans);margin-top:1px;}
+.sb-brow{display:flex;border-top:1px solid var(--border);}
+.sb-btn{flex:1;padding:7px 10px;background:none;border:none;border-right:1px solid var(--border);color:var(--text2);font-family:var(--sans);font-size:11px;cursor:pointer;transition:all .12s;font-weight:400;}
+.sb-btn:last-child{border-right:none;}
+.sb-btn:hover{background:var(--card2);color:var(--text);}
+.sb-btn.ssy{background:var(--red-bg);color:var(--red);font-weight:700;}
+.sb-btn.ssn{background:var(--green-bg);color:var(--green);font-weight:700;}
+.sb-total{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--card2);border:1px solid var(--border);border-radius:6px;margin-bottom:12px;}
+
+/* AHI grade cards */
+.ahi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-bottom:12px;}
+@media(max-width:600px){.ahi-grid{grid-template-columns:repeat(2,1fr);}}
+.ahicard{border:1px solid var(--border);border-radius:6px;padding:11px 12px;background:var(--card2);cursor:pointer;transition:all .2s;}
+.ahicard:hover{border-color:var(--border2);}
+.ahicard.ahisel-n{border-color:var(--blue-bd);background:var(--blue-bg);}
+.ahicard.ahisel-g{border-color:var(--green-bd);background:var(--green-bg);}
+.ahicard.ahisel-m{border-color:var(--amber-bd);background:var(--amber-bg);}
+.ahicard.ahisel-s{border-color:var(--red-bd);background:var(--red-bg);}
+.ahi-num{font-size:17px;font-weight:700;font-family:var(--sans);}
+.ahi-name{font-size:10px;color:var(--text2);margin-top:2px;font-family:var(--sans);}
+.ahi-desc{font-size:10px;color:var(--text3);line-height:1.45;margin-top:4px;font-family:var(--sans);}
+
+/* Treatment decision tree */
+.tx-tree{display:flex;flex-direction:column;gap:6px;margin-bottom:14px;}
+.tx-row{display:flex;align-items:flex-start;gap:10px;padding:10px 13px;border:1px solid var(--border);border-radius:6px;background:var(--card2);}
+.tx-row.tx-first{border-color:var(--green-bd);background:var(--green-bg);}
+.tx-row.tx-second{border-color:var(--amber-bd);background:var(--amber-bg);}
+.tx-row.tx-third{border-color:var(--blue-bd);background:var(--blue-bg);}
+.tx-row.tx-surg{border-color:var(--accent-bd);background:var(--accent-bg);}
+.tx-badge{font-size:9px;font-weight:700;padding:2px 8px;border-radius:10px;white-space:nowrap;font-family:var(--sans);flex-shrink:0;margin-top:1px;}
+.tx-badge.first{background:var(--green);color:#0d1117;}
+.tx-badge.second{background:var(--amber);color:#0d1117;}
+.tx-badge.third{background:var(--blue);color:#0d1117;}
+.tx-badge.surg{background:var(--accent);color:#0d1117;}
+.tx-content{flex:1;}
+.tx-title{font-size:12px;font-weight:600;color:var(--text);font-family:var(--sans);margin-bottom:2px;}
+.tx-desc{font-size:11px;color:var(--text2);line-height:1.6;font-family:var(--sans);}
+
+/* Nav */
+.nav-row{display:flex;justify-content:space-between;align-items:center;margin-top:20px;gap:10px;}
+.nbtn{padding:9px 22px;border-radius:5px;font-family:var(--sans);font-size:13px;border:1px solid;cursor:pointer;font-weight:600;transition:all .15s;}
+.np{background:var(--accent);border-color:var(--accent);color:#0d1117;font-weight:700;}
+.np:hover{background:#fca5a5;border-color:#fca5a5;}
+.np:disabled{opacity:.3;cursor:not-allowed;}
+.ns{background:transparent;border-color:var(--border2);color:var(--text2);}
+.ns:hover{border-color:var(--text);color:var(--text);}
+.screen{display:none;}.screen.active{display:block;animation:fu .25s ease;}
+@keyframes fu{from{opacity:0;transform:translateY(5px);}to{opacity:1;transform:translateY(0);}}
+
+/* Verdict */
+.vban{border-radius:8px;padding:22px 26px;margin-bottom:16px;border:2px solid;}
+.vlow{border-color:var(--green);background:var(--green-bg);}
+.vmild{border-color:var(--amber);background:var(--amber-bg);}
+.vmod{border-color:var(--red);background:var(--red-bg);}
+.vsev{border-color:var(--red);background:var(--red-bg);}
+.vund{border-color:var(--border2);background:var(--card2);}
+.vban-head{text-align:center;margin-bottom:14px;}
+.vlbl{font-family:var(--sans);font-size:9px;letter-spacing:.15em;text-transform:uppercase;opacity:.6;margin-bottom:5px;}
+.vtitle{font-size:22px;font-weight:700;margin-bottom:6px;font-family:var(--sans);}
+.vlow .vtitle{color:var(--green);}.vmild .vtitle{color:var(--amber);}
+.vmod .vtitle,.vsev .vtitle{color:var(--red);}.vund .vtitle{color:var(--text2);}
+.vdesc{font-size:12px;color:var(--text2);line-height:1.7;max-width:640px;margin:0 auto;font-family:var(--sans);}
+.sum-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;}
+@media(max-width:580px){.sum-grid{grid-template-columns:1fr;}}
+.sblock{background:var(--card);border:1px solid var(--border);border-radius:6px;overflow:hidden;}
+.sbtitle{font-size:11px;font-weight:600;padding:7px 11px;border-bottom:1px solid var(--border);color:var(--text);background:var(--card2);font-family:var(--sans);}
+.srow{display:flex;align-items:flex-start;gap:8px;padding:6px 11px;border-bottom:1px solid var(--border);font-size:12px;font-family:var(--sans);}
+.srow:last-child{border-bottom:none;}
+.dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;margin-top:4px;}
+.dg{background:var(--green);}.dr{background:var(--red);}.da{background:var(--accent);}
+.db{background:var(--blue);}.dam{background:var(--amber);}.dgr{background:var(--text3);}
+.sname{flex:1;color:var(--text);line-height:1.4;font-family:var(--sans);}
+.stag{font-family:var(--sans);font-size:9px;padding:1px 7px;border-radius:10px;border:1px solid;white-space:nowrap;}
+.tg{border-color:var(--green-bd);color:var(--green);}
+.tr{border-color:var(--red-bd);color:var(--red);}
+.ta{border-color:var(--accent-bd);color:var(--accent);}
+.tb{border-color:var(--blue-bd);color:var(--blue);}
+.tam{border-color:var(--amber-bd);color:var(--amber);}
+.tgr{border-color:var(--border2);color:var(--text3);}
+
+/* Doc note */
+.doc-header{display:flex;align-items:center;gap:8px;margin-bottom:5px;}
+.doc-tog{flex:1;text-align:left;background:var(--card2);border:1px solid var(--border2);border-radius:5px;color:var(--text2);font-family:var(--sans);font-size:13px;padding:8px 13px;cursor:pointer;transition:all .15s;}
+.doc-tog:hover{border-color:var(--accent);color:var(--accent);}
+.copy-btn{background:var(--card2);border:1px solid var(--border2);border-radius:5px;color:var(--text2);font-family:var(--sans);font-size:12px;padding:8px 14px;cursor:pointer;white-space:nowrap;transition:all .15s;display:none;}
+.copy-btn.visible{display:block;}.copy-btn:hover{border-color:var(--green);color:var(--green);}
+.copy-btn.copied{border-color:var(--green);color:var(--green);background:var(--green-bg);}
+.doc-body{display:none;background:var(--card2);border:1px solid var(--border2);border-radius:5px;padding:13px 15px;font-family:var(--mono);font-size:11px;color:var(--text2);line-height:1.85;white-space:pre-wrap;margin-bottom:12px;}
+.doc-body.open{display:block;}
+</style>
+</head>
+<body>
+<div class="app">
+<header>
+  <div>
+    <div class="h-title">Obstructive Sleep Apnea &middot; <span>Screening &amp; Treatment Navigator</span></div>
+    <div class="h-sub">Johns MW. Sleep 1991;14:540&ndash;545 (ESS) &middot; Chung F et al. Anesthesiology 2008;108:812 (STOP-BANG) &middot; AASM Classification &middot; For educator use only</div>
+    <div class="h-credit">Designed by Daniel Short, MD</div>
+  </div>
+  <button class="reset-btn" onclick="resetAll()">&#8634; Reset</button>
+</header>
+<div class="prog-track"><div class="prog-fill" id="pf" style="width:0%"></div></div>
+<div class="steps">
+  <div class="stab active" id="st0" onclick="goTab(0)"><span class="sn">1</span><span class="slbl">Epworth Scale</span></div>
+  <div class="stab" id="st1" onclick="goTab(1)"><span class="sn">2</span><span class="slbl">STOP-BANG</span></div>
+  <div class="stab" id="st2" onclick="goTab(2)"><span class="sn">3</span><span class="slbl">Comorbidities</span></div>
+  <div class="stab" id="st3" onclick="goTab(3)"><span class="sn">4</span><span class="slbl">AHI / Diagnosis</span></div>
+  <div class="stab" id="st4" onclick="goTab(4)"><span class="sn">5</span><span class="slbl">Treatment</span></div>
+  <div class="stab" id="st5" onclick="goTab(5)"><span class="sn">6</span><span class="slbl">Summary</span></div>
+</div>
+
+<!-- S0: EPWORTH -->
+<div class="screen active" id="s0">
+<div class="card">
+  <div class="ctitle" style="color:var(--accent);">Step 1 &middot; Epworth Sleepiness Scale (ESS)</div>
+  <div class="csub">The ESS (Johns MW. Sleep 1991;14:540&ndash;545) measures average daytime sleepiness across 8 situations on a 0&ndash;3 scale. Total range 0&ndash;24. ESS is a screening tool, not a diagnostic test &mdash; over 50% of patients with moderate-to-severe OSA score &lt;10 (Sleep Heart Health Study). A normal ESS does NOT exclude OSA. Rate the chance of dozing in each situation, even if you haven&rsquo;t done it recently.</div>
+  <div class="lbox">
+    <strong>Rating scale for each item:</strong> 0 = Would never doze &nbsp;&bull;&nbsp; 1 = Slight chance &nbsp;&bull;&nbsp; 2 = Moderate chance &nbsp;&bull;&nbsp; 3 = High chance of dozing<br><br>
+    <span class="lr">ESS interpretation:</span> 0&ndash;10 = Normal daytime sleepiness &nbsp;&bull;&nbsp; 11&ndash;15 = Mild-to-moderate excessive sleepiness &nbsp;&bull;&nbsp; 16&ndash;24 = Severe sleepiness (consider narcolepsy, severe OSA)<br><br>
+    <strong>Critical caveat (Johns 1991; Sleep Heart Health Study):</strong> ESS has limited sensitivity and specificity for OSA. &gt;50% of patients with AHI &ge;15 score &le;10. ESS is useful for monitoring treatment response (ESS falls with effective CPAP) and assessing functional impairment, not for diagnosis.
+  </div>
+  <div class="slabel">Rate each situation 0&ndash;3 <span class="pill pill-r">CLICK THE NUMBER FOR EACH ITEM</span></div>
+  <div class="ess-grid" id="ess-grid"></div>
+  <div class="ess-total" id="ess-total-box" style="display:none;">
+    <div>
+      <div class="ess-total-label">ESS Total Score</div>
+      <div class="ess-score-cat" id="ess-cat" style="color:var(--text3);">&mdash;</div>
+    </div>
+    <div style="text-align:right;">
+      <div class="ess-score-num" id="ess-num" style="color:var(--text2);">0</div>
+      <div style="font-size:10px;color:var(--text3);font-family:var(--sans);">/ 24</div>
+    </div>
+  </div>
+  <div id="a0" class="alrt"></div>
+  <div class="nav-row"><div></div><button class="nbtn np" id="n0" onclick="go(1)" disabled>Next: STOP-BANG &rarr;</button></div>
+</div>
+</div>
+
+<!-- S1: STOP-BANG -->
+<div class="screen" id="s1">
+<div class="card">
+  <div class="ctitle" style="color:var(--accent);">Step 2 &middot; STOP-BANG Questionnaire</div>
+  <div class="csub">The STOP-BANG questionnaire (Chung F et al. Anesthesiology 2008;108:812&ndash;821) is an 8-item yes/no screening tool for OSA risk. Score 0&ndash;8. It was developed and validated in surgical populations and subsequently validated in general populations and commercial drivers (meta-analysis, Nagappa M et al. PLOS ONE 2015). High sensitivity, lower specificity &mdash; designed to rule out moderate-to-severe OSA, not to confirm it.</div>
+  <div class="lbox">
+    <strong>STOP-BANG performance (Chung F, Anesthesiology 2008 &amp; Chest 2016 review):</strong><br>
+    Score &ge;3 sensitivity: <span class="lr">84%</span> for any OSA (AHI &gt;5), <span class="lr">93%</span> for moderate-to-severe (AHI &gt;15), <span class="lr">100%</span> for severe (AHI &gt;30). Corresponding specificities: 56%, 43%, 37%.<br>
+    Score 0&ndash;2: Low risk &mdash; moderate-to-severe OSA confidently ruled out (NPV 94.8% for severe OSA).<br>
+    Score 3&ndash;4: Intermediate risk &mdash; upgrade to high risk if BMI &gt;35, neck &gt;40 cm, or male + STOP &ge;2.<br>
+    Score 5&ndash;8: High risk &mdash; sleep study indicated.
+  </div>
+  <div class="slabel">Answer each item Yes or No <span class="pill pill-r">YES = 1 POINT</span></div>
+  <div class="sb-grid" id="sb-grid"></div>
+  <div class="sb-total" id="sb-total-box" style="display:none;">
+    <div>
+      <div class="ess-total-label">STOP-BANG Score</div>
+      <div class="ess-score-cat" id="sb-cat" style="color:var(--text3);">&mdash;</div>
+    </div>
+    <div style="text-align:right;">
+      <div class="ess-score-num" id="sb-num" style="color:var(--text2);">0</div>
+      <div style="font-size:10px;color:var(--text3);font-family:var(--sans);">/ 8</div>
+    </div>
+  </div>
+  <div id="a1" class="alrt"></div>
+  <div class="nav-row">
+    <button class="nbtn ns" onclick="go(0)">&larr; Back</button>
+    <button class="nbtn np" onclick="go(2)">Next: Comorbidities &rarr;</button>
+  </div>
+</div>
+</div>
+
+<!-- S2: COMORBIDITIES -->
+<div class="screen" id="s2">
+<div class="card">
+  <div class="ctitle" style="color:var(--accent);">Step 3 &middot; Comorbidities &amp; Risk Factors</div>
+  <div class="csub">OSA is independently associated with major cardiovascular and metabolic comorbidities. Their presence influences the threshold for treatment initiation, aggressiveness of follow-up, and choice of diagnostic testing (in-lab PSG vs. home sleep apnea test). Comorbidities may also contribute to residual sleepiness despite adequate CPAP therapy.</div>
+  <div class="lbox">
+    <strong>OSA comorbidity burden:</strong><br>
+    <span class="lr">Hypertension:</span> OSA is present in ~30% of hypertensive patients and ~50% of resistant hypertension. CPAP reduces BP by 2&ndash;3 mmHg (modest but clinically meaningful in resistant HTN).<br>
+    <span class="lr">Atrial fibrillation:</span> OSA in ~50% of AF patients. Untreated OSA doubles AF recurrence after cardioversion/ablation. CPAP improves AF rhythm control outcomes.<br>
+    <span class="lr">HFrEF:</span> OSA in ~20&ndash;40% of heart failure patients. Cheyne-Stokes respiration (central sleep apnea) is distinct &mdash; home sleep testing may miss CSA; PSG preferred in HF.<br>
+    <span class="lr">T2DM:</span> OSA impairs insulin sensitivity independently. Bidirectional relationship with obesity.<br>
+    <span class="lrd">Driving / occupation:</span> Untreated moderate-to-severe OSA carries 3&times; higher motor vehicle accident risk. Mandatory reporting requirements vary by jurisdiction. Commercial drivers (DOT) require documentation of treatment adequacy.
+  </div>
+  <div class="slabel">Select all comorbidities present <span class="pill pill-a">INFLUENCES TREATMENT THRESHOLD AND URGENCY</span></div>
+  <div class="sb-grid" style="margin-bottom:12px;">
+    <div class="sb-item" id="c-htn-item">
+      <div class="sb-main"><div class="sb-letter" id="c-htn-l">H</div><div class="sb-label">Hypertension<div class="sb-sub">Especially resistant hypertension (&ge;3 drugs)</div></div></div>
+      <div class="sb-brow"><button class="sb-btn" onclick="setCom('htn',true)" id="c-htn-y">&#10003; Yes</button><button class="sb-btn" onclick="setCom('htn',false)" id="c-htn-n">&#10007; No</button></div>
+    </div>
+    <div class="sb-item" id="c-af-item">
+      <div class="sb-main"><div class="sb-letter" id="c-af-l">A</div><div class="sb-label">Atrial fibrillation<div class="sb-sub">Paroxysmal or persistent AF / history of ablation</div></div></div>
+      <div class="sb-brow"><button class="sb-btn" onclick="setCom('af',true)" id="c-af-y">&#10003; Yes</button><button class="sb-btn" onclick="setCom('af',false)" id="c-af-n">&#10007; No</button></div>
+    </div>
+    <div class="sb-item" id="c-hf-item">
+      <div class="sb-main"><div class="sb-letter" id="c-hf-l">H</div><div class="sb-label">Heart failure<div class="sb-sub">HFrEF or HFpEF &mdash; consider PSG over home test</div></div></div>
+      <div class="sb-brow"><button class="sb-btn" onclick="setCom('hf',true)" id="c-hf-y">&#10003; Yes</button><button class="sb-btn" onclick="setCom('hf',false)" id="c-hf-n">&#10007; No</button></div>
+    </div>
+    <div class="sb-item" id="c-dm-item">
+      <div class="sb-main"><div class="sb-letter" id="c-dm-l">D</div><div class="sb-label">Type 2 diabetes<div class="sb-sub">OSA impairs glycemic control independently</div></div></div>
+      <div class="sb-brow"><button class="sb-btn" onclick="setCom('dm',true)" id="c-dm-y">&#10003; Yes</button><button class="sb-btn" onclick="setCom('dm',false)" id="c-dm-n">&#10007; No</button></div>
+    </div>
+    <div class="sb-item" id="c-stroke-item">
+      <div class="sb-main"><div class="sb-letter" id="c-stroke-l">S</div><div class="sb-label">Stroke / TIA<div class="sb-sub">OSA in 60&ndash;70% of stroke patients; affects recovery</div></div></div>
+      <div class="sb-brow"><button class="sb-btn" onclick="setCom('stroke',true)" id="c-stroke-y">&#10003; Yes</button><button class="sb-btn" onclick="setCom('stroke',false)" id="c-stroke-n">&#10007; No</button></div>
+    </div>
+    <div class="sb-item" id="c-drive-item">
+      <div class="sb-main"><div class="sb-letter" id="c-drive-l">D</div><div class="sb-label">Professional driver / safety-critical occupation<div class="sb-sub">DOT / commercial driver / pilot / heavy machinery</div></div></div>
+      <div class="sb-brow"><button class="sb-btn" onclick="setCom('drive',true)" id="c-drive-y">&#10003; Yes</button><button class="sb-btn" onclick="setCom('drive',false)" id="c-drive-n">&#10007; No</button></div>
+    </div>
+  </div>
+  <div class="slabel">Anatomical / structural upper airway factors <span class="pill pill-b">INFLUENCES SURGERY CANDIDACY</span></div>
+  <div class="crit" id="anat-item">
+    <div class="crit-main">
+      <div class="crit-name">Upper airway anatomical findings &mdash; tonsillar hypertrophy (grade III&ndash;IV), retrognathia, macroglossia, deviated septum, nasal polyps, large tongue</div>
+      <button class="xbtn" onclick="xp(this)">details &#9662;</button>
+    </div>
+    <div class="crit-detail">
+      Anatomical factors significantly influence surgical candidacy. <strong>Tonsillar hypertrophy (grade III&ndash;IV):</strong> Tonsillectomy is highly effective in adult OSA with large tonsils (AHI reduction ~50%). <strong>Retrognathia:</strong> Mandibular advancement surgery (MMA) may produce dramatic AHI reduction in carefully selected patients. <strong>Friedman tongue position:</strong> High tongue (class I&ndash;II) with tonsillar hypertrophy predicts better surgical outcomes. <strong>Nasal obstruction:</strong> Nasal surgery alone rarely cures OSA but may improve CPAP tolerance by reducing required pressure.
+      <div class="cnote"><strong>Drug-induced sleep endoscopy (DISE):</strong> Required before hypoglossal nerve stimulation (Inspire) to exclude complete concentric velopharyngeal collapse &mdash; a contraindication. DISE visualizes collapse pattern during pharmacologically induced sleep and guides surgical approach. Complete concentric collapse (CCC) at palatal level predicts poor surgical outcomes.</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setAnat(true)"  id="anat-yes">&#10003; Significant anatomical finding(s)</button>
+      <button class="abtn" onclick="setAnat(false)" id="anat-no">&#10007; No significant anatomical findings</button>
+      <button class="abtn" onclick="setAnat(null)"  id="anat-nd">&mdash; Not assessed</button>
+    </div>
+  </div>
+  <div id="a2" class="alrt"></div>
+  <div class="nav-row">
+    <button class="nbtn ns" onclick="go(1)">&larr; Back</button>
+    <button class="nbtn np" onclick="go(3)">Next: AHI / Diagnosis &rarr;</button>
+  </div>
+</div>
+</div>
+
+<!-- S3: AHI -->
+<div class="screen" id="s3">
+<div class="card">
+  <div class="ctitle" style="color:var(--accent);">Step 4 &middot; AHI Severity Classification &amp; Diagnostic Testing</div>
+  <div class="csub">OSA diagnosis requires objective sleep testing. The apnea-hypopnea index (AHI) is the number of apneas + hypopneas per hour of sleep. AASM severity classification: Normal &lt;5; Mild 5&ndash;14.9; Moderate 15&ndash;29.9; Severe &ge;30 events/hour. The AHI alone does not fully capture OSA severity &mdash; oxygen desaturation, arousal burden, and symptoms also matter.</div>
+  <div class="lbox">
+    <strong>Diagnostic testing options:</strong><br>
+    <span class="lr">In-lab polysomnography (PSG, Type 1):</span> Gold standard. Full EEG, EOG, EMG, respiratory, cardiac, oximetry monitoring. Required for complex cases (heart failure, neuromuscular disease, hypoventilation, suspected central sleep apnea).<br>
+    <span class="lr">Home sleep apnea test (HSAT, Type 3):</span> Portable monitoring without EEG. Records airflow, respiratory effort, SpO2 &plusmn; HR. Appropriate for patients with high pre-test probability of uncomplicated OSA and no significant comorbidities. Typically underestimates AHI vs PSG (uses total recording time not total sleep time &mdash; AHI may be falsely low).<br>
+    <span class="la">AHI limitations:</span> Equates apneas (complete obstruction) with hypopneas (partial) &mdash; physiological effects differ. Does not account for event duration, body position, or sleep stage. Oxygen desaturation index (ODI) and T90 (time SpO2 &lt;90%) provide complementary severity data.
+  </div>
+  <div class="slabel">Select AHI severity from sleep study <span class="pill pill-r">REQUIRED FOR TREATMENT DECISION</span></div>
+  <div class="ahi-grid">
+    <div class="ahicard" id="ahi-none" onclick="setAHI('none')">
+      <div class="ahi-num" style="color:var(--blue);">Normal</div>
+      <div class="ahi-name">AHI &lt;5/hr</div>
+      <div class="ahi-desc">No OSA. Consider other causes of sleepiness (insomnia, hypersomnia, circadian disorder).</div>
+    </div>
+    <div class="ahicard" id="ahi-mild" onclick="setAHI('mild')">
+      <div class="ahi-num" style="color:var(--green);">Mild</div>
+      <div class="ahi-name">AHI 5&ndash;14.9/hr</div>
+      <div class="ahi-desc">Treat if symptomatic (EDS, impaired QoL) or high cardiovascular risk comorbidities present.</div>
+    </div>
+    <div class="ahicard" id="ahi-mod" onclick="setAHI('mod')">
+      <div class="ahi-num" style="color:var(--amber);">Moderate</div>
+      <div class="ahi-name">AHI 15&ndash;29.9/hr</div>
+      <div class="ahi-desc">PAP therapy indicated. Significant cardiovascular and cognitive risk. Occupational implications.</div>
+    </div>
+    <div class="ahicard" id="ahi-sev" onclick="setAHI('sev')">
+      <div class="ahi-num" style="color:var(--red);">Severe</div>
+      <div class="ahi-name">AHI &ge;30/hr</div>
+      <div class="ahi-desc">PAP is first-line. Highest cardiovascular risk. Immediate treatment required regardless of symptoms.</div>
+    </div>
+  </div>
+  <div class="slabel" style="margin-top:4px;">Oxygen desaturation &amp; nocturnal hypoxemia <span class="pill pill-a">SUPPLEMENTS AHI FOR SEVERITY ASSESSMENT</span></div>
+  <div class="crit" id="desat-item">
+    <div class="crit-main">
+      <div class="crit-name">Significant nocturnal oxygen desaturation &mdash; T90 (time SpO2 &lt;90%) &gt;1% of sleep time or nadir SpO2 &lt;85%</div>
+      <button class="xbtn" onclick="xp(this)">details &#9662;</button>
+    </div>
+    <div class="crit-detail">
+      Nocturnal hypoxemia adds independent prognostic weight beyond AHI. <strong>T90 &gt;1%</strong> (cumulative sleep time with SpO2 &lt;90%) correlates with cardiovascular risk and is used in some insurance criteria for PAP approval. <strong>Nadir SpO2 &lt;85%</strong> indicates severe intermittent hypoxemia &mdash; heightens urgency for treatment. In mild OSA with significant desaturation, treatment threshold should be lowered. Oxygen desaturation index (ODI) = number of &ge;3% (or &ge;4%) SpO2 drops per hour; correlates with AHI but may diverge in REM-predominant or positional OSA.
+      <div class="cnote"><strong>Supplemental oxygen is NOT recommended as monotherapy for OSA.</strong> Oxygen supplementation corrects desaturation but does not address airway obstruction, arousals, or cardiovascular consequences of the underlying OSA (fragmented sleep, sympathetic surges). CPAP or PAP therapy is required. Supplemental oxygen may be added in selected cases with residual nocturnal hypoxemia despite adequate PAP therapy.</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setDesat(true)"  id="desat-yes">&#10003; Significant desaturation (T90 &gt;1% or nadir &lt;85%)</button>
+      <button class="abtn" onclick="setDesat(false)" id="desat-no">&#10007; No significant desaturation</button>
+      <button class="abtn" onclick="setDesat(null)"  id="desat-nd">&mdash; Not reported / pending</button>
+    </div>
+  </div>
+  <div class="slabel" style="margin-top:14px;">Testing modality used <span class="pill pill-b">AFFECTS AHI INTERPRETATION</span></div>
+  <div class="crit" id="test-item">
+    <div class="crit-main">
+      <div class="crit-name">Sleep study type &mdash; in-lab PSG (full polysomnography) vs. home sleep apnea test (HSAT/portable monitoring)</div>
+      <button class="xbtn" onclick="xp(this)">details &#9662;</button>
+    </div>
+    <div class="crit-detail">
+      <strong>HSAT underestimates AHI:</strong> HSAT divides respiratory events by total recording time (not total sleep time). A patient who takes 1 hour to fall asleep and wakes early may have actual AHI ~25% higher than HSAT reports. If HSAT is negative but clinical suspicion is high (high STOP-BANG, symptomatic), proceed to in-lab PSG. <strong>HSAT is not appropriate for:</strong> heart failure, suspected central sleep apnea, hypoventilation disorders, neuromuscular disease, prior stroke, or severe COPD.
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setTestType('psg')"  id="test-psg">&#10003; In-lab PSG (gold standard)</button>
+      <button class="abtn" onclick="setTestType('hsat')" id="test-hsat">&#10003; HSAT / portable monitoring</button>
+      <button class="abtn" onclick="setTestType('nd')"   id="test-nd">&mdash; Testing not yet done</button>
+    </div>
+  </div>
+  <div id="a3" class="alrt"></div>
+  <div class="nav-row">
+    <button class="nbtn ns" onclick="go(2)">&larr; Back</button>
+    <button class="nbtn np" id="n3" onclick="go(4)">Next: Treatment Plan &rarr;</button>
+  </div>
+</div>
+</div>
+
+<!-- S4: TREATMENT -->
+<div class="screen" id="s4">
+<div class="card">
+  <div class="ctitle" style="color:var(--accent);">Step 5 &middot; Treatment Decision Tree</div>
+  <div class="csub">Treatment selection is guided by OSA severity (AHI), symptom burden (ESS), comorbidities, patient anatomy, and patient preference. PAP therapy (CPAP or APAP) is first-line for moderate-to-severe OSA. Oral appliance therapy (OAT) is an evidence-based alternative, especially for mild-to-moderate OSA or CPAP-intolerant patients. Weight loss, positional therapy, and surgery are adjunctive or alternative options.</div>
+  <div id="tx-tree-display"></div>
+  <div class="slabel" style="margin-top:6px;">CPAP / PAP adherence status <span class="pill pill-a">REQUIRED FOR INSURANCE COVERAGE IN MOST JURISDICTIONS</span></div>
+  <div class="crit" id="cpap-adh-item">
+    <div class="crit-main">
+      <div class="crit-name">PAP adherence &mdash; &ge;4 hours/night on &ge;70% of nights (standard AASM definition). Adherence data downloadable from most modern PAP devices.</div>
+      <button class="xbtn" onclick="xp(this)">details &#9662;</button>
+    </div>
+    <div class="crit-detail">
+      <strong>CPAP adherence definition:</strong> Standard = &ge;4 h/night on &ge;70% of nights over a 30-day period. CMS definition for coverage: &ge;4 h/night on &ge;70% of nights during any consecutive 30-day period within first 90 days of use.<br><br>
+      <strong>Optimising adherence:</strong> Auto-CPAP (APAP) adjusts pressure breath-by-breath &mdash; often better tolerated than fixed CPAP. Heated humidification reduces nasal dryness (major cause of non-adherence). Mask fit is critical (nasal pillow &gt; full face for most; full face if mouth breathing). Pressure relief (EPR, C-Flex) reduces expiratory discomfort. Cognitive behavioral therapy (CBT) for CPAP adherence improves long-term use. Telemedicine &amp; remote monitoring programs improve 90-day adherence by ~20&ndash;30%.
+      <div class="cnote"><strong>Residual AHI on CPAP (download data):</strong> Residual AHI &le;5 on PAP = well-controlled. Residual AHI &gt;10 = inadequate control &mdash; check mask leak, pressure settings, and consider BPAP. If patient remains sleepy despite AHI &lt;5, investigate: insufficient sleep duration, non-restorative sleep disorder, PLMD, depression, hypothyroidism, or narcolepsy (MSLT if suspected).</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setCPAP('adherent')"    id="cpap-adherent">&#10003; Adherent (&ge;4h/&ge;70% nights)</button>
+      <button class="abtn" onclick="setCPAP('non-adherent')" id="cpap-non-adherent">&#10007; Non-adherent / intolerant</button>
+      <button class="abtn" onclick="setCPAP('naive')"       id="cpap-naive">&mdash; PAP-naive / not yet started</button>
+      <button class="abtn" onclick="setCPAP('oa')"          id="cpap-oa">Using oral appliance instead</button>
+    </div>
+  </div>
+  <div class="slabel" style="margin-top:14px;">Inspire / hypoglossal nerve stimulation eligibility <span class="pill pill-b">FOR CPAP-INTOLERANT MODERATE-SEVERE OSA</span></div>
+  <div class="crit" id="inspire-item">
+    <div class="crit-main">
+      <div class="crit-name">Inspire UAS eligibility check &mdash; AHI 15&ndash;65, BMI &le;32 kg/m&sup2;, documented CPAP failure, age &ge;18, predominantly obstructive events (&lt;25% central/mixed)</div>
+      <button class="xbtn" onclick="xp(this)">details &#9662;</button>
+    </div>
+    <div class="crit-detail">
+      Hypoglossal nerve stimulation (Inspire Medical Systems) is FDA-approved second-line therapy for moderate-to-severe OSA (AHI 15&ndash;65) in patients who have failed or are intolerant of CPAP. The stimulator senses respiratory effort and delivers mild tongue nerve stimulation to keep the airway open during sleep.<br><br>
+      <strong>Eligibility criteria (FDA / CMS):</strong> AHI 15&ndash;65 events/hour; BMI &le;32 kg/m&sup2; (some centers &le;35); documented CPAP failure or intolerance (&lt;4h/night on &lt;70% nights); predominantly obstructive AHI (central + mixed &lt;25% of total AHI); age &ge;18 (FDA); no complete concentric velopharyngeal collapse on drug-induced sleep endoscopy (DISE).<br><br>
+      <strong>Efficacy:</strong> STAR trial (Strollo et al. NEJM 2014): AHI reduced from median 29.3 to 9.0 events/hour at 12 months (68% AHI reduction); ESS improved from 11.6 to 7.0. 5-year outcomes stable. 2024 extended AHI range up to 100 in selected patients (BMI &le;40).
+      <div class="cnote"><strong>AHI &gt;65 or BMI &gt;35:</strong> Standard Inspire eligibility is exceeded. Bariatric surgery should be discussed for patients with BMI &gt;35 and moderate-to-severe OSA. Weight loss of 10% predicts ~26% reduction in AHI. Bariatric surgery can achieve sustained AHI reduction &gt;50% in morbidly obese patients but does not reliably cure OSA and PAP therapy is still required until post-operative PSG confirms resolution.</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setInspire('eligible')"    id="ins-eligible">&#10003; Potentially eligible &mdash; refer for DISE evaluation</button>
+      <button class="abtn" onclick="setInspire('ineligible')"  id="ins-ineligible">&#10007; Ineligible (AHI &lt;15, &gt;65, or BMI &gt;32)</button>
+      <button class="abtn" onclick="setInspire('nd')"          id="ins-nd">&mdash; Not assessed / AHI pending</button>
+    </div>
+  </div>
+  <div id="a4" class="alrt"></div>
+  <div class="nav-row">
+    <button class="nbtn ns" onclick="go(3)">&larr; Back</button>
+    <button class="nbtn np" onclick="go(5)">Generate Summary &rarr;</button>
+  </div>
+</div>
+</div>
+
+<!-- S5: SUMMARY -->
+<div class="screen" id="s5">
+  <div id="vout"></div>
+  <div class="doc-header">
+    <button class="doc-tog" onclick="toggleDoc()">&#9660; Documentation Note</button>
+    <button class="copy-btn" id="copy-btn" onclick="copyDoc()">&#9138; Copy</button>
+  </div>
+  <div class="doc-body" id="dn"></div>
+  <div class="nav-row">
+    <button class="nbtn ns" onclick="go(4)">&larr; Back</button>
+    <button class="nbtn np" onclick="resetAll()">&#8634; New Evaluation</button>
+  </div>
+</div>
+</div>
+
+<script>
+// ── State ──
+const essQs = [
+  'Sitting and reading',
+  'Watching television',
+  'Sitting inactive in a public place (e.g., theatre or meeting)',
+  'Riding as a passenger in a car for an hour without a break',
+  'Lying down to rest in the afternoon when circumstances permit',
+  'Sitting and talking to someone',
+  'Sitting quietly after lunch without alcohol',
+  'In a car, while stopped for a few minutes in traffic'
+];
+const sbItems = [
+  {l:'S', label:'Snoring', sub:'Do you snore loudly (louder than talking or heard through closed doors)?'},
+  {l:'T', label:'Tired', sub:'Do you often feel tired, fatigued, or sleepy during the daytime?'},
+  {l:'O', label:'Observed apnea', sub:'Has anyone observed you stop breathing or gasping during your sleep?'},
+  {l:'P', label:'Pressure (BP)', sub:'Do you have or are you being treated for high blood pressure?'},
+  {l:'B', label:'BMI &gt;35 kg/m&sup2;', sub:'Is your body mass index greater than 35?'},
+  {l:'A', label:'Age &gt;50 years', sub:'Are you older than 50 years of age?'},
+  {l:'N', label:'Neck &gt;40 cm', sub:'Is your neck circumference greater than 40 cm (15.7 inches)?'},
+  {l:'G', label:'Gender male', sub:'Are you a male?'}
+];
+
+const S = {
+  ess: Array(8).fill(null),
+  sb: Array(8).fill(null),
+  coms: {htn:null,af:null,hf:null,dm:null,stroke:null,drive:null},
+  anat: null,
+  ahi: null,
+  desat: null,
+  testType: null,
+  cpap: null,
+  inspire: null
+};
+let cur = 0;
+
+// ── Build ESS grid ──
+function buildESS() {
+  const g = document.getElementById('ess-grid');
+  g.innerHTML = '';
+  essQs.forEach((q, i) => {
+    const row = document.createElement('div');
+    row.className = 'ess-row' + (S.ess[i] !== null ? ' ess-sel' : '');
+    row.id = 'ess-row-' + i;
+    const btns = [0,1,2,3].map(v => {
+      const sel = S.ess[i] === v;
+      return `<button class="ess-btn${sel?' esel':''}" onclick="setESS(${i},${v})">${v}</button>`;
+    }).join('');
+    row.innerHTML = `<div class="ess-q">${i+1}. ${q}</div><div class="ess-btns">${btns}</div>`;
+    g.appendChild(row);
+  });
+  updateESSTotals();
+}
+function setESS(i, v) {
+  S.ess[i] = v;
+  buildESS();
+  ui();
+}
+function essScore() {
+  if (S.ess.some(x => x === null)) return null;
+  return S.ess.reduce((a, b) => a + b, 0);
+}
+function updateESSTotals() {
+  const sc = essScore();
+  const box = document.getElementById('ess-total-box');
+  if (sc === null) { if(box) box.style.display='none'; return; }
+  if(box) box.style.display='flex';
+  const numEl = document.getElementById('ess-num');
+  const catEl = document.getElementById('ess-cat');
+  if(numEl) { numEl.textContent = sc; numEl.style.color = sc>=16?'var(--red)':sc>=11?'var(--amber)':'var(--green)'; }
+  if(catEl) {
+    if(sc<=10) { catEl.textContent='Normal daytime sleepiness'; catEl.style.color='var(--green)'; }
+    else if(sc<=15) { catEl.textContent='Mild-to-moderate EDS'; catEl.style.color='var(--amber)'; }
+    else { catEl.textContent='Severe EDS — further evaluation required'; catEl.style.color='var(--red)'; }
+  }
+  document.getElementById('n0').disabled = false;
+}
+
+// ── Build STOP-BANG grid ──
+function buildSB() {
+  const g = document.getElementById('sb-grid');
+  g.innerHTML = '';
+  sbItems.forEach((item, i) => {
+    const v = S.sb[i];
+    const cls = v===true?'sb-yes':v===false?'sb-no':'';
+    const div = document.createElement('div');
+    div.className = 'sb-item ' + cls;
+    div.id = 'sb-item-'+i;
+    div.innerHTML = `<div class="sb-main"><div class="sb-letter" id="sbl-${i}">${item.l}</div><div class="sb-label">${item.label}<div class="sb-sub">${item.sub}</div></div></div><div class="sb-brow"><button class="sb-btn${v===true?' ssy':''}" onclick="setSB(${i},true)">&#10003; Yes</button><button class="sb-btn${v===false?' ssn':''}" onclick="setSB(${i},false)">&#10007; No</button></div>`;
+    g.appendChild(div);
+  });
+  updateSBTotals();
+}
+function setSB(i, v) {
+  S.sb[i] = v;
+  buildSB();
+  if(cur===5) rv();
+  ui();
+}
+function sbScore() {
+  const answered = S.sb.filter(x => x !== null).length;
+  if(answered === 0) return null;
+  return S.sb.filter(x => x===true).length;
+}
+function sbAnswered() { return S.sb.every(x => x !== null); }
+function updateSBTotals() {
+  const sc = sbScore();
+  const box = document.getElementById('sb-total-box');
+  if(sc===null) { if(box) box.style.display='none'; return; }
+  if(box) box.style.display='flex';
+  const numEl = document.getElementById('sb-num');
+  const catEl = document.getElementById('sb-cat');
+  if(numEl) { numEl.textContent = sc; numEl.style.color = sc>=5?'var(--red)':sc>=3?'var(--amber)':'var(--green)'; }
+  if(catEl) {
+    if(sc<=2) { catEl.textContent='Low risk for OSA'; catEl.style.color='var(--green)'; }
+    else if(sc<=4) { catEl.textContent='Intermediate risk — sleep study recommended'; catEl.style.color='var(--amber)'; }
+    else { catEl.textContent='High risk — sleep study indicated'; catEl.style.color='var(--red)'; }
+  }
+}
+
+function setCom(k, v) {
+  S.coms[k] = v;
+  const item = document.getElementById('c-'+k+'-item');
+  const lBadge = document.getElementById('c-'+k+'-l');
+  if(item) { item.className = 'sb-item ' + (v===true?'sb-yes':v===false?'sb-no':''); }
+  if(lBadge) { lBadge.style.background = v===true?'var(--red)':v===false?'var(--green)':'var(--accent)'; }
+  const yn = document.getElementById('c-'+k+'-y');
+  const nn = document.getElementById('c-'+k+'-n');
+  if(yn) { yn.classList.remove('ssy','ssn'); if(v===true) yn.classList.add('ssy'); }
+  if(nn) { nn.classList.remove('ssy','ssn'); if(v===false) nn.classList.add('ssn'); }
+  if(cur===5) rv();
+  ui();
+}
+function setAnat(v) {
+  S.anat = v;
+  const item = document.getElementById('anat-item');
+  if(item) { item.className = 'crit ' + (v===true?'c-r':v===false?'c-yes':'c-abs'); }
+  ['yes','no','nd'].forEach(x => { const b=document.getElementById('anat-'+x); if(b) b.classList.remove('ay','an','aa','ar'); });
+  if(v===true) { const b=document.getElementById('anat-yes'); if(b) b.classList.add('ar'); }
+  else if(v===false) { const b=document.getElementById('anat-no'); if(b) b.classList.add('ay'); }
+  else { const b=document.getElementById('anat-nd'); if(b) b.classList.add('aa'); }
+  ui();
+}
+function setAHI(v) {
+  S.ahi = v;
+  ['none','mild','mod','sev'].forEach(x => {
+    const c = document.getElementById('ahi-'+x);
+    if(c) { c.className = 'ahicard' + (x===v ? (' ahisel-' + ({none:'n',mild:'g',mod:'m',sev:'s'}[x])) : ''); }
+  });
+  buildTxTree();
+  if(cur===5) rv();
+  ui();
+}
+function setDesat(v) {
+  S.desat = v;
+  const item = document.getElementById('desat-item');
+  if(item) { item.className = 'crit ' + (v===true?'c-no':v===false?'c-yes':'c-abs'); }
+  ['yes','no','nd'].forEach(x => { const b=document.getElementById('desat-'+x); if(b) b.classList.remove('ay','an','aa'); });
+  if(v===true) { const b=document.getElementById('desat-yes'); if(b) b.classList.add('an'); }
+  else if(v===false) { const b=document.getElementById('desat-no'); if(b) b.classList.add('ay'); }
+  else { const b=document.getElementById('desat-nd'); if(b) b.classList.add('aa'); }
+  if(cur===5) rv();
+  ui();
+}
+function setTestType(v) {
+  S.testType = v;
+  const item = document.getElementById('test-item');
+  if(item) { item.className = 'crit ' + (v==='psg'?'c-yes':v==='hsat'?'c-part':'c-abs'); }
+  ['psg','hsat','nd'].forEach(x => { const b=document.getElementById('test-'+x); if(b) b.classList.remove('ay','aw','aa'); });
+  const map = {psg:'ay',hsat:'aw',nd:'aa'};
+  const btn = document.getElementById('test-'+v); if(btn) btn.classList.add(map[v]||'aa');
+  ui();
+}
+function setCPAP(v) {
+  S.cpap = v;
+  const item = document.getElementById('cpap-adh-item');
+  if(item) { item.className = 'crit ' + (v==='adherent'?'c-yes':v==='non-adherent'?'c-no':v==='oa'?'c-blue':'c-abs'); }
+  ['adherent','non-adherent','naive','oa'].forEach(x => { const b=document.getElementById('cpap-'+x); if(b) b.classList.remove('ay','an','ab','aa','aw'); });
+  const map = {'adherent':'ay','non-adherent':'an','naive':'aa','oa':'ab'};
+  const btn = document.getElementById('cpap-'+v); if(btn) btn.classList.add(map[v]||'aa');
+  if(cur===5) rv();
+  ui();
+}
+function setInspire(v) {
+  S.inspire = v;
+  const item = document.getElementById('inspire-item');
+  if(item) { item.className = 'crit ' + (v==='eligible'?'c-blue':v==='ineligible'?'c-abs':'c-abs'); }
+  ['eligible','ineligible','nd'].forEach(x => { const b=document.getElementById('ins-'+x); if(b) b.classList.remove('ay','an','ab','aa'); });
+  const map = {eligible:'ab',ineligible:'aa',nd:'aa'};
+  const btn = document.getElementById('ins-'+v); if(btn) btn.classList.add(map[v]||'aa');
+  if(cur===5) rv();
+  ui();
+}
+
+function buildTxTree() {
+  const el = document.getElementById('tx-tree-display');
+  if(!el) return;
+  const ahi = S.ahi;
+  const ess = essScore();
+  const highCV = Object.values(S.coms).filter(v=>v===true).length > 0;
+  const hasCPAP = S.cpap==='adherent'||S.cpap==='non-adherent';
+
+  let rows = [];
+  if(!ahi) {
+    el.innerHTML = '<div class="lbox">Select AHI severity (Step 4) to generate treatment recommendations.</div>';
+    return;
+  }
+
+  if(ahi==='none') {
+    rows.push({cls:'tx-first',badge:'first',title:'No OSA — Address Other Causes of EDS',
+      desc:'AHI &lt;5: OSA excluded. Evaluate for: insomnia disorder (CBT-I first-line), circadian rhythm disorder (delayed sleep-wake phase), restless legs syndrome / PLMD, idiopathic hypersomnia, narcolepsy (if ESS &ge;16 or cataplexy: MSLT indicated), depression, hypothyroidism, medications. Sleep hygiene counselling.'});
+  } else if(ahi==='mild') {
+    rows.push({cls:'tx-first',badge:'first',title:'CPAP / APAP — First-Line if Symptomatic or High CV Risk',
+      desc:'AASM guideline: Treat mild OSA (AHI 5&ndash;14.9) with PAP if patient has: (1) excessive daytime sleepiness (ESS &ge;11), or (2) impaired QoL, or (3) significant cardiovascular comorbidities (hypertension, AF, stroke). PAP is not mandatory in asymptomatic mild OSA without comorbidities.'});
+    rows.push({cls:'tx-second',badge:'second',title:'Oral Appliance Therapy (OAT) &mdash; Alternative or CPAP-Intolerant',
+      desc:'Custom mandibular advancement device (MAD) is AASM-recommended alternative to CPAP for mild-to-moderate OSA and for CPAP-intolerant patients. Requires qualified dentist fitting and titration. Follow-up PSG or HSAT with OA in place to confirm efficacy.'});
+    rows.push({cls:'tx-third',badge:'third',title:'Positional Therapy &mdash; If Position-Dependent OSA',
+      desc:'If AHI &ge;2&times; higher in supine vs. non-supine position: positional therapy (vibrotactile device, positional pillow, or ball-in-sock technique) may be sufficient. Follow-up sleep study required to confirm AHI adequately controlled (&lt;5/hr in all positions).'});
+    rows.push({cls:'',badge:null,title:'Lifestyle &mdash; Weight Loss, Alcohol Avoidance, Sleep Hygiene',
+      desc:'10% weight loss &rarr; ~26% AHI reduction (Peppard PE et al. JAMA 2000). Avoid alcohol within 4h of bedtime (relaxes upper airway musculature, worsens OSA). Avoid sedating medications (benzodiazepines, opioids) that suppress arousal response. Regular aerobic exercise improves OSA severity independently of weight loss.'});
+  } else {
+    rows.push({cls:'tx-first',badge:'first',title:'CPAP / APAP &mdash; First-Line Therapy (AASM Strong Recommendation)',
+      desc:'CPAP is the most efficacious treatment for moderate-to-severe OSA. '+(ahi==='sev'?'Severe OSA: treatment is indicated regardless of symptoms.':'Moderate OSA: indicated for all symptomatic patients; strongly recommended with any CV comorbidity.')+' APAP (auto-titrating PAP) is equivalent to fixed CPAP for most patients and preferred for initial therapy. Target: residual AHI &lt;5/hr on download data. Adequate adherence: &ge;4h/night on &ge;70% of nights.'});
+    rows.push({cls:'tx-second',badge:'second',title:'Oral Appliance Therapy (OAT) &mdash; Alternative if CPAP Intolerant',
+      desc:'AASM/AADSM guideline: OAT is recommended for CPAP-intolerant patients with mild-to-moderate OSA (preferred for mod-sev OSA only if CPAP fails). Despite lower AHI reduction than CPAP, randomised trials show comparable improvements in ESS, QoL, and blood pressure, likely due to superior adherence (OA used ~70% of nights vs CPAP ~50%). Requires follow-up sleep study with OA in situ.'});
+    if(ahi==='mod'||ahi==='sev') {
+      rows.push({cls:'tx-surg',badge:'surg',title:'Hypoglossal Nerve Stimulation (Inspire) &mdash; AHI 15&ndash;65, CPAP Failure',
+        desc:'FDA-approved second-line for moderate-to-severe OSA (AHI 15&ndash;65) with documented CPAP failure or intolerance, BMI &le;32 kg/m&sup2;, age &ge;18, predominantly obstructive events, no CCC on DISE. STAR trial: AHI reduced from 29.3 to 9.0 events/hr at 12 months; 5-year outcomes stable. DISE evaluation required before implantation.'});
+    }
+    rows.push({cls:'tx-third',badge:'third',title:'Upper Airway Surgery &mdash; Second- or Third-Line',
+      desc:'Surgical options: tonsillectomy (effective if grade III&ndash;IV tonsils, Friedman class I&ndash;II tongue); uvulopalatopharyngoplasty (UPPP); hypopharyngeal surgery; maxillomandibular advancement (MMA) &mdash; most effective surgical option (AHI reduction ~86%). Bariatric surgery for BMI &gt;35: 10% weight loss &rarr; ~26% AHI reduction; not a reliable OSA cure alone. Surgery is considered if PAP and OAT fail or are refused, or if anatomy is surgically correctable.'});
+    rows.push({cls:'',badge:null,title:'Lifestyle &mdash; Adjunctive to All Treatments',
+      desc:'Weight loss: 10% weight reduction &rarr; ~26% AHI reduction (Peppard 2000). Positional therapy if position-dependent. Avoid alcohol, sedating medications. Regular aerobic exercise (independent of weight loss) reduces AHI by ~5 events/hr.'});
+  }
+
+  let html = '<div class="tx-tree">';
+  rows.forEach(r => {
+    const badge = r.badge ? `<div class="tx-badge ${r.badge}">${{first:'1st LINE',second:'2nd LINE',third:'ADJUNCT',surg:'SURGICAL'}[r.badge]}</div>` : '<div class="tx-badge" style="background:var(--card2);color:var(--text2);">LIFESTYLE</div>';
+    html += `<div class="tx-row ${r.cls}">${badge}<div class="tx-content"><div class="tx-title">${r.title}</div><div class="tx-desc">${r.desc}</div></div></div>`;
+  });
+  html += '</div>';
+  el.innerHTML = html;
+}
+
+// ── Alert logic ──
+function comCount() { return Object.values(S.coms).filter(v=>v===true).length; }
+function ui() {
+  const ess = essScore();
+  const sb = sbScore();
+  const a0 = document.getElementById('a0');
+  if(ess!==null) {
+    if(ess>=16) sa(a0,'aerr','ESS '+ess+'/24 &mdash; Severe EDS. Sleep study strongly indicated. Consider narcolepsy (MSLT) if no OSA found or EDS persists on PAP.');
+    else if(ess>=11) sa(a0,'awn','ESS '+ess+'/24 &mdash; Excessive daytime sleepiness. Formal sleep evaluation indicated. Correlate with STOP-BANG and clinical risk factors.');
+    else sa(a0,'aok','ESS '+ess+'/24 &mdash; Normal daytime sleepiness. Note: ESS &lt;11 does NOT exclude OSA (sensitivity ~50% for moderate-to-severe OSA &mdash; Sleep Heart Health Study).');
+  } else ha(a0);
+
+  const a1 = document.getElementById('a1');
+  if(sb!==null) {
+    if(sb>=5) sa(a1,'aerr','STOP-BANG '+sb+'/8 &mdash; HIGH RISK for OSA. Sleep study indicated (sensitivity 93% for AHI &gt;15 at score &ge;3; 100% for severe OSA at score &ge;3). Do not exclude OSA based on normal ESS.');
+    else if(sb>=3) sa(a1,'awn','STOP-BANG '+sb+'/8 &mdash; Intermediate risk. Consider upgrading to high risk if BMI &gt;35, neck &gt;40cm, or male + STOP &ge;2. Sleep study recommended.');
+    else if(sb!==null) sa(a1,'aok','STOP-BANG '+sb+'/8 &mdash; Low risk. Moderate-to-severe OSA can be confidently excluded (NPV 94.8% for severe OSA). AHI &lt;15 is unlikely.');
+  } else ha(a1);
+
+  const a2 = document.getElementById('a2');
+  const cc = comCount();
+  if(cc>0) {
+    const comsYes = Object.entries(S.coms).filter(([k,v])=>v===true).map(([k])=>({htn:'Hypertension',af:'Atrial fibrillation',hf:'Heart failure',dm:'Type 2 diabetes',stroke:'Stroke/TIA',drive:'Safety-critical occupation'}[k])).join(', ');
+    const hfWarn = S.coms.hf===true?' PSG preferred over HSAT in heart failure (CSA risk).':'';
+    const driveWarn = S.coms.drive===true?' Mandatory documentation of adequate treatment required for commercial driver certification.':'';
+    sa(a2,'awn','Comorbidities: '+comsYes+'.'+hfWarn+driveWarn+' Lower treatment threshold applies &mdash; treat OSA even if mildly symptomatic.');
+  } else if(Object.values(S.coms).some(v=>v!==null)) { sa(a2,'aok','No significant OSA-related comorbidities identified at this time.'); }
+  else ha(a2);
+
+  const a3 = document.getElementById('a3');
+  if(S.ahi) {
+    const ahiMap = {none:'Normal (AHI &lt;5) &mdash; OSA excluded',mild:'Mild OSA (AHI 5&ndash;14.9) &mdash; treat if symptomatic or high CV risk',mod:'Moderate OSA (AHI 15&ndash;29.9) &mdash; PAP therapy indicated',sev:'Severe OSA (AHI &ge;30) &mdash; urgent PAP initiation; highest CV risk'};
+    const cls = S.ahi==='sev'||S.ahi==='mod'?'aerr':S.ahi==='mild'?'awn':'aok';
+    sa(a3,cls,ahiMap[S.ahi]+(S.testType==='hsat'?' Note: HSAT may underestimate AHI by ~25% (uses recording time not total sleep time). If high clinical suspicion, consider PSG.':''));
+  } else if(S.testType==='nd') { sa(a3,'ainf','Sleep study not yet performed. STOP-BANG '+((sb!==null&&sb>=3)?'score &ge;3 &mdash; moderate-to-high risk; schedule sleep study.':'score &lt;3 &mdash; low risk, but clinical judgment applies.')); }
+  else ha(a3);
+
+  const a4 = document.getElementById('a4');
+  if(S.cpap==='adherent') sa(a4,'aok','PAP-adherent. Review download data &mdash; confirm residual AHI &le;5 events/hr. If EDS persists despite AHI &lt;5: check sleep duration, PLMD, depression, hypothyroidism; consider MSLT if narcolepsy suspected.');
+  else if(S.cpap==='non-adherent') sa(a4,'aerr','PAP non-adherent or intolerant. Address barriers: mask fit, humidification, pressure relief (EPR), APAP trial, CBT for adherence. If persistent intolerance: oral appliance (OAT) or refer for surgical evaluation (Inspire if eligible).');
+  else if(S.cpap==='oa') sa(a4,'ainf','On oral appliance therapy. Confirm efficacy with follow-up HSAT or PSG with appliance in situ (AASM/AADSM recommendation). Target residual AHI &lt;5/hr; if inadequate, CPAP or combination therapy.');
+  else if(S.inspire==='eligible') sa(a4,'ainf','Potentially eligible for hypoglossal nerve stimulation. Refer for DISE evaluation (exclude CCC at palate). Confirm: AHI 15&ndash;65, BMI &le;32, documented CPAP failure, &lt;25% central/mixed apneas.');
+  else ha(a4);
+}
+
+// ── Verdict ──
+function rv() {
+  const ess = essScore();
+  const sb = sbScore();
+  const ahi = S.ahi;
+  const cc = comCount();
+  const banCls = ahi==='sev'||ahi==='mod'?'vmod':ahi==='mild'?'vmild':ahi==='none'?'vlow':'vund';
+  const banTitle = ahi==='sev'?'Severe OSA &mdash; Immediate PAP Therapy Required'
+    :ahi==='mod'?'Moderate OSA &mdash; PAP Therapy Indicated'
+    :ahi==='mild'?'Mild OSA &mdash; Treat If Symptomatic or High CV Risk'
+    :ahi==='none'?'OSA Excluded &mdash; Evaluate Alternative Diagnoses'
+    :'OSA Screening Complete &mdash; Sleep Study Needed';
+  const banDesc = ahi==='sev'?'AHI &ge;30 events/hour constitutes severe OSA. PAP therapy is strongly recommended regardless of symptoms. Highest cardiovascular risk. Address comorbidities (HTN, AF, stroke) as OSA treatment may improve their control. Occupational implications if safety-critical role.'
+    :ahi==='mod'?'AHI 15&ndash;29.9 events/hour. CPAP/APAP is first-line therapy. Oral appliance therapy is an evidence-based alternative for CPAP-intolerant patients. Both improve daytime sleepiness, QoL, and blood pressure comparably in RCTs. Target residual AHI &lt;5 on treatment.'
+    :ahi==='mild'?'AHI 5&ndash;14.9. Treatment indicated if ESS &ge;11, impaired QoL, or significant cardiovascular comorbidities. Oral appliance therapy or positional therapy may be sufficient. Weight loss and alcohol avoidance are beneficial adjuncts.'
+    :ahi==='none'?'AHI &lt;5: OSA is excluded. Assess for alternative causes of excessive daytime sleepiness: insomnia, circadian disorders, PLMD, narcolepsy (MSLT if ESS &ge;16 or cataplexy), depression, hypothyroidism.'
+    :'Screening data recorded. Formal sleep study (PSG or HSAT) is required to establish AHI and confirm OSA diagnosis. Treatment decisions cannot be made on screening data alone.';
+
+  const essIntLabel = ess===null?'Not completed':ess<=10?'Normal ('+ess+'/24)':ess<=15?'Mild-moderate EDS ('+ess+'/24)':'Severe EDS ('+ess+'/24)';
+  const sbIntLabel = sb===null?'Not completed':sb<=2?'Low risk ('+sb+'/8)':sb<=4?'Intermediate risk ('+sb+'/8)':'High risk ('+sb+'/8)';
+  const ahiLabel = {none:'Normal &mdash; AHI &lt;5/hr',mild:'Mild OSA &mdash; AHI 5&ndash;14.9/hr',mod:'Moderate OSA &mdash; AHI 15&ndash;29.9/hr',sev:'Severe OSA &mdash; AHI &ge;30/hr'};
+
+  let html=`<div class="vban ${banCls}"><div class="vban-head">
+    <div class="vlbl">Johns ESS 1991 &middot; Chung STOP-BANG 2008 &middot; AASM AHI Classification &middot; AASM/AADSM Treatment Guideline</div>
+    <div class="vtitle">${banTitle}</div>
+    <div class="vdesc">${banDesc}</div>
+  </div></div>`;
+
+  html+=`<div class="sum-grid">
+  <div class="sblock"><div class="sbtitle">Screening Scores</div>
+    <div class="srow"><div class="dot ${ess!==null?ess>=11?'dr':'dg':'dgr'}"></div><div class="sname">Epworth Sleepiness Scale</div><div class="stag ${ess!==null?ess>=16?'tr':ess>=11?'tam':'tg':'tgr'}">${essIntLabel}</div></div>
+    <div class="srow"><div class="dot ${sb!==null?sb>=5?'dr':sb>=3?'dam':'dg':'dgr'}"></div><div class="sname">STOP-BANG Score</div><div class="stag ${sb!==null?sb>=5?'tr':sb>=3?'tam':'tg':'tgr'}">${sbIntLabel}</div></div>
+    <div class="srow"><div class="dot ${S.desat===true?'dr':S.desat===false?'dg':'dgr'}"></div><div class="sname">Significant nocturnal desaturation</div><div class="stag ${S.desat===true?'tr':S.desat===false?'tg':'tgr'}">${S.desat===true?'Yes &mdash; T90 &gt;1% or nadir &lt;85%':S.desat===false?'No':'Not reported'}</div></div>
+    <div class="srow"><div class="dot ${S.testType==='psg'?'dg':S.testType==='hsat'?'dam':'dgr'}"></div><div class="sname">Sleep study type</div><div class="stag ${S.testType==='psg'?'tg':S.testType==='hsat'?'tam':'tgr'}">${{psg:'In-lab PSG (gold standard)',hsat:'HSAT (may underestimate AHI)',nd:'Not yet performed'}[S.testType]||'Not recorded'}</div></div>
+  </div>
+  <div class="sblock"><div class="sbtitle">AHI &amp; Treatment</div>
+    <div class="srow"><div class="dot ${S.ahi?S.ahi==='sev'||S.ahi==='mod'?'dr':S.ahi==='mild'?'dam':'dg':'dgr'}"></div><div class="sname">OSA Severity (AHI)</div><div class="stag ${S.ahi?S.ahi==='sev'||S.ahi==='mod'?'tr':S.ahi==='mild'?'tam':'tg':'tgr'}">${ahiLabel[S.ahi]||'Pending sleep study'}</div></div>
+    <div class="srow"><div class="dot ${cc>0?'dam':'dg'}"></div><div class="sname">CV/metabolic comorbidities</div><div class="stag ${cc>0?'tam':'tg'}">${cc>0?cc+' comorbidity'+(cc>1?'ies':'')+' present':'None identified'}</div></div>
+    <div class="srow"><div class="dot ${S.cpap==='adherent'?'dg':S.cpap==='non-adherent'?'dr':S.cpap==='oa'?'db':'dgr'}"></div><div class="sname">PAP / OAT status</div><div class="stag ${S.cpap==='adherent'?'tg':S.cpap==='non-adherent'?'tr':S.cpap==='oa'?'tb':'tgr'}">${{adherent:'PAP-adherent &mdash; &#10003;','non-adherent':'PAP non-adherent/intolerant','naive':'PAP-naive','oa':'On oral appliance therapy'}[S.cpap]||'Not started'}</div></div>
+    <div class="srow"><div class="dot ${S.inspire==='eligible'?'db':'dgr'}"></div><div class="sname">Inspire / HNS candidacy</div><div class="stag ${S.inspire==='eligible'?'tb':'tgr'}">${{eligible:'Potentially eligible &mdash; refer for DISE',ineligible:'Ineligible (AHI or BMI out of range)',nd:'Not assessed'}[S.inspire]||'Not assessed'}</div></div>
+    <div class="srow"><div class="dot ${S.anat===true?'dam':S.anat===false?'dg':'dgr'}"></div><div class="sname">Anatomical findings</div><div class="stag ${S.anat===true?'tam':S.anat===false?'tg':'tgr'}">${S.anat===true?'Present &mdash; surgical evaluation':S.anat===false?'None significant':'Not assessed'}</div></div>
+  </div></div>`;
+
+  document.getElementById('vout').innerHTML = html;
+  buildDoc(banTitle,ess,sb,ahiLabel,essIntLabel,sbIntLabel);
+}
+
+function buildDoc(title,ess,sb,ahiLabel,essIntLabel,sbIntLabel) {
+  const coms = Object.entries(S.coms).filter(([k,v])=>v===true).map(([k])=>({htn:'Hypertension',af:'Atrial fibrillation',hf:'Heart failure',dm:'Type 2 diabetes',stroke:'Stroke/TIA',drive:'Safety-critical occupation'}[k]));
+  const note=`NEUROLOGY / SLEEP MEDICINE -- OSA SCREENING & TREATMENT NAVIGATOR
+Johns MW. Sleep 1991;14:540-545 (Epworth Sleepiness Scale)
+Chung F et al. Anesthesiology 2008;108:812-821 (STOP-BANG; validated Nagappa et al. PLOS ONE 2015)
+AASM AHI Severity Classification (Mild 5-14.9; Moderate 15-29.9; Severe >=30)
+AASM/AADSM Treatment Guideline; Strollo PJ et al. (STAR trial) NEJM 2014;370:139 (Inspire)
+Date: ${new Date().toLocaleDateString()}
+
+OVERALL ASSESSMENT: ${title.replace(/&mdash;/g,'--').replace(/&ge;/g,'>=').replace(/&le;/g,'<=').replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&ndash;/g,'-').replace(/&amp;/g,'&')}
+
+EPWORTH SLEEPINESS SCALE (Johns 1991; range 0-24):
+  Individual item scores (0=never doze, 3=high chance):
+${essQs.map((q,i)=>`    ${i+1}. ${q}: ${S.ess[i]!==null?S.ess[i]:'Not scored'}`).join('\n')}
+  TOTAL ESS SCORE: ${ess!==null?ess+'/24':'Incomplete'}
+  Interpretation: ${essIntLabel.replace(/&mdash;/g,'--')}
+  Critical caveat: ESS sensitivity for moderate-to-severe OSA is ~50% (Sleep Heart Health Study).
+  A normal ESS (<11) does NOT exclude clinically significant OSA.
+
+STOP-BANG QUESTIONNAIRE (Chung 2008; score 0-8):
+${sbItems.map((item,i)=>`  ${item.l} - ${item.label.replace(/&gt;/g,'>').replace(/&sup2;/g,'2')}: ${S.sb[i]===true?'YES (1 point)':S.sb[i]===false?'NO (0 points)':'Not answered'}`).join('\n')}
+  TOTAL STOP-BANG SCORE: ${sb!==null?sb+'/8':'Incomplete'}
+  Risk category: ${sbIntLabel.replace(/&mdash;/g,'--')}
+  Performance: Score >=3: sensitivity 93% for AHI >15, 100% for AHI >30; specificity 43-56%.
+  Score 0-2: NPV 94.8% for severe OSA -- moderate-to-severe OSA confidently ruled out.
+
+COMORBIDITIES & RISK FACTORS:
+  OSA-related comorbidities identified: ${coms.length>0?coms.join(', '):'None identified'}
+  Significant anatomical findings: ${S.anat===true?'YES -- surgical evaluation warranted':S.anat===false?'None':'Not assessed'}
+
+AHI SEVERITY & SLEEP STUDY:
+  AHI classification: ${ahiLabel[S.ahi]?ahiLabel[S.ahi].replace(/&mdash;/g,'--').replace(/&ge;/g,'>=').replace(/&le;/g,'<=').replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&ndash;/g,'-'):'Pending sleep study'}
+  Sleep study type: ${{'psg':'In-lab polysomnography (PSG) -- gold standard','hsat':'HSAT/portable monitoring -- note: may underestimate AHI by ~25%','nd':'Not yet performed'}[S.testType]||'Not recorded'}
+  Significant nocturnal desaturation (T90 >1% or SpO2 nadir <85%): ${S.desat===true?'YES':S.desat===false?'No':'Not reported'}
+  Note: AHI alone does not fully characterize OSA severity. ODI, T90, nadir SpO2, and arousal burden provide complementary data.
+
+TREATMENT STATUS:
+  PAP/OAT status: ${{'adherent':'PAP-adherent (>=4h/night on >=70% of nights)','non-adherent':'PAP non-adherent or intolerant','naive':'PAP-naive (not yet started)','oa':'On oral appliance therapy'}[S.cpap]||'Not started'}
+  Inspire/HNS candidacy: ${{'eligible':'Potentially eligible -- refer for DISE evaluation (AHI 15-65, CPAP failure, BMI <=32)','ineligible':'Ineligible (AHI or BMI outside criteria)','nd':'Not assessed'}[S.inspire]||'Not assessed'}
+
+TREATMENT DECISION FRAMEWORK:
+  Mild OSA (AHI 5-14.9):
+    - Treat IF: ESS >=11, impaired QoL, or CV comorbidities (HTN, AF, stroke)
+    - CPAP/APAP: first-line if symptomatic
+    - Oral appliance therapy (MAD): equivalent alternative; superior adherence
+    - Positional therapy: if AHI >=2x higher in supine position
+    - Lifestyle: 10% weight loss --> ~26% AHI reduction (Peppard 2000)
+  Moderate OSA (AHI 15-29.9):
+    - CPAP/APAP: first-line (AASM strong recommendation)
+    - Oral appliance: evidence-based alternative if CPAP intolerant
+    - Inspire UAS: second-line if AHI 15-65, CPAP failure, BMI <=32 (STAR trial: AHI 29->9/hr)
+    - Upper airway surgery: second-line; tonsillectomy if grade III-IV tonsils
+  Severe OSA (AHI >=30):
+    - CPAP/APAP: mandatory first-line regardless of symptoms
+    - Target: residual AHI <5/hr on PAP download data
+    - Adherence: >=4h/night, >=70% of nights (CMS requirement for continued coverage)
+    - If PAP intolerant: OAT, Inspire (if AHI <=65, BMI <=32), or MMA surgery
+    - Bariatric surgery: for BMI >35; reduces AHI ~50% but not curative
+  PAP adherence optimization:
+    - APAP preferred over fixed CPAP for initial therapy
+    - Heated humidification, appropriate mask interface (nasal pillow vs full face)
+    - CBT for CPAP adherence improves 90-day use by ~20-30%
+    - Residual AHI >10 on CPAP: check mask leak, consider BPAP, re-titrate
+
+KEY REFERENCES:
+  Johns MW. Reliability of the Epworth Sleepiness Scale. Sleep 1992;15:376-381
+  Chung F et al. STOP questionnaire. Anesthesiology 2008;108:812-821
+  Peppard PE et al. Weight loss and sleep apnea. JAMA 2000;284:3015-3021
+  Strollo PJ et al. (STAR trial) Upper airway stimulation. NEJM 2014;370:139-149
+  Kushida CA et al. AASM practice parameters for PAP treatment. Sleep 2006;29:375-380
+  Sutherland K et al. Oral appliance therapy. JAMA 2014;311:2066-2075`;
+  document.getElementById('dn').textContent = note;
+}
+
+function sa(el,cls,msg){if(!el)return;el.className='alrt show '+cls;el.innerHTML=msg;}
+function ha(el){if(el)el.classList.remove('show');}
+function goTab(n){if(n===cur)return;go(n);}
+function go(n){
+  document.getElementById('s'+cur).classList.remove('active');
+  document.getElementById('s'+n).classList.add('active');
+  for(let i=0;i<6;i++){const d=document.getElementById('st'+i);d.classList.remove('active','done');if(i<n)d.classList.add('done');else if(i===n)d.classList.add('active');}
+  cur=n; document.getElementById('pf').style.width=((n/5)*100)+'%';
+  if(n===4) buildTxTree();
+  if(n===5) rv();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function xp(btn){
+  const d=btn.closest('.crit').querySelector('.crit-detail');
+  if(!d)return;
+  const o=d.classList.toggle('open');
+  btn.textContent=o?'close \u25b4':'details \u25be';
+}
+function toggleDoc(){
+  const body=document.getElementById('dn'),btn=document.getElementById('copy-btn'),tog=document.querySelector('.doc-tog');
+  if(!body)return;
+  const open=body.classList.toggle('open');
+  if(tog)tog.textContent=open?'\u25b2 Documentation Note':'\u25bc Documentation Note';
+  if(btn)btn.classList.toggle('visible',open);
+}
+function copyDoc(){
+  const body=document.getElementById('dn'),btn=document.getElementById('copy-btn');
+  if(!body)return;
+  const text=body.textContent||body.innerText;
+  navigator.clipboard.writeText(text).then(()=>{if(btn){btn.textContent='\u2713 Copied';btn.classList.add('copied');setTimeout(()=>{btn.textContent='\u238a Copy';btn.classList.remove('copied');},2000);}}).catch(()=>{const ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);if(btn){btn.textContent='\u2713 Copied';btn.classList.add('copied');setTimeout(()=>{btn.textContent='\u238a Copy';btn.classList.remove('copied');},2000);}});
+}
+function resetAll(){
+  S.ess=Array(8).fill(null);
+  S.sb=Array(8).fill(null);
+  Object.keys(S.coms).forEach(k=>S.coms[k]=null);
+  S.anat=null; S.ahi=null; S.desat=null; S.testType=null; S.cpap=null; S.inspire=null;
+  buildESS(); buildSB();
+  document.querySelectorAll('.crit').forEach(el=>el.className='crit');
+  document.querySelectorAll('.abtn').forEach(b=>b.classList.remove('ay','an','ar','ab','aa','aw'));
+  document.querySelectorAll('.crit-detail').forEach(d=>d.classList.remove('open'));
+  document.querySelectorAll('.xbtn').forEach(b=>b.textContent='details \u25be');
+  document.querySelectorAll('.ahicard').forEach(c=>c.className='ahicard');
+  ['a0','a1','a2','a3','a4'].forEach(id=>{const el=document.getElementById(id);if(el)el.classList.remove('show');});
+  document.getElementById('vout').innerHTML='';
+  document.getElementById('tx-tree-display').innerHTML='';
+  const dn=document.getElementById('dn');if(dn)dn.classList.remove('open');
+  const cb=document.getElementById('copy-btn');if(cb)cb.classList.remove('visible','copied');
+  const tog=document.querySelector('.doc-tog');if(tog)tog.textContent='\u25bc Documentation Note';
+  // Reset comorbidity badges
+  ['htn','af','hf','dm','stroke','drive'].forEach(k=>{
+    const item=document.getElementById('c-'+k+'-item');
+    const l=document.getElementById('c-'+k+'-l');
+    if(item)item.className='sb-item';
+    if(l)l.style.background='var(--accent)';
+    const y=document.getElementById('c-'+k+'-y'); const n=document.getElementById('c-'+k+'-n');
+    if(y)y.classList.remove('ssy','ssn'); if(n)n.classList.remove('ssy','ssn');
+  });
+  go(0);
+  document.getElementById('n0').disabled=true;
+}
+
+// ── Init ──
+buildESS();
+buildSB();
+ui();
+</script>
+</body>
+</html>
