@@ -1,0 +1,1091 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guillain-Barré Syndrome Diagnostic Navigator · Brighton Criteria</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@300;400;500;600;700&family=Lexend:wght@300;400;500;600&display=swap');
+
+:root {
+  --bg:        #0d1117;
+  --card:      #161b22;
+  --card2:     #1c2330;
+  --border:    #2a3a4a;
+  --border2:   #3a5060;
+  --green:     #3fb950;
+  --green-bg:  rgba(63,185,80,0.10);
+  --green-bd:  rgba(63,185,80,0.35);
+  --red:       #f85149;
+  --red-bg:    rgba(248,81,73,0.10);
+  --red-bd:    rgba(248,81,73,0.35);
+  --amber:     #e3b341;
+  --amber-bg:  rgba(227,179,65,0.10);
+  --amber-bd:  rgba(227,179,65,0.35);
+  --blue:      #58a6ff;
+  --blue-bg:   rgba(88,166,255,0.10);
+  --blue-bd:   rgba(88,166,255,0.35);
+  --purple:    #bc8cff;
+  --purple-bg: rgba(188,140,255,0.10);
+  --purple-bd: rgba(188,140,255,0.35);
+  /* GBS accent: rose pink — titles and interactive elements only */
+  --accent:    #f472b6;
+  --accent-bg: rgba(244,114,182,0.10);
+  --accent-bd: rgba(244,114,182,0.35);
+  --accent2:   #be185d;
+  --text:      #e6edf3;
+  --text2:     #aab4c0;
+  --text3:     #6e7f94;
+  --sans:  'Lexend', 'Inter', system-ui, sans-serif;
+  --mono:  'IBM Plex Mono', monospace;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg); color: var(--text); font-family: var(--sans); font-size: 14px; line-height: 1.5; min-height: 100vh; }
+.app { max-width: 960px; margin: 0 auto; padding: 0 20px 80px; }
+
+/* HEADER */
+header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+.h-title { font-size: 19px; font-weight: 700; }
+.h-title span { color: var(--accent); }
+.h-sub { font-family: var(--sans); font-size: 11px; color: var(--text3); margin-top: 3px; line-height: 1.6; }
+.h-credit { font-family: var(--sans); font-size: 11px; color: var(--text3); margin-top: 2px; }
+.reset-btn { background: var(--card2); border: 1px solid var(--border); color: var(--text2); font-family: var(--sans); font-size: 12px; padding: 6px 14px; cursor: pointer; border-radius: 4px; transition: all 0.15s; white-space: nowrap; font-weight: 500; }
+.reset-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+/* PROGRESS */
+.prog-track { height: 3px; background: var(--border); margin-bottom: 20px; border-radius: 2px; }
+.prog-fill { height: 100%; background: linear-gradient(90deg, var(--accent2), var(--accent)); border-radius: 2px; transition: width 0.4s ease; box-shadow: 0 0 8px rgba(244,114,182,0.4); }
+
+/* STEP TABS */
+.steps { display: grid; grid-template-columns: repeat(6,1fr); border: 1px solid var(--border); border-radius: 8px; margin-bottom: 20px; overflow: hidden; background: var(--card); }
+.stab { padding: 8px 3px 9px; text-align: center; font-family: var(--sans); font-size: 10px; color: var(--text3); border-right: 1px solid var(--border); transition: all 0.2s; cursor: pointer; background: var(--card); line-height: 1.3; }
+.stab:nth-child(6n) { border-right: none; }
+.stab .sn { display: flex; align-items: center; justify-content: center; width: 20px; height: 20px; border-radius: 50%; background: var(--card2); border: 1px solid var(--border); font-size: 10px; font-weight: 700; margin: 0 auto 3px; transition: all 0.2s; }
+.stab .slbl { display: block; font-size: 9px; font-weight: 600; line-height: 1.3; }
+.stab.active { color: var(--accent); background: var(--accent-bg); }
+.stab.active .sn { background: var(--accent); color: #0d1117; border-color: var(--accent); }
+.stab.done { color: var(--green); }
+.stab.done .sn { background: var(--green); color: #0d1117; border-color: var(--green); }
+.stab:hover:not(.active) { background: var(--card2); }
+
+/* CARD */
+.card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 22px; margin-bottom: 12px; }
+.ctitle { font-size: 13px; font-weight: 700; font-family: var(--sans); margin-bottom: 3px; }
+.csub { font-size: 12px; color: var(--text2); margin-bottom: 16px; line-height: 1.5; }
+
+/* SECTION LABEL */
+.slabel { display: flex; align-items: center; gap: 8px; font-family: var(--sans); font-size: 11px; font-weight: 600; color: var(--text); margin-bottom: 9px; padding-bottom: 6px; border-bottom: 1px solid var(--border); }
+.pill { font-size: 9px; padding: 1px 7px; border-radius: 20px; border: 1px solid; margin-left: auto; font-family: var(--sans); letter-spacing: 0.04em; text-transform: uppercase; }
+.pill-r { border-color: var(--red);    color: var(--red);    background: var(--red-bg); }
+.pill-a { border-color: var(--amber);  color: var(--amber);  background: var(--amber-bg); }
+.pill-p { border-color: var(--accent); color: var(--accent); background: var(--accent-bg); }
+.pill-g { border-color: var(--green);  color: var(--green);  background: var(--green-bg); }
+.pill-b { border-color: var(--blue);   color: var(--blue);   background: var(--blue-bg); }
+
+/* CRITERION ROW */
+.crit { border: 1px solid var(--border); border-radius: 6px; margin-bottom: 5px; overflow: hidden; transition: border-color 0.15s, background 0.15s; }
+.crit.c-yes  { border-color: var(--green-bd);  background: var(--green-bg); }
+.crit.c-no   { border-color: var(--red-bd);    background: var(--red-bg); }
+.crit.c-pink { border-color: var(--accent-bd); background: var(--accent-bg); }
+.crit.c-abs  { border-color: var(--border2);   background: var(--card2); }
+.crit.c-part { border-color: var(--amber-bd);  background: var(--amber-bg); }
+.crit.c-blue { border-color: var(--blue-bd);   background: var(--blue-bg); }
+
+.crit-main { display: flex; align-items: center; gap: 10px; padding: 10px 13px; }
+.crit-name { flex: 1; font-size: 13px; font-weight: 500; color: var(--text); line-height: 1.3; }
+.xbtn { background: var(--purple-bg); border: 1px solid var(--purple-bd); color: var(--purple); font-size: 11px; cursor: pointer; padding: 2px 8px; font-family: var(--sans); white-space: nowrap; transition: all 0.15s; flex-shrink: 0; border-radius: 3px; font-weight: 500; }
+.xbtn:hover { background: var(--purple); color: #0d1117; border-color: var(--purple); }
+
+.crit-detail { display: none; padding: 10px 13px 12px; font-size: 12px; color: var(--text); line-height: 1.65; border-top: 1px solid var(--border); font-family: var(--sans); }
+.crit-detail.open { display: block; }
+.cnote { margin-top: 8px; padding: 8px 11px; background: var(--card2); border-left: 3px solid var(--border2); font-family: var(--sans); font-size: 11px; color: var(--text2); line-height: 1.75; border-radius: 0 3px 3px 0; }
+.cnote strong { color: var(--text); }
+
+/* BUTTON ROW */
+.brow { display: flex; border-top: 1px solid var(--border); flex-wrap: wrap; }
+.abtn { flex: 1; min-width: 100px; padding: 9px 10px; background: none; border: none; border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); color: var(--text2); font-family: var(--sans); font-size: 12px; cursor: pointer; transition: all 0.12s; font-weight: 400; line-height: 1.4; text-align: left; }
+.abtn:last-child { border-right: none; }
+.abtn:hover { background: var(--card2); color: var(--text); }
+.abtn.ay  { background: var(--green-bg);  color: var(--green);  font-weight: 700; }
+.abtn.an  { background: var(--red-bg);    color: var(--red);    font-weight: 700; }
+.abtn.ap  { background: var(--accent-bg); color: var(--accent); font-weight: 700; }
+.abtn.ab  { background: var(--blue-bg);   color: var(--blue);   font-weight: 700; }
+.abtn.aa  { background: var(--card2);     color: var(--text2);  font-weight: 700; }
+.abtn.aw  { background: var(--amber-bg);  color: var(--amber);  font-weight: 700; }
+
+/* TWO-COL */
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; }
+@media (max-width: 600px) { .two-col { grid-template-columns: 1fr; } }
+
+/* ALERT */
+.alrt { padding: 9px 13px; border-radius: 5px; font-size: 12px; line-height: 1.55; margin-top: 12px; border-left: 3px solid; display: none; font-family: var(--sans); }
+.alrt.show { display: block; }
+.aok   { border-color: var(--green);  background: var(--green-bg);  color: #7ee787; }
+.awn   { border-color: var(--amber);  background: var(--amber-bg);  color: var(--amber); }
+.aerr  { border-color: var(--red);    background: var(--red-bg);    color: #ff7b72; }
+.ainf  { border-color: var(--blue);   background: var(--blue-bg);   color: var(--blue); }
+.apink { border-color: var(--accent); background: var(--accent-bg); color: var(--accent); }
+
+/* LOGIC BOX */
+.lbox { background: var(--card2); border: 1px solid var(--border); border-radius: 5px; padding: 12px 15px; font-size: 12px; color: var(--text2); line-height: 1.75; margin-bottom: 14px; font-family: var(--sans); }
+.lbox strong { color: var(--text); }
+.lp { color: var(--accent);  font-weight: 600; }
+.lg { color: var(--green);   font-weight: 600; }
+.la { color: var(--amber);   font-weight: 600; }
+.lr { color: var(--red);     font-weight: 600; }
+.lb { color: var(--blue);    font-weight: 600; }
+
+/* BRIGHTON LEVEL CARDS */
+.brighton-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 6px; margin-bottom: 14px; }
+@media (max-width: 640px) { .brighton-grid { grid-template-columns: repeat(2,1fr); } }
+.blevel { border: 1px solid var(--border); border-radius: 6px; padding: 12px 13px; background: var(--card2); }
+.blevel.bl-1 { border-color: var(--green-bd);  background: var(--green-bg); }
+.blevel.bl-2 { border-color: var(--accent-bd); background: var(--accent-bg); }
+.blevel.bl-3 { border-color: var(--amber-bd);  background: var(--amber-bg); }
+.blevel.bl-4 { border-color: var(--blue-bd);   background: var(--blue-bg); }
+.bl-num  { font-size: 20px; font-weight: 700; font-family: var(--mono); }
+.bl-desc { font-size: 10px; color: var(--text2); margin-top: 4px; line-height: 1.5; font-family: var(--sans); }
+
+/* EGRIS SCORE TABLE */
+.egris-row { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 8px; padding: 7px 0; border-bottom: 1px solid var(--border); font-size: 12px; }
+.egris-row:last-child { border-bottom: none; }
+.egris-label { color: var(--text2); }
+.egris-pts { font-family: var(--mono); font-size: 11px; color: var(--accent); background: var(--accent-bg); border: 1px solid var(--accent-bd); padding: 1px 8px; border-radius: 10px; white-space: nowrap; }
+
+/* EGRIS TOTAL */
+.egris-total { display: flex; align-items: center; justify-content: space-between; margin-top: 12px; padding: 10px 14px; border-radius: 6px; border: 1px solid var(--border); background: var(--card2); }
+.egris-total-label { font-size: 12px; font-weight: 600; color: var(--text); }
+.egris-total-score { font-size: 22px; font-weight: 700; font-family: var(--mono); }
+.egris-risk-bar { margin-top: 8px; }
+.risk-track { height: 6px; background: var(--border); border-radius: 3px; margin-bottom: 4px; }
+.risk-fill { height: 100%; border-radius: 3px; transition: width 0.4s ease; }
+
+/* VARIANT TABLE */
+.var-table { width: 100%; border-collapse: collapse; font-size: 11px; font-family: var(--sans); margin-bottom: 12px; }
+.var-table th { background: var(--card2); color: var(--text2); font-weight: 600; padding: 7px 10px; text-align: left; border: 1px solid var(--border); font-size: 10px; text-transform: uppercase; letter-spacing: 0.04em; }
+.var-table td { padding: 7px 10px; border: 1px solid var(--border); color: var(--text); vertical-align: top; line-height: 1.45; }
+.var-table tr:nth-child(even) td { background: rgba(255,255,255,0.02); }
+
+/* NAV */
+.nav-row { display: flex; justify-content: space-between; align-items: center; margin-top: 20px; gap: 10px; }
+.nbtn { padding: 9px 22px; border-radius: 5px; font-family: var(--sans); font-size: 13px; border: 1px solid; cursor: pointer; font-weight: 600; transition: all 0.15s; }
+.np { background: var(--accent); border-color: var(--accent); color: #0d1117; font-weight: 700; }
+.np:hover { background: #f9a8d4; border-color: #f9a8d4; }
+.np:disabled { opacity: 0.3; cursor: not-allowed; }
+.ns { background: transparent; border-color: var(--border2); color: var(--text2); }
+.ns:hover { border-color: var(--text); color: var(--text); }
+
+/* SCREEN */
+.screen { display: none; }
+.screen.active { display: block; animation: fu 0.25s ease; }
+@keyframes fu { from { opacity:0; transform:translateY(5px); } to { opacity:1; transform:translateY(0); } }
+
+/* VERDICT */
+.vban { border-radius: 8px; padding: 22px 26px; margin-bottom: 16px; border: 2px solid; }
+.vl1   { border-color: var(--green);  background: var(--green-bg); }
+.vl2   { border-color: var(--accent); background: var(--accent-bg); }
+.vl3   { border-color: var(--amber);  background: var(--amber-bg); }
+.vl4   { border-color: var(--blue);   background: var(--blue-bg); }
+.vneg  { border-color: var(--red);    background: var(--red-bg); }
+.vund  { border-color: var(--border2);background: var(--card2); }
+.vban-head { text-align: center; margin-bottom: 14px; }
+.vlbl { font-family: var(--mono); font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase; opacity: 0.6; margin-bottom: 5px; }
+.vtitle { font-size: 22px; font-weight: 700; margin-bottom: 6px; }
+.vl1 .vtitle { color: var(--green); }
+.vl2 .vtitle { color: var(--accent); }
+.vl3 .vtitle { color: var(--amber); }
+.vl4 .vtitle { color: var(--blue); }
+.vneg .vtitle { color: var(--red); }
+.vund .vtitle { color: var(--text2); }
+.vdesc { font-size: 12px; color: var(--text2); line-height: 1.7; max-width: 640px; margin: 0 auto; font-family: var(--sans); }
+
+/* SUMMARY */
+.sum-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+@media (max-width: 580px) { .sum-grid { grid-template-columns: 1fr; } }
+.sblock { background: var(--card); border: 1px solid var(--border); border-radius: 6px; overflow: hidden; }
+.sbtitle { font-family: var(--sans); font-size: 11px; font-weight: 600; padding: 7px 11px; border-bottom: 1px solid var(--border); color: var(--text); background: var(--card2); }
+.srow { display: flex; align-items: flex-start; gap: 8px; padding: 6px 11px; border-bottom: 1px solid var(--border); font-size: 12px; font-family: var(--sans); }
+.srow:last-child { border-bottom: none; }
+.dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; margin-top: 4px; }
+.dg { background: var(--green); } .dr { background: var(--red); }
+.dp { background: var(--accent); } .db { background: var(--blue); }
+.da { background: var(--amber); } .dgr{ background: var(--text3); }
+.sname { flex: 1; color: var(--text); line-height: 1.4; }
+.stag { font-family: var(--mono); font-size: 9px; padding: 1px 7px; border-radius: 10px; border: 1px solid; white-space: nowrap; }
+.tg { border-color: var(--green-bd);  color: var(--green); }
+.tr { border-color: var(--red-bd);    color: var(--red); }
+.tp { border-color: var(--accent-bd); color: var(--accent); }
+.tb { border-color: var(--blue-bd);   color: var(--blue); }
+.ta { border-color: var(--amber-bd);  color: var(--amber); }
+.tgr{ border-color: var(--border2);   color: var(--text3); }
+
+/* DOC NOTE */
+.doc-header { display: flex; align-items: center; gap: 8px; margin-bottom: 5px; }
+.doc-tog { flex: 1; text-align: left; background: var(--card2); border: 1px solid var(--border2); border-radius: 5px; color: var(--text2); font-family: var(--sans); font-size: 13px; padding: 8px 13px; cursor: pointer; transition: all 0.15s; }
+.doc-tog:hover { border-color: var(--accent); color: var(--accent); }
+.copy-btn { background: var(--card2); border: 1px solid var(--border2); border-radius: 5px; color: var(--text2); font-family: var(--sans); font-size: 12px; padding: 8px 14px; cursor: pointer; white-space: nowrap; transition: all 0.15s; display: none; }
+.copy-btn.visible { display: block; }
+.copy-btn:hover { border-color: var(--green); color: var(--green); }
+.copy-btn.copied { border-color: var(--green); color: var(--green); background: var(--green-bg); }
+.doc-body { display: none; background: var(--card2); border: 1px solid var(--border2); border-radius: 5px; padding: 13px 15px; font-family: var(--mono); font-size: 11px; color: var(--text2); line-height: 1.85; white-space: pre-wrap; margin-bottom: 12px; }
+.doc-body.open { display: block; }
+</style>
+</head>
+<body>
+<div class="app">
+
+<header>
+  <div>
+    <div class="h-title">Guillain-Barré Syndrome · <span>Diagnostic Navigator</span></div>
+    <div class="h-sub">Brighton Collaboration GBS Working Group 2011 · Fokke C et al. · Brain 2014;137:33–43 · Walgaard C et al. · Ann Neurol 2010;67:781–787 · For educator use only</div>
+    <div class="h-credit">Designed by Daniel Short, MD</div>
+  </div>
+  <button class="reset-btn" onclick="resetAll()">↺ Reset</button>
+</header>
+
+<div class="prog-track"><div class="prog-fill" id="pf" style="width:0%"></div></div>
+
+<div class="steps">
+  <div class="stab active" id="st0" onclick="goTab(0)"><span class="sn">1</span><span class="slbl">Clinical Criteria</span></div>
+  <div class="stab" id="st1" onclick="goTab(1)"><span class="sn">2</span><span class="slbl">CSF Analysis</span></div>
+  <div class="stab" id="st2" onclick="goTab(2)"><span class="sn">3</span><span class="slbl">Nerve Studies</span></div>
+  <div class="stab" id="st3" onclick="goTab(3)"><span class="sn">4</span><span class="slbl">Subtype</span></div>
+  <div class="stab" id="st4" onclick="goTab(4)"><span class="sn">5</span><span class="slbl">EGRIS Score</span></div>
+  <div class="stab" id="st5" onclick="goTab(5)"><span class="sn">6</span><span class="slbl">Brighton / Verdict</span></div>
+</div>
+
+<!-- ══ SCREEN 0: CLINICAL CRITERIA ══ -->
+<div class="screen active" id="s0">
+<div class="card">
+  <div class="ctitle" style="color:var(--accent);">Step 1 · Clinical Diagnostic Criteria</div>
+  <div class="csub">GBS is an acute immune-mediated polyradiculoneuropathy. It is a clinical diagnosis supported by CSF and electrodiagnostic findings. The Brighton Collaboration criteria (2011, validated by Fokke et al. Brain 2014) provide four levels of diagnostic certainty. All levels share a common clinical prerequisite: bilateral flaccid limb weakness + decreased or absent deep tendon reflexes in weak limbs + monophasic course + absence of alternative diagnosis.</div>
+
+  <div class="lbox">
+    <strong>Epidemiology and context:</strong> Annual incidence 0.81–1.89/100,000. Peak onset after respiratory tract infection (~60% of cases) or gastroenteritis — <span class="lp">Campylobacter jejuni</span> is the most common identified antecedent (~30% of GBS), particularly associated with axonal subtypes (AMAN/AMSAN). Incubation 1–3 weeks. Other triggers: CMV, EBV, Influenza, SARS-CoV-2, Zika, influenza vaccination (1–2 excess cases/million doses). Bimodal age distribution (young adults and >50 years). Male:Female ~1.5:1.<br><br>
+    <span class="lp">Nadir timing:</span> 85–90% of patients reach nadir within 4 weeks; median ~2 weeks. Progression beyond 8 weeks suggests CIDP rather than GBS.
+  </div>
+
+  <div class="slabel">Core clinical criteria — all four required for Brighton Level 1 <span class="pill pill-r">ALL FOUR REQUIRED FOR LEVEL 1</span></div>
+
+  <div class="two-col">
+  <div class="crit" id="weak-item">
+    <div class="crit-main">
+      <div class="crit-name">Bilateral AND flaccid weakness of the limbs (upper, lower, or all four — at least bilateral lower limb weakness)</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      The Brighton criteria require bilateral and flaccid weakness — not spastic, not unilateral. Weakness is classically ascending (beginning distally in the legs then progressing upward), but this pattern is variable. Purely upper extremity onset is less common but occurs. Bifacial and descending variants also exist (Miller Fisher overlap). Flaccidity distinguishes GBS from upper motor neuron lesions. <strong>Unilateral weakness essentially excludes GBS</strong> — consider mononeuropathy, stroke, or structural lesion.
+      <div class="cnote"><strong>Clinical exam tip:</strong> Assess strength in bilateral hip flexors, knee extensors, ankle dorsiflexors, shoulder abductors, elbow flexors, and wrist extensors. Document MRC scale for each (0–5). The MRC sum score (6 muscle groups × 2 sides × 5 = max 60) is required for the EGRIS respiratory risk calculation.</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setCrit('weak',true)"  id="weak-yes">✓ Present — bilateral flaccid weakness</button>
+      <button class="abtn" onclick="setCrit('weak',false)" id="weak-no">✗ Absent or unilateral</button>
+    </div>
+  </div>
+
+  <div class="crit" id="reflex-item">
+    <div class="crit-main">
+      <div class="crit-name">Decreased or absent deep tendon reflexes in the weak limbs (hyporeflexia or areflexia)</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      Areflexia or hyporeflexia of weak limbs is a core feature, reflecting involvement of both large-caliber afferent fibers (Ia spindle afferents) and efferent motor axons or demyelination of the reflex arc. <strong>Preserved reflexes in weak limbs raise doubt about GBS</strong> — consider Lambert-Eaton (intact or enhanced reflexes that improve post-exercise), hyperkalemia, toxic neuropathy, or West Nile virus poliomyelitis. Note: reflexes may occasionally be preserved early in AMAN if only distal axons are involved and proximal testing reveals weakness before reflex loss.
+      <div class="cnote"><strong>Proximal reflex preservation:</strong> In early or purely distal GBS, knee and ankle jerks are typically the first to disappear. Biceps and brachioradialis reflexes usually follow. The loss of ankle jerks in the setting of ascending weakness is a strong clinical sign of GBS, distinguishing it from most central causes of acute weakness.</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setCrit('reflex',true)"  id="reflex-yes">✓ Decreased/absent in weak limbs</button>
+      <button class="abtn" onclick="setCrit('reflex',false)" id="reflex-no">✗ Normal or brisk — reconsider diagnosis</button>
+    </div>
+  </div>
+
+  <div class="crit" id="mono-item">
+    <div class="crit-main">
+      <div class="crit-name">Monophasic course with time from onset to nadir between 12 hours and 28 days, followed by a plateau phase</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      The Brighton criteria require the progressive phase to last between 12 hours and 28 days, with a subsequent plateau. This monophasic course distinguishes GBS from: CIDP (progression >8 weeks, or relapsing-remitting), treatment-related fluctuations (TRF) in up to 10% of GBS patients within 2 months, and relapsing GBS (rare, &lt;3%).<br><br>
+      <strong>Treatment-related fluctuations (TRF):</strong> Worsening of 1+ GBS disability scale point within 2 months of reaching nadir in a patient who initially improved — occurs in ~10% of GBS. Typically responds to repeat IVIG/PLEX. If fluctuations occur beyond 8–12 weeks, reclassify as CIDP.
+      <div class="cnote"><strong>Brighton Level 4:</strong> Patients who do NOT meet the 12h–28 day nadir criterion (either because the progressive phase is longer or because of late fluctuations that deviate from a monophasic course) fall into Level 4 — "GBS not classifiable according to levels 1–3 but diagnosis not excluded." Level 4 captures 6% of confirmed GBS patients in the Fokke 2014 validation study (n=335).</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setCrit('mono','yes')"  id="mono-yes">✓ Monophasic, nadir within 28 days</button>
+      <button class="abtn" onclick="setCrit('mono','late')" id="mono-late">⚠ Nadir &gt;28 days or late fluctuations (→ Level 4 territory / consider CIDP)</button>
+      <button class="abtn" onclick="setCrit('mono','no')"   id="mono-no">✗ Not monophasic / recurrent</button>
+    </div>
+  </div>
+
+  <div class="crit" id="altdx-item">
+    <div class="crit-main">
+      <div class="crit-name">Absence of an alternative diagnosis — clinical exclusion of CIDP, toxic neuropathy, critical illness polyneuropathy, vasculitic neuropathy, transverse myelitis, poliomyelitis</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      Brighton Level 1–3 all require absence of an alternative diagnosis. Exclusion criteria include: <strong>CIDP</strong> (progressive >8 weeks or relapsing); <strong>Botulism</strong> (descending paralysis, cranial neuropathies first, autonomic prominent, preserved sensation, toxin or food source); <strong>Transverse myelitis</strong> (sensory level, sphincter dysfunction, back pain, normal CSF protein usually); <strong>West Nile/poliovirus</strong> (asymmetric flaccid paralysis, fever, CSF pleocytosis); <strong>Vasculitic neuropathy</strong> (asymmetric, mononeuritis multiplex pattern, systemic features); <strong>Critical illness polyneuropathy/myopathy</strong> (ICU setting, sepsis); <strong>Tick paralysis</strong> (ascending, tick in hair); <strong>Hypokalemia, hypermagnesemia</strong> (check electrolytes); <strong>Lambert-Eaton</strong> (facilitation, autonomic, VGCC antibody).
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setCrit('altdx',true)"  id="altdx-yes">✓ No alternative diagnosis identified</button>
+      <button class="abtn" onclick="setCrit('altdx',false)" id="altdx-no">✗ Alternative diagnosis present or suspected</button>
+    </div>
+  </div>
+  </div>
+
+  <div class="slabel" style="margin-top:14px;">Supportive clinical features <span class="pill pill-b">SUPPORT DIAGNOSIS — NOT REQUIRED FOR BRIGHTON CRITERIA</span></div>
+
+  <div class="two-col">
+  <div class="crit" id="cranial-item">
+    <div class="crit-main">
+      <div class="crit-name">Cranial nerve involvement — bilateral facial palsy (most common, ~50%), ophthalmoplegia, bulbar weakness, dysarthria, dysphagia</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      Cranial nerve involvement occurs in ~50% of GBS patients. Bilateral facial palsy is most common — asymmetric at onset but becoming bilateral. CN VI palsy (diplopia) less common. Bulbar weakness (dysphagia, dysphonia) increases aspiration risk and is a component of the EGRIS score. Miller Fisher syndrome (MFS): triad of ophthalmoplegia + ataxia + areflexia — a pure cranial variant often GQ1b-antibody positive. MFS-GBS overlap: cranial nerve involvement with limb weakness.
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setSupp('cranial',true)"  id="cranial-yes">✓ Present</button>
+      <button class="abtn" onclick="setSupp('cranial',false)" id="cranial-no">✗ Absent</button>
+    </div>
+  </div>
+
+  <div class="crit" id="autonomic-item">
+    <div class="crit-main">
+      <div class="crit-name">Autonomic dysfunction — tachycardia, hypertension/hypotension, urinary retention, ileus, diaphoresis, labile BP</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      Autonomic dysfunction occurs in ~65% of GBS patients requiring ICU admission. Cardiovascular instability (tachycardia, bradycardia, labile BP) is most common and can be life-threatening. Transient BP spikes from neck flexion or suctioning may cause catastrophic hypertension. Bradyarrhythmias (including asystole) require cardiac monitoring. Urinary retention (30%), ileus (15%) — NG tube and catheter if needed. Autonomic instability is an independent predictor of prolonged ICU stay and mortality.
+      <div class="cnote"><strong>Cardiac monitoring:</strong> All patients with GBS admitted to ICU should have continuous cardiac monitoring. Avoid hypotension from excessive narcotics or rapid changes in position. Pacing may be required for high-degree AV block. Avoid medications that worsen autonomic instability (e.g., beta-blockers can worsen bradycardia).</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setSupp('autonomic',true)"  id="autonomic-yes">✓ Present</button>
+      <button class="abtn" onclick="setSupp('autonomic',false)" id="autonomic-no">✗ Absent</button>
+    </div>
+  </div>
+
+  <div class="crit" id="pain-item">
+    <div class="crit-main">
+      <div class="crit-name">Pain — neuropathic pain (often radicular back pain or limb burning); pain at onset in majority of patients</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setSupp('pain',true)"  id="pain-yes">✓ Present</button>
+      <button class="abtn" onclick="setSupp('pain',false)" id="pain-no">✗ Absent</button>
+    </div>
+  </div>
+
+  <div class="crit" id="precede-item">
+    <div class="crit-main">
+      <div class="crit-name">Preceding infection or trigger — URTI or GI illness in 1–3 weeks prior; Campylobacter exposure; vaccination within 6 weeks</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      ~65% of GBS cases have an identified antecedent illness. Campylobacter jejuni: ~30% of GBS cases — associated with axonal (AMAN/AMSAN) subtypes and anti-GM1/GD1a antibodies; may indicate worse prognosis. CMV: ~10% — tends to have more severe sensory involvement. EBV, influenza A, Mycoplasma pneumoniae, Zika virus also implicated. Influenza vaccination: estimated 1–2 excess cases per million doses (extremely low absolute risk vs. benefit of vaccination). COVID-19 vaccines and natural SARS-CoV-2 infection: increased GBS risk reported, particularly with adenoviral vector vaccines (AstraZeneca).
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setSupp('precede',true)"  id="precede-yes">✓ Antecedent illness or trigger identified</button>
+      <button class="abtn" onclick="setSupp('precede',false)" id="precede-no">✗ No identified antecedent</button>
+    </div>
+  </div>
+  </div>
+
+  <div id="a0" class="alrt"></div>
+  <div class="nav-row"><div></div><button class="nbtn np" id="n0" onclick="go(1)" disabled>Next: CSF Analysis →</button></div>
+</div>
+</div>
+
+<!-- ══ SCREEN 1: CSF ══ -->
+<div class="screen" id="s1">
+<div class="card">
+  <div class="ctitle" style="color:var(--accent);">Step 2 · Cerebrospinal Fluid Analysis</div>
+  <div class="csub">Lumbar puncture is strongly recommended in suspected GBS — CSF results differentiate Brighton Levels 1 and 2. Albumino-cytological dissociation (elevated protein with &lt;10 WBC/µL) is the classic finding, but this may be absent in the first week. CSF is not required to make the diagnosis if clinical criteria are met, but absence raises the level of diagnostic certainty by one step.</div>
+
+  <div class="lbox">
+    <strong>CSF findings in GBS — timing matters:</strong><br>
+    <span class="lp">Cytoalbuminological dissociation:</span> Elevated protein (>45 mg/dL) with normal or near-normal cell count (&lt;10 cells/µL) — classic GBS finding, present in ~80% at 2 weeks after symptom onset but only ~50% in week 1. Protein rises progressively, peaking at 4–6 weeks.<br>
+    <span class="la">Cell count:</span> Brighton requires &lt;50 cells/µL. Higher pleocytosis (&gt;50) should raise concern for infectious GBS mimics (HIV-associated polyradiculoneuropathy, CMV polyradiculitis in immunocompromised patients, Lyme radiculopathy, WNV). Always send cell count differential — lymphocyte predominance is typical even when mildly elevated.<br>
+    <span class="lb">Normal CSF:</span> Does not exclude GBS — normal protein is seen in ~30% of patients at initial presentation (Brighton Level 2 still applies if cell count &lt;50).
+  </div>
+
+  <div class="slabel">CSF cell count <span class="pill pill-r">REQUIRED FOR LEVELS 1 AND 2</span></div>
+
+  <div class="crit" id="csfcell-item">
+    <div class="crit-main">
+      <div class="crit-name">CSF white cell count — &lt;10/µL is typical; Brighton allows up to 50/µL for Levels 1 and 2</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      Brighton criteria use a threshold of &lt;50 cells/µL (not the classic &lt;10 for "normal"). Elevated cells up to 50/µL are compatible with Levels 1 and 2 and may reflect mild inflammatory reaction. Cell count &gt;50/µL is exclusionary for Levels 1–3 (→ Level 4 territory or consider infectious/inflammatory mimic).<br><br>
+      <strong>HIV-associated GBS:</strong> One important exception — HIV-related acute inflammatory demyelinating polyneuropathy may present with higher cell counts (50–200/µL lymphocytes), reflecting HIV-related pleocytosis superimposed on the GBS picture. In any young adult with GBS, HIV serology should be sent.
+      <div class="cnote"><strong>Timing of LP:</strong> If LP is performed in the first week, protein may be normal even in true GBS. Repeat LP at 2 weeks if first LP shows normal protein and clinical picture is compelling — protein rises progressively over the first month.</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setCSF('cell','low')"  id="cell-low">✓ &lt;10 cells/µL (typical GBS)</button>
+      <button class="abtn" onclick="setCSF('cell','mid')"  id="cell-mid">⚠ 10–50 cells/µL (acceptable for Brighton 1–2)</button>
+      <button class="abtn" onclick="setCSF('cell','high')" id="cell-high">✗ &gt;50 cells/µL — exclude infectious/inflammatory mimic</button>
+      <button class="abtn" onclick="setCSF('cell','nd')"   id="cell-nd">— LP not performed</button>
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:14px;">CSF protein <span class="pill pill-r">DISTINGUISHES LEVELS 1 AND 2</span></div>
+
+  <div class="crit" id="csfprot-item">
+    <div class="crit-main">
+      <div class="crit-name">CSF total protein — elevated (&gt;45 mg/dL) = Level 1; normal = Level 2 (if cell count &lt;50/µL)</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      Elevated CSF protein reflects protein extravasation from disrupted blood-nerve barrier in the inflamed spinal nerve roots. In the Fokke 2014 validation study (n=335), normal protein concentration was the sole reason 33% of patients fell to Level 2 rather than Level 1. Both groups had equivalent clinical features, treatment response, and outcomes — Level 2 is not a "worse" diagnosis, just less certain.<br><br>
+      <strong>Very high protein (&gt;200 mg/dL):</strong> Suggests more extensive root involvement. Can cause papilledema in rare cases. Protein-induced viscosity may rarely cause CSF block (Froin's syndrome). Does not change diagnosis or management but may indicate greater severity.
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setCSF('prot','high')" id="prot-high">✓ Elevated (&gt;45 mg/dL) — cytoalbuminological dissociation</button>
+      <button class="abtn" onclick="setCSF('prot','norm')" id="prot-norm">ⓘ Normal — compatible with Level 2 if cell count &lt;50</button>
+      <button class="abtn" onclick="setCSF('prot','nd')"   id="prot-nd">— LP not performed / result pending</button>
+    </div>
+  </div>
+
+  <div id="a1" class="alrt"></div>
+  <div class="nav-row">
+    <button class="nbtn ns" onclick="go(0)">← Back</button>
+    <button class="nbtn np" onclick="go(2)">Next: Nerve Conduction Studies →</button>
+  </div>
+</div>
+</div>
+
+<!-- ══ SCREEN 2: NCS ══ -->
+<div class="screen" id="s2">
+<div class="card">
+  <div class="ctitle" style="color:var(--accent);">Step 3 · Nerve Conduction Studies (NCS)</div>
+  <div class="csub">Electrodiagnosis is required for Brighton Level 1 and separates Levels 1/2 from Level 3. NCS findings support the diagnosis and subtype classification (AIDP vs. AMAN/AMSAN). Studies may be normal in the first week — repeat at 2 weeks improves yield. Early F-wave changes and prolonged distal latencies are often the first abnormalities.</div>
+
+  <div class="lbox">
+    <strong>NCS timing and yield:</strong> Normal NCS within the first week does not exclude GBS. F-wave absence and H-reflex abnormality are often the earliest electrodiagnostic findings, reflecting proximal root involvement. Distal motor latency prolongation and slowing of motor conduction velocity develop within 1–2 weeks in AIDP. CMAP amplitude changes (reduced in AMAN/AMSAN or severe AIDP with secondary axon loss) may not be evident until 2–4 weeks.<br><br>
+    <span class="lp">Brighton NCS requirement:</span> Findings must be "consistent with one of the subtypes of GBS" — AIDP, AMAN, AMSAN, or inexcitable nerves (all four are acceptable). "Equivocal but consistent with GBS" counts for Level 1 (if CSF also supports). Normal or equivocal NCS insufficient for Level 1 → falls to Level 2 or 3.
+  </div>
+
+  <div class="slabel">NCS result — overall assessment <span class="pill pill-r">REQUIRED FOR LEVEL 1; HELPS SUBTYPE</span></div>
+
+  <div class="crit" id="ncs-item">
+    <div class="crit-main">
+      <div class="crit-name">NCS findings — consistent with GBS subtype, normal, or not yet performed</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      <strong>Consistent with AIDP:</strong> Prolonged distal motor latencies, reduced motor conduction velocities (&lt;70–75% of LLN), prolonged F-wave latencies, conduction block or temporal dispersion, normal or mildly reduced CMAP amplitudes, abnormal sensory NCS (reduced SNAP amplitudes and/or slowed velocities).<br><br>
+      <strong>Consistent with AMAN:</strong> Normal distal motor latencies, normal or near-normal motor conduction velocity, normal F-waves, markedly reduced CMAP amplitudes (reflecting axonal loss), normal sensory NCS (motor-selective axonopathy). Anti-GM1/GD1a antibodies support this diagnosis.<br><br>
+      <strong>Consistent with AMSAN:</strong> Same as AMAN plus abnormal sensory NCS (reduced SNAPs) — combined axonal loss of both motor and sensory fibers. More severe presentation.<br><br>
+      <strong>Inexcitable nerves:</strong> Complete loss of all evoked responses — reflects severe early axonal injury (AMAN) or very severe demyelination. May predict prolonged recovery.
+      <div class="cnote"><strong>Reversible conduction failure (RCF) in AMAN:</strong> Anti-GM1/GD1a IgG antibodies bind to nodes of Ranvier, causing conduction block that can resolve with treatment or over time. On initial NCS this may appear as conduction block (suggesting AIDP) but serial studies show rapid recovery of CMAP amplitudes without demyelinating features — this is RCF, not true demyelination. Distinguishing AIDP from AMAN/RCF requires serial NCS.</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setNCS('aidp')"  id="ncs-aidp">✓ AIDP pattern (demyelinating)</button>
+      <button class="abtn" onclick="setNCS('axonal')" id="ncs-axonal">✓ AMAN/AMSAN pattern (axonal)</button>
+      <button class="abtn" onclick="setNCS('inex')"  id="ncs-inex">✓ Inexcitable nerves</button>
+      <button class="abtn" onclick="setNCS('equiv')" id="ncs-equiv">⚠ Equivocal but consistent with GBS</button>
+      <button class="abtn" onclick="setNCS('normal')" id="ncs-normal">ⓘ Normal (→ Level 2 or 3)</button>
+      <button class="abtn" onclick="setNCS('nd')"    id="ncs-nd">— Not yet performed</button>
+    </div>
+  </div>
+
+  <div id="a2" class="alrt"></div>
+  <div class="nav-row">
+    <button class="nbtn ns" onclick="go(1)">← Back</button>
+    <button class="nbtn np" onclick="go(3)">Next: Subtype Classification →</button>
+  </div>
+</div>
+</div>
+
+<!-- ══ SCREEN 3: SUBTYPE ══ -->
+<div class="screen" id="s3">
+<div class="card">
+  <div class="ctitle" style="color:var(--accent);">Step 4 · GBS Subtype Classification — AIDP vs. AMAN vs. AMSAN</div>
+  <div class="csub">Subtype classification informs pathophysiology, prognosis, and antiganglioside antibody testing. AIDP dominates Western countries (~90%); AMAN and AMSAN are more prevalent in East Asia and after Campylobacter infection. All subtypes are treated with IVIG or plasmapheresis — subtyping does not currently change immunotherapy choice but impacts prognosis.</div>
+
+  <table class="var-table">
+    <tr>
+      <th>Feature</th>
+      <th style="color:#58a6ff;">AIDP</th>
+      <th style="color:var(--amber);">AMAN</th>
+      <th style="color:var(--red);">AMSAN</th>
+    </tr>
+    <tr>
+      <td><strong>Pathology</strong></td>
+      <td>Demyelination of peripheral nerve sheaths; macrophage-mediated myelin stripping</td>
+      <td>Axonal degeneration, motor fibers only; anti-GM1/GD1a IgG at nodes of Ranvier</td>
+      <td>Axonal degeneration, motor + sensory; anti-GM1/GD1a, anti-GD1b</td>
+    </tr>
+    <tr>
+      <td><strong>NCS hallmark</strong></td>
+      <td>Slowed CV (&lt;70% LLN), prolonged DML, conduction block, temporal dispersion, F-wave prolongation</td>
+      <td>Reduced CMAP amplitudes; normal CV; normal SNAPs; may show reversible conduction failure</td>
+      <td>Reduced CMAP + SNAP amplitudes; normal CV; severe axonal loss</td>
+    </tr>
+    <tr>
+      <td><strong>Antiganglioside Ab</strong></td>
+      <td>Usually absent (occasionally anti-GM1)</td>
+      <td>Anti-GM1, anti-GD1a IgG (50–80% in East Asia)</td>
+      <td>Anti-GM1, anti-GD1a, anti-GD1b</td>
+    </tr>
+    <tr>
+      <td><strong>Antecedent Cx</strong></td>
+      <td>Less strongly linked to C. jejuni</td>
+      <td>C. jejuni in ~70% (especially China)</td>
+      <td>C. jejuni association, less common</td>
+    </tr>
+    <tr>
+      <td><strong>Sensory findings</strong></td>
+      <td>Sensory symptoms common; NCS shows sensory slowing/SNAP reduction</td>
+      <td>Sensory symptoms may be mild; SNAPs preserved</td>
+      <td>Severe sensory loss; SNAPs absent/markedly reduced</td>
+    </tr>
+    <tr>
+      <td><strong>Prognosis</strong></td>
+      <td>Generally good recovery; ~5–10% poor outcome. Residual tingling in majority.</td>
+      <td>Variable: mild (reversible conduction failure) to severe (axonal loss). Can be rapid and severe.</td>
+      <td>Worst prognosis — severe axonal injury both motor and sensory. Prolonged recovery.</td>
+    </tr>
+    <tr>
+      <td><strong>Miller Fisher</strong></td>
+      <td colspan="3" style="text-align:center;">MFS: Anti-GQ1b IgG (~90% sensitive), ophthalmoplegia + ataxia + areflexia. May overlap with classic GBS (descending, cranial nerve predominant).</td>
+    </tr>
+  </table>
+
+  <div class="slabel">Select electrophysiological subtype <span class="pill pill-p">GUIDES ANTIBODY TESTING AND PROGNOSIS</span></div>
+
+  <div class="crit" id="subtype-item">
+    <div class="crit-main">
+      <div class="crit-name">Based on NCS pattern and clinical features — which subtype best fits?</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      <strong>Antiganglioside antibody testing:</strong> Anti-GM1/GD1a IgG: positive in ~50–80% of AMAN cases (Asian cohorts); much lower in AIDP. Anti-GQ1b IgG: positive in ~90% of MFS and MFS-GBS overlap. Anti-GD1b: associated with AMSAN and sensory ataxic GBS. These tests are supportive but not required for diagnosis. Available from commercial labs (Mayo Clinic, hospital reference labs). Positive anti-GM1 in a patient with motor-predominant axonal pattern strongly supports AMAN.<br><br>
+      <strong>Bickerstaff brainstem encephalitis (BBE):</strong> Anti-GQ1b positive, CNS involvement (altered consciousness, hyperreflexia) + external ophthalmoplegia + ataxia. GBS-BBE-MFS overlap spectrum recognized.
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setSubtype('aidp')"   id="sub-aidp">AIDP (demyelinating)</button>
+      <button class="abtn" onclick="setSubtype('aman')"   id="sub-aman">AMAN (axonal, motor)</button>
+      <button class="abtn" onclick="setSubtype('amsan')"  id="sub-amsan">AMSAN (axonal, motor+sensory)</button>
+      <button class="abtn" onclick="setSubtype('mfs')"    id="sub-mfs">Miller Fisher Syndrome / overlap</button>
+      <button class="abtn" onclick="setSubtype('nd')"     id="sub-nd">— Pending NCS / undetermined</button>
+    </div>
+  </div>
+
+  <div id="a3" class="alrt"></div>
+  <div class="nav-row">
+    <button class="nbtn ns" onclick="go(2)">← Back</button>
+    <button class="nbtn np" onclick="go(4)">Next: EGRIS Respiratory Risk →</button>
+  </div>
+</div>
+</div>
+
+<!-- ══ SCREEN 4: EGRIS ══ -->
+<div class="screen" id="s4">
+<div class="card">
+  <div class="ctitle" style="color:var(--accent);">Step 5 · EGRIS — Erasmus GBS Respiratory Insufficiency Score</div>
+  <div class="csub">The EGRIS (Walgaard C et al. Ann Neurol 2010;67:781–787) predicts the probability of requiring mechanical ventilation within the first week of hospital admission. AUC 0.81 in international validation (IGOS cohort, Doets et al. Ann Neurol 2022). Score range: 0–7. Three components: days from onset to admission, facial/bulbar weakness, and MRC sum score at admission.</div>
+
+  <div class="lbox">
+    <strong>EGRIS validation data (Doets et al. Ann Neurol 2022, n=541 IGOS cohort):</strong> AUC 0.81 for discrimination between patients requiring vs. not requiring MV within week 1. External validation confirmed accuracy across multiple countries (Netherlands, UK, Brazil, Bangladesh, Japan, Australia). EGRIS overestimated MV probability in the international cohort (41% vs. 20% observed) — recalibration improved fit but rank order preserved. <strong>Clinical use:</strong> EGRIS should guide triage to appropriate care level (ward vs. high-dependency vs. ICU) and frequency of respiratory monitoring, not as a binary cutoff for intubation.
+  </div>
+
+  <div class="slabel">Component 1 — Days from onset of weakness to hospital admission <span class="pill pill-r">SHORTER = HIGHER RISK</span></div>
+
+  <div class="crit" id="egris-days-item">
+    <div class="crit-main">
+      <div class="crit-name">Number of days between first symptom of limb weakness and hospital admission</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      Shorter interval = faster progression = higher risk. A patient admitted within 1 day of weakness onset has a rapidly progressive course — high risk. EGRIS points: ≥14 days = 0 pts; 8–13 days = 1 pt; ≤7 days = 2 pts. This reflects the observation that fast progressors are more likely to develop respiratory failure early.
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setEgris('days',0)" id="egdays-0">≥14 days (0 pts)</button>
+      <button class="abtn" onclick="setEgris('days',1)" id="egdays-1">8–13 days (1 pt)</button>
+      <button class="abtn" onclick="setEgris('days',2)" id="egdays-2">≤7 days (2 pts)</button>
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:14px;">Component 2 — Facial and/or bulbar weakness at admission <span class="pill pill-r">BULBAR = HIGHER RISK</span></div>
+
+  <div class="crit" id="egris-bulbar-item">
+    <div class="crit-main">
+      <div class="crit-name">Facial palsy (unilateral or bilateral) and/or bulbar dysfunction (dysphagia, dysphonia) at time of hospital admission</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      Facial and/or bulbar weakness signals involvement of cranial nerve nuclei or cranial nerves — ascending weakness has reached the brainstem level, suggesting rapid proximal spread. Bulbar dysfunction also directly impairs airway protection (impaired cough, aspiration risk). EGRIS points: absent = 0 pts; present = 1 pt. Even mild facial palsy (asymmetric) or mild dysphagia should be scored as present.
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setEgris('bulbar',0)" id="egbulbar-0">Absent (0 pts)</button>
+      <button class="abtn" onclick="setEgris('bulbar',1)" id="egbulbar-1">Present — facial palsy and/or bulbar weakness (1 pt)</button>
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:14px;">Component 3 — MRC sum score at admission <span class="pill pill-r">LOWER MRC = HIGHER RISK</span></div>
+
+  <div class="crit" id="egris-mrc-item">
+    <div class="crit-main">
+      <div class="crit-name">MRC sum score (6 muscle groups × both sides × MRC 0–5): shoulder abductors, elbow flexors, wrist extensors, hip flexors, knee extensors, foot dorsiflexors</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      MRC sum score ranges from 0 (complete paralysis) to 60 (full strength). Score each of 12 muscle groups (6 bilateral) on 0–5 scale. EGRIS points: MRC 51–60 = 0 pts; MRC 41–50 = 2 pts; MRC 31–40 = 4 pts; MRC ≤30 = 6 pts (note: some sources use a 0–4 scale with different cutoffs — the standard is 0/2/4/6 as above from Walgaard 2010).<br><br>
+      <strong>Neck flexion:</strong> Not part of the standard EGRIS MRC sum, but neck flexor weakness correlates strongly with respiratory muscle weakness in GBS. Always test neck flexion at admission as a supplementary warning sign.
+      <div class="cnote"><strong>20/30 rule for respiratory monitoring:</strong> FVC &lt;20 mL/kg or NIF worse than −30 cmH₂O warrants ICU admission and serial respiratory monitoring (FVC, NIF q4–6h). FVC &lt;15 mL/kg + distress or NIF worse than −20 cmH₂O = elective intubation threshold. SpO₂ and ABG are late and unreliable — clinical observation and serial bedside PFTs are paramount.</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setEgris('mrc',0)" id="egmrc-0">51–60 (0 pts) — mild weakness</button>
+      <button class="abtn" onclick="setEgris('mrc',2)" id="egmrc-2">41–50 (2 pts) — moderate weakness</button>
+      <button class="abtn" onclick="setEgris('mrc',4)" id="egmrc-4">31–40 (4 pts) — marked weakness</button>
+      <button class="abtn" onclick="setEgris('mrc',6)" id="egmrc-6">≤30 (6 pts) — severe weakness / near-paralysis</button>
+    </div>
+  </div>
+
+  <div id="egris-display" style="display:none;margin-top:14px;">
+    <div class="egris-total" id="egris-total-box">
+      <div>
+        <div class="egris-total-label">EGRIS Total Score</div>
+        <div style="font-size:11px;color:var(--text3);margin-top:2px;" id="egris-breakdown">—</div>
+      </div>
+      <div style="text-align:right;">
+        <div class="egris-total-score" id="egris-score-num" style="color:var(--text2);">—</div>
+        <div style="font-size:10px;color:var(--text3);margin-top:1px;">/ 7</div>
+      </div>
+    </div>
+    <div style="margin-top:10px;padding:10px 14px;background:var(--card2);border:1px solid var(--border);border-radius:6px;">
+      <div style="font-size:11px;font-weight:600;color:var(--text);margin-bottom:6px;">EGRIS Risk Probability (MV within week 1)</div>
+      <div style="font-size:11px;color:var(--text2);">
+        <table style="width:100%;border-collapse:collapse;font-family:var(--sans);font-size:11px;">
+          <tr style="border-bottom:1px solid var(--border);">
+            <td style="padding:4px 8px;color:var(--text3);">Score 0–1</td><td style="padding:4px 8px;color:var(--green);">~1–5% risk</td><td style="padding:4px 8px;color:var(--text3);">Low — general ward with monitoring</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border);">
+            <td style="padding:4px 8px;color:var(--text3);">Score 2–3</td><td style="padding:4px 8px;color:var(--amber);">~10–25% risk</td><td style="padding:4px 8px;color:var(--text3);">Intermediate — step-down / high dependency</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border);">
+            <td style="padding:4px 8px;color:var(--text3);">Score 4–5</td><td style="padding:4px 8px;color:var(--amber);">~35–55% risk</td><td style="padding:4px 8px;color:var(--text3);">High — ICU evaluation, serial FVC/NIF q4–6h</td>
+          </tr>
+          <tr>
+            <td style="padding:4px 8px;color:var(--text3);">Score 6–7</td><td style="padding:4px 8px;color:var(--red);">~65–90% risk</td><td style="padding:4px 8px;color:var(--text3);">Very high — ICU, early intubation planning</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div id="a4" class="alrt"></div>
+  <div class="nav-row">
+    <button class="nbtn ns" onclick="go(3)">← Back</button>
+    <button class="nbtn np" onclick="go(5)">Generate Brighton Level / Verdict →</button>
+  </div>
+</div>
+</div>
+
+<!-- ══ SCREEN 5: VERDICT ══ -->
+<div class="screen" id="s5">
+  <div id="vout"></div>
+  <div class="doc-header">
+    <button class="doc-tog" onclick="toggleDoc()">▼ Documentation Note</button>
+    <button class="copy-btn" id="copy-btn" onclick="copyDoc()">⎘ Copy</button>
+  </div>
+  <div class="doc-body" id="dn"></div>
+  <div class="nav-row">
+    <button class="nbtn ns" onclick="go(4)">← Back</button>
+    <button class="nbtn np" onclick="resetAll()">↺ New Evaluation</button>
+  </div>
+</div>
+
+</div><!-- /app -->
+<script>
+const S = {
+  // Clinical core
+  weak:null, reflex:null, mono:null, altdx:null,
+  // Supportive
+  cranial:null, autonomic:null, pain:null, precede:null,
+  // CSF
+  csfcell:null, csfprot:null,
+  // NCS
+  ncs:null,
+  // Subtype
+  subtype:null,
+  // EGRIS
+  eDays:null, eBulbar:null, eMrc:null
+};
+let cur = 0;
+
+function setCrit(k, v) {
+  S[k] = v;
+  const item = document.getElementById(k+'-item');
+  if(item) {
+    item.className = 'crit';
+    if(v===true||v==='yes') item.classList.add('c-yes');
+    else if(v===false||v==='no') item.classList.add('c-no');
+    else if(v==='late') item.classList.add('c-part');
+  }
+  ['yes','no','late'].forEach(x=>{
+    const b=document.getElementById(k+'-'+x); if(b) b.classList.remove('ay','an','aw');
+  });
+  const bTrue = document.getElementById(k+'-yes');
+  const bFalse = document.getElementById(k+'-no');
+  const bLate = document.getElementById(k+'-late');
+  if(v===true||v==='yes') { if(bTrue) bTrue.classList.add('ay'); }
+  else if(v===false||v==='no') { if(bFalse) bFalse.classList.add('an'); }
+  else if(v==='late') { if(bLate) bLate.classList.add('aw'); }
+  ui();
+}
+
+function setSupp(k, v) {
+  S[k] = v;
+  const item = document.getElementById(k+'-item');
+  if(item) { item.className='crit '+(v===true?'c-pink':'c-abs'); }
+  const yes=document.getElementById(k+'-yes');
+  const no=document.getElementById(k+'-no');
+  if(yes){ yes.classList.remove('ay','an'); if(v===true) yes.classList.add('ap'); }
+  if(no) { no.classList.remove('ay','an'); if(v===false) no.classList.add('an'); }
+  ui();
+}
+
+function setCSF(k, v) {
+  S['csf'+k] = v;
+  const item = document.getElementById('csf'+k+'-item');
+  if(item) {
+    item.className='crit';
+    if(v==='low'||v==='high'&&k==='prot') item.classList.add('c-yes');
+    else if(v==='mid') item.classList.add('c-part');
+    else if(v==='high'&&k==='cell') item.classList.add('c-no');
+    else if(v==='norm') item.classList.add('c-abs');
+    else item.classList.add('c-abs');
+  }
+  ['low','mid','high','norm','nd'].forEach(x=>{
+    const b=document.getElementById(k+'-'+x); if(b) b.classList.remove('ay','aw','an','ab','aa');
+  });
+  const map={low:'ay',mid:'aw',high:k==='cell'?'an':'ay',norm:'aa',nd:'aa'};
+  const btn=document.getElementById(k+'-'+v); if(btn) btn.classList.add(map[v]||'aa');
+  ui();
+}
+
+function setNCS(v) {
+  S.ncs = v;
+  const item = document.getElementById('ncs-item');
+  if(item) {
+    item.className='crit';
+    if(['aidp','axonal','inex'].includes(v)) item.classList.add('c-yes');
+    else if(v==='equiv') item.classList.add('c-part');
+    else item.classList.add('c-abs');
+  }
+  ['aidp','axonal','inex','equiv','normal','nd'].forEach(x=>{
+    const b=document.getElementById('ncs-'+x); if(b) b.classList.remove('ay','aw','aa','ab');
+  });
+  const map={aidp:'ay',axonal:'ay',inex:'ay',equiv:'aw',normal:'aa',nd:'aa'};
+  const btn=document.getElementById('ncs-'+v); if(btn) btn.classList.add(map[v]||'aa');
+  ui();
+}
+
+function setSubtype(v) {
+  S.subtype = v;
+  const item = document.getElementById('subtype-item');
+  if(item) {
+    item.className='crit';
+    if(v==='aidp') item.classList.add('c-blue');
+    else if(v==='aman') item.classList.add('c-part');
+    else if(v==='amsan') item.classList.add('c-no');
+    else if(v==='mfs') item.classList.add('c-pink');
+    else item.classList.add('c-abs');
+  }
+  ['aidp','aman','amsan','mfs','nd'].forEach(x=>{
+    const b=document.getElementById('sub-'+x); if(b) b.classList.remove('ay','aw','an','ap','aa','ab');
+  });
+  const map={aidp:'ab',aman:'aw',amsan:'an',mfs:'ap',nd:'aa'};
+  const btn=document.getElementById('sub-'+v); if(btn) btn.classList.add(map[v]||'aa');
+  if(cur===5) rv();
+  ui();
+}
+
+function setEgris(k, pts) {
+  if(k==='days') S.eDays=pts;
+  else if(k==='bulbar') S.eBulbar=pts;
+  else S.eMrc=pts;
+  // Update button states
+  const prefixes = {days:'egdays',bulbar:'egbulbar',mrc:'egmrc'};
+  const prefix = prefixes[k];
+  document.querySelectorAll('[id^="'+prefix+'-"]').forEach(b=>b.classList.remove('ap','ay','aw','an'));
+  const btn=document.getElementById(prefix+'-'+pts);
+  if(btn) btn.classList.add(pts===0?'ay':pts<=2?'aw':'an');
+  updateEgrisDisplay();
+  if(cur===5) rv();
+  ui();
+}
+
+function egrisTotal() {
+  const d = S.eDays!==null?S.eDays:null;
+  const b = S.eBulbar!==null?S.eBulbar:null;
+  const m = S.eMrc!==null?S.eMrc:null;
+  if(d===null||b===null||m===null) return null;
+  return d+b+m;
+}
+
+function egrisRisk(score) {
+  if(score===null) return null;
+  const risks = [1,3,5,10,15,25,40,65];
+  return risks[Math.min(score, 7)] || 1;
+}
+
+function updateEgrisDisplay() {
+  const total = egrisTotal();
+  const display = document.getElementById('egris-display');
+  if(total===null) { if(display) display.style.display='none'; return; }
+  if(display) display.style.display='block';
+  const scoreEl = document.getElementById('egris-score-num');
+  const breakEl = document.getElementById('egris-breakdown');
+  const risk = egrisRisk(total);
+  if(scoreEl) {
+    scoreEl.textContent = total;
+    scoreEl.style.color = total>=6?'var(--red)':total>=4?'var(--amber)':total>=2?'var(--amber)':'var(--green)';
+  }
+  if(breakEl) {
+    breakEl.textContent = 'Days: '+S.eDays+' pt'+(S.eDays!==1?'s':'')+' + Bulbar: '+S.eBulbar+' pt'+(S.eBulbar!==1?'s':'')+' + MRC: '+S.eMrc+' pts = '+total;
+  }
+}
+
+/* ── Brighton level logic ── */
+function coreClinicMet() {
+  return S.weak===true && S.reflex===true && (S.mono==='yes') && S.altdx===true;
+}
+function coreClinicPartial() {
+  return (S.weak===true||S.reflex===true||S.mono==='yes'||S.altdx===true);
+}
+function csfLow() { return S.csfcell==='low'||S.csfcell==='mid'; }
+function csfHigh() { return S.csfcell==='high'; }
+function ncsPos() { return ['aidp','axonal','inex','equiv'].includes(S.ncs); }
+function ncsNeg() { return S.ncs==='normal'; }
+
+function getBrightonLevel() {
+  if(!coreClinicMet()) {
+    if(S.mono==='late') return 'level4';
+    if(S.altdx===false) return 'excluded';
+    if(S.weak===false||S.reflex===false) return 'insufficient';
+    return 'insufficient';
+  }
+  if(csfHigh()) return 'level4';
+
+  // LEVEL 1: 4 clinical + CSF cell <50 + elevated protein + NCS consistent with GBS
+  if(csfLow() && S.csfprot==='high' && ncsPos()) return 'level1';
+
+  // LEVEL 2 (one supporting investigation missing or non-diagnostic):
+  // 2a: clinical + CSF (cell<50 + normal protein) + NCS consistent
+  if(csfLow() && S.csfprot==='norm' && ncsPos()) return 'level2';
+  // 2b: clinical + CSF (cell<50 + elevated protein) + NCS normal/not done
+  //     (Brighton footnote: CSF OR NCS needed; elevated protein alone with compatible cells = Level 2)
+  if(csfLow() && S.csfprot==='high' && (ncsNeg()||S.ncs==='nd'||S.ncs===null)) return 'level2';
+  // 2c: clinical + CSF (cell<50 + normal protein) + NCS not yet done (pending)
+  if(csfLow() && S.csfprot==='norm' && (S.ncs==='nd'||S.ncs===null)) return 'level2';
+
+  // LEVEL 3: 4 clinical criteria met but NO CSF performed AND NO NCS performed/consistent
+  if((S.csfcell==='nd'||S.csfcell===null) && (S.csfprot==='nd'||S.csfprot===null)) return 'level3';
+  if(csfLow() && (S.csfprot==='nd'||S.csfprot===null) && (S.ncs==='nd'||S.ncs===null)) return 'level3';
+
+  // Pending data
+  if(S.csfcell===null||S.csfprot===null) return 'pending';
+  return 'level3';
+}
+
+/* ── UI feedback ── */
+function ui() {
+  const a0=document.getElementById('a0'), n0=document.getElementById('n0');
+  const allCore4 = S.weak!==null && S.reflex!==null && S.mono!==null && S.altdx!==null;
+  if(S.altdx===false) { sa(a0,'aerr','✗ Alternative diagnosis present — GBS criteria not met until alternative is excluded.'); n0.disabled=true; return; }
+  if(S.weak===false) { sa(a0,'aerr','✗ Bilateral flaccid weakness absent — core Brighton criterion not met.'); n0.disabled=false; return; }
+  if(S.reflex===false) { sa(a0,'aerr','✗ Preserved reflexes in weak limbs — raises doubt about GBS. Consider Lambert-Eaton, hyperkalemia, or central cause.'); n0.disabled=false; return; }
+  if(coreClinicMet()) { sa(a0,'aok','✓ All four core clinical criteria met. Proceed to CSF and electrodiagnosis.'); n0.disabled=false; }
+  else if(allCore4) { sa(a0,'awn','⚠ One or more core criteria not met. Review above.'); n0.disabled=false; }
+  else if(S.weak===true) { sa(a0,'apink','◈ Bilateral flaccid weakness present. Complete assessment of all four core criteria.'); n0.disabled=false; }
+  else { ha(a0); n0.disabled=true; }
+
+  const a1=document.getElementById('a1');
+  if(S.csfcell==='high') sa(a1,'aerr','✗ CSF pleocytosis &gt;50 cells/µL — GBS Levels 1–3 excluded. Consider HIV, CMV, WNV, Lyme, or other infectious polyradiculopathy. Falls to Level 4 territory at best.');
+  else if(S.csfcell==='low'||S.csfcell==='mid') {
+    if(S.csfprot==='high') sa(a1,'aok','✓ Cytoalbuminological dissociation — elevated protein with normal/near-normal cell count. Classic GBS CSF pattern. Supports Brighton Level 1 (if NCS also positive).');
+    else if(S.csfprot==='norm') sa(a1,'awn','ⓘ Normal CSF protein — common early in course (~30% at initial LP). Does not exclude GBS. Supports Level 2 (with compatible NCS). Repeat LP at 2 weeks if clinical suspicion remains high.');
+    else ha(a1);
+  }
+  else if(S.csfcell==='nd') sa(a1,'ainf','ⓘ LP not performed. Without CSF results, highest achievable level is Brighton Level 3 (clinical diagnosis only).');
+  else ha(a1);
+
+  const a2=document.getElementById('a2');
+  if(ncsPos()) sa(a2,'aok','✓ NCS findings consistent with GBS subtype. Supports Brighton Level 1 or 2 (combined with CSF results).');
+  else if(ncsNeg()) sa(a2,'awn','ⓘ Normal NCS — does not exclude GBS, especially in the first week. Repeat at 2 weeks. Without positive NCS, Level 3 is maximum achievable Brighton certainty.');
+  else if(S.ncs==='nd') sa(a2,'ainf','ⓘ NCS not yet performed. Obtain urgently — required for Level 1 and subtype classification.');
+  else ha(a2);
+
+  const a3=document.getElementById('a3');
+  if(S.subtype==='aman'||S.subtype==='amsan') sa(a3,'awn','⚠ Axonal subtype (AMAN/AMSAN). Consider anti-GM1/GD1a antibody testing. Campylobacter serology if not already sent. Prognosis variable — AMAN with RCF may recover quickly; AMSAN has worst prognosis. Same treatment (IVIG or PLEX) as AIDP.');
+  else if(S.subtype==='mfs') sa(a3,'apink','◈ Miller Fisher Syndrome / overlap. Send anti-GQ1b IgG (90% sensitive). Typically good prognosis. Respiratory failure less common in pure MFS but MFS-GBS overlap warrants standard monitoring.');
+  else if(S.subtype==='aidp') sa(a3,'aok','✓ AIDP — most common subtype in Western populations. T-cell and antibody-mediated demyelination. Responds well to IVIG or plasmapheresis. Sensory symptoms expected.');
+  else ha(a3);
+
+  const a4=document.getElementById('a4');
+  const total=egrisTotal();
+  if(total!==null) {
+    const risk=egrisRisk(total);
+    if(total>=6) sa(a4,'aerr','⚠ EGRIS '+total+'/7 — Very high risk (~'+risk+'%) of MV within week 1. ICU admission required. Serial FVC/NIF q4h. Prepare for early elective intubation.');
+    else if(total>=4) sa(a4,'awn','⚠ EGRIS '+total+'/7 — High risk (~'+risk+'%) of MV within week 1. ICU admission. Serial FVC/NIF q6h. Low threshold for intubation if clinical deterioration.');
+    else if(total>=2) sa(a4,'awn','EGRIS '+total+'/7 — Intermediate risk (~'+risk+'%). Step-down/HDU admission. Serial respiratory monitoring q8h.');
+    else sa(a4,'aok','✓ EGRIS '+total+'/7 — Low risk (~'+risk+'%). General ward monitoring acceptable. Serial FVC/NIF daily.');
+  } else ha(a4);
+}
+
+/* ── Verdict ── */
+function rv() {
+  const lvl = getBrightonLevel();
+  const total = egrisTotal();
+  const risk = egrisRisk(total);
+  const subLabel = {aidp:'AIDP (demyelinating)',aman:'AMAN (axonal — motor)',amsan:'AMSAN (axonal — motor+sensory)',mfs:'Miller Fisher Syndrome / overlap',nd:'Not yet determined'};
+
+  const vtMap = {
+    level1:'Brighton Level 1 — Highest Diagnostic Certainty',
+    level2:'Brighton Level 2 — High Diagnostic Certainty',
+    level3:'Brighton Level 3 — Clinical Diagnosis Only',
+    level4:'Brighton Level 4 — Lowest Certainty (Atypical Course / High CSF Cells)',
+    excluded:'GBS Diagnosis Excluded — Alternative Diagnosis Present',
+    pending:'GBS Workup Incomplete — Pending CSF / NCS Results',
+    insufficient:'Core Clinical Criteria Not Fully Met'
+  };
+  const vclsMap = {level1:'vl1',level2:'vl2',level3:'vl3',level4:'vl4',excluded:'vneg',pending:'vund',insufficient:'vund'};
+  const vdMap = {
+    level1:'All Brighton criteria met: bilateral flaccid limb weakness + reduced/absent DTRs + monophasic course (nadir ≤28 days) + no alternative diagnosis + CSF cell count &lt;50/µL + elevated CSF protein + NCS consistent with GBS subtype. This represents the highest level of diagnostic certainty in the Brighton framework (Fokke et al. Brain 2014 — 61% of confirmed GBS reached Level 1).',
+    level2:'Core clinical criteria met + CSF cell count &lt;50/µL + either CSF protein elevated OR NCS consistent (but not both). Three routes to Level 2: (a) elevated protein + normal NCS; (b) normal CSF protein + NCS consistent; (c) elevated protein with NCS not yet performed — elevated cytoalbuminological dissociation alone (without NCS) is sufficient for Level 2. Represents 33% of confirmed GBS in Fokke 2014. Outcomes identical to Level 1.',
+    level3:'Core clinical criteria met but CSF not collected, NCS not performed, or both are non-contributory. Clinical diagnosis only. Brighton Level 3 is acceptable when investigation cannot be performed but clinical picture is strongly suggestive. Consider LP and NCS at earliest opportunity to upgrade certainty.',
+    level4:'The patient does not fully meet Levels 1–3 criteria. Possible reasons: nadir &gt;28 days (consider CIDP), late fluctuations inconsistent with monophasic course, or CSF cell count &gt;50/µL (consider infectious polyradiculopathy). GBS is not excluded — Level 4 captured 6% of confirmed GBS in Fokke 2014.',
+    excluded:'An alternative diagnosis has been identified or strongly suspected. GBS cannot be diagnosed until the alternative diagnosis is excluded or adequately evaluated.',
+    pending:'Core clinical features are present but CSF and/or NCS results are pending. Maintain GBS on differential. Initiate respiratory monitoring immediately.',
+    insufficient:'Core clinical criteria are not met. Reconsider the diagnosis. Check for bilateral vs. unilateral weakness, reflex pattern, disease course, and alternative diagnoses.'
+  };
+
+  let html = `<div class="vban ${vclsMap[lvl]||'vund'}"><div class="vban-head">
+    <div class="vlbl">Brighton Collaboration GBS Working Group 2011 · Fokke C et al. · Brain 2014;137:33–43</div>
+    <div class="vtitle">${vtMap[lvl]||'Indeterminate'}</div>
+    <div class="vdesc">${vdMap[lvl]||''}</div>
+  </div></div>`;
+
+  // Brighton level cards
+  html+=`<div class="card" style="margin-bottom:12px;"><div class="ctitle" style="color:var(--accent);margin-bottom:10px;">Brighton Collaboration Diagnostic Levels — Reference</div>
+  <div class="brighton-grid">
+    <div class="blevel ${lvl==='level1'?'bl-1':''}">
+      <div class="bl-num" style="color:var(--green);">Level 1</div>
+      <div class="bl-desc">All 4 clinical criteria + CSF cell &lt;50 + elevated CSF protein + NCS consistent with GBS</div>
+    </div>
+    <div class="blevel ${lvl==='level2'?'bl-2':''}">
+      <div class="bl-num" style="color:var(--accent);">Level 2</div>
+      <div class="bl-desc">All 4 clinical criteria + CSF cell &lt;50 + (normal protein OR NCS not consistent/done)</div>
+    </div>
+    <div class="blevel ${lvl==='level3'?'bl-3':''}">
+      <div class="bl-num" style="color:var(--amber);">Level 3</div>
+      <div class="bl-desc">All 4 clinical criteria without CSF or NCS support</div>
+    </div>
+    <div class="blevel ${lvl==='level4'?'bl-4':''}">
+      <div class="bl-num" style="color:var(--blue);">Level 4</div>
+      <div class="bl-desc">Does not meet Levels 1–3 but alternative diagnosis excluded (atypical course or high CSF cells)</div>
+    </div>
+  </div></div>`;
+
+  // Summary grid
+  html+=`<div class="sum-grid">`;
+  html+=`<div class="sblock"><div class="sbtitle">Clinical &amp; CSF</div>`;
+  const critItems=[['Bilateral flaccid weakness','weak'],['Reduced/absent DTRs','reflex'],['Monophasic course (≤28d nadir)','mono'],['No alternative diagnosis','altdx']];
+  critItems.forEach(([nm,k])=>{
+    const v=S[k]; const ok=v===true||v==='yes'; const bad=v===false||v==='no'; const warn=v==='late';
+    const dc=ok?'dg':bad?'dr':warn?'da':'dgr'; const tc=ok?'tg':bad?'tr':warn?'ta':'tgr';
+    html+=`<div class="srow"><div class="dot ${dc}"></div><div class="sname">${nm}</div><div class="stag ${tc}">${ok?'Present':bad?'Absent':warn?'Late nadir':'—'}</div></div>`;
+  });
+  html+=`<div class="srow"><div class="dot ${S.csfcell==='low'||S.csfcell==='mid'?'dg':S.csfcell==='high'?'dr':'dgr'}"></div><div class="sname">CSF cell count</div><div class="stag ${S.csfcell==='low'?'tg':S.csfcell==='mid'?'ta':S.csfcell==='high'?'tr':'tgr'}">${S.csfcell==='low'?'<10/µL':S.csfcell==='mid'?'10–50/µL':S.csfcell==='high'?'>50/µL':'—'}</div></div>`;
+  html+=`<div class="srow"><div class="dot ${S.csfprot==='high'?'dg':S.csfprot==='norm'?'da':'dgr'}"></div><div class="sname">CSF protein</div><div class="stag ${S.csfprot==='high'?'tg':S.csfprot==='norm'?'ta':'tgr'}">${S.csfprot==='high'?'Elevated (dissociation)':S.csfprot==='norm'?'Normal':'—'}</div></div>`;
+  html+=`</div>`;
+
+  html+=`<div class="sblock"><div class="sbtitle">NCS, Subtype &amp; EGRIS</div>`;
+  const ncsLabels={aidp:'AIDP pattern',axonal:'AMAN/AMSAN axonal',inex:'Inexcitable',equiv:'Equivocal / consistent',normal:'Normal',nd:'Not performed'};
+  html+=`<div class="srow"><div class="dot ${ncsPos()?'dg':ncsNeg()?'da':'dgr'}"></div><div class="sname">NCS</div><div class="stag ${ncsPos()?'tg':ncsNeg()?'ta':'tgr'}">${ncsLabels[S.ncs]||'—'}</div></div>`;
+  html+=`<div class="srow"><div class="dot ${S.subtype&&S.subtype!=='nd'?'dp':'dgr'}"></div><div class="sname">Subtype</div><div class="stag ${S.subtype&&S.subtype!=='nd'?'tp':'tgr'}">${subLabel[S.subtype]||'—'}</div></div>`;
+  html+=`<div class="srow"><div class="dot ${S.cranial===true?'dp':'dgr'}"></div><div class="sname">Cranial nerve involvement</div><div class="stag ${S.cranial===true?'tp':'tgr'}">${S.cranial===true?'Present':S.cranial===false?'Absent':'—'}</div></div>`;
+  html+=`<div class="srow"><div class="dot ${S.autonomic===true?'da':'dgr'}"></div><div class="sname">Autonomic dysfunction</div><div class="stag ${S.autonomic===true?'ta':'tgr'}">${S.autonomic===true?'Present':S.autonomic===false?'Absent':'—'}</div></div>`;
+  if(total!==null) {
+    const riskColor = total>=6?'dr':total>=4?'da':total>=2?'da':'dg';
+    const riskTagColor = total>=6?'tr':total>=4?'ta':total>=2?'ta':'tg';
+    html+=`<div class="srow"><div class="dot ${riskColor}"></div><div class="sname">EGRIS Score</div><div class="stag ${riskTagColor}">${total}/7 (~${risk}% MV risk)</div></div>`;
+  } else {
+    html+=`<div class="srow"><div class="dot dgr"></div><div class="sname">EGRIS Score</div><div class="stag tgr">Not complete</div></div>`;
+  }
+  html+=`</div></div>`;
+
+  document.getElementById('vout').innerHTML=html;
+  buildDoc(vtMap[lvl]||'Indeterminate', lvl, total, risk);
+}
+
+function buildDoc(vt, lvl, egrisTotal, egrisRisk) {
+  const subLabel={aidp:'AIDP (acute inflammatory demyelinating polyneuropathy)',aman:'AMAN (acute motor axonal neuropathy)',amsan:'AMSAN (acute motor and sensory axonal neuropathy)',mfs:'Miller Fisher Syndrome / MFS-GBS overlap',nd:'Not yet determined'};
+  let note=`NEUROLOGY CONSULTATION — GUILLAIN-BARRÉ SYNDROME EVALUATION\nBrighton Collaboration GBS Working Group 2011\nFokke C et al. Diagnosis of GBS and validation of Brighton criteria. Brain 2014;137:33–43.\nWalgaard C et al. Prediction of respiratory insufficiency in GBS. Ann Neurol 2010;67:781–787.\nDate: ${new Date().toLocaleDateString()}\n\nBRIGHTON DIAGNOSTIC LEVEL: ${vt}\n\nCORE CLINICAL CRITERIA (all 4 required for Levels 1–3):\n  1. Bilateral and flaccid limb weakness: ${S.weak===true?'Present':S.weak===false?'ABSENT':'Not assessed'}\n  2. Decreased/absent DTRs in weak limbs: ${S.reflex===true?'Present':S.reflex===false?'ABSENT (reconsider diagnosis)':'Not assessed'}\n  3. Monophasic course, nadir within 28 days: ${S.mono==='yes'?'Yes — monophasic, nadir ≤28 days':S.mono==='late'?'NO — nadir >28 days or late fluctuations (Level 4 territory; consider CIDP)':S.mono==='no'?'Not monophasic':'Not assessed'}\n  4. No alternative diagnosis: ${S.altdx===true?'Confirmed — no alternative identified':S.altdx===false?'ALTERNATIVE DIAGNOSIS PRESENT':'Not assessed'}\n\nSUPPORTIVE FEATURES:\n  Cranial nerve involvement (facial palsy/bulbar): ${S.cranial===true?'Present':S.cranial===false?'Absent':'Not assessed'}\n  Autonomic dysfunction: ${S.autonomic===true?'Present':S.autonomic===false?'Absent':'Not assessed'}\n  Pain: ${S.pain===true?'Present':S.pain===false?'Absent':'Not assessed'}\n  Antecedent illness/trigger: ${S.precede===true?'Identified':S.precede===false?'None identified':'Not assessed'}\n\nCSF ANALYSIS:\n  Cell count: ${S.csfcell==='low'?'<10 cells/µL (normal)':S.csfcell==='mid'?'10–50 cells/µL (acceptable for Levels 1–2)':S.csfcell==='high'?'>50 cells/µL — EXCLUDES Levels 1–3; evaluate for infectious mimic':'Not performed'}\n  Protein: ${S.csfprot==='high'?'ELEVATED — cytoalbuminological dissociation (supports Level 1 with positive NCS)':S.csfprot==='norm'?'Normal — early GBS; Level 2 territory; repeat LP at 2 weeks if suspicion remains':'Not performed'}\n\nELECTRODIAGNOSIS (NCS):\n  Overall NCS result: ${{aidp:'Consistent with AIDP (demyelinating pattern)',axonal:'Consistent with AMAN/AMSAN (axonal pattern)',inex:'Inexcitable nerves',equiv:'Equivocal but consistent with GBS',normal:'Normal — Level 2/3 territory; repeat at 2 weeks',nd:'Not yet performed'}[S.ncs]||'Not assessed'}\n  Electrophysiological subtype: ${subLabel[S.subtype]||'Not determined'}\n\nEGRIS RESPIRATORY RISK SCORE (Walgaard 2010):\n  Days from onset to admission: ${S.eDays!==null?(['≥14 days','8–13 days','≤7 days'][S.eDays])+' ('+S.eDays+' point'+(S.eDays!==1?'s':'')+')'  :'Not entered'}\n  Facial/bulbar weakness at admission: ${S.eBulbar!==null?(S.eBulbar===0?'Absent (0 pts)':'Present (1 pt)'):'Not entered'}\n  MRC sum score at admission: ${S.eMrc!==null?({0:'51–60 (0 pts)',2:'41–50 (2 pts)',4:'31–40 (4 pts)',6:'≤30 (6 pts)'}[S.eMrc]||'—'):'Not entered'}\n  EGRIS total score: ${egrisTotal!==null?egrisTotal+'/7 — estimated ~'+egrisRisk+'% probability of MV within week 1':'Incomplete — enter all 3 components'}\n  EGRIS interpretation: ${egrisTotal!==null?(egrisTotal>=6?'Very high risk — ICU, early intubation planning':egrisTotal>=4?'High risk — ICU, serial FVC/NIF q4–6h':egrisTotal>=2?'Intermediate risk — step-down/HDU, serial monitoring q8h':'Low risk — ward with monitoring, daily FVC/NIF'):'—'}\n\n  Note on respiratory monitoring: FVC <20 mL/kg → ICU admission; FVC <15 mL/kg + distress or NIF worse than −20 cmH₂O → intubation threshold. Do NOT rely on SpO₂ or ABG as early warning signs — these are LATE indicators in neuromuscular respiratory failure.\n\nFINAL BRIGHTON LEVEL: ${vt}\n\nBrighton levels reference:\n  Level 1 (highest certainty): 4 clinical + CSF cell <50 + elevated protein + NCS consistent → ~61% of GBS\n  Level 2: 4 clinical + CSF cell <50 + normal protein (or NCS normal) → ~33% of GBS\n  Level 3: 4 clinical only, no CSF/NCS → clinical diagnosis\n  Level 4 (lowest certainty): atypical course/high CSF, diagnosis not excluded → ~6% of GBS\n\nKey references:\n  Fokke C et al. Brain 2014;137:33–43 (Brighton validation, n=335)\n  Walgaard C et al. Ann Neurol 2010;67:781–787 (EGRIS original)\n  Doets AY et al. Ann Neurol 2022;91:568–577 (EGRIS international validation, AUC 0.81)\n  Uncini A et al. Clin Neurophysiol 2017;128:1176–1183 (NCS criteria for subtypes)`;
+  document.getElementById('dn').textContent=note;
+}
+
+function sa(el,cls,msg){ if(!el)return; el.className='alrt show '+cls; el.innerHTML=msg; }
+function ha(el){ if(el) el.classList.remove('show'); }
+
+function goTab(n){ if(n===cur)return; go(n); }
+function go(n){
+  document.getElementById('s'+cur).classList.remove('active');
+  document.getElementById('s'+n).classList.add('active');
+  for(let i=0;i<6;i++){
+    const d=document.getElementById('st'+i);
+    d.classList.remove('active','done');
+    if(i<n) d.classList.add('done');
+    else if(i===n) d.classList.add('active');
+  }
+  cur=n;
+  document.getElementById('pf').style.width=((n/5)*100)+'%';
+  if(n===5) rv();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function xp(btn){
+  const d=btn.closest('.crit').querySelector('.crit-detail');
+  if(!d)return;
+  const o=d.classList.toggle('open');
+  btn.textContent=o?'close ▴':'details ▾';
+}
+
+function toggleDoc(){
+  const body=document.getElementById('dn'),btn=document.getElementById('copy-btn'),tog=document.querySelector('.doc-tog');
+  if(!body)return;
+  const open=body.classList.toggle('open');
+  if(tog)tog.textContent=open?'▲ Documentation Note':'▼ Documentation Note';
+  if(btn)btn.classList.toggle('visible',open);
+}
+
+function copyDoc(){
+  const body=document.getElementById('dn'),btn=document.getElementById('copy-btn');
+  if(!body)return;
+  const text=body.textContent||body.innerText;
+  navigator.clipboard.writeText(text)
+    .then(()=>{if(btn){btn.textContent='✓ Copied';btn.classList.add('copied');setTimeout(()=>{btn.textContent='⎘ Copy';btn.classList.remove('copied');},2000);}})
+    .catch(()=>{const ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);if(btn){btn.textContent='✓ Copied';btn.classList.add('copied');setTimeout(()=>{btn.textContent='⎘ Copy';btn.classList.remove('copied');},2000);}});
+}
+
+function resetAll(){
+  Object.keys(S).forEach(k=>S[k]=null);
+  document.querySelectorAll('.crit').forEach(el=>el.className='crit');
+  document.querySelectorAll('.abtn').forEach(b=>b.classList.remove('ay','an','ap','ab','aa','aw'));
+  document.querySelectorAll('.crit-detail').forEach(d=>d.classList.remove('open'));
+  document.querySelectorAll('.xbtn').forEach(b=>b.textContent='details ▾');
+  ['a0','a1','a2','a3','a4'].forEach(id=>{const el=document.getElementById(id);if(el)el.classList.remove('show');});
+  document.getElementById('vout').innerHTML='';
+  const dn=document.getElementById('dn');if(dn)dn.classList.remove('open');
+  const cb=document.getElementById('copy-btn');if(cb)cb.classList.remove('visible','copied');
+  const tog=document.querySelector('.doc-tog');if(tog)tog.textContent='▼ Documentation Note';
+  const disp=document.getElementById('egris-display');if(disp)disp.style.display='none';
+  go(0);
+  document.getElementById('n0').disabled=true;
+}
+
+ui();
+</script>
+</body>
+</html>
