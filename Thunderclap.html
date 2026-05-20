@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Thunderclap Headache &middot; Evaluation Navigator</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Lexend:wght@300;400;500;600;700&display=swap');
+:root {
+  --bg:#0d1117; --card:#161b22; --card2:#1c2330; --border:#2a3a4a; --border2:#3a5060;
+  --green:#3fb950; --green-bg:rgba(63,185,80,.10); --green-bd:rgba(63,185,80,.35);
+  --red:#f85149; --red-bg:rgba(248,81,73,.10); --red-bd:rgba(248,81,73,.35);
+  --amber:#f59e0b; --amber-bg:rgba(245,158,11,.10); --amber-bd:rgba(245,158,11,.35);
+  --blue:#58a6ff; --blue-bg:rgba(88,166,255,.10); --blue-bd:rgba(88,166,255,.35);
+  --purple:#bc8cff; --purple-bg:rgba(188,140,255,.10); --purple-bd:rgba(188,140,255,.35);
+  /* Thunderclap accent: amber/orange — titles and interactive elements only */
+  --accent:#f59e0b; --accent-bg:rgba(245,158,11,.10); --accent-bd:rgba(245,158,11,.35);
+  --accent2:#92400e;
+  --text:#e6edf3; --text2:#aab4c0; --text3:#6e7f94;
+  --sans:'Lexend','Inter',system-ui,sans-serif; --mono:'IBM Plex Mono',monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:14px;line-height:1.5;min-height:100vh;}
+.app{max-width:960px;margin:0 auto;padding:0 20px 80px;}
+header{padding:24px 0 16px;border-bottom:1px solid var(--border);margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;}
+.h-title{font-size:19px;font-weight:700;font-family:var(--sans);}.h-title span{color:var(--accent);}
+.h-sub{font-size:11px;color:var(--text3);margin-top:3px;line-height:1.6;font-family:var(--sans);}
+.h-credit{font-size:11px;color:var(--text3);margin-top:2px;font-family:var(--sans);}
+.reset-btn{background:var(--card2);border:1px solid var(--border);color:var(--text2);font-family:var(--sans);font-size:12px;padding:6px 14px;cursor:pointer;border-radius:4px;transition:all .15s;white-space:nowrap;font-weight:500;}
+.reset-btn:hover{border-color:var(--accent);color:var(--accent);}
+.prog-track{height:3px;background:var(--border);margin-bottom:20px;border-radius:2px;}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--accent2),var(--accent));border-radius:2px;transition:width .4s ease;box-shadow:0 0 8px rgba(245,158,11,.4);}
+.steps{display:grid;grid-template-columns:repeat(6,1fr);border:1px solid var(--border);border-radius:8px;margin-bottom:20px;overflow:hidden;background:var(--card);}
+.stab{padding:8px 3px 9px;text-align:center;font-size:10px;color:var(--text3);border-right:1px solid var(--border);transition:all .2s;cursor:pointer;background:var(--card);line-height:1.3;font-family:var(--sans);}
+.stab:nth-child(6n){border-right:none;}
+.stab .sn{display:flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;background:var(--card2);border:1px solid var(--border);font-size:10px;font-weight:700;margin:0 auto 3px;transition:all .2s;}
+.stab .slbl{display:block;font-size:9px;font-weight:600;line-height:1.3;font-family:var(--sans);}
+.stab.active{color:var(--accent);background:var(--accent-bg);}
+.stab.active .sn{background:var(--accent);color:#0d1117;border-color:var(--accent);}
+.stab.done{color:var(--green);}.stab.done .sn{background:var(--green);color:#0d1117;border-color:var(--green);}
+.stab:hover:not(.active){background:var(--card2);}
+.card{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:22px;margin-bottom:12px;}
+.ctitle{font-size:13px;font-weight:700;margin-bottom:3px;font-family:var(--sans);}
+.csub{font-size:12px;color:var(--text2);margin-bottom:16px;line-height:1.5;font-family:var(--sans);}
+.slabel{display:flex;align-items:center;gap:8px;font-size:11px;font-weight:600;color:var(--text);margin-bottom:9px;padding-bottom:6px;border-bottom:1px solid var(--border);font-family:var(--sans);}
+.pill{font-size:9px;padding:1px 7px;border-radius:20px;border:1px solid;margin-left:auto;letter-spacing:.04em;text-transform:uppercase;font-family:var(--sans);}
+.pill-r{border-color:var(--red);color:var(--red);background:var(--red-bg);}
+.pill-a{border-color:var(--accent);color:var(--accent);background:var(--accent-bg);}
+.pill-g{border-color:var(--green);color:var(--green);background:var(--green-bg);}
+.pill-b{border-color:var(--blue);color:var(--blue);background:var(--blue-bg);}
+.crit{border:1px solid var(--border);border-radius:6px;margin-bottom:5px;overflow:hidden;transition:border-color .15s,background .15s;}
+.crit.c-yes{border-color:var(--green-bd);background:var(--green-bg);}
+.crit.c-no{border-color:var(--red-bd);background:var(--red-bg);}
+.crit.c-a{border-color:var(--accent-bd);background:var(--accent-bg);}
+.crit.c-abs{border-color:var(--border2);background:var(--card2);}
+.crit.c-part{border-color:var(--amber-bd);background:var(--amber-bg);}
+.crit.c-blue{border-color:var(--blue-bd);background:var(--blue-bg);}
+.crit-main{display:flex;align-items:center;gap:10px;padding:10px 13px;}
+.crit-name{flex:1;font-size:13px;font-weight:500;color:var(--text);line-height:1.3;font-family:var(--sans);}
+.xbtn{background:var(--purple-bg);border:1px solid var(--purple-bd);color:var(--purple);font-size:11px;cursor:pointer;padding:2px 8px;white-space:nowrap;transition:all .15s;flex-shrink:0;border-radius:3px;font-weight:500;font-family:var(--sans);}
+.xbtn:hover{background:var(--purple);color:#0d1117;border-color:var(--purple);}
+.crit-detail{display:none;padding:10px 13px 12px;font-size:12px;color:var(--text);line-height:1.65;border-top:1px solid var(--border);font-family:var(--sans);}
+.crit-detail.open{display:block;}
+.cnote{margin-top:8px;padding:8px 11px;background:var(--card2);border-left:3px solid var(--border2);font-size:11px;color:var(--text2);line-height:1.75;border-radius:0 3px 3px 0;font-family:var(--sans);}
+.cnote strong{color:var(--text);}
+.brow{display:flex;border-top:1px solid var(--border);flex-wrap:wrap;}
+.abtn{flex:1;min-width:70px;padding:9px 10px;background:none;border:none;border-right:1px solid var(--border);border-bottom:1px solid var(--border);color:var(--text2);font-family:var(--sans);font-size:11px;cursor:pointer;transition:all .12s;font-weight:400;line-height:1.4;text-align:left;}
+.abtn:last-child{border-right:none;}.abtn:hover{background:var(--card2);color:var(--text);}
+.abtn.ay{background:var(--green-bg);color:var(--green);font-weight:700;}
+.abtn.an{background:var(--red-bg);color:var(--red);font-weight:700;}
+.abtn.aa{background:var(--accent-bg);color:var(--accent);font-weight:700;}
+.abtn.ab{background:var(--blue-bg);color:var(--blue);font-weight:700;}
+.abtn.agr{background:var(--card2);color:var(--text2);font-weight:700;}
+.abtn.aw{background:var(--amber-bg);color:var(--amber);font-weight:700;}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:5px;}
+@media(max-width:600px){.two-col{grid-template-columns:1fr;}}
+.alrt{padding:9px 13px;border-radius:5px;font-size:12px;line-height:1.55;margin-top:12px;border-left:3px solid;display:none;font-family:var(--sans);}
+.alrt.show{display:block;}
+.aok{border-color:var(--green);background:var(--green-bg);color:#7ee787;}
+.awn{border-color:var(--accent);background:var(--accent-bg);color:var(--accent);}
+.aerr{border-color:var(--red);background:var(--red-bg);color:#ff7b72;}
+.ainf{border-color:var(--blue);background:var(--blue-bg);color:var(--blue);}
+.lbox{background:var(--card2);border:1px solid var(--border);border-radius:5px;padding:12px 15px;font-size:12px;color:var(--text2);line-height:1.75;margin-bottom:14px;font-family:var(--sans);}
+.lbox strong{color:var(--text);}
+.la{color:var(--accent);font-weight:600;} .lg{color:var(--green);font-weight:600;}
+.lr{color:var(--red);font-weight:600;} .lb{color:var(--blue);font-weight:600;}
+/* Ottawa checklist */
+.ottawa-grid{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-bottom:12px;}
+@media(max-width:580px){.ottawa-grid{grid-template-columns:1fr;}}
+.ott-item{border:1px solid var(--border);border-radius:6px;overflow:hidden;transition:all .15s;}
+.ott-item.ott-yes{border-color:var(--red-bd);background:var(--red-bg);}
+.ott-item.ott-no{border-color:var(--green-bd);background:var(--green-bg);}
+.ott-main{display:flex;align-items:center;gap:8px;padding:9px 12px;}
+.ott-num{width:22px;height:22px;border-radius:50%;background:var(--accent);color:#0d1117;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:var(--sans);}
+.ott-item.ott-yes .ott-num{background:var(--red);}
+.ott-item.ott-no .ott-num{background:var(--green);}
+.ott-label{flex:1;font-size:12px;font-weight:500;color:var(--text);font-family:var(--sans);line-height:1.3;}
+.ott-sub{font-size:10px;color:var(--text3);font-family:var(--sans);margin-top:1px;}
+.ott-brow{display:flex;border-top:1px solid var(--border);}
+.ott-btn{flex:1;padding:7px 10px;background:none;border:none;border-right:1px solid var(--border);color:var(--text2);font-family:var(--sans);font-size:11px;cursor:pointer;transition:all .12s;font-weight:400;}
+.ott-btn:last-child{border-right:none;}
+.ott-btn:hover{background:var(--card2);color:var(--text);}
+.ott-btn.osy{background:var(--red-bg);color:var(--red);font-weight:700;}
+.ott-btn.osn{background:var(--green-bg);color:var(--green);font-weight:700;}
+/* Workflow decision display */
+.decision-box{border-radius:8px;padding:14px 18px;margin-bottom:12px;border:2px solid;font-family:var(--sans);}
+.db-safe{border-color:var(--green-bd);background:var(--green-bg);}
+.db-ct{border-color:var(--accent-bd);background:var(--accent-bg);}
+.db-lp{border-color:var(--blue-bd);background:var(--blue-bg);}
+.db-cta{border-color:var(--purple-bd);background:var(--purple-bg);}
+.db-urgent{border-color:var(--red-bd);background:var(--red-bg);}
+.db-title{font-size:13px;font-weight:700;margin-bottom:4px;}
+.db-safe .db-title{color:var(--green);}
+.db-ct .db-title{color:var(--accent);}
+.db-lp .db-title{color:var(--blue);}
+.db-cta .db-title,.db-cta .db-title{color:var(--purple);}
+.db-urgent .db-title{color:var(--red);}
+.db-desc{font-size:12px;color:var(--text2);line-height:1.6;}
+/* Secondary causes checklist */
+.sec-grid{display:grid;grid-template-columns:1fr 1fr;gap:5px;}
+@media(max-width:600px){.sec-grid{grid-template-columns:1fr;}}
+.sec-item{border:1px solid var(--border);border-radius:6px;overflow:hidden;transition:all .15s;background:var(--card2);}
+.sec-item.sec-yes{border-color:var(--red-bd);background:var(--red-bg);}
+.sec-item.sec-no{border-color:var(--green-bd);background:var(--green-bg);}
+.sec-main{display:flex;align-items:flex-start;gap:8px;padding:9px 12px;}
+.sec-icon{width:8px;height:8px;border-radius:50%;background:var(--accent);flex-shrink:0;margin-top:4px;}
+.sec-item.sec-yes .sec-icon{background:var(--red);}
+.sec-item.sec-no .sec-icon{background:var(--green);}
+.sec-label{flex:1;font-size:12px;font-weight:500;color:var(--text);font-family:var(--sans);line-height:1.3;}
+.sec-sub{font-size:10px;color:var(--text3);font-family:var(--sans);margin-top:2px;}
+.sec-brow{display:flex;border-top:1px solid var(--border);}
+.sec-btn{flex:1;padding:7px 8px;background:none;border:none;border-right:1px solid var(--border);color:var(--text2);font-family:var(--sans);font-size:10px;cursor:pointer;transition:all .12s;font-weight:400;}
+.sec-btn:last-child{border-right:none;}
+.sec-btn:hover{background:rgba(255,255,255,.04);color:var(--text);}
+.sec-btn.ssy{background:var(--red-bg);color:var(--red);font-weight:700;}
+.sec-btn.ssn{background:var(--green-bg);color:var(--green);font-weight:700;}
+.sec-btn.sna{background:var(--amber-bg);color:var(--amber);font-weight:700;border-top:1px solid var(--amber-bd);}
+/* Nav */
+.nav-row{display:flex;justify-content:space-between;align-items:center;margin-top:20px;gap:10px;}
+.nbtn{padding:9px 22px;border-radius:5px;font-family:var(--sans);font-size:13px;border:1px solid;cursor:pointer;font-weight:600;transition:all .15s;}
+.np{background:var(--accent);border-color:var(--accent);color:#0d1117;font-weight:700;}
+.np:hover{background:#fcd34d;border-color:#fcd34d;}
+.np:disabled{opacity:.3;cursor:not-allowed;}
+.ns{background:transparent;border-color:var(--border2);color:var(--text2);}
+.ns:hover{border-color:var(--text);color:var(--text);}
+.screen{display:none;}.screen.active{display:block;animation:fu .25s ease;}
+@keyframes fu{from{opacity:0;transform:translateY(5px);}to{opacity:1;transform:translateY(0);}}
+/* Verdict */
+.vban{border-radius:8px;padding:22px 26px;margin-bottom:16px;border:2px solid;}
+.vlow{border-color:var(--green);background:var(--green-bg);}
+.vmod{border-color:var(--accent);background:var(--accent-bg);}
+.vhigh{border-color:var(--red);background:var(--red-bg);}
+.vund{border-color:var(--border2);background:var(--card2);}
+.vban-head{text-align:center;margin-bottom:14px;}
+.vlbl{font-family:var(--sans);font-size:9px;letter-spacing:.15em;text-transform:uppercase;opacity:.6;margin-bottom:5px;}
+.vtitle{font-size:22px;font-weight:700;margin-bottom:6px;font-family:var(--sans);}
+.vlow .vtitle{color:var(--green);}.vmod .vtitle{color:var(--accent);}
+.vhigh .vtitle{color:var(--red);}.vund .vtitle{color:var(--text2);}
+.vdesc{font-size:12px;color:var(--text2);line-height:1.7;max-width:640px;margin:0 auto;font-family:var(--sans);}
+.sum-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;}
+@media(max-width:580px){.sum-grid{grid-template-columns:1fr;}}
+.sblock{background:var(--card);border:1px solid var(--border);border-radius:6px;overflow:hidden;}
+.sbtitle{font-size:11px;font-weight:600;padding:7px 11px;border-bottom:1px solid var(--border);color:var(--text);background:var(--card2);font-family:var(--sans);}
+.srow{display:flex;align-items:flex-start;gap:8px;padding:6px 11px;border-bottom:1px solid var(--border);font-size:12px;font-family:var(--sans);}
+.srow:last-child{border-bottom:none;}
+.dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;margin-top:4px;}
+.dg{background:var(--green);}.dr{background:var(--red);}.da{background:var(--accent);}
+.db{background:var(--blue);}.dgr{background:var(--text3);}
+.sname{flex:1;color:var(--text);line-height:1.4;font-family:var(--sans);}
+.stag{font-family:var(--sans);font-size:9px;padding:1px 7px;border-radius:10px;border:1px solid;white-space:nowrap;}
+.tg{border-color:var(--green-bd);color:var(--green);}
+.tr{border-color:var(--red-bd);color:var(--red);}
+.ta{border-color:var(--accent-bd);color:var(--accent);}
+.tb{border-color:var(--blue-bd);color:var(--blue);}
+.tgr{border-color:var(--border2);color:var(--text3);}
+/* Doc note */
+.doc-header{display:flex;align-items:center;gap:8px;margin-bottom:5px;}
+.doc-tog{flex:1;text-align:left;background:var(--card2);border:1px solid var(--border2);border-radius:5px;color:var(--text2);font-family:var(--sans);font-size:13px;padding:8px 13px;cursor:pointer;transition:all .15s;}
+.doc-tog:hover{border-color:var(--accent);color:var(--accent);}
+.copy-btn{background:var(--card2);border:1px solid var(--border2);border-radius:5px;color:var(--text2);font-family:var(--sans);font-size:12px;padding:8px 14px;cursor:pointer;white-space:nowrap;transition:all .15s;display:none;}
+.copy-btn.visible{display:block;}.copy-btn:hover{border-color:var(--green);color:var(--green);}
+.copy-btn.copied{border-color:var(--green);color:var(--green);background:var(--green-bg);}
+.doc-body{display:none;background:var(--card2);border:1px solid var(--border2);border-radius:5px;padding:13px 15px;font-family:var(--mono);font-size:11px;color:var(--text2);line-height:1.85;white-space:pre-wrap;margin-bottom:12px;}
+.doc-body.open{display:block;}
+</style>
+</head>
+<body>
+<div class="app">
+<header>
+  <div>
+    <div class="h-title">Thunderclap Headache &middot; <span>Evaluation Navigator</span></div>
+    <div class="h-sub">Perry JJ et al. BMJ 2011 (Ottawa SAH Rule) &middot; Perry JJ et al. Ann Emerg Med 2017 (validation, n=1153) &middot; NICE NG228 2022 &middot; For educator use only</div>
+    <div class="h-credit">Designed by Daniel Short, MD</div>
+  </div>
+  <button class="reset-btn" onclick="resetAll()">&#8634; Reset</button>
+</header>
+<div class="prog-track"><div class="prog-fill" id="pf" style="width:0%"></div></div>
+<div class="steps">
+  <div class="stab active" id="st0" onclick="goTab(0)"><span class="sn">1</span><span class="slbl">Thunderclap? Definition</span></div>
+  <div class="stab" id="st1" onclick="goTab(1)"><span class="sn">2</span><span class="slbl">Ottawa SAH Rule</span></div>
+  <div class="stab" id="st2" onclick="goTab(2)"><span class="sn">3</span><span class="slbl">CT &amp; Timing</span></div>
+  <div class="stab" id="st3" onclick="goTab(3)"><span class="sn">4</span><span class="slbl">LP vs. CTA</span></div>
+  <div class="stab" id="st4" onclick="goTab(4)"><span class="sn">5</span><span class="slbl">Secondary Causes</span></div>
+  <div class="stab" id="st5" onclick="goTab(5)"><span class="sn">6</span><span class="slbl">Verdict</span></div>
+</div>
+
+<!-- S0: DEFINITION -->
+<div class="screen active" id="s0">
+<div class="card">
+  <div class="ctitle" style="color:var(--accent);">Step 1 &middot; Thunderclap Headache &mdash; Definition &amp; Eligibility</div>
+  <div class="csub">Thunderclap headache (TCH) is a severe headache with sudden onset reaching maximum intensity within 1 minute. It is a neurological emergency until proven otherwise. The Ottawa SAH Rule (Perry JJ et al.) applies to a specific, well-defined population &mdash; using it outside these inclusion criteria may produce false-negative results. First, confirm the patient meets the inclusion criteria and has no exclusion criteria.</div>
+
+  <div class="lbox">
+    <strong>Ottawa SAH Rule &mdash; inclusion criteria (apply the rule ONLY if ALL of these are true):</strong><br>
+    <span class="la">1.</span> Age &ge;15 years<br>
+    <span class="la">2.</span> New, acute, non-traumatic headache that reached maximal intensity within 1 hour of onset<br>
+    <span class="la">3.</span> Alert (GCS 15) with a normal neurological examination at time of assessment<br><br>
+    <strong>Ottawa SAH Rule &mdash; exclusion criteria (do NOT apply the rule if any of these are present):</strong><br>
+    <span class="lr">Referred from another hospital</span> (already partially worked up)<br>
+    <span class="lr">Known history of 3 or more recurrent headaches over 6 months</span> (chronic pattern changes the prior probability)<br>
+    <span class="lr">History of aneurysm, SAH, or brain tumour</span><br>
+    <span class="lr">New focal neurological deficit</span> (these patients require immediate CT regardless of rule)<br>
+    <span class="lr">Papilloedema on fundoscopy</span>
+  </div>
+
+  <div class="slabel">Confirm headache onset characteristics <span class="pill pill-r">REQUIRED FOR ACCURATE RISK STRATIFICATION</span></div>
+
+  <div class="crit" id="onset-item">
+    <div class="crit-main">
+      <div class="crit-name">Onset to peak intensity within 1 minute &mdash; &ldquo;the worst headache of my life&rdquo; or &ldquo;like a thunderclap&rdquo; &mdash; explosive, hyperacute onset</div>
+      <button class="xbtn" onclick="xp(this)">details &#9662;</button>
+    </div>
+    <div class="crit-detail">
+      <strong>Key distinction:</strong> TCH is defined by the <em>rate of onset</em>, not the severity alone. A headache that builds over 15&ndash;30 minutes does not meet the strict definition, even if very severe. The 1-minute criterion captures the sentinel bleed and other vascular emergencies. Many patients will describe it as &ldquo;the worst headache of my life&rdquo; &mdash; while this phrase is highly associated with SAH, it lacks specificity. The <em>suddenness</em> is the pathognomonic feature.<br><br>
+      The Ottawa SAH Rule uses a slightly broader criterion: <strong>maximal intensity within 1 hour</strong> (not 1 minute) &mdash; this was deliberate to increase sensitivity at the cost of specificity. ICHD-3 defines primary thunderclap headache as reaching maximum within 1 minute.
+      <div class="cnote"><strong>Misdiagnosis of SAH is common:</strong> Up to 50% of SAH cases are misdiagnosed on first presentation, most commonly as migraine, tension headache, or viral illness. The misdiagnosis rate is highest when: (1) the headache was the first symptom without LOC; (2) the patient had prior migraines; (3) the CT was interpreted without radiologist review; (4) LP was not performed after negative CT. A missed SAH diagnosis carries a case fatality rate of ~70% for the subsequent bleed.</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setOnset('tch')"  id="onset-tch">&#10003; Thunderclap &mdash; peak within 1 minute</button>
+      <button class="abtn" onclick="setOnset('1hr')"  id="onset-1hr">&#10003; Peak within 1 hour (Ottawa inclusion)</button>
+      <button class="abtn" onclick="setOnset('slow')" id="onset-slow">&#10007; Gradual build (&gt;1 hour) &mdash; Ottawa rule does not apply</button>
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:14px;">Ottawa exclusion criteria <span class="pill pill-r">EXCLUSIONS INVALIDATE THE RULE</span></div>
+
+  <div class="crit" id="neurodef-item">
+    <div class="crit-main">
+      <div class="crit-name">New focal neurological deficit present &mdash; hemiparesis, aphasia, diplopia, facial droop, ataxia, or any new localising sign</div>
+      <button class="xbtn" onclick="xp(this)">details &#9662;</button>
+    </div>
+    <div class="crit-detail">
+      Any new focal neurological deficit bypasses clinical decision rules entirely &mdash; these patients require immediate CT head without contrast (and neurosurgical/neurology consultation). Focal deficits with thunderclap headache suggest: SAH with vasospasm or focal clot effect; arterial dissection (cervical or intracranial); CVT; hypertensive intracerebral haemorrhage; ischaemic stroke presenting atypically; RCVS with infarction. Do NOT apply the Ottawa rule.
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setExcl('neurodef',true)"  id="neurodef-yes">&#10007; YES &mdash; focal deficit present (Ottawa EXCLUDED &mdash; immediate CT)</button>
+      <button class="abtn" onclick="setExcl('neurodef',false)" id="neurodef-no">&#10003; No focal deficit &mdash; normal neurological exam</button>
+    </div>
+  </div>
+
+  <div class="crit" id="papill-item">
+    <div class="crit-main">
+      <div class="crit-name">Papilloedema on fundoscopy &mdash; indicates raised intracranial pressure; may indicate CVT, IIH, malignant hypertension, or mass lesion</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setExcl('papill',true)"  id="papill-yes">&#10007; YES &mdash; papilloedema present (Ottawa EXCLUDED)</button>
+      <button class="abtn" onclick="setExcl('papill',false)" id="papill-no">&#10003; No papilloedema</button>
+      <button class="abtn" onclick="setExcl('papill',null)"  id="papill-nd">&mdash; Fundoscopy not performed</button>
+    </div>
+  </div>
+
+  <div class="crit" id="recurrent-item">
+    <div class="crit-main">
+      <div class="crit-name">History of 3+ recurrent headaches over the past 6 months &mdash; a chronic headache pattern changes pre-test probability significantly</div>
+      <button class="xbtn" onclick="xp(this)">details &#9662;</button>
+    </div>
+    <div class="crit-detail">
+      This exclusion was included because patients with a well-established, repetitive headache pattern over months have a very different prior probability of SAH than those presenting with a genuinely novel event. However, exercise caution: a patient with known migraines who presents with &ldquo;the worst headache of my life, different from my usual migraines&rdquo; should not be automatically excluded &mdash; the description of a qualitatively new headache in a known migraineur still warrants evaluation for SAH.
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setExcl('recurrent',true)"  id="recurrent-yes">&#10007; YES &mdash; 3+ headaches in 6 months (Ottawa less applicable &mdash; use clinical judgment)</button>
+      <button class="abtn" onclick="setExcl('recurrent',false)" id="recurrent-no">&#10003; No &mdash; this is a new or qualitatively different headache</button>
+    </div>
+  </div>
+
+  <div id="a0" class="alrt"></div>
+  <div class="nav-row"><div></div><button class="nbtn np" id="n0" onclick="go(1)" disabled>Next: Ottawa SAH Rule &#8594;</button></div>
+</div>
+</div>
+
+<!-- S1: OTTAWA -->
+<div class="screen" id="s1">
+<div class="card">
+  <div class="ctitle" style="color:var(--accent);">Step 2 &middot; Ottawa SAH Rule</div>
+  <div class="csub">The Ottawa SAH Rule (Perry JJ et al. BMJ 2011;343:d4277 derivation; Ann Emerg Med 2017;70:18 validation, n=1,153, 67 SAH) applies to alert adults (&ge;15 years) with non-traumatic headache reaching maximum intensity within 1 hour and normal neurological examination. Rule: if <strong>any one</strong> of the six criteria is positive, CT head is indicated. Sensitivity 100% (95% CI 94.6&ndash;100%), specificity 13.6%.</div>
+
+  <div class="lbox">
+    <strong>Performance (Perry et al. Ann Emerg Med 2017, n=1,153 patients, 67 with SAH):</strong><br>
+    Sensitivity <span class="la">100%</span> (95% CI 94.6&ndash;100%) &nbsp;&bull;&nbsp; Specificity <span class="la">13.6%</span> (95% CI 13.1&ndash;15.8%)<br>
+    NPV for ruling out SAH: ~100% when all six criteria are negative<br>
+    External validation in four countries, n=3,317 total: sensitivity 100% across all studies, specificity 7.6&ndash;15.3%<br><br>
+    <strong>Critical limitation:</strong> High sensitivity, very low specificity &mdash; rule is designed to rule OUT SAH (high NPV), not to rule it in. A positive rule mandates CT; it does not diagnose SAH.<br>
+    <strong>Do not apply if:</strong> patient has new neurological deficit, known aneurysm/SAH/brain tumour, referred from another hospital, or &ge;3 recurrent headaches over 6 months.
+  </div>
+
+  <div class="slabel">Check each Ottawa criterion &mdash; ANY positive = CT indicated <span class="pill pill-r">ANY ONE POSITIVE = IMAGE</span></div>
+  <div class="ottawa-grid" id="ottawa-grid"></div>
+
+  <div id="ottawa-result" style="display:none;margin-bottom:14px;"></div>
+  <div id="a1" class="alrt"></div>
+  <div class="nav-row">
+    <button class="nbtn ns" onclick="go(0)">&larr; Back</button>
+    <button class="nbtn np" onclick="go(2)">Next: CT &amp; Timing &#8594;</button>
+  </div>
+</div>
+</div>
+
+<!-- S2: CT -->
+<div class="screen" id="s2">
+<div class="card">
+  <div class="ctitle" style="color:var(--accent);">Step 3 &middot; Non-Contrast CT Head &mdash; Timing &amp; Interpretation</div>
+  <div class="csub">Non-contrast CT head (NCCTH) is the first-line investigation for suspected SAH. Sensitivity is critically time-dependent. Modern multidetector CT within 6 hours of headache onset approaches 100% sensitivity for SAH. After 6 hours, sensitivity declines as subarachnoid blood is reabsorbed and becomes isodense to CSF.</div>
+
+  <div class="lbox">
+    <strong>CT sensitivity for SAH by time from onset (Backes D et al. Stroke 2012; Perry JJ et al. BMJ 2011):</strong><br>
+    <span class="lg">&lt;6 hours:</span> ~98&ndash;100% sensitivity (Perry 2011 prospective study: 121/121 SAH detected within 6h; sensitivity 100%, 95% CI 97&ndash;100%)<br>
+    <span class="la">6&ndash;12 hours:</span> ~93&ndash;98% sensitivity &mdash; LP recommended after negative CT<br>
+    <span class="lr">12&ndash;24 hours:</span> ~85&ndash;93% sensitivity &mdash; LP strongly recommended<br>
+    <span class="lr">&gt;24 hours:</span> Sensitivity drops further as blood reabsorbs. LP or MRI (FLAIR/DWI) required.<br><br>
+    <strong>NICE NG228 (2022):</strong> If CT performed within 6 hours and negative &mdash; SAH ruled out (no LP required). If CT negative and performed &gt;6 hours after onset &mdash; LP recommended to assess for xanthochromia.<br>
+    <strong>North American approach (many centres):</strong> LP after any negative CT in the context of clinical suspicion for SAH, regardless of timing, to maximise sensitivity and to detect other treatable causes (meningitis, CVT).
+  </div>
+
+  <div class="slabel">CT result and timing <span class="pill pill-r">TIME FROM HEADACHE ONSET TO CT IS CRITICAL</span></div>
+
+  <div class="crit" id="ct-timing-item">
+    <div class="crit-main">
+      <div class="crit-name">Time from headache onset to CT head &mdash; determines whether LP is needed after a negative CT</div>
+      <button class="xbtn" onclick="xp(this)">details &#9662;</button>
+    </div>
+    <div class="crit-detail">
+      The 6-hour threshold is based on the Perry 2011 prospective cohort study (n=3,132, including 240 with SAH): CT within 6 hours had 100% sensitivity (95% CI 97.0&ndash;100%). The original study used modern multidetector CT with thin slices. Important caveats: (1) CT must be reported by a neuroradiologist (or experienced radiologist) &mdash; initial reads by residents miss ~5% of SAH; (2) The sensitivity data applies to overt SAH with hyperdense subarachnoid blood &mdash; very small &ldquo;sentinel bleeds&rdquo; may still be missed; (3) Some centres use MRI (FLAIR sequence) as an alternative to LP after negative CT when LP is contraindicated or declined.
+      <div class="cnote"><strong>MRI as LP alternative:</strong> MRI FLAIR sequence can detect subarachnoid blood up to 2&ndash;4 weeks after SAH but has limited sensitivity in the first 24 hours. DWI/SWI sequences help detect haemorrhage. MRI is a reasonable LP alternative in patients with coagulopathy, anticoagulation, or thrombocytopenia, or when LP is refused, but is not validated as equivalent to LP in the acute setting.</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setCT('lt6','positive')"  id="ct-lt6p">CT &lt;6h &mdash; POSITIVE (SAH on CT)</button>
+      <button class="abtn" onclick="setCT('lt6','negative')"  id="ct-lt6n">CT &lt;6h &mdash; Negative</button>
+      <button class="abtn" onclick="setCT('gt6','negative')"  id="ct-gt6n">CT &gt;6h &mdash; Negative (LP/CTA needed)</button>
+      <button class="abtn" onclick="setCT('gt24','negative')" id="ct-gt24n">CT &gt;24h &mdash; Negative (LP + MRI strongly recommended)</button>
+      <button class="abtn" onclick="setCT('nd',null)"         id="ct-nd">&mdash; CT not yet performed</button>
+    </div>
+  </div>
+
+  <div class="crit" id="ct-quality-item">
+    <div class="crit-main">
+      <div class="crit-name">CT quality and reporting &mdash; modern multidetector CT (MDCT) &ge;16 slices, thin sections, reported by radiologist (not resident preliminary read alone)</div>
+      <button class="xbtn" onclick="xp(this)">details &#9662;</button>
+    </div>
+    <div class="crit-detail">
+      The 100% sensitivity figures for CT within 6 hours are based on studies using modern multidetector scanners. Single-slice or older CT technology has lower sensitivity. Radiologist interpretation is critical &mdash; studies show resident preliminary reads miss approximately 4&ndash;8% of SAH. <strong>All negative CT scans for suspected SAH should be confirmed by a radiologist or neuroradiologist before discharge decision.</strong><br><br>
+      <strong>Key CT findings in SAH:</strong> Hyperdense blood in the basal cisterns (interpeduncular, suprasellar, ambient), sylvian fissure, or cortical sulci. Blood may also be in the ventricular system (IVH). The modified Fisher scale and WFNS scale are assigned at this stage.
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setCTQ(true)"  id="ctq-yes">&#10003; Modern MDCT, radiologist-reported</button>
+      <button class="abtn" onclick="setCTQ(false)" id="ctq-no">&#9888; Older scanner or resident read only &mdash; consider radiologist review</button>
+    </div>
+  </div>
+
+  <div id="a2" class="alrt"></div>
+  <div class="nav-row">
+    <button class="nbtn ns" onclick="go(1)">&larr; Back</button>
+    <button class="nbtn np" onclick="go(3)">Next: LP vs. CTA Decision &#8594;</button>
+  </div>
+</div>
+</div>
+
+<!-- S3: LP vs CTA -->
+<div class="screen" id="s3">
+<div class="card">
+  <div class="ctitle" style="color:var(--accent);">Step 4 &middot; After Negative CT &mdash; LP vs. CTA Decision</div>
+  <div class="csub">After a negative CT, the next step depends on timing and the clinical picture. The two main options are lumbar puncture (LP) for xanthochromia and RBC count, or CT angiography (CTA) to directly image cerebral vessels. These strategies are complementary, not mutually exclusive &mdash; CTA detects aneurysms but not all SAH; LP detects haemoglobin breakdown products but misses structural causes.</div>
+
+  <div class="lbox">
+    <strong>LP &mdash; what it detects and when:</strong><br>
+    <span class="la">Xanthochromia</span> (yellow discolouration): Develops 2&ndash;4 hours after SAH onset; present in nearly all patients by 12 hours; persists up to 2&ndash;4 weeks. Visual inspection is most practical; spectrophotometry more sensitive but rarely available. <strong>Best obtained &ge;6&ndash;12 hours after onset for maximum sensitivity.</strong><br>
+    <span class="la">RBC count (tubes 1 and 4):</span> Persistent high RBC count (>2,000/mm&sup3;) that does not decrease between tube 1 and tube 4 suggests true SAH vs. traumatic tap (traumatic tap shows decreasing RBC count). No universally agreed threshold.<br>
+    <span class="la">Opening pressure:</span> Elevated &rarr; consider CVT, IIH, meningitis. Low &rarr; consider spinal dural leak (spontaneous intracranial hypotension).<br><br>
+    <strong>CTA &mdash; what it detects:</strong><br>
+    <span class="lb">Cerebral aneurysms:</span> Sensitivity ~97&ndash;99% for aneurysms &ge;3mm; lower for very small (&lt;3mm) aneurysms. Does not detect SAH directly &mdash; blood must still be visible on CT or LP.<br>
+    <span class="lb">Other vascular pathology:</span> Arterial dissection (carotid/vertebral/intracranial), AVM, dural fistula, RCVS vasospasm pattern, CVT (with CTV component).<br>
+    <span class="lb">Normal CTA does NOT exclude SAH.</span> Up to 15&ndash;20% of aneurysmal SAH patients have a negative initial CTA (small or thrombosed aneurysms). DSA (catheter angiography) remains gold standard.
+  </div>
+
+  <div class="slabel">Current investigation plan after negative CT <span class="pill pill-r">SELECT THE STRATEGY FOR THIS PATIENT</span></div>
+
+  <div class="crit" id="lp-timing-item">
+    <div class="crit-main">
+      <div class="crit-name">LP timing &mdash; is &ge;6 hours elapsed since headache onset? (Best sensitivity for xanthochromia; NICE NG228 recommends &ge;12 hours in some guidelines)</div>
+      <button class="xbtn" onclick="xp(this)">details &#9662;</button>
+    </div>
+    <div class="crit-detail">
+      <strong>Why wait for LP?</strong> After SAH, red blood cells in the CSF release haemoglobin which is enzymatically converted to oxyhemoglobin (2&ndash;4 hours) and then bilirubin (by 12 hours). Bilirubin (xanthochromia) is the most reliable marker of true SAH. If LP is done too early (&lt;2h), xanthochromia may be absent even in true SAH, reducing sensitivity. NICE NG228 recommends LP performed at least 12 hours after onset; some North American guidelines suggest &ge;6 hours is adequate.<br><br>
+      <strong>Controversy &mdash; do we still need LP after negative CT &lt;6h?</strong> There is ongoing debate about whether a negative modern CT within 6 hours is sufficient to exclude SAH without LP. The Perry 2011 study suggests it may be. However, LP adds value by: detecting other causes (meningitis), capturing rare sentinel bleeds too small for CT, and measuring opening pressure for CVT/SIH. Most neurologists and neurological societies still recommend LP after any negative CT in high-suspicion cases.
+      <div class="cnote"><strong>Traumatic tap:</strong> Occurs in up to 20% of LPs. Distinguishing traumatic tap from true SAH: (1) Decreasing RBC count tube 1 to 4 favours traumatic tap; (2) Xanthochromia on visual inspection, if present, favours SAH (but requires 6&ndash;12h to develop); (3) Spectrophotometric bilirubin is more definitive. If the tap is traumatic and xanthochromia is absent, a second LP or CTA should be considered.</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setLP('ready')"   id="lp-ready">&#10003; &ge;6h since onset &mdash; LP appropriate now</button>
+      <button class="abtn" onclick="setLP('early')"   id="lp-early">&#9888; &lt;6h since onset &mdash; wait before LP for xanthochromia</button>
+      <button class="abtn" onclick="setLP('done')"    id="lp-done">&#10003; LP already performed</button>
+      <button class="abtn" onclick="setLP('contraind')" id="lp-contra">&#10007; LP contraindicated (anticoagulation, coagulopathy, thrombocytopenia)</button>
+      <button class="abtn" onclick="setLP('nd')"      id="lp-nd">&mdash; Not yet decided</button>
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:14px;">LP result (if performed) <span class="pill pill-a">XANTHOCHROMIA IS THE KEY FINDING</span></div>
+  <div class="crit" id="lp-result-item">
+    <div class="crit-main">
+      <div class="crit-name">CSF findings &mdash; xanthochromia (yellow discolouration), RBC count (tubes 1 and 4), opening pressure, protein, glucose</div>
+      <button class="xbtn" onclick="xp(this)">details &#9662;</button>
+    </div>
+    <div class="crit-detail">
+      <strong>Interpret all CSF parameters together:</strong><br>
+      &bull; <strong>Xanthochromia (visual or spectrophotometric):</strong> Presence confirms haemoglobin breakdown products &rarr; SAH or other CNS haemorrhage. Absent xanthochromia in a well-timed LP (&ge;12h) essentially excludes SAH.<br>
+      &bull; <strong>RBC count tube 1 vs. tube 4:</strong> Stable or increasing count (tube 4 &ge; tube 1) suggests true subarachnoid blood; decreasing count suggests traumatic tap.<br>
+      &bull; <strong>Opening pressure:</strong> Elevated (&gt;20 cmH2O) &rarr; CVT, IIH, meningitis, SAH with IVH; Low (&lt;7 cmH2O) &rarr; spontaneous intracranial hypotension (spinal CSF leak).<br>
+      &bull; <strong>WBC, protein, glucose:</strong> Elevated WBC &plusmn; low glucose &rarr; meningitis/encephalitis; elevated protein in SAH (blood breakdown products).
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setLPResult('xantho')"   id="lpr-xantho">&#10003; Xanthochromia present &mdash; SAH confirmed</button>
+      <button class="abtn" onclick="setLPResult('rbc-high')" id="lpr-rbc">&#9888; Stable high RBC, no xanthochromia &mdash; consider traumatic tap vs. early SAH</button>
+      <button class="abtn" onclick="setLPResult('normal')"   id="lpr-normal">&#10003; Normal &mdash; SAH excluded</button>
+      <button class="abtn" onclick="setLPResult('menin')"    id="lpr-menin">&#10007; Pleocytosis &plusmn; low glucose &mdash; meningitis/encephalitis</button>
+      <button class="abtn" onclick="setLPResult('nd')"       id="lpr-nd">&mdash; Not yet performed</button>
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:14px;">CTA / vascular imaging <span class="pill pill-b">FOR ANEURYSM DETECTION AND RCVS / DISSECTION</span></div>
+  <div class="crit" id="cta-item">
+    <div class="crit-main">
+      <div class="crit-name">CTA head (and neck for dissection) &mdash; performed or planned? Used when SAH is confirmed, LP is positive, or when RCVS/dissection/CVT is suspected</div>
+      <button class="xbtn" onclick="xp(this)">details &#9662;</button>
+    </div>
+    <div class="crit-detail">
+      <strong>When to perform CTA:</strong><br>
+      &bull; CT positive for SAH &rarr; CTA to identify aneurysm (and plan coiling vs. clipping)<br>
+      &bull; LP positive for xanthochromia &rarr; CTA to identify aneurysm<br>
+      &bull; Clinical suspicion for RCVS (recurrent TCH, postpartum, drug exposure, bath/exertion triggers) &rarr; CTA head and CTV (CT venography) to assess for vasoconstriction and exclude CVT<br>
+      &bull; Suspected dissection (neck pain, Horner&rsquo;s, Wallenberg pattern, recent trauma) &rarr; CTA neck<br>
+      &bull; Suspected CVT (positional headache, papilloedema, recent pregnancy, prothrombotic state) &rarr; CTV<br><br>
+      <strong>CTA limitations:</strong> Sensitivity ~97% for aneurysms &ge;3mm (decreases to ~85% for &lt;3mm). Normal CTA does not exclude SAH. DSA (catheter angiography) is gold standard for aneurysm detection and is used when CTA is negative but SAH is confirmed, or when intervention is planned.
+      <div class="cnote"><strong>RCVS on CTA:</strong> May show diffuse multifocal &ldquo;beading&rdquo; of intracranial arteries (alternating narrowing and dilatation). However, CTA/MRA may be completely normal in early RCVS (first 1&ndash;2 weeks). Serial CTA at 2&ndash;3 weeks may be needed if RCVS is clinically suspected. The vasoconstriction reverses within 3 months by definition.</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setCTA('positive')"  id="cta-pos">&#10003; CTA positive &mdash; aneurysm / vascular lesion found</button>
+      <button class="abtn" onclick="setCTA('rcvs')"      id="cta-rcvs">&#10003; CTA showing vasoconstriction &mdash; RCVS likely</button>
+      <button class="abtn" onclick="setCTA('negative')"  id="cta-neg">&#10007; CTA negative &mdash; no aneurysm; consider DSA if SAH confirmed</button>
+      <button class="abtn" onclick="setCTA('planned')"   id="cta-plan">&#9888; Planned &mdash; not yet performed</button>
+      <button class="abtn" onclick="setCTA('nd')"        id="cta-nd">&mdash; Not indicated / not yet decided</button>
+    </div>
+  </div>
+
+  <div id="a3" class="alrt"></div>
+  <div class="nav-row">
+    <button class="nbtn ns" onclick="go(2)">&larr; Back</button>
+    <button class="nbtn np" onclick="go(4)">Next: Secondary Causes &#8594;</button>
+  </div>
+</div>
+</div>
+
+<!-- S4: SECONDARY CAUSES -->
+<div class="screen" id="s4">
+<div class="card">
+  <div class="ctitle" style="color:var(--accent);">Step 5 &middot; Secondary Causes Checklist</div>
+  <div class="csub">Thunderclap headache has a broad differential. SAH accounts for ~10% of ED thunderclap headache presentations; the remainder have other secondary causes (~25%) or are benign primary headaches (~65%). Each secondary cause requires specific investigation and management. Work through this checklist systematically &mdash; not all causes require the same workup.</div>
+
+  <div class="lbox">
+    <strong>Epidemiology of thunderclap headache at ED presentation:</strong><br>
+    <span class="lr">SAH:</span> ~10% of true thunderclap headache presentations in ED; highest priority to exclude<br>
+    <span class="la">RCVS:</span> Most common cause of thunderclap headache after SAH; often has recurrent episodes, triggered (exertion, Valsalva, hot bath, orgasm, postpartum); &gt;90% benign course<br>
+    <span class="la">CVT:</span> More gradual or positional headache in some; prothrombotic risk factors; LP may show elevated opening pressure; CTV confirms<br>
+    <span class="lb">Benign primary:</span> Primary thunderclap headache, primary exertional headache, primary sexual (orgasmic) headache, primary cough headache &mdash; diagnosed only after secondary causes excluded<br>
+    <span class="lr">Other dangerous:</span> Pituitary apoplexy, hypertensive emergency/PRES, vertebral/carotid dissection, cerebral abscess, meningitis/encephalitis, spontaneous intracranial hypotension (low-pressure headache from spinal CSF leak)
+  </div>
+
+  <div class="slabel">Evaluate each category <span class="pill pill-r">ALL MUST BE CONSIDERED BEFORE DIAGNOSING PRIMARY TCH</span></div>
+
+  <div class="sec-grid" id="sec-grid"></div>
+
+  <div id="a4" class="alrt"></div>
+  <div class="nav-row">
+    <button class="nbtn ns" onclick="go(3)">&larr; Back</button>
+    <button class="nbtn np" onclick="go(5)">Generate Verdict &#8594;</button>
+  </div>
+</div>
+</div>
+
+<!-- S5: VERDICT -->
+<div class="screen" id="s5">
+  <div id="vout"></div>
+  <div class="doc-header">
+    <button class="doc-tog" onclick="toggleDoc()">&#9660; Documentation Note</button>
+    <button class="copy-btn" id="copy-btn" onclick="copyDoc()">&#9138; Copy</button>
+  </div>
+  <div class="doc-body" id="dn"></div>
+  <div class="nav-row">
+    <button class="nbtn ns" onclick="go(4)">&larr; Back</button>
+    <button class="nbtn np" onclick="resetAll()">&#8634; New Evaluation</button>
+  </div>
+</div>
+</div>
+
+<script>
+// Ottawa criteria definitions
+const ottawaItems = [
+  {num:1, label:'Age &ge;40 years', sub:'Age is an independent risk factor for aneurysmal SAH'},
+  {num:2, label:'Neck pain or stiffness', sub:'Nuchal rigidity from meningeal irritation by subarachnoid blood'},
+  {num:3, label:'Witnessed loss of consciousness', sub:'Syncope at onset from acute ICP rise'},
+  {num:4, label:'Onset during exertion', sub:'Valsalva-induced aneurysm rupture; also seen in RCVS'},
+  {num:5, label:'Thunderclap headache', sub:'Instant maximal onset (peaking within 1 minute)'},
+  {num:6, label:'Limited neck flexion on exam', sub:'Inability to touch chin to chest or raise head 3cm off bed'}
+];
+
+const secCauses = [
+  {id:'sah', label:'Subarachnoid haemorrhage (SAH)', sub:'CT + LP + CTA/DSA; aneurysmal in ~85%', color:'red'},
+  {id:'rcvs', label:'Reversible cerebral vasoconstriction syndrome (RCVS)', sub:'Recurrent TCH; triggered; CTA/MRA ± serial imaging; nimodipine', color:'amber'},
+  {id:'cvt', label:'Cerebral venous thrombosis (CVT)', sub:'Prothrombotic states, pregnancy, OCP; CTV; anticoagulation', color:'amber'},
+  {id:'dissect', label:'Cervical/intracranial artery dissection', sub:'Neck pain, Horner\'s, focal deficit; CTA neck + head', color:'amber'},
+  {id:'hypert', label:'Hypertensive emergency / PRES', sub:'SBP >180; encephalopathy; posterior T2 changes on MRI; urgent BP control', color:'red'},
+  {id:'pituit', label:'Pituitary apoplexy', sub:'Sudden severe headache + diplopia + visual loss ± hormonal collapse; MRI pituitary', color:'amber'},
+  {id:'menin', label:'Meningitis / encephalitis', sub:'Fever, photophobia, neck stiffness, altered consciousness; LP urgent', color:'red'},
+  {id:'sih', label:'Spontaneous intracranial hypotension (SIH)', sub:'Positional headache (worse upright, better lying); low LP opening pressure; MRI with gadolinium', color:'amber'},
+  {id:'primary', label:'Primary thunderclap headache', sub:'Diagnosis of exclusion after full negative workup; benign if confirmed', color:'green'}
+];
+
+const S = {
+  onset: null,
+  excl: {neurodef:null, papill:null, recurrent:null},
+  ottawa: Array(6).fill(null),
+  ct: null, ctTime: null, ctQ: null,
+  lp: null, lpResult: null,
+  cta: null,
+  sec: {}
+};
+secCauses.forEach(s => S.sec[s.id] = null);
+let cur = 0;
+
+function setOnset(v) {
+  S.onset = v;
+  ['onset-tch','onset-1hr','onset-slow'].forEach(id=>{const b=document.getElementById(id);if(b)b.classList.remove('ay','aa','an');});
+  const cls = v==='tch'?'ay':v==='1hr'?'aa':'an';
+  const btn = document.getElementById('onset-'+v); if(btn)btn.classList.add(cls);
+  const item=document.getElementById('onset-item');
+  if(item)item.className='crit '+(v==='slow'?'c-no':v?'c-yes':'');
+  if(S.onset!==null && S.excl.neurodef!==null) document.getElementById('n0').disabled=false;
+  ui();
+}
+function setExcl(k, v) {
+  S.excl[k] = v;
+  const pfx = {neurodef:['neurodef-yes','neurodef-no'], papill:['papill-yes','papill-no','papill-nd'], recurrent:['recurrent-yes','recurrent-no']}[k];
+  if(pfx) pfx.forEach(id=>{const b=document.getElementById(id);if(b)b.classList.remove('ay','an','aa','agr');});
+  const item=document.getElementById(k+'-item');
+  if(item) {
+    if(k==='neurodef'||k==='papill') item.className='crit '+(v===true?'c-no':v===false?'c-yes':'c-abs');
+    if(k==='recurrent') item.className='crit '+(v===true?'c-part':v===false?'c-yes':'');
+  }
+  const yId = k+'-yes', nId = k+'-no', ndId = k+'-nd';
+  if(v===true){const b=document.getElementById(yId);if(b)b.classList.add('an');}
+  else if(v===false){const b=document.getElementById(nId);if(b)b.classList.add('ay');}
+  else{const b=document.getElementById(ndId);if(b)b.classList.add('agr');}
+  if(S.onset!==null && S.excl.neurodef!==null) document.getElementById('n0').disabled=false;
+  ui();
+}
+
+// Build Ottawa grid
+function buildOttawa() {
+  const g=document.getElementById('ottawa-grid'); if(!g)return;
+  g.innerHTML='';
+  ottawaItems.forEach((item,i)=>{
+    const v=S.ottawa[i];
+    const cls=v===true?'ott-yes':v===false?'ott-no':'';
+    const div=document.createElement('div');
+    div.className='ott-item '+cls;
+    div.id='ott-item-'+i;
+    div.innerHTML=`<div class="ott-main"><div class="ott-num" id="ott-num-${i}">${item.num}</div><div class="ott-label">${item.label}<div class="ott-sub">${item.sub}</div></div></div><div class="ott-brow"><button class="ott-btn${v===true?' osy':''}" onclick="setOttawa(${i},true)">&#10003; Present</button><button class="ott-btn${v===false?' osn':''}" onclick="setOttawa(${i},false)">&#10007; Absent</button></div>`;
+    g.appendChild(div);
+  });
+  updateOttawaResult();
+}
+function setOttawa(i, v) {
+  S.ottawa[i]=v;
+  buildOttawa();
+  if(cur===5)rv();
+  ui();
+}
+function ottawaScore() { return S.ottawa.filter(v=>v===true).length; }
+function ottawaAnswered() { return S.ottawa.every(v=>v!==null); }
+function updateOttawaResult() {
+  const res=document.getElementById('ottawa-result'); if(!res)return;
+  const pos=ottawaScore();
+  const answered=ottawaAnswered();
+  if(!answered){res.style.display='none';return;}
+  res.style.display='block';
+  if(pos>0) {
+    res.innerHTML=`<div class="decision-box db-ct"><div class="db-title">Ottawa Rule POSITIVE (${pos}/6 criteria) &mdash; CT Head Indicated</div><div class="db-desc">At least one high-risk criterion is present. Non-contrast CT head is mandatory. Sensitivity 100%, specificity 13.6% (Perry et al. Ann Emerg Med 2017). A positive rule does not diagnose SAH &mdash; it mandates imaging.</div></div>`;
+  } else {
+    res.innerHTML=`<div class="decision-box db-safe"><div class="db-title">Ottawa Rule NEGATIVE &mdash; All Six Criteria Absent</div><div class="db-desc">No high-risk criteria identified. In the derivation and validation studies, all SAH cases had at least one positive criterion (100% sensitivity). However, this rule applies only to patients meeting strict inclusion criteria with a normal neurological exam. Clinical judgment should still be applied.</div></div>`;
+  }
+}
+
+function setCT(time, result) {
+  S.ctTime=time; S.ct=result;
+  ['ct-lt6p','ct-lt6n','ct-gt6n','ct-gt24n','ct-nd'].forEach(id=>{const b=document.getElementById(id);if(b)b.classList.remove('ay','an','aa','aw');});
+  const map={'lt6positive':'ct-lt6p','lt6negative':'ct-lt6n','gt6negative':'ct-gt6n','gt24negative':'ct-gt24n','ndnull':'ct-nd'};
+  const key=time+(result||'null'); const btn=document.getElementById(map[key]||'ct-nd');
+  if(btn)btn.classList.add(result==='positive'?'an':result==='negative'?'ay':'aa');
+  const item=document.getElementById('ct-timing-item');
+  if(item)item.className='crit '+(result==='positive'?'c-no':result==='negative'?'c-yes':'c-abs');
+  if(cur===5)rv(); ui();
+}
+function setCTQ(v) {
+  S.ctQ=v;
+  const item=document.getElementById('ct-quality-item');
+  if(item)item.className='crit '+(v===true?'c-yes':v===false?'c-part':'');
+  const y=document.getElementById('ctq-yes'),n=document.getElementById('ctq-no');
+  if(y)y.classList.remove('ay','aw'); if(n)n.classList.remove('ay','aw');
+  if(v===true&&y)y.classList.add('ay'); if(v===false&&n)n.classList.add('aw');
+  ui();
+}
+function setLP(v) {
+  S.lp=v;
+  const item=document.getElementById('lp-timing-item');
+  if(item)item.className='crit '+(v==='ready'||v==='done'?'c-yes':v==='contraind'?'c-no':v==='early'?'c-part':'c-abs');
+  ['lp-ready','lp-early','lp-done','lp-contra','lp-nd'].forEach(id=>{const b=document.getElementById(id);if(b)b.classList.remove('ay','aw','an','agr');});
+  const map={ready:'ay',early:'aw',done:'ay',contraind:'an',nd:'agr'};
+  const btn=document.getElementById('lp-'+v); if(btn)btn.classList.add(map[v]||'agr');
+  if(cur===5)rv(); ui();
+}
+function setLPResult(v) {
+  S.lpResult=v;
+  const item=document.getElementById('lp-result-item');
+  if(item)item.className='crit '+(v==='normal'?'c-yes':v==='xantho'||v==='menin'?'c-no':v==='rbc-high'?'c-part':'c-abs');
+  ['lpr-xantho','lpr-rbc','lpr-normal','lpr-menin','lpr-nd'].forEach(id=>{const b=document.getElementById(id);if(b)b.classList.remove('ay','aw','an','agr');});
+  const map={'xantho':'an','rbc-high':'aw','normal':'ay','menin':'an','nd':'agr'};
+  const btn=document.getElementById('lpr-'+v); if(btn)btn.classList.add(map[v]||'agr');
+  if(cur===5)rv(); ui();
+}
+function setCTA(v) {
+  S.cta=v;
+  const item=document.getElementById('cta-item');
+  if(item)item.className='crit '+(v==='positive'||v==='rcvs'?'c-no':v==='negative'?'c-part':v==='planned'?'c-a':'c-abs');
+  ['cta-pos','cta-rcvs','cta-neg','cta-plan','cta-nd'].forEach(id=>{const b=document.getElementById(id);if(b)b.classList.remove('ay','aw','an','aa','agr');});
+  const map={positive:'an',rcvs:'aw','negative':'ay',planned:'aa',nd:'agr'};
+  const btn=document.getElementById('cta-'+v); if(btn)btn.classList.add(map[v]||'agr');
+  if(cur===5)rv(); ui();
+}
+
+// Build secondary causes grid
+function buildSec() {
+  const g=document.getElementById('sec-grid'); if(!g)return;
+  g.innerHTML='';
+  secCauses.forEach(cause=>{
+    const v=S.sec[cause.id];
+    const cls=v===true?'sec-yes':v===false?'sec-no':'';
+    const div=document.createElement('div');
+    div.className='sec-item '+cls;
+    div.id='sec-'+cause.id;
+    div.innerHTML=`<div class="sec-main"><div class="sec-icon" id="sec-ic-${cause.id}"></div><div class="sec-label">${cause.label}<div class="sec-sub">${cause.sub}</div></div></div><div class="sec-brow"><button class="sec-btn${v===true?' ssy':''}" onclick="setSec('${cause.id}',true)">&#10003; Present</button><button class="sec-btn${v===false?' ssn':''}" onclick="setSec('${cause.id}',false)">&#10007; Absent</button><button class="sec-btn${v===null?' sna':''}" onclick="setSec('${cause.id}',null)">&mdash; Not assessed</button></div>`;
+    g.appendChild(div);
+  });
+}
+function setSec(k, v) {
+  S.sec[k]=v;
+  buildSec();
+  if(cur===5)rv(); ui();
+}
+
+function getSecPresent() { return secCauses.filter(s=>S.sec[s.id]===true).map(s=>s.label.replace(/<[^>]+>/g,'')); }
+function getSecCount(v) { return secCauses.filter(s=>S.sec[s.id]===v).length; }
+
+function getSAHStatus() {
+  if(S.ct==='positive') return 'sah-confirmed-ct';
+  if(S.lpResult==='xantho') return 'sah-confirmed-lp';
+  if(S.ct==='negative'&&S.lpResult==='normal') return 'sah-excluded';
+  if(S.ct==='negative'&&S.ctTime==='lt6'&&S.lpResult===null) return 'sah-excluded-6h-ct';
+  return 'unknown';
+}
+
+function ui() {
+  const a0=document.getElementById('a0');
+  if(S.onset==='slow') sa(a0,'aerr','Headache did not peak within 1 hour &mdash; Ottawa SAH Rule does not apply to gradual-onset headache. Use clinical judgment. Other secondary causes (meningitis, CVT, RCVS) should still be considered.');
+  else if(S.excl.neurodef===true) sa(a0,'aerr','&#9888; New focal neurological deficit &mdash; immediate CT head without contrast required. Ottawa rule does not apply. Neurology/neurosurgery consultation.');
+  else if(S.excl.papill===true) sa(a0,'aerr','&#9888; Papilloedema present &mdash; Ottawa rule does not apply. Elevated ICP suspected. CT first (to exclude mass lesion), then LP for opening pressure. Consider CVT, IIH, malignant hypertension.');
+  else if(S.excl.recurrent===true) sa(a0,'awn','Recurrent headache history (&ge;3 in 6 months): Ottawa rule has reduced utility. Apply clinical judgment. If this headache is qualitatively different from usual pattern, still evaluate for SAH.');
+  else if(S.onset!==null) sa(a0,'aok','Thunderclap headache confirmed. Ottawa SAH Rule is applicable in this patient (assume no exclusion criteria are present). Proceed to assess the six Ottawa criteria.');
+  else ha(a0);
+
+  const a1=document.getElementById('a1');
+  const pos=ottawaScore();
+  const ans=ottawaAnswered();
+  if(ans) {
+    if(pos>0) sa(a1,'aerr','Ottawa rule POSITIVE ('+pos+'/6 criteria met) &mdash; CT head indicated. Remember: a positive rule mandates imaging but does not diagnose SAH.');
+    else sa(a1,'aok','Ottawa rule NEGATIVE (0/6 criteria) &mdash; All high-risk criteria absent. NPV ~100% in derivation and validation studies. However, ensure patient meets inclusion criteria (alert, normal neuro exam, headache to peak within 1h).');
+  } else if(S.ottawa.some(v=>v!==null)) sa(a1,'awn','Ottawa assessment in progress. Complete all 6 criteria for full rule application.');
+  else ha(a1);
+
+  const a2=document.getElementById('a2');
+  if(S.ct==='positive') sa(a2,'aerr','CT HEAD POSITIVE for SAH. Neurosurgical consultation urgently. Grade with Hunt-Hess and modified Fisher scale. Secure aneurysm (coiling preferred, ISAT trial). Nimodipine 60mg q4h &times;21 days. Refer to SAH management protocol.');
+  else if(S.ctTime==='lt6'&&S.ct==='negative') sa(a2,'aok','CT negative within 6 hours &mdash; SAH essentially excluded by CT alone per Perry 2011 and NICE NG228. However, consider LP for completeness or if clinical suspicion remains very high. Proceed to evaluate for other secondary causes (RCVS, CVT, dissection).');
+  else if(S.ct==='negative') sa(a2,'awn','CT negative but performed &gt;6 hours after onset. LP is recommended to assess for xanthochromia. Do not discharge without LP in this scenario unless an alternative definitive diagnosis has been established.');
+  else if(S.ctTime==='nd') sa(a2,'ainf','CT not yet performed. If Ottawa rule is positive or headache is thunderclap onset, CT head without contrast is the immediate next step.');
+  else ha(a2);
+
+  const a3=document.getElementById('a3');
+  if(S.lpResult==='xantho') sa(a3,'aerr','CSF xanthochromia confirmed &mdash; SAH or other CNS haemorrhage. CTA urgently to identify aneurysm. Neurosurgery consultation. If CTA negative, DSA (catheter angiography) is indicated.');
+  else if(S.lpResult==='normal') sa(a3,'aok','LP normal &mdash; SAH excluded. Proceed to evaluate for other secondary causes (RCVS, CVT, dissection, primary TCH). CTA may still be useful to evaluate for RCVS vasoconstriction pattern or incidental unruptured aneurysm.');
+  else if(S.lpResult==='menin') sa(a3,'aerr','CSF shows meningitis/encephalitis pattern (pleocytosis &plusmn; low glucose). Start empirical antibiotics (ceftriaxone + ampicillin for Listeria coverage if &gt;50 years) and dexamethasone immediately. ID or neurology consultation.');
+  else if(S.lpResult==='rbc-high') sa(a3,'awn','Stable high RBC count without xanthochromia &mdash; may represent traumatic tap or early SAH (&lt;6h, xanthochromia not yet developed). If LP was performed &lt;6h after onset, repeat LP at 12h or perform CTA. If after 12h, xanthochromia absence is reassuring but CTA may still clarify.');
+  else if(S.cta==='positive') sa(a3,'aerr','CTA positive &mdash; aneurysm or vascular lesion identified. Neurosurgical/neurointerventional consultation urgently.');
+  else if(S.cta==='rcvs') sa(a3,'awn','CTA shows vasoconstriction pattern consistent with RCVS. Remove triggers (sympathomimetics, ergotamines, triptans). Nimodipine 60mg q4h for vasoconstriction. Avoid antifibrinolytics. Follow-up CTA at 4&ndash;6 weeks to confirm reversibility.');
+  else ha(a3);
+
+  const a4=document.getElementById('a4');
+  const secPres=getSecPresent();
+  if(secPres.length>0) sa(a4,'aerr','Secondary cause identified: '+secPres.join(', ')+'. Manage the identified cause urgently. Do not label as primary thunderclap headache until all secondary causes are excluded.');
+  else if(getSecCount(false)===secCauses.length) sa(a4,'aok','All secondary causes assessed and excluded. If workup complete (CT negative within 6h or negative LP, normal CTA), primary thunderclap headache may be diagnosed. This is a benign diagnosis with good prognosis. Counsel patient on triggers and recurrence.');
+  else if(getSecCount(null)<secCauses.length) sa(a4,'awn',getSecCount(null)+' categories not yet assessed. Complete evaluation before diagnosing primary thunderclap headache.');
+  else ha(a4);
+}
+
+function rv() {
+  const sahStatus=getSAHStatus();
+  const ottPos=ottawaScore();
+  const secPres=getSecPresent();
+  const lp=S.lpResult; const cta=S.cta;
+
+  let banCls,banTitle,banDesc;
+  if(sahStatus==='sah-confirmed-ct'||sahStatus==='sah-confirmed-lp') {
+    banCls='vhigh'; banTitle='SAH CONFIRMED &mdash; Emergency Neurosurgical Consultation';
+    banDesc=(sahStatus==='sah-confirmed-ct'?'CT head demonstrates subarachnoid haemorrhage.':'CSF xanthochromia confirms subarachnoid haemorrhage (CT-negative SAH).')+' Immediate priorities: secure aneurysm (coiling preferred over clipping &mdash; ISAT, Lancet 2002); nimodipine 60mg q4h &times;21 days (NNT 8 for DCI); EVD if hydrocephalus or IVH; SBP &lt;160 mmHg pre-securing; CTA/DSA to identify aneurysm if not yet done.';
+  } else if(lp==='menin') {
+    banCls='vhigh'; banTitle='Meningitis / Encephalitis &mdash; Immediate Antibiotic Therapy';
+    banDesc='CSF pleocytosis suggests meningitis or encephalitis. Start empirical treatment immediately: ceftriaxone 2g IV q12h + dexamethasone 0.15mg/kg q6h (bacterial meningitis); add ampicillin 2g IV q4h if &gt;50 years, immunocompromised, or pregnancy (Listeria cover); add aciclovir 10mg/kg IV q8h for herpes encephalitis. Do not delay antibiotics for further imaging.';
+  } else if(cta==='positive') {
+    banCls='vhigh'; banTitle='Vascular Lesion Identified on CTA &mdash; Neurosurgical Referral';
+    banDesc='CTA has identified an intracranial aneurysm or other vascular lesion. Urgent neurosurgical/neurointerventional consultation for aneurysm management. If SAH has been confirmed (CT or LP), this is an emergency. If SAH is not yet confirmed and aneurysm appears incidental, multidisciplinary discussion regarding elective vs. urgent management.';
+  } else if(sahStatus==='sah-excluded'||sahStatus==='sah-excluded-6h-ct') {
+    if(cta==='rcvs') {
+      banCls='vmod'; banTitle='RCVS Likely &mdash; Vasoconstriction Pattern on CTA';
+      banDesc='SAH excluded. CTA/MRA demonstrates multifocal vasoconstriction consistent with RCVS. Remove all potential triggers (sympathomimetics, cocaine, cannabis, ergots). Nimodipine 60mg q4h for vasoconstriction control. Avoid antifibrinolytics. Expectant management &mdash; &gt;90% have benign course. Follow-up CTA at 4&ndash;6 weeks to confirm reversibility (&lt;3 months by definition). Repeat TCH episodes over weeks are nearly pathognomonic for RCVS.';
+    } else if(secPres.length>0) {
+      banCls='vmod'; banTitle='SAH Excluded &mdash; Alternative Secondary Cause Identified';
+      banDesc='Subarachnoid haemorrhage has been excluded by workup. However, another secondary cause has been identified: '+secPres.join(', ')+'. Manage the identified cause specifically. Primary thunderclap headache cannot be diagnosed until all secondary causes are excluded and fully treated.';
+    } else {
+      banCls='vlow'; banTitle='SAH Excluded &mdash; Workup Complete / Primary Thunderclap Headache';
+      banDesc='CT '+(sahStatus==='sah-excluded-6h-ct'?'negative within 6 hours (NICE NG228 &mdash; SAH excluded without LP) ':'and LP both negative ')+'and secondary causes not identified. Primary thunderclap headache may be considered. This is a diagnosis of exclusion with a generally benign prognosis. Counsel on recurrence risk, triggers to avoid (Valsalva, exertion, sexual activity if applicable), and the importance of returning promptly if headache recurs &mdash; recurrence raises suspicion for RCVS.';
+    }
+  } else {
+    banCls='vund'; banTitle='Workup Incomplete &mdash; Continue Evaluation';
+    banDesc='Investigation is in progress. CT head, LP (if CT negative and &gt;6 hours), and consideration of CTA are the core investigations. Do not discharge until the Ottawa rule has been applied and appropriate imaging/LP performed.';
+  }
+
+  let html=`<div class="vban ${banCls}"><div class="vban-head">
+    <div class="vlbl">Ottawa SAH Rule (Perry JJ et al. BMJ 2011 &middot; Ann Emerg Med 2017) &middot; NICE NG228 (2022)</div>
+    <div class="vtitle">${banTitle}</div>
+    <div class="vdesc">${banDesc}</div>
+  </div></div>`;
+
+  html+=`<div class="sum-grid">
+  <div class="sblock"><div class="sbtitle">Ottawa SAH Rule &amp; CT</div>
+    <div class="srow"><div class="dot ${S.onset==='slow'?'dgr':S.onset?'da':'dgr'}"></div><div class="sname">Headache onset</div><div class="stag ${S.onset==='slow'?'tgr':S.onset?'ta':'tgr'}">${{'tch':'Thunderclap (&lt;1 min)','1hr':'Within 1 hour (Ottawa-eligible)','slow':'Gradual (&gt;1h &mdash; Ottawa N/A)'}[S.onset]||'Not assessed'}</div></div>
+    <div class="srow"><div class="dot ${S.excl.neurodef===true?'dr':S.excl.neurodef===false?'dg':'dgr'}"></div><div class="sname">Focal neurological deficit</div><div class="stag ${S.excl.neurodef===true?'tr':S.excl.neurodef===false?'tg':'tgr'}">${S.excl.neurodef===true?'PRESENT &mdash; immediate CT':S.excl.neurodef===false?'Absent':'Not assessed'}</div></div>
+    <div class="srow"><div class="dot ${ottPos>0?'dr':ottawaAnswered()?'dg':'dgr'}"></div><div class="sname">Ottawa rule result</div><div class="stag ${ottPos>0?'tr':ottawaAnswered()?'tg':'tgr'}">${ottawaAnswered()?(ottPos>0?'Positive ('+ottPos+'/6) &mdash; CT indicated':'Negative (0/6)'):'Not complete'}</div></div>
+    <div class="srow"><div class="dot ${S.ct==='positive'?'dr':S.ct==='negative'?'dg':'dgr'}"></div><div class="sname">CT head result</div><div class="stag ${S.ct==='positive'?'tr':S.ct==='negative'?'tg':'tgr'}">${{positive:'POSITIVE &mdash; SAH on CT',negative:'Negative ('+({lt6:'&lt;6h',gt6:'6&ndash;24h',gt24:'&gt;24h'}[S.ctTime]||'?')+')',nd:'Not performed'}[S.ct]||'Not performed'}</div></div>
+  </div>
+  <div class="sblock"><div class="sbtitle">LP, CTA &amp; Diagnosis</div>
+    <div class="srow"><div class="dot ${S.lpResult==='normal'?'dg':S.lpResult==='xantho'||S.lpResult==='menin'?'dr':S.lpResult?'da':'dgr'}"></div><div class="sname">LP result</div><div class="stag ${S.lpResult==='normal'?'tg':S.lpResult==='xantho'||S.lpResult==='menin'?'tr':S.lpResult?'ta':'tgr'}">${{xantho:'Xanthochromia &mdash; SAH confirmed','rbc-high':'High RBC, no xantho',normal:'Normal &mdash; SAH excluded',menin:'Pleocytosis &mdash; meningitis',nd:'Not performed'}[S.lpResult]||'Not performed'}</div></div>
+    <div class="srow"><div class="dot ${S.cta==='positive'?'dr':S.cta==='rcvs'?'da':S.cta==='negative'?'dg':'dgr'}"></div><div class="sname">CTA result</div><div class="stag ${S.cta==='positive'?'tr':S.cta==='rcvs'?'ta':S.cta==='negative'?'tg':'tgr'}">${{positive:'Aneurysm found &mdash; urgent Rx',rcvs:'Vasoconstriction (RCVS)',negative:'Negative',planned:'Planned',nd:'Not performed'}[S.cta]||'Not performed'}</div></div>
+    <div class="srow"><div class="dot ${secPres.length>0?'dr':'dgr'}"></div><div class="sname">Secondary cause identified</div><div class="stag ${secPres.length>0?'tr':'tgr'}">${secPres.length>0?secPres[0]+(secPres.length>1?' +'+( secPres.length-1)+' more':''):'None identified'}</div></div>
+    <div class="srow"><div class="dot ${banCls==='vhigh'?'dr':banCls==='vmod'?'da':banCls==='vlow'?'dg':'dgr'}"></div><div class="sname">Overall assessment</div><div class="stag ${banCls==='vhigh'?'tr':banCls==='vmod'?'ta':banCls==='vlow'?'tg':'tgr'}">${banTitle.split('&mdash;')[0].trim()}</div></div>
+  </div></div>`;
+
+  document.getElementById('vout').innerHTML=html;
+  buildDoc(banTitle,sahStatus,ottPos,secPres);
+}
+
+function buildDoc(title,sahStatus,ottPos,secPres) {
+  const ottLines=ottawaItems.map((item,i)=>`    ${i+1}. ${item.label.replace(/&ge;/g,'>=').replace(/&amp;/g,'&')}: ${S.ottawa[i]===true?'PRESENT':S.ottawa[i]===false?'Absent':'Not assessed'}`).join('\n');
+  const secLines=secCauses.map(s=>`    ${s.label.replace(/<[^>]+>/g,'')}: ${S.sec[s.id]===true?'PRESENT':S.sec[s.id]===false?'Absent':'Not assessed'}`).join('\n');
+  const note=`EMERGENCY NEUROLOGY / NEUROVASCULAR -- THUNDERCLAP HEADACHE EVALUATION
+Ottawa SAH Rule: Perry JJ et al. BMJ 2011;343:d4277 (derivation, n=2131)
+                Perry JJ et al. Ann Emerg Med 2017;70:18-25 (validation, n=1153, 67 SAH)
+                Sensitivity 100% (95% CI 94.6-100%), Specificity 13.6%
+CT timing: Perry JJ et al. BMJ 2011 (100% sensitivity <6h); Backes D et al. Stroke 2012
+NICE NG228 (2022): Guideline for headache including SAH evaluation
+Date: ${new Date().toLocaleDateString()}
+
+OVERALL ASSESSMENT: ${title.replace(/&mdash;/g,'--').replace(/&amp;/g,'&').replace(/&ge;/g,'>=').replace(/&le;/g,'<=').replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&times;/g,'x').replace(/&ndash;/g,'-')}
+
+STEP 1 -- THUNDERCLAP DEFINITION & ELIGIBILITY:
+  Headache onset pattern: ${{'tch':'Thunderclap (peak within 1 minute)','1hr':'Peak within 1 hour (Ottawa-eligible)','slow':'Gradual onset (>1 hour) -- Ottawa rule does not apply'}[S.onset]||'Not assessed'}
+  New focal neurological deficit: ${S.excl.neurodef===true?'YES -- immediate CT required (Ottawa excluded)':S.excl.neurodef===false?'No':'Not assessed'}
+  Papilloedema: ${S.excl.papill===true?'YES -- Ottawa excluded; elevated ICP':S.excl.papill===false?'No':'Not assessed/performed'}
+  Recurrent headaches (>=3 in 6 months): ${S.excl.recurrent===true?'YES -- Ottawa has reduced utility; use clinical judgment':S.excl.recurrent===false?'No -- qualitatively new headache':'Not assessed'}
+
+STEP 2 -- OTTAWA SAH RULE (Perry JJ et al. BMJ 2011; Ann Emerg Med 2017):
+  Inclusion criteria: Age >=15, headache peak within 1 hour, alert (GCS 15), normal neurological exam
+  Rule: ANY positive criterion = CT head indicated
+  Ottawa criteria assessed:
+${ottLines}
+  OTTAWA RESULT: ${ottawaAnswered()?(ottPos>0?'POSITIVE ('+ottPos+'/6 criteria) -- CT head indicated':'NEGATIVE (0/6) -- No high-risk criteria; however, ensure inclusion criteria are met'):'Incomplete -- not all criteria assessed'}
+
+  Performance data: Sensitivity 100% (95% CI 94.6-100%), Specificity 13.6% (Perry 2017, n=1153)
+  External validation: 4 studies, n=3317 total; sensitivity 100% in all, specificity 7.6-15.3%
+
+STEP 3 -- CT HEAD TIMING AND RESULT:
+  Time from headache onset to CT: ${{'lt6':'<6 hours from onset','gt6':'6-24 hours from onset','gt24':'>24 hours from onset','nd':'Not yet performed'}[S.ctTime]||'Not recorded'}
+  CT head result: ${{'positive':'POSITIVE -- SAH identified on CT (hyperdense subarachnoid blood)','negative':'Negative -- no subarachnoid blood identified','nd':'Not yet performed'}[S.ct]||'Not performed'}
+  CT quality: ${S.ctQ===true?'Modern MDCT, radiologist-confirmed read':S.ctQ===false?'Older scanner or resident read only -- radiologist review needed':'Not assessed'}
+  
+  CT sensitivity reference (Perry 2011, BMJ):
+    <6 hours: ~100% sensitivity (95% CI 97-100%) -- NICE NG228: negative CT <6h excludes SAH
+    6-12 hours: ~93-98% sensitivity -- LP recommended after negative CT
+    >12 hours: sensitivity declines further -- LP mandatory if CT negative
+    >24 hours: LP + MRI (FLAIR/DWI) required
+
+STEP 4 -- LP AND CTA:
+  LP timing: ${{'ready':'>=6h since onset -- LP appropriate','early':'<6h since onset -- await xanthochromia development','done':'LP performed','contraind':'LP contraindicated','nd':'Not yet decided'}[S.lp]||'Not assessed'}
+  LP result: ${{'xantho':'XANTHOCHROMIA -- SAH confirmed (CT-negative SAH)','rbc-high':'Stable high RBC count, no xanthochromia -- traumatic tap vs. early SAH','normal':'Normal -- SAH excluded; other secondary causes to evaluate','menin':'Pleocytosis +/- low glucose -- meningitis/encephalitis','nd':'Not yet performed'}[S.lpResult]||'Not performed'}
+  CTA result: ${{'positive':'POSITIVE -- aneurysm or vascular lesion identified','rcvs':'Vasoconstriction pattern -- RCVS likely','negative':'Negative -- no aneurysm; if SAH confirmed, DSA indicated','planned':'Planned but not yet performed','nd':'Not indicated/not performed'}[S.cta]||'Not performed'}
+  
+  LP xanthochromia key facts:
+    - Develops 2-4h after SAH, present in ~100% by 12h, persists 2-4 weeks
+    - Visual inspection: practical, correlates well; spectrophotometry more sensitive but rarely available
+    - False negative: early LP (<2h), or after 3-4 weeks (absorbed)
+  
+  CTA key facts:
+    - Sensitivity ~97-99% for aneurysms >=3mm; lower for small (<3mm) aneurysms
+    - Normal CTA does NOT exclude SAH -- DSA (gold standard) indicated if CTA negative + SAH confirmed
+    - RCVS: may show "beading" but early CTA often normal; repeat at 2-3 weeks if RCVS suspected
+
+STEP 5 -- SECONDARY CAUSES CHECKLIST:
+${secLines}
+  Secondary causes identified: ${secPres.length>0?secPres.join(', '):'None identified'}
+
+FINAL ASSESSMENT: ${title.replace(/&mdash;/g,'--').replace(/&amp;/g,'&').replace(/&ge;/g,'>=').replace(/&le;/g,'<=').replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&times;/g,'x').replace(/&ndash;/g,'-')}
+
+MANAGEMENT PRIORITIES (if SAH confirmed):
+  1. Immediate neurosurgical / neurointerventional consultation
+  2. CTA/DSA for aneurysm identification and planning
+  3. Nimodipine 60mg PO q4h x21 days (NNT 8 for DCI, NNT 13 for poor outcome -- Cochrane 2007)
+  4. SBP <160 mmHg pre-aneurysm securing (nicardipine IV or labetalol)
+  5. EVD if hydrocephalus or IVH
+  6. Aneurysm securing <=24h (coiling preferred -- ISAT, Lancet 2002;360:1267)
+  7. See SAH management protocol for full details
+
+MANAGEMENT (if RCVS suspected):
+  1. Remove triggers: sympathomimetics, cocaine, cannabis, serotonergic agents, ergotamines
+  2. Nimodipine 60mg q4h (or verapamil if nimodipine not tolerated)
+  3. Avoid antifibrinolytics, avoid triptans during acute phase
+  4. Expectant management -- >90% benign course
+  5. Follow-up CTA/MRA at 4-6 weeks to confirm vasoconstriction reversal
+
+KEY REFERENCES:
+  Perry JJ et al. Sensitivity of computed tomography for SAH <6h. BMJ 2011;343:d4277
+  Perry JJ et al. Ottawa SAH rule validation. Ann Emerg Med 2017;70:18-25
+  NICE Guideline NG228. Headaches in over 12s. 2021 (updated 2022)
+  Molyneux AJ et al. (ISAT trial). Lancet 2002;360:1267-1274 (coiling vs clipping)
+  Ducros A, Bousser MG. Reversible cerebral vasoconstriction syndrome. Pract Neurol 2009;9:256-267
+  Edlow JA et al. ACEP clinical policy: headache. Ann Emerg Med 2019;74:e41-e74`;
+  document.getElementById('dn').textContent=note;
+}
+
+function sa(el,cls,msg){if(!el)return;el.className='alrt show '+cls;el.innerHTML=msg;}
+function ha(el){if(el)el.classList.remove('show');}
+function goTab(n){if(n===cur)return;go(n);}
+function go(n){
+  document.getElementById('s'+cur).classList.remove('active');
+  document.getElementById('s'+n).classList.add('active');
+  for(let i=0;i<6;i++){const d=document.getElementById('st'+i);d.classList.remove('active','done');if(i<n)d.classList.add('done');else if(i===n)d.classList.add('active');}
+  cur=n; document.getElementById('pf').style.width=((n/5)*100)+'%';
+  if(n===1){buildOttawa();}
+  if(n===4){buildSec();}
+  if(n===5) rv();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function xp(btn){
+  const d=btn.closest('.crit').querySelector('.crit-detail');
+  if(!d)return;
+  const o=d.classList.toggle('open');
+  btn.textContent=o?'close \u25b4':'details \u25be';
+}
+function toggleDoc(){
+  const body=document.getElementById('dn'),btn=document.getElementById('copy-btn'),tog=document.querySelector('.doc-tog');
+  if(!body)return;
+  const open=body.classList.toggle('open');
+  if(tog)tog.textContent=open?'\u25b2 Documentation Note':'\u25bc Documentation Note';
+  if(btn)btn.classList.toggle('visible',open);
+}
+function copyDoc(){
+  const body=document.getElementById('dn'),btn=document.getElementById('copy-btn');
+  if(!body)return;
+  const text=body.textContent||body.innerText;
+  navigator.clipboard.writeText(text).then(()=>{if(btn){btn.textContent='\u2713 Copied';btn.classList.add('copied');setTimeout(()=>{btn.textContent='\u238a Copy';btn.classList.remove('copied');},2000);}}).catch(()=>{const ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);if(btn){btn.textContent='\u2713 Copied';btn.classList.add('copied');setTimeout(()=>{btn.textContent='\u238a Copy';btn.classList.remove('copied');},2000);}});
+}
+function resetAll(){
+  S.onset=null; S.excl={neurodef:null,papill:null,recurrent:null};
+  S.ottawa=Array(6).fill(null); S.ct=null; S.ctTime=null; S.ctQ=null;
+  S.lp=null; S.lpResult=null; S.cta=null;
+  secCauses.forEach(s=>S.sec[s.id]=null);
+  document.querySelectorAll('.crit').forEach(el=>el.className='crit');
+  document.querySelectorAll('.abtn').forEach(b=>b.classList.remove('ay','an','aa','ab','agr','aw'));
+  document.querySelectorAll('.crit-detail').forEach(d=>d.classList.remove('open'));
+  document.querySelectorAll('.xbtn').forEach(b=>b.textContent='details \u25be');
+  ['a0','a1','a2','a3','a4'].forEach(id=>{const el=document.getElementById(id);if(el)el.classList.remove('show');});
+  document.getElementById('vout').innerHTML='';
+  const dn=document.getElementById('dn');if(dn)dn.classList.remove('open');
+  const cb=document.getElementById('copy-btn');if(cb)cb.classList.remove('visible','copied');
+  const tog=document.querySelector('.doc-tog');if(tog)tog.textContent='\u25bc Documentation Note';
+  const og=document.getElementById('ottawa-grid');if(og)og.innerHTML='';
+  const or=document.getElementById('ottawa-result');if(or)or.style.display='none';
+  const sg=document.getElementById('sec-grid');if(sg)sg.innerHTML='';
+  go(0);
+  document.getElementById('n0').disabled=true;
+}
+ui();
+</script>
+</body>
+</html>
