@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SAH &amp; DCI Escalation Navigator · Hunt-Hess · WFNS · Fisher · Vergouwen</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Lexend:wght@300;400;500;600&display=swap');
+:root {
+  --bg:#0d1117; --card:#161b22; --card2:#1c2330; --border:#2a3a4a; --border2:#3a5060;
+  --green:#3fb950; --green-bg:rgba(63,185,80,.10); --green-bd:rgba(63,185,80,.35);
+  --red:#f85149; --red-bg:rgba(248,81,73,.10); --red-bd:rgba(248,81,73,.35);
+  --amber:#e3b341; --amber-bg:rgba(227,179,65,.10); --amber-bd:rgba(227,179,65,.35);
+  --blue:#58a6ff; --blue-bg:rgba(88,166,255,.10); --blue-bd:rgba(88,166,255,.35);
+  --purple:#bc8cff; --purple-bg:rgba(188,140,255,.10); --purple-bd:rgba(188,140,255,.35);
+  --accent:#a78bfa; --accent-bg:rgba(167,139,250,.10); --accent-bd:rgba(167,139,250,.35);
+  --accent2:#6d28d9;
+  --text:#e6edf3; --text2:#aab4c0; --text3:#6e7f94;
+  --sans:'Lexend','Inter',system-ui,sans-serif; --mono:'IBM Plex Mono',monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:14px;line-height:1.5;min-height:100vh;}
+.app{max-width:960px;margin:0 auto;padding:0 20px 80px;}
+header{padding:24px 0 16px;border-bottom:1px solid var(--border);margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;}
+.h-title{font-size:19px;font-weight:700;}.h-title span{color:var(--accent);}
+.h-sub{font-size:11px;color:var(--text3);margin-top:3px;line-height:1.6;}
+.h-credit{font-size:11px;color:var(--text3);margin-top:2px;}
+.reset-btn{background:var(--card2);border:1px solid var(--border);color:var(--text2);font-family:var(--sans);font-size:12px;padding:6px 14px;cursor:pointer;border-radius:4px;transition:all .15s;white-space:nowrap;font-weight:500;}
+.reset-btn:hover{border-color:var(--accent);color:var(--accent);}
+.prog-track{height:3px;background:var(--border);margin-bottom:20px;border-radius:2px;}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--accent2),var(--accent));border-radius:2px;transition:width .4s ease;box-shadow:0 0 8px rgba(167,139,250,.4);}
+.steps{display:grid;grid-template-columns:repeat(6,1fr);border:1px solid var(--border);border-radius:8px;margin-bottom:20px;overflow:hidden;background:var(--card);}
+.stab{padding:8px 3px 9px;text-align:center;font-size:10px;color:var(--text3);border-right:1px solid var(--border);transition:all .2s;cursor:pointer;background:var(--card);line-height:1.3;}
+.stab:nth-child(6n){border-right:none;}.stab .sn{display:flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;background:var(--card2);border:1px solid var(--border);font-size:10px;font-weight:700;margin:0 auto 3px;transition:all .2s;}
+.stab .slbl{display:block;font-size:9px;font-weight:600;line-height:1.3;}
+.stab.active{color:var(--accent);background:var(--accent-bg);}
+.stab.active .sn{background:var(--accent);color:#0d1117;border-color:var(--accent);}
+.stab.done{color:var(--green);}.stab.done .sn{background:var(--green);color:#0d1117;border-color:var(--green);}
+.stab:hover:not(.active){background:var(--card2);}
+.card{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:22px;margin-bottom:12px;}
+.ctitle{font-size:13px;font-weight:700;margin-bottom:3px;}.csub{font-size:12px;color:var(--text2);margin-bottom:16px;line-height:1.5;}
+.slabel{display:flex;align-items:center;gap:8px;font-size:11px;font-weight:600;color:var(--text);margin-bottom:9px;padding-bottom:6px;border-bottom:1px solid var(--border);}
+.pill{font-size:9px;padding:1px 7px;border-radius:20px;border:1px solid;margin-left:auto;letter-spacing:.04em;text-transform:uppercase;}
+.pill-r{border-color:var(--red);color:var(--red);background:var(--red-bg);}
+.pill-a{border-color:var(--amber);color:var(--amber);background:var(--amber-bg);}
+.pill-v{border-color:var(--accent);color:var(--accent);background:var(--accent-bg);}
+.pill-g{border-color:var(--green);color:var(--green);background:var(--green-bg);}
+.pill-b{border-color:var(--blue);color:var(--blue);background:var(--blue-bg);}
+.crit{border:1px solid var(--border);border-radius:6px;margin-bottom:5px;overflow:hidden;transition:border-color .15s,background .15s;}
+.crit.c-yes{border-color:var(--green-bd);background:var(--green-bg);}
+.crit.c-no{border-color:var(--red-bd);background:var(--red-bg);}
+.crit.c-v{border-color:var(--accent-bd);background:var(--accent-bg);}
+.crit.c-abs{border-color:var(--border2);background:var(--card2);}
+.crit.c-part{border-color:var(--amber-bd);background:var(--amber-bg);}
+.crit.c-blue{border-color:var(--blue-bd);background:var(--blue-bg);}
+.crit-main{display:flex;align-items:center;gap:10px;padding:10px 13px;}
+.crit-name{flex:1;font-size:13px;font-weight:500;color:var(--text);line-height:1.3;}
+.xbtn{background:var(--purple-bg);border:1px solid var(--purple-bd);color:var(--purple);font-size:11px;cursor:pointer;padding:2px 8px;white-space:nowrap;transition:all .15s;flex-shrink:0;border-radius:3px;font-weight:500;}
+.xbtn:hover{background:var(--purple);color:#0d1117;border-color:var(--purple);}
+.crit-detail{display:none;padding:10px 13px 12px;font-size:12px;color:var(--text);line-height:1.65;border-top:1px solid var(--border);font-family:var(--sans);}
+.crit-detail.open{display:block;}
+.cnote{margin-top:8px;padding:8px 11px;background:var(--card2);border-left:3px solid var(--border2);font-size:11px;color:var(--text2);line-height:1.75;border-radius:0 3px 3px 0;font-family:var(--sans);}
+.cnote strong{color:var(--text);}
+.brow{display:flex;border-top:1px solid var(--border);flex-wrap:wrap;}
+.abtn{flex:1;min-width:80px;padding:9px 10px;background:none;border:none;border-right:1px solid var(--border);border-bottom:1px solid var(--border);color:var(--text2);font-family:var(--sans);font-size:11px;cursor:pointer;transition:all .12s;font-weight:400;line-height:1.4;text-align:left;}
+.abtn:last-child{border-right:none;}.abtn:hover{background:var(--card2);color:var(--text);}
+.abtn.ay{background:var(--green-bg);color:var(--green);font-weight:700;}
+.abtn.an{background:var(--red-bg);color:var(--red);font-weight:700;}
+.abtn.av{background:var(--accent-bg);color:var(--accent);font-weight:700;}
+.abtn.ab{background:var(--blue-bg);color:var(--blue);font-weight:700;}
+.abtn.aa{background:var(--card2);color:var(--text2);font-weight:700;}
+.abtn.aw{background:var(--amber-bg);color:var(--amber);font-weight:700;}
+.alrt{padding:9px 13px;border-radius:5px;font-size:12px;line-height:1.55;margin-top:12px;border-left:3px solid;display:none;}
+.alrt.show{display:block;}
+.aok{border-color:var(--green);background:var(--green-bg);color:#7ee787;}
+.awn{border-color:var(--amber);background:var(--amber-bg);color:var(--amber);}
+.aerr{border-color:var(--red);background:var(--red-bg);color:#ff7b72;}
+.ainf{border-color:var(--blue);background:var(--blue-bg);color:var(--blue);}
+.av{border-color:var(--accent);background:var(--accent-bg);color:var(--accent);}
+.lbox{background:var(--card2);border:1px solid var(--border);border-radius:5px;padding:12px 15px;font-size:12px;color:var(--text2);line-height:1.75;margin-bottom:14px;}
+.lbox strong{color:var(--text);}
+.lv{color:var(--accent);font-weight:600;} .lg{color:var(--green);font-weight:600;}
+.la{color:var(--amber);font-weight:600;} .lr{color:var(--red);font-weight:600;}
+.lb{color:var(--blue);font-weight:600;}
+.grade-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:5px;margin-bottom:14px;}
+.grade-grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-bottom:14px;}
+@media(max-width:640px){.grade-grid,.grade-grid-4{grid-template-columns:repeat(3,1fr);}}
+.gcard{border:1px solid var(--border);border-radius:6px;padding:10px;background:var(--card2);cursor:pointer;transition:all .2s;}
+.gcard:hover{border-color:var(--border2);}
+.gcard.gs-g{border-color:var(--green-bd);background:var(--green-bg);}
+.gcard.gs-a{border-color:var(--amber-bd);background:var(--amber-bg);}
+.gcard.gs-r{border-color:var(--red-bd);background:var(--red-bg);}
+.gnum{font-size:18px;font-weight:700;font-family:var(--mono);}
+.gname{font-size:10px;color:var(--text2);margin-top:2px;}
+.gdesc{font-size:10px;color:var(--text3);line-height:1.45;margin-top:4px;}
+.timeline{display:flex;align-items:flex-start;gap:0;margin-bottom:14px;overflow-x:auto;}
+.tl-step{flex:1;min-width:80px;padding:8px 6px;text-align:center;border-top:3px solid var(--border);font-size:10px;color:var(--text3);}
+.tl-step.tl-hot{border-color:var(--red);color:var(--red);}
+.tl-step.tl-warn{border-color:var(--amber);color:var(--amber);}
+.tl-step.tl-ok{border-color:var(--green);color:var(--text2);}
+.tl-day{font-size:11px;font-weight:700;display:block;margin-bottom:2px;}
+.nav-row{display:flex;justify-content:space-between;align-items:center;margin-top:20px;gap:10px;}
+.nbtn{padding:9px 22px;border-radius:5px;font-family:var(--sans);font-size:13px;border:1px solid;cursor:pointer;font-weight:600;transition:all .15s;}
+.np{background:var(--accent);border-color:var(--accent);color:#0d1117;font-weight:700;}
+.np:hover{background:#c4b5fd;border-color:#c4b5fd;}
+.np:disabled{opacity:.3;cursor:not-allowed;}
+.ns{background:transparent;border-color:var(--border2);color:var(--text2);}
+.ns:hover{border-color:var(--text);color:var(--text);}
+.screen{display:none;}.screen.active{display:block;animation:fu .25s ease;}
+@keyframes fu{from{opacity:0;transform:translateY(5px);}to{opacity:1;transform:translateY(0);}}
+.vban{border-radius:8px;padding:22px 26px;margin-bottom:16px;border:2px solid;}
+.vg1{border-color:var(--green);background:var(--green-bg);}
+.vg2{border-color:var(--amber);background:var(--amber-bg);}
+.vg3{border-color:var(--red);background:var(--red-bg);}
+.vund{border-color:var(--border2);background:var(--card2);}
+.vban-head{text-align:center;margin-bottom:14px;}
+.vlbl{font-family:var(--mono);font-size:9px;letter-spacing:.15em;text-transform:uppercase;opacity:.6;margin-bottom:5px;}
+.vtitle{font-size:22px;font-weight:700;margin-bottom:6px;}
+.vg1 .vtitle{color:var(--green);}.vg2 .vtitle{color:var(--amber);}
+.vg3 .vtitle{color:var(--red);}.vund .vtitle{color:var(--text2);}
+.vdesc{font-size:12px;color:var(--text2);line-height:1.7;max-width:640px;margin:0 auto;}
+.sum-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;}
+@media(max-width:580px){.sum-grid{grid-template-columns:1fr;}}
+.sblock{background:var(--card);border:1px solid var(--border);border-radius:6px;overflow:hidden;}
+.sbtitle{font-size:11px;font-weight:600;padding:7px 11px;border-bottom:1px solid var(--border);color:var(--text);background:var(--card2);font-family:var(--sans);}
+.srow{display:flex;align-items:flex-start;gap:8px;padding:6px 11px;border-bottom:1px solid var(--border);font-size:12px;font-family:var(--sans);}
+.srow:last-child{border-bottom:none;}
+.dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;margin-top:4px;}
+.dg{background:var(--green);}.dr{background:var(--red);}.dv{background:var(--accent);}
+.db{background:var(--blue);}.da{background:var(--amber);}.dgr{background:var(--text3);}
+.sname{flex:1;color:var(--text);line-height:1.4;font-family:var(--sans);}
+.stag{font-family:var(--sans);font-size:9px;padding:1px 7px;border-radius:10px;border:1px solid;white-space:nowrap;}
+.tg{border-color:var(--green-bd);color:var(--green);}
+.tr{border-color:var(--red-bd);color:var(--red);}
+.tv{border-color:var(--accent-bd);color:var(--accent);}
+.tb{border-color:var(--blue-bd);color:var(--blue);}
+.ta{border-color:var(--amber-bd);color:var(--amber);}
+.tgr{border-color:var(--border2);color:var(--text3);}
+.doc-header{display:flex;align-items:center;gap:8px;margin-bottom:5px;}
+.doc-tog{flex:1;text-align:left;background:var(--card2);border:1px solid var(--border2);border-radius:5px;color:var(--text2);font-family:var(--sans);font-size:13px;padding:8px 13px;cursor:pointer;transition:all .15s;}
+.doc-tog:hover{border-color:var(--accent);color:var(--accent);}
+.copy-btn{background:var(--card2);border:1px solid var(--border2);border-radius:5px;color:var(--text2);font-family:var(--sans);font-size:12px;padding:8px 14px;cursor:pointer;white-space:nowrap;transition:all .15s;display:none;}
+.copy-btn.visible{display:block;}.copy-btn:hover{border-color:var(--green);color:var(--green);}
+.copy-btn.copied{border-color:var(--green);color:var(--green);background:var(--green-bg);}
+.doc-body{display:none;background:var(--card2);border:1px solid var(--border2);border-radius:5px;padding:13px 15px;font-family:var(--mono);font-size:11px;color:var(--text2);line-height:1.85;white-space:pre-wrap;margin-bottom:12px;}
+.doc-body.open{display:block;}
+</style>
+</head>
+<body>
+<div class="app">
+<header>
+  <div>
+    <div class="h-title">Subarachnoid Hemorrhage &amp; DCI &middot; <span>Escalation Navigator</span></div>
+    <div class="h-sub">Hunt &amp; Hess 1968 &middot; WFNS 1988 &middot; Fisher 1980 &middot; Modified Fisher (Frontera et al. Neurosurgery 2006;59:21) &middot; Vergouwen et al. DCI Consensus Stroke 2010;41:2391 &middot; For educator use only</div>
+    <div class="h-credit">Designed by Daniel Short, MD</div>
+  </div>
+  <button class="reset-btn" onclick="resetAll()">&#8634; Reset</button>
+</header>
+<div class="prog-track"><div class="prog-fill" id="pf" style="width:0%"></div></div>
+<div class="steps">
+  <div class="stab active" id="st0" onclick="goTab(0)"><span class="sn">1</span><span class="slbl">Hunt-Hess</span></div>
+  <div class="stab" id="st1" onclick="goTab(1)"><span class="sn">2</span><span class="slbl">WFNS</span></div>
+  <div class="stab" id="st2" onclick="goTab(2)"><span class="sn">3</span><span class="slbl">CT / Fisher</span></div>
+  <div class="stab" id="st3" onclick="goTab(3)"><span class="sn">4</span><span class="slbl">Vasospasm TCD</span></div>
+  <div class="stab" id="st4" onclick="goTab(4)"><span class="sn">5</span><span class="slbl">DCI Criteria</span></div>
+  <div class="stab" id="st5" onclick="goTab(5)"><span class="sn">6</span><span class="slbl">Summary</span></div>
+</div>
+
+<!-- S0: HUNT-HESS -->
+<div class="screen active" id="s0">
+<div class="card">
+  <div class="ctitle" style="color:var(--accent);">Step 1 &middot; Hunt-Hess Grade</div>
+  <div class="csub">The Hunt-Hess scale (Hunt WE, Hess RM. J Neurosurg 1968;28:14&ndash;20) classifies severity of aneurysmal SAH based on clinical condition at presentation. Originally designed as a guide to neurosurgical operative risk, it remains the most widely used clinical grading system. Grades 4&ndash;5 define <strong>poor-grade SAH</strong> &mdash; associated with 40&ndash;80% mortality but not zero. Aggressive treatment is indicated unless brainstem reflexes are absent.</div>
+  <div class="lbox">
+    <strong>Key principle:</strong> Assess after initial resuscitation and, where applicable, after EVD placement (which may improve grade by lowering ICP). <span class="lv">Increase grade by 1</span> in the presence of serious systemic disease or severe angiographic vasospasm &mdash; though this modifier is inconsistently applied in practice.<br><br>
+    <span class="lr">Poor-grade (HH 4&ndash;5):</span> Rebleeding risk is highest in first 24h (~5.7%/day). All grades warrant early aneurysm securing (ideally &le;24h). EVD for obstructive hydrocephalus or IVH. Nimodipine 60mg PO q4h &times; 21 days for all grades. SBP goal &lt;160 mmHg pre-securing.
+  </div>
+  <div class="slabel">Select Hunt-Hess grade <span class="pill pill-r">ASSESS AFTER RESUSCITATION &plusmn; EVD</span></div>
+  <div class="grade-grid">
+    <div class="gcard" id="hh-1" onclick="setHH(1)">
+      <div class="gnum" style="color:var(--green);">I</div>
+      <div class="gname">Asymptomatic</div>
+      <div class="gdesc">Asymptomatic, or mild headache and slight neck stiffness</div>
+    </div>
+    <div class="gcard" id="hh-2" onclick="setHH(2)">
+      <div class="gnum" style="color:var(--green);">II</div>
+      <div class="gname">Moderate headache</div>
+      <div class="gdesc">Moderate&ndash;severe headache, neck stiffness, no deficit except CN palsy</div>
+    </div>
+    <div class="gcard" id="hh-3" onclick="setHH(3)">
+      <div class="gnum" style="color:var(--amber);">III</div>
+      <div class="gname">Drowsy / confusion</div>
+      <div class="gdesc">Drowsy, minimal neurological deficit (e.g., mild hemiparesis)</div>
+    </div>
+    <div class="gcard" id="hh-4" onclick="setHH(4)">
+      <div class="gnum" style="color:var(--red);">IV</div>
+      <div class="gname">Stupor / deficit</div>
+      <div class="gdesc">Stupor, moderate&ndash;severe hemiparesis, early decerebrate rigidity, vegetative disturbance</div>
+    </div>
+    <div class="gcard" id="hh-5" onclick="setHH(5)">
+      <div class="gnum" style="color:var(--red);">V</div>
+      <div class="gname">Deep coma</div>
+      <div class="gdesc">Deep coma, decerebrate rigidity, moribund appearance</div>
+    </div>
+  </div>
+  <div class="crit" id="hh-syst-item">
+    <div class="crit-main">
+      <div class="crit-name">Serious systemic disease OR severe angiographic vasospasm present? &mdash; either criterion increases HH grade by 1</div>
+      <button class="xbtn" onclick="xp(this)">details &#9662;</button>
+    </div>
+    <div class="crit-detail">
+      The original Hunt-Hess criteria specify that <strong>two conditions</strong> increase the grade by one level: (1) serious systemic disease, or (2) severe vasospasm on angiography.<br><br>
+      <strong>Systemic disease:</strong> Uncontrolled hypertension with end-organ damage, active cardiac failure or arrhythmia, significant pulmonary disease, hepatic insufficiency (Child-Pugh B/C), or renal failure requiring dialysis.<br><br>
+      <strong>Severe angiographic vasospasm:</strong> Vessel narrowing &ge;67% on DSA, CTA, or MRA at presentation &mdash; rarely present acutely but may be observed on diagnostic angiography performed at the time of aneurysm securing. In practice this modifier is inconsistently applied &mdash; document explicitly and justify if increasing grade.
+      <div class="cnote"><strong>Why this matters:</strong> Systemic disease compounds poor-grade SAH prognosis by limiting tolerance for vasospasm treatment (induced hypertension), anesthesia risk for aneurysm securing, and ICU interventions. Cardiac complications of SAH (neurogenic stunned myocardium, Takotsubo-pattern, troponin elevation) are common in HH 4&ndash;5 and may themselves require grade adjustment.</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setSyst(true)"  id="syst-yes">&#10003; Yes &mdash; systemic disease or severe vasospasm present (grade +1)</button>
+      <button class="abtn" onclick="setSyst(false)" id="syst-no">&#10007; Neither present</button>
+    </div>
+  </div>
+  <div id="a0" class="alrt"></div>
+  <div class="nav-row"><div></div><button class="nbtn np" id="n0" onclick="go(1)" disabled>Next: WFNS Grade &rarr;</button></div>
+</div>
+</div>
+
+<!-- S1: WFNS -->
+<div class="screen" id="s1">
+<div class="card">
+  <div class="ctitle" style="color:var(--accent);">Step 2 &middot; WFNS Grade</div>
+  <div class="csub">The World Federation of Neurological Surgeons (WFNS) scale (1988) uses GCS score and presence of focal motor deficit to provide a more objective grading system than Hunt-Hess, avoiding subjective terms like "stupor." WFNS Grades 4&ndash;5 define poor-grade SAH. Both Hunt-Hess and WFNS should be documented &mdash; they measure related but distinct clinical dimensions.</div>
+  <div class="lbox">
+    <strong>WFNS grade map:</strong><br>
+    <span class="lv">Grade I:</span> GCS 15, no motor deficit<br>
+    <span class="lv">Grade II:</span> GCS 13&ndash;14, no motor deficit<br>
+    <span class="la">Grade III:</span> GCS 13&ndash;14, motor deficit present<br>
+    <span class="lr">Grade IV:</span> GCS 7&ndash;12, with or without motor deficit<br>
+    <span class="lr">Grade V:</span> GCS 3&ndash;6, with or without motor deficit<br><br>
+    <strong>Note on GCS timing:</strong> Assess GCS before sedation/intubation whenever possible. If already intubated on arrival, use best known pre-intubation GCS. The motor component of GCS (M1&ndash;M6) is the single strongest predictor of neurological outcome in aSAH.
+  </div>
+  <div class="slabel">GCS total score at presentation <span class="pill pill-r">PRE-SEDATION / PRE-INTUBATION PREFERRED</span></div>
+  <div class="crit" id="gcs-item">
+    <div class="crit-main">
+      <div class="crit-name">Glasgow Coma Scale total score (E+V+M) &mdash; select best pre-intubation value</div>
+      <button class="xbtn" onclick="xp(this)">details &#9662;</button>
+    </div>
+    <div class="crit-detail">
+      <strong>GCS components:</strong> Eye (E): 1=none, 2=pain, 3=voice, 4=spontaneous. Verbal (V): 1=none, 2=sounds, 3=words, 4=confused, 5=oriented. Motor (M): 1=none, 2=extension/decerebrate, 3=flexion/decorticate, 4=withdrawal, 5=localizing, 6=obeys. For intubated patients, use E+M only (V=1T) and note limitation.<br><br>
+      <strong>Prognostic weight:</strong> Motor score M1&ndash;M2 (decerebrate/flaccid) correlates most strongly with poor outcome. GCS 3 carries ~70&ndash;80% mortality but isolated treatment nihilism is not justified &mdash; no single admission finding is a sufficient predictor to deny treatment.
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setGCS(15)" id="gcs-15">GCS 15</button>
+      <button class="abtn" onclick="setGCS(14)" id="gcs-14">GCS 14</button>
+      <button class="abtn" onclick="setGCS(13)" id="gcs-13">GCS 13</button>
+      <button class="abtn" onclick="setGCS(12)" id="gcs-12">GCS 7&ndash;12</button>
+      <button class="abtn" onclick="setGCS(6)"  id="gcs-6">GCS 3&ndash;6</button>
+    </div>
+  </div>
+  <div class="slabel" style="margin-top:14px;">Focal motor deficit? <span class="pill pill-a">DISTINGUISHES WFNS II vs III AT GCS 13&ndash;14</span></div>
+  <div class="crit" id="focal-item">
+    <div class="crit-main">
+      <div class="crit-name">Focal neurological deficit &mdash; hemiparesis, aphasia, or other focal motor finding at presentation</div>
+      <button class="xbtn" onclick="xp(this)">details &#9662;</button>
+    </div>
+    <div class="crit-detail">
+      Focal deficit in WFNS refers primarily to <strong>motor deficit</strong> (hemiparesis, hemiplegia). The focal deficit modifier only changes grade for GCS 13&ndash;14 patients (distinguishes Grade II from Grade III) &mdash; for GCS &le;12 or GCS 15, presence/absence of focal deficit does not change WFNS grade.<br><br>
+      <strong>CN III palsy in SAH:</strong> Posterior communicating artery (PComm) aneurysms classically cause CN III palsy &mdash; ptosis, mydriasis, exodeviation. This is a surgical emergency (external compression by the aneurysm wall). Pupil involvement distinguishes from diabetic CN III palsy where the pupil is typically spared.
+      <div class="cnote"><strong>Early ischemia at presentation:</strong> Focal deficits at SAH onset may reflect direct intracerebral hematoma from the ruptured aneurysm, acute vasospasm (rare), or ischemia from acute ICP elevation reducing CPP. These are distinct from DCI which develops days later.</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setFocal(true)"  id="focal-yes">&#10003; Focal motor deficit present</button>
+      <button class="abtn" onclick="setFocal(false)" id="focal-no">&#10007; No focal motor deficit</button>
+    </div>
+  </div>
+  <div id="a1" class="alrt"></div>
+  <div class="nav-row">
+    <button class="nbtn ns" onclick="go(0)">&larr; Back</button>
+    <button class="nbtn np" onclick="go(2)">Next: CT / Fisher Grade &rarr;</button>
+  </div>
+</div>
+</div>
+
+<!-- S2: FISHER -->
+<div class="screen" id="s2">
+<div class="card">
+  <div class="ctitle" style="color:var(--accent);">Step 3 &middot; CT Findings &mdash; Modified Fisher Grade</div>
+  <div class="csub">The Modified Fisher Scale (Frontera JA et al. Neurosurgery 2006;59:21&ndash;27, n=1355 patients from 4 RCTs) predicts risk of symptomatic vasospasm based on the initial non-contrast head CT. It improves on the original Fisher scale (1980) by providing monotonically increasing vasospasm risk across all four grades and accounting for intraventricular hemorrhage (IVH). Modified Fisher is preferred for vasospasm prediction.</div>
+  <div class="lbox">
+    <strong>CT assessment definitions:</strong><br>
+    <span class="lv">Thin SAH:</span> &lt;1 mm in depth in any cistern or fissure<br>
+    <span class="lv">Thick SAH:</span> &ge;1 mm in depth &mdash; completely filling &ge;1 cistern or fissure<br>
+    <span class="lv">IVH:</span> Blood present in any part of the ventricular system<br><br>
+    <strong>Vasospasm risk by modified Fisher grade (Frontera 2006):</strong> Grade 1: ~24%; Grade 2: ~33%; Grade 3: ~33%; Grade 4: ~40%. Note: original Fisher Grade 4 had counterintuitively lower vasospasm risk than Grade 3 &mdash; the modified scale corrects this by incorporating IVH as an additive risk factor.
+  </div>
+  <div class="slabel">Modified Fisher Grade &mdash; select CT pattern <span class="pill pill-r">VASOSPASM RISK STRATIFICATION</span></div>
+  <div class="grade-grid-4" style="margin-bottom:8px;">
+    <div class="gcard" id="mf-1" onclick="setMF(1)">
+      <div class="gnum" style="color:var(--green);">mF 1</div>
+      <div class="gname">Thin, no IVH</div>
+      <div class="gdesc">Focal or diffuse thin SAH (&lt;1mm), no IVH. ~24% vasospasm risk.</div>
+    </div>
+    <div class="gcard" id="mf-2" onclick="setMF(2)">
+      <div class="gnum" style="color:var(--amber);">mF 2</div>
+      <div class="gname">Thin + IVH</div>
+      <div class="gdesc">Focal or diffuse thin SAH (&lt;1mm), with IVH. ~33% vasospasm risk.</div>
+    </div>
+    <div class="gcard" id="mf-3" onclick="setMF(3)">
+      <div class="gnum" style="color:var(--amber);">mF 3</div>
+      <div class="gname">Thick, no IVH</div>
+      <div class="gdesc">Thick focal or diffuse SAH (&ge;1mm), no IVH. ~33% vasospasm risk.</div>
+    </div>
+    <div class="gcard" id="mf-4" onclick="setMF(4)">
+      <div class="gnum" style="color:var(--red);">mF 4</div>
+      <div class="gname">Thick + IVH</div>
+      <div class="gdesc">Thick focal or diffuse SAH (&ge;1mm), with IVH. ~40% vasospasm risk.</div>
+    </div>
+  </div>
+  <div class="crit" id="ivh-item">
+    <div class="crit-main">
+      <div class="crit-name">Intraventricular hemorrhage (IVH) &mdash; present on initial CT? Predicts hydrocephalus and independently increases DCI risk</div>
+      <button class="xbtn" onclick="xp(this)">details &#9662;</button>
+    </div>
+    <div class="crit-detail">
+      IVH occurs in ~20&ndash;40% of aneurysmal SAH, most commonly with anterior communicating artery (AComm) and posterior fossa aneurysms. Severe IVH with cast formation causes obstructive hydrocephalus requiring emergency EVD.<br><br>
+      Blood in the ventricular system introduces oxyhemoglobin and inflammatory mediators into the CSF circulation, likely contributing to vasospasm and cortical spreading depression &mdash; mechanisms of DCI beyond simple arterial narrowing.<br><br>
+      <strong>Modified Graeb score:</strong> Used in some centers to quantify IVH burden; Graeb &ge;5 predicts need for intraventricular tPA and prolonged EVD. Routine IVH thrombolysis (alteplase 1&ndash;2 mg intraventricular q8h) reduces clot burden and may reduce vasospasm in selected centers.
+      <div class="cnote"><strong>EVD indications in SAH:</strong> Acute obstructive hydrocephalus on CT, GCS &le;13 with ventriculomegaly, or progressive neurological deterioration from hydrocephalus. ICP monitoring via EVD allows targeted CPP management (CPP goal &ge;60 mmHg in poor-grade SAH).</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setIVH(true)"  id="ivh-yes">&#10003; IVH present</button>
+      <button class="abtn" onclick="setIVH(false)" id="ivh-no">&#10007; No IVH</button>
+      <button class="abtn" onclick="setIVH(null)"  id="ivh-nd">&mdash; Not assessed</button>
+    </div>
+  </div>
+  <div class="crit" id="hcp-item">
+    <div class="crit-main">
+      <div class="crit-name">Acute hydrocephalus &mdash; ventricular dilatation on CT; Evans ratio &gt;0.3; temporal horn enlargement &gt;2mm</div>
+      <button class="xbtn" onclick="xp(this)">details &#9662;</button>
+    </div>
+    <div class="crit-detail">
+      Acute hydrocephalus occurs in ~20&ndash;30% of SAH at presentation, most commonly from IVH causing obstruction at the aqueduct or 4th ventricle, or from subarachnoid blood impairing CSF reabsorption. <strong>Evans ratio &gt;0.3</strong> (frontal horn width / maximum inner skull width) is the standard threshold. Temporal horn enlargement (&gt;2mm) is an early sign.<br><br>
+      <strong>Subacute/chronic hydrocephalus:</strong> Communicating hydrocephalus may develop 2&ndash;4 weeks post-SAH from impaired CSF reabsorption. Presents as progressive cognitive decline, gait instability, incontinence (normal pressure hydrocephalus phenotype). May require VP shunt. Serial head CT every 2&ndash;3 days in the acute period is standard.
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setHCP(true)"  id="hcp-yes">&#10003; Acute hydrocephalus &mdash; EVD indicated</button>
+      <button class="abtn" onclick="setHCP(false)" id="hcp-no">&#10007; No hydrocephalus on CT</button>
+      <button class="abtn" onclick="setHCP(null)"  id="hcp-nd">&mdash; Not assessed</button>
+    </div>
+  </div>
+  <div id="a2" class="alrt"></div>
+  <div class="nav-row">
+    <button class="nbtn ns" onclick="go(1)">&larr; Back</button>
+    <button class="nbtn np" onclick="go(3)">Next: Vasospasm / TCD &rarr;</button>
+  </div>
+</div>
+</div>
+
+<!-- S3: VASOSPASM -->
+<div class="screen" id="s3">
+<div class="card">
+  <div class="ctitle" style="color:var(--accent);">Step 4 &middot; Vasospasm Surveillance &mdash; TCD and Clinical Triggers</div>
+  <div class="csub">Cerebral vasospasm peaks between days 5&ndash;14 post-SAH. TCD is the standard non-invasive surveillance tool. Clinical deterioration is the most important trigger for escalation to CTA/CTP or DSA. TCD is best validated for the MCA (AUC ~0.65 for DCI prediction). All aSAH patients should receive daily or every-other-day TCD from day 3&ndash;14.</div>
+  <div class="timeline">
+    <div class="tl-step tl-ok"><span class="tl-day">Day 0</span>Ictus &mdash; secure aneurysm &le;24h</div>
+    <div class="tl-step tl-ok"><span class="tl-day">Day 1&ndash;2</span>Start nimodipine, EVD if needed</div>
+    <div class="tl-step tl-warn"><span class="tl-day">Day 3&ndash;4</span>Vasospasm onset window &mdash; begin daily TCD</div>
+    <div class="tl-step tl-hot"><span class="tl-day">Day 5&ndash;14</span>Peak vasospasm / DCI risk</div>
+    <div class="tl-step tl-warn"><span class="tl-day">Day 7&ndash;8</span>Peak vasospasm incidence</div>
+    <div class="tl-step tl-ok"><span class="tl-day">Day 14&ndash;21</span>Risk subsides &mdash; discontinue nimodipine Day 21</div>
+  </div>
+  <div class="lbox">
+    <strong>TCD thresholds &mdash; MCA (best validated vessel):</strong><br>
+    <span class="lg">MFV &lt;120 cm/s:</span> No significant vasospasm &mdash; routine daily monitoring<br>
+    <span class="la">MFV 120&ndash;149 cm/s:</span> Mild vasospasm &mdash; increase monitoring frequency, optimise volume status<br>
+    <span class="la">MFV 150&ndash;199 cm/s:</span> Moderate vasospasm &mdash; consider CTA/CTP; escalate with any clinical change<br>
+    <span class="lr">MFV &ge;200 cm/s:</span> Severe vasospasm &mdash; correlates with &ge;50% vessel diameter reduction; CTA+CTP or DSA indicated<br>
+    <span class="lv">Lindegaard Ratio (LR) = MCA MFV / ipsilateral extracranial ICA MFV:</span> LR &gt;3 supports vasospasm over hyperemia; LR &gt;6 = severe vasospasm. Critical when MFV 120&ndash;199 cm/s.<br><br>
+    <strong>Rate-of-rise trigger:</strong> MFV increase &gt;50 cm/s/day or &gt;30 cm/s/study = escalation threshold independent of absolute value.
+  </div>
+  <div class="slabel">Current TCD MCA MFV (peak bilateral) <span class="pill pill-r">DOCUMENT DAILY DAY 3&ndash;14</span></div>
+  <div class="crit" id="tcd-item">
+    <div class="crit-main">
+      <div class="crit-name">TCD MCA mean flow velocity &mdash; peak bilateral; also document ACA, ICA siphon, basilar if available</div>
+      <button class="xbtn" onclick="xp(this)">details &#9662;</button>
+    </div>
+    <div class="crit-detail">
+      <strong>TCD technique:</strong> Insonate MCA at 45&ndash;65mm depth via transtemporal window. Record peak systolic, end-diastolic, and mean flow velocity. Calculate pulsatility index (PI = [PSV&minus;EDV]/MFV; normal 0.6&ndash;1.1). Elevated PI with normal MFV may reflect elevated ICP rather than vasospasm.<br><br>
+      <strong>Limitations:</strong> Cannot assess cortical/perforator vasospasm (only large vessels). Poor temporal window in ~10&ndash;15% (elderly women, obesity). Highly operator-dependent. Normal TCD does not exclude DCI.
+      <div class="cnote"><strong>Hyperemia vs. vasospasm:</strong> Post-SAH hyperemia causes elevated MFV but LOW Lindegaard ratio (&lt;3). True vasospasm causes elevated MFV with HIGH LR (&gt;3). Distinguishing these is critical &mdash; induced hypertension in a hyperemic state can worsen outcome.</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setTCD('norm')" id="tcd-norm">&lt;120 cm/s &mdash; No vasospasm</button>
+      <button class="abtn" onclick="setTCD('mild')" id="tcd-mild">120&ndash;149 cm/s &mdash; Mild</button>
+      <button class="abtn" onclick="setTCD('mod')"  id="tcd-mod">150&ndash;199 cm/s &mdash; Moderate</button>
+      <button class="abtn" onclick="setTCD('sev')"  id="tcd-sev">&ge;200 cm/s &mdash; Severe</button>
+      <button class="abtn" onclick="setTCD('nd')"   id="tcd-nd">&mdash; Not performed</button>
+    </div>
+  </div>
+  <div class="slabel" style="margin-top:14px;">Lindegaard Ratio <span class="pill pill-a">REQUIRED WHEN MFV 120&ndash;199 cm/s TO EXCLUDE HYPEREMIA</span></div>
+  <div class="crit" id="lr-item">
+    <div class="crit-main">
+      <div class="crit-name">Lindegaard Ratio = MCA MFV &divide; ipsilateral extracranial ICA MFV (normal &lt;3; vasospasm &gt;3; severe &gt;6)</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setLR('low')"  id="lr-low">&lt;3 &mdash; Hyperemia / no vasospasm</button>
+      <button class="abtn" onclick="setLR('mod')"  id="lr-mod">3&ndash;6 &mdash; Moderate vasospasm</button>
+      <button class="abtn" onclick="setLR('high')" id="lr-high">&gt;6 &mdash; Severe vasospasm</button>
+      <button class="abtn" onclick="setLR('nd')"   id="lr-nd">&mdash; Not calculated</button>
+    </div>
+  </div>
+  <div class="slabel" style="margin-top:14px;">Clinical trigger for escalation <span class="pill pill-r">ANY CHANGE = ACT</span></div>
+  <div class="crit" id="clintrig-item">
+    <div class="crit-main">
+      <div class="crit-name">New neurological change from post-ictus baseline &mdash; new focal deficit, GCS decline &ge;2 points, new or escalating headache, worsening confusion not explained by other cause</div>
+      <button class="xbtn" onclick="xp(this)">details &#9662;</button>
+    </div>
+    <div class="crit-detail">
+      Clinical deterioration is the primary trigger for urgent DCI workup, independent of TCD values. Causes in the day 3&ndash;14 window: DCI from vasospasm, rebleeding (if aneurysm not secured), hydrocephalus, seizure, hyponatremia (SIADH vs. cerebral salt wasting), fever, sepsis, medication effects, or PE.<br><br>
+      <strong>Hyponatremia (~30&ndash;40% of SAH):</strong> SIADH (euvolemic) vs. cerebral salt wasting (hypovolemic, high urine Na) &mdash; treatment is opposite. <strong>CSW:</strong> treat with IV saline and fludrocortisone. <strong>SIADH:</strong> fluid restriction is <em>contraindicated</em> in acute SAH where hypovolemia worsens DCI &mdash; use 3% NaCl instead.<br><br>
+      <strong>Fever:</strong> Target normothermia aggressively. Fever &gt;38.5&deg;C increases cerebral metabolic demand and worsens ischemic injury in the DCI window.
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setClinTrig(true)"  id="trig-yes">&#10003; New neurological change &mdash; escalate workup</button>
+      <button class="abtn" onclick="setClinTrig(false)" id="trig-no">&#10007; Neurologically stable at baseline</button>
+    </div>
+  </div>
+  <div id="a3" class="alrt"></div>
+  <div class="nav-row">
+    <button class="nbtn ns" onclick="go(2)">&larr; Back</button>
+    <button class="nbtn np" onclick="go(4)">Next: DCI Criteria &rarr;</button>
+  </div>
+</div>
+</div>
+
+<!-- S4: DCI -->
+<div class="screen" id="s4">
+<div class="card">
+  <div class="ctitle" style="color:var(--accent);">Step 5 &middot; Delayed Cerebral Ischemia (DCI) &mdash; Vergouwen 2010 Consensus</div>
+  <div class="csub">DCI is defined by the Vergouwen consensus (Stroke 2010;41:2391&ndash;2395) as the occurrence of focal neurological impairment or global neurological deterioration not attributable to other causes, lasting &gt;1 hour, or new ischemic infarction on CT/MRI. DCI complicates ~20&ndash;30% of aSAH and carries OR 2.65 for unfavorable neurological outcome (GOS 1&ndash;3) at discharge.</div>
+  <div class="lbox">
+    <strong>DCI consensus definition (Vergouwen et al. Stroke 2010):</strong><br>
+    <span class="lv">Clinical criterion:</span> New focal neurological impairment (hemiparesis, aphasia, apraxia, hemianopia, neglect) OR GCS decline &ge;2 points from best post-ictus baseline, lasting &gt;1 hour &mdash; not attributable to other causes<br>
+    <span class="lv">Imaging criterion:</span> New CT or MRI infarction within 6 weeks of SAH, not present on the 24&ndash;48h post-aneurysm-securing scan, not attributable to procedural causes<br>
+    <span class="la">Timing:</span> Onset typically day 3&ndash;14 (peaks day 7&ndash;8); may occur up to day 21<br>
+    <span class="lr">DCI &ne; vasospasm:</span> Angiographic vasospasm (vessel narrowing) and DCI are distinct entities. DCI can occur without large-vessel vasospasm (microvascular spasm, cortical spreading depression, microthrombosis), and vasospasm can occur without DCI. Clinical DCI criteria do not require imaging vasospasm.
+  </div>
+  <div class="slabel">Clinical DCI criterion <span class="pill pill-r">EITHER CRITERION = DCI DIAGNOSIS</span></div>
+  <div class="crit" id="dci-clin-item">
+    <div class="crit-main">
+      <div class="crit-name">New focal neurological deficit lasting &gt;1 hour OR GCS decline &ge;2 points lasting &gt;1 hour, not attributable to other causes (rebleeding, hydrocephalus, seizure, metabolic, medication, infection, systemic)</div>
+      <button class="xbtn" onclick="xp(this)">details &#9662;</button>
+    </div>
+    <div class="crit-detail">
+      <strong>Mandatory exclusion before diagnosing DCI:</strong>
+      Rebleeding (CT: new high-density, sudden onset); Acute hydrocephalus (CT: ventriculomegaly); Seizure (EEG &mdash; post-ictal Todd's paralysis mimics DCI); Metabolic (hyponatremia, hyperglycemia, uremia, hepatic); Medication effect (oversedation); Systemic (sepsis, hypotension, hypoxia, PE); Procedure-related infarct (within 24h of clipping/coiling).<br><br>
+      Assess every 2&ndash;4 hours with standardized neurological exam. Must be new from post-ictus baseline. Hemispatial neglect, ataxia, and dysarthria also qualify as focal deficits.
+      <div class="cnote"><strong>Continuous EEG:</strong> Increasingly used in poor-grade SAH (HH 4&ndash;5) where clinical exam is unreliable. Non-convulsive seizures occur in ~10&ndash;20% of SAH. Cortical spreading depression (CSD) is a strong predictor of DCI and detectable by subdural or depth electrodes in NCC centers. Not yet standard of care but growing.</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setDCIClin(true)"  id="dciclin-yes">&#10003; Clinical deterioration meeting DCI criterion</button>
+      <button class="abtn" onclick="setDCIClin(false)" id="dciclin-no">&#10007; Neurologically stable / deterioration explained by other cause</button>
+    </div>
+  </div>
+  <div class="slabel" style="margin-top:14px;">Imaging DCI criterion <span class="pill pill-r">EITHER CRITERION = DCI DIAGNOSIS</span></div>
+  <div class="crit" id="dci-img-item">
+    <div class="crit-main">
+      <div class="crit-name">New CT or MRI infarction within 6 weeks of SAH &mdash; not present on 24&ndash;48h post-securing scan, not attributable to procedural causes</div>
+      <button class="xbtn" onclick="xp(this)">details &#9662;</button>
+    </div>
+    <div class="crit-detail">
+      Imaging confirmation requires: (1) new hypodensity on CT or DWI restriction on MRI; (2) absent on the 24&ndash;48h post-aneurysm-securing baseline scan; (3) no alternative explanation (procedural, embolic from cardiac source, etc.). MRI DWI is more sensitive than CT for early ischemia, especially posterior fossa and small cortical infarcts.<br><br>
+      <strong>CT perfusion (CTP):</strong> CTP detects reduced CBF/CBV and prolonged MTT before infarction is visible on non-contrast CT. Triggered by clinical deterioration or TCD alarm thresholds. CBF &lt;25 mL/100g/min or CBV &lt;2 mL/100g suggests ischemic penumbra. CTP guides decision to perform DSA &plusmn; intervention.
+      <div class="cnote"><strong>DCI treatment protocol:</strong> Step 1: Induced hypertension (SBP 160&ndash;200 mmHg via norepinephrine/phenylephrine; maintain euvolemia). Step 2: Optimize nimodipine (do NOT stop &mdash; manage BP separately). Step 3: CTA + CTP or DSA if not already done. Step 4: Intra-arterial nimodipine &plusmn; balloon angioplasty for proximal severe vasospasm. Supportive: Normothermia, euglycemia, Hgb &ge;8&ndash;9 g/dL, avoid hypovolemia.</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setDCIImg(true)"  id="dciimg-yes">&#10003; New infarction meeting DCI imaging criterion</button>
+      <button class="abtn" onclick="setDCIImg(false)" id="dciimg-no">&#10007; No new infarction / not attributable to DCI</button>
+      <button class="abtn" onclick="setDCIImg(null)"  id="dciimg-nd">&mdash; Imaging not yet performed</button>
+    </div>
+  </div>
+  <div class="slabel" style="margin-top:14px;">Angiographic vasospasm &mdash; imaging confirmation <span class="pill pill-b">SEPARATE FROM DCI DEFINITION</span></div>
+  <div class="crit" id="vsp-item">
+    <div class="crit-main">
+      <div class="crit-name">Vasospasm on CTA, MRA, or DSA &mdash; vessel narrowing: &lt;33% = mild; 34&ndash;66% = moderate; &ge;67% = severe (correlates with &ge;50% diameter reduction on DSA)</div>
+      <button class="xbtn" onclick="xp(this)">details &#9662;</button>
+    </div>
+    <div class="crit-detail">
+      Angiographic vasospasm confirms large-vessel narrowing but does NOT equal DCI &mdash; they are defined separately. DSA is the gold standard and allows simultaneous treatment (angioplasty, IA nimodipine). CTA is used for initial imaging confirmation. CTP adds functional perfusion data.<br><br>
+      <strong>DSA indications:</strong> MFV &ge;200 cm/s, clinical DCI meeting criteria, or CTA/CTP showing severe vasospasm with perfusion deficit &mdash; especially when balloon angioplasty or IA nimodipine is being considered. DSA complication rate &lt;1% in experienced centers.
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setVSP('none')" id="vsp-none">&#10003; No vasospasm on imaging</button>
+      <button class="abtn" onclick="setVSP('mild')" id="vsp-mild">&#9888; Mild (&lt;33% narrowing)</button>
+      <button class="abtn" onclick="setVSP('mod')"  id="vsp-mod">&#9888; Moderate (34&ndash;66%) &mdash; consider intervention if DCI present</button>
+      <button class="abtn" onclick="setVSP('sev')"  id="vsp-sev">&#10007; Severe (&ge;67%) &mdash; DSA + intervention indicated</button>
+      <button class="abtn" onclick="setVSP('nd')"   id="vsp-nd">&mdash; No vascular imaging performed</button>
+    </div>
+  </div>
+  <div id="a4" class="alrt"></div>
+  <div class="nav-row">
+    <button class="nbtn ns" onclick="go(3)">&larr; Back</button>
+    <button class="nbtn np" onclick="go(5)">Generate Summary &rarr;</button>
+  </div>
+</div>
+</div>
+
+<!-- S5: SUMMARY -->
+<div class="screen" id="s5">
+  <div id="vout"></div>
+  <div class="doc-header">
+    <button class="doc-tog" onclick="toggleDoc()">&#9660; Documentation Note</button>
+    <button class="copy-btn" id="copy-btn" onclick="copyDoc()">&#9138; Copy</button>
+  </div>
+  <div class="doc-body" id="dn"></div>
+  <div class="nav-row">
+    <button class="nbtn ns" onclick="go(4)">&larr; Back</button>
+    <button class="nbtn np" onclick="resetAll()">&#8634; New Evaluation</button>
+  </div>
+</div>
+</div>
+
+<script>
+const S={hh:null,syst:null,gcs:null,focal:null,mf:null,ivh:null,hcp:null,tcd:null,lr:null,clintrig:null,dciclin:null,dciimg:null,vsp:null};
+let cur=0;
+function setHH(v){
+  S.hh=v;
+  for(let i=1;i<=5;i++){const c=document.getElementById('hh-'+i);if(c){c.className='gcard '+(i===v?(i>=4?'gs-r':i===3?'gs-a':'gs-g'):'');}}
+  document.getElementById('n0').disabled=false; ui();
+}
+function setSyst(v){
+  S.syst=v;
+  const y=document.getElementById('syst-yes'),n=document.getElementById('syst-no');
+  if(y)y.classList.remove('ay','aw','an'); if(n)n.classList.remove('ay','aw','an');
+  if(v===true&&y)y.classList.add('aw'); if(v===false&&n)n.classList.add('ay');
+  const item=document.getElementById('hh-syst-item');
+  if(item){item.className='crit '+(v===true?'c-part':v===false?'c-yes':'');}
+  ui();
+}
+function setGCS(v){
+  S.gcs=v;
+  ['15','14','13','12','6'].forEach(x=>{const b=document.getElementById('gcs-'+x);if(b)b.classList.remove('ay','aw','an');});
+  const map={'15':'ay','14':'ay','13':'aw','12':'an','6':'an'};
+  const btn=document.getElementById('gcs-'+v);if(btn)btn.classList.add(map[String(v)]||'aa');
+  const item=document.getElementById('gcs-item');
+  if(item){item.className='crit '+(v>=13?'c-yes':v>=7?'c-part':'c-no');}
+  ui();
+}
+function setFocal(v){
+  S.focal=v;
+  const y=document.getElementById('focal-yes'),n=document.getElementById('focal-no');
+  if(y)y.classList.remove('ay','aw','an'); if(n)n.classList.remove('ay','aw','an');
+  if(v===true&&y)y.classList.add('aw'); if(v===false&&n)n.classList.add('ay');
+  const item=document.getElementById('focal-item');
+  if(item){item.className='crit '+(v===true?'c-part':v===false?'c-yes':'');}
+  ui();
+}
+function setMF(v){
+  S.mf=v;
+  for(let i=1;i<=4;i++){const c=document.getElementById('mf-'+i);if(c){c.className='gcard '+(i===v?(i>=4?'gs-r':i>=3?'gs-a':'gs-g'):'');}}
+  ui();
+}
+function setIVH(v){
+  S.ivh=v;
+  const item=document.getElementById('ivh-item');
+  if(item){item.className='crit '+(v===true?'c-part':v===false?'c-yes':'c-abs');}
+  ['yes','no','nd'].forEach(x=>{const b=document.getElementById('ivh-'+x);if(b)b.classList.remove('ay','aw','an','aa');});
+  if(v===true){const b=document.getElementById('ivh-yes');if(b)b.classList.add('aw');}
+  else if(v===false){const b=document.getElementById('ivh-no');if(b)b.classList.add('ay');}
+  else{const b=document.getElementById('ivh-nd');if(b)b.classList.add('aa');}
+  ui();
+}
+function setHCP(v){
+  S.hcp=v;
+  const item=document.getElementById('hcp-item');
+  if(item){item.className='crit '+(v===true?'c-no':v===false?'c-yes':'c-abs');}
+  ['yes','no','nd'].forEach(x=>{const b=document.getElementById('hcp-'+x);if(b)b.classList.remove('ay','aw','an','aa');});
+  if(v===true){const b=document.getElementById('hcp-yes');if(b)b.classList.add('an');}
+  else if(v===false){const b=document.getElementById('hcp-no');if(b)b.classList.add('ay');}
+  else{const b=document.getElementById('hcp-nd');if(b)b.classList.add('aa');}
+  ui();
+}
+function setTCD(v){
+  S.tcd=v;
+  const item=document.getElementById('tcd-item');
+  if(item){item.className='crit '+(v==='norm'?'c-yes':v==='mild'||v==='mod'?'c-part':v==='sev'?'c-no':'c-abs');}
+  ['norm','mild','mod','sev','nd'].forEach(x=>{const b=document.getElementById('tcd-'+x);if(b)b.classList.remove('ay','aw','an','aa');});
+  const map={norm:'ay',mild:'aw',mod:'aw',sev:'an',nd:'aa'};
+  const btn=document.getElementById('tcd-'+v);if(btn)btn.classList.add(map[v]||'aa');
+  if(cur===5)rv(); ui();
+}
+function setLR(v){
+  S.lr=v;
+  const item=document.getElementById('lr-item');
+  if(item){item.className='crit '+(v==='low'?'c-yes':v==='mod'?'c-part':v==='high'?'c-no':'c-abs');}
+  ['low','mod','high','nd'].forEach(x=>{const b=document.getElementById('lr-'+x);if(b)b.classList.remove('ay','aw','an','aa');});
+  const map={low:'ay',mod:'aw',high:'an',nd:'aa'};
+  const btn=document.getElementById('lr-'+v);if(btn)btn.classList.add(map[v]||'aa');
+  if(cur===5)rv(); ui();
+}
+function setClinTrig(v){
+  S.clintrig=v;
+  const item=document.getElementById('clintrig-item');
+  if(item){item.className='crit '+(v===true?'c-no':v===false?'c-yes':'');}
+  const y=document.getElementById('trig-yes'),n=document.getElementById('trig-no');
+  if(y)y.classList.remove('ay','an'); if(n)n.classList.remove('ay','an');
+  if(v===true&&y)y.classList.add('an'); if(v===false&&n)n.classList.add('ay');
+  if(cur===5)rv(); ui();
+}
+function setDCIClin(v){
+  S.dciclin=v;
+  const item=document.getElementById('dci-clin-item');
+  if(item){item.className='crit '+(v===true?'c-no':v===false?'c-yes':'');}
+  const y=document.getElementById('dciclin-yes'),n=document.getElementById('dciclin-no');
+  if(y)y.classList.remove('ay','an'); if(n)n.classList.remove('ay','an');
+  if(v===true&&y)y.classList.add('an'); if(v===false&&n)n.classList.add('ay');
+  if(cur===5)rv(); ui();
+}
+function setDCIImg(v){
+  S.dciimg=v;
+  const item=document.getElementById('dci-img-item');
+  if(item){item.className='crit '+(v===true?'c-no':v===false?'c-yes':'c-abs');}
+  ['yes','no','nd'].forEach(x=>{const b=document.getElementById('dciimg-'+x);if(b)b.classList.remove('ay','an','aa');});
+  if(v===true){const b=document.getElementById('dciimg-yes');if(b)b.classList.add('an');}
+  else if(v===false){const b=document.getElementById('dciimg-no');if(b)b.classList.add('ay');}
+  else{const b=document.getElementById('dciimg-nd');if(b)b.classList.add('aa');}
+  if(cur===5)rv(); ui();
+}
+function setVSP(v){
+  S.vsp=v;
+  const item=document.getElementById('vsp-item');
+  if(item){item.className='crit '+(v==='none'?'c-yes':v==='mild'||v==='mod'?'c-part':v==='sev'?'c-no':'c-abs');}
+  ['none','mild','mod','sev','nd'].forEach(x=>{const b=document.getElementById('vsp-'+x);if(b)b.classList.remove('ay','aw','an','aa');});
+  const map={none:'ay',mild:'aw',mod:'aw',sev:'an',nd:'aa'};
+  const btn=document.getElementById('vsp-'+v);if(btn)btn.classList.add(map[v]||'aa');
+  if(cur===5)rv(); ui();
+}
+function getWFNS(){
+  if(S.gcs===null)return null;
+  if(S.gcs===15)return 1;
+  if(S.gcs>=13)return S.focal===true?3:2;
+  if(S.gcs>=7)return 4;
+  return 5;
+}
+function isPoorGrade(){const w=getWFNS();return (S.hh&&S.hh>=4)||(w&&w>=4);}
+function isDCI(){return S.dciclin===true||S.dciimg===true;}
+function ui(){
+  const a0=document.getElementById('a0');
+  if(S.hh!==null){
+    const eff=S.syst===true&&S.hh<5?S.hh+1:S.hh;
+    const poor=S.hh>=4||eff>=4;
+    sa(a0,poor?'aerr':'aok','Hunt-Hess Grade '+(S.syst===true&&S.hh<5?S.hh+' &rarr; effective Grade '+eff+' (systemic disease modifier)':S.hh)+' &mdash; '+(poor?'⚠ POOR-GRADE SAH &mdash; aggressive ICU management, early aneurysm securing, EVD if indicated, nimodipine':'Good-grade SAH &mdash; early aneurysm securing, neurological monitoring, nimodipine 60mg q4h'));
+  } else ha(a0);
+  const a1=document.getElementById('a1');
+  const wfns=getWFNS();
+  if(wfns!==null){
+    const poor=wfns>=4;
+    sa(a1,poor?'aerr':'aok','WFNS Grade '+wfns+' &mdash; '+(poor?'⚠ Poor-grade SAH by WFNS criteria.':'Good-grade SAH by WFNS criteria.')+(wfns===3?' Note: GCS 13&ndash;14 with focal deficit (Grade III) has substantially worse prognosis than Grade II.':''));
+  } else ha(a1);
+  const a2=document.getElementById('a2');
+  if(S.mf!==null){
+    const risk={1:'~24%',2:'~33%',3:'~33%',4:'~40%'}[S.mf];
+    const cls=S.mf>=4?'aerr':S.mf>=3?'awn':'aok';
+    sa(a2,cls,'Modified Fisher Grade '+S.mf+' &mdash; Symptomatic vasospasm risk '+risk+'.'+(S.hcp===true?' ⚠ Acute hydrocephalus &mdash; EVD required urgently.':'')+(S.ivh===true?' IVH present &mdash; monitor for hydrocephalus.':''));
+  } else ha(a2);
+  const a3=document.getElementById('a3');
+  if(S.tcd&&S.tcd!=='nd'){
+    if(S.tcd==='sev')sa(a3,'aerr','⚠ MFV &ge;200 cm/s &mdash; Severe vasospasm. CTA + CTP or DSA indicated urgently. Initiate induced hypertension (SBP 160&ndash;200 mmHg). Consider IA nimodipine &plusmn; angioplasty.');
+    else if(S.tcd==='mod')sa(a3,'awn','⚠ MFV 150&ndash;199 cm/s &mdash; Moderate vasospasm. '+(S.lr==='low'?'LR &lt;3 &mdash; Likely hyperemia rather than vasospasm. Avoid induced hypertension. Reassess volume status.':S.lr==='high'?'LR &gt;6 confirms severe vasospasm &mdash; CTA/CTP/DSA indicated.':'Check Lindegaard Ratio to exclude hyperemia. Low threshold for CTA/CTP with any clinical change.'));
+    else if(S.tcd==='mild')sa(a3,'awn','MFV 120&ndash;149 cm/s &mdash; Mild vasospasm range. Increase TCD frequency. Optimise nimodipine.'+(S.lr==='low'?' LR &lt;3: likely hyperemia &mdash; avoid induced HTN, check volume.':''));
+    else sa(a3,'aok','&check; MFV &lt;120 cm/s &mdash; No significant TCD vasospasm. Continue daily surveillance until Day 14.');
+  } else if(S.clintrig===true) sa(a3,'aerr','⚠ Clinical neurological change &mdash; urgent CTA + CTP or DSA indicated regardless of TCD values. First exclude rebleeding, hydrocephalus, seizure, metabolic cause.');
+  else ha(a3);
+  const a4=document.getElementById('a4');
+  if(isDCI()) sa(a4,'aerr','⚠ DCI CRITERIA MET (Vergouwen 2010). Step 1: Induced hypertension (SBP 160&ndash;200 mmHg). Step 2: Optimize nimodipine. Step 3: CTA + CTP or DSA. Step 4: IA nimodipine &plusmn; balloon angioplasty for severe vasospasm.');
+  else if(S.dciclin===false&&S.dciimg===false) sa(a4,'aok','&check; DCI criteria not met at this assessment. Continue surveillance (TCD, q4h neuro checks, serial CT if clinical change).');
+  else if(S.dciclin!==null||S.dciimg!==null) sa(a4,'ainf','&#8505; DCI assessment partially complete. Document both clinical and imaging criteria.');
+  else ha(a4);
+}
+function rv(){
+  const wfns=getWFNS();
+  const hhEff=S.syst===true&&S.hh&&S.hh<5?S.hh+1:S.hh;
+  const poor=isPoorGrade();
+  const dci=isDCI();
+  const banCls=dci?'vg3':poor?'vg2':'vg1';
+  const banTitle=dci?'DCI Criteria Met &mdash; Intervention Required':(poor?'Poor-Grade SAH &mdash; Aggressive Management Protocol':'Good-Grade SAH &mdash; Standard Monitoring Protocol');
+  const banDesc=dci?'Delayed cerebral ischemia confirmed by Vergouwen 2010 consensus criteria. Initiate induced hypertension protocol. Proceed to CTA/CTP or DSA if not already done. Consider vasospasm intervention (IA nimodipine &plusmn; angioplasty) if large vessel vasospasm confirmed.'
+    :(poor?'Hunt-Hess Grade '+(hhEff||'&mdash;')+' / WFNS Grade '+(wfns||'&mdash;')+'. Poor-grade aSAH: aggressive treatment is indicated unless brainstem reflexes are absent. Priorities: early aneurysm securing (&le;24h), EVD if hydrocephalus or IVH, nimodipine 60mg q4h, ICP/CPP monitoring, continuous EEG, daily TCD, induced hypertension readiness.'
+    :'Hunt-Hess Grade '+(S.hh||'&mdash;')+' / WFNS Grade '+(wfns||'&mdash;')+'. Standard monitoring and early aneurysm securing. Nimodipine 60mg q4h &times; 21 days. Daily TCD surveillance days 3&ndash;14. Low threshold for escalation with any neurological change.');
+  const hhLabel={1:'Grade I &mdash; Asymptomatic',2:'Grade II &mdash; Headache, no deficit',3:'Grade III &mdash; Drowsy/mild deficit',4:'Grade IV &mdash; Stupor/hemiparesis',5:'Grade V &mdash; Coma/decerebrate'};
+  const wfnsLabel={1:'Grade I (GCS 15)',2:'Grade II (GCS 13&ndash;14, no deficit)',3:'Grade III (GCS 13&ndash;14, deficit)',4:'Grade IV (GCS 7&ndash;12)',5:'Grade V (GCS 3&ndash;6)'};
+  const mfLabel={1:'Grade 1 &mdash; Thin SAH, no IVH (~24%)',2:'Grade 2 &mdash; Thin SAH + IVH (~33%)',3:'Grade 3 &mdash; Thick SAH, no IVH (~33%)',4:'Grade 4 &mdash; Thick SAH + IVH (~40%)'};
+  const tcdLabel={norm:'&lt;120 cm/s &mdash; No vasospasm',mild:'120&ndash;149 cm/s &mdash; Mild',mod:'150&ndash;199 cm/s &mdash; Moderate',sev:'&ge;200 cm/s &mdash; Severe',nd:'Not performed'};
+  const vspLabel={none:'No vasospasm',mild:'Mild (&lt;33%)',mod:'Moderate (34&ndash;66%)',sev:'Severe (&ge;67%) &mdash; intervention indicated',nd:'Not imaged'};
+  let html=`<div class="vban ${banCls}"><div class="vban-head">
+    <div class="vlbl">Hunt &amp; Hess 1968 &middot; WFNS 1988 &middot; Modified Fisher (Frontera 2006) &middot; Vergouwen DCI 2010</div>
+    <div class="vtitle">${banTitle}</div>
+    <div class="vdesc">${banDesc}</div>
+  </div></div>`;
+  html+=`<div class="sum-grid">
+  <div class="sblock"><div class="sbtitle">Clinical Grading</div>
+    <div class="srow"><div class="dot ${S.hh?S.hh>=4?'dr':S.hh===3?'da':'dg':'dgr'}"></div><div class="sname">Hunt-Hess Grade</div><div class="stag ${S.hh?S.hh>=4?'tr':S.hh===3?'ta':'tg':'tgr'}">${hhLabel[S.hh]||'&mdash;'}</div></div>
+    ${S.syst===true?'<div class="srow"><div class="dot da"></div><div class="sname">Systemic disease modifier</div><div class="stag ta">+1 grade applied</div></div>':''}
+    <div class="srow"><div class="dot ${wfns?wfns>=4?'dr':wfns===3?'da':'dg':'dgr'}"></div><div class="sname">WFNS Grade</div><div class="stag ${wfns?wfns>=4?'tr':wfns===3?'ta':'tg':'tgr'}">${wfnsLabel[wfns]||'&mdash;'}</div></div>
+    <div class="srow"><div class="dot ${S.gcs!==null?S.gcs<=6?'dr':S.gcs<=12?'da':'dg':'dgr'}"></div><div class="sname">GCS</div><div class="stag ${S.gcs!==null?S.gcs<=6?'tr':S.gcs<=12?'ta':'tg':'tgr'}">${S.gcs!==null?'GCS '+S.gcs:'&mdash;'}</div></div>
+    <div class="srow"><div class="dot ${S.focal===true?'da':S.focal===false?'dg':'dgr'}"></div><div class="sname">Focal motor deficit</div><div class="stag ${S.focal===true?'ta':S.focal===false?'tg':'tgr'}">${S.focal===true?'Present':S.focal===false?'Absent':'&mdash;'}</div></div>
+    <div class="srow"><div class="dot ${poor?'dr':'dg'}"></div><div class="sname">Overall severity</div><div class="stag ${poor?'tr':'tg'}">${poor?'POOR-GRADE SAH':'Good-grade SAH'}</div></div>
+  </div>
+  <div class="sblock"><div class="sbtitle">Imaging &amp; DCI</div>
+    <div class="srow"><div class="dot ${S.mf?S.mf>=4?'dr':S.mf>=3?'da':'dg':'dgr'}"></div><div class="sname">Modified Fisher Grade</div><div class="stag ${S.mf?S.mf>=4?'tr':S.mf>=3?'ta':'tg':'tgr'}">${mfLabel[S.mf]||'&mdash;'}</div></div>
+    <div class="srow"><div class="dot ${S.ivh===true?'da':S.ivh===false?'dg':'dgr'}"></div><div class="sname">IVH</div><div class="stag ${S.ivh===true?'ta':S.ivh===false?'tg':'tgr'}">${S.ivh===true?'Present':S.ivh===false?'Absent':'&mdash;'}</div></div>
+    <div class="srow"><div class="dot ${S.hcp===true?'dr':S.hcp===false?'dg':'dgr'}"></div><div class="sname">Acute hydrocephalus</div><div class="stag ${S.hcp===true?'tr':S.hcp===false?'tg':'tgr'}">${S.hcp===true?'YES &mdash; EVD indicated':S.hcp===false?'Absent':'&mdash;'}</div></div>
+    <div class="srow"><div class="dot ${S.tcd==='sev'?'dr':S.tcd==='mod'||S.tcd==='mild'?'da':S.tcd==='norm'?'dg':'dgr'}"></div><div class="sname">TCD MCA MFV</div><div class="stag ${S.tcd==='sev'?'tr':S.tcd==='mod'||S.tcd==='mild'?'ta':S.tcd==='norm'?'tg':'tgr'}">${tcdLabel[S.tcd]||'&mdash;'}</div></div>
+    <div class="srow"><div class="dot ${S.vsp==='sev'?'dr':S.vsp==='mod'||S.vsp==='mild'?'da':S.vsp==='none'?'dg':'dgr'}"></div><div class="sname">Angiographic vasospasm</div><div class="stag ${S.vsp==='sev'?'tr':S.vsp==='mod'||S.vsp==='mild'?'ta':S.vsp==='none'?'tg':'tgr'}">${vspLabel[S.vsp]||'&mdash;'}</div></div>
+    <div class="srow"><div class="dot ${dci?'dr':'dg'}"></div><div class="sname">DCI (Vergouwen 2010)</div><div class="stag ${dci?'tr':'tg'}">${dci?'CRITERIA MET':'Not met at this assessment'}</div></div>
+  </div></div>`;
+  document.getElementById('vout').innerHTML=html;
+  buildDoc(banTitle.replace(/&mdash;/g,'--').replace(/&le;/g,'<=').replace(/&ge;/g,'>=').replace(/&ndash;/g,'-').replace(/&middot;/g,'·'),poor,dci,wfns,hhEff);
+}
+function buildDoc(title,poor,dci,wfns,hhEff){
+  const hhMap={1:'I - Asymptomatic or mild headache',2:'II - Moderate-severe headache, no deficit except CN palsy',3:'III - Drowsy, minimal deficit',4:'IV - Stupor, moderate-severe hemiparesis',5:'V - Deep coma, decerebrate rigidity'};
+  const wfnsMap={1:'I (GCS 15, no deficit)',2:'II (GCS 13-14, no deficit)',3:'III (GCS 13-14, motor deficit)',4:'IV (GCS 7-12)',5:'V (GCS 3-6)'};
+  const mfMap={1:'Grade 1 - Thin SAH, no IVH (~24% vasospasm)',2:'Grade 2 - Thin SAH + IVH (~33%)',3:'Grade 3 - Thick SAH, no IVH (~33%)',4:'Grade 4 - Thick SAH + IVH (~40%)'};
+  const tcdMap={norm:'<120 cm/s - No significant vasospasm',mild:'120-149 cm/s - Mild vasospasm',mod:'150-199 cm/s - Moderate vasospasm',sev:'>=200 cm/s - Severe vasospasm',nd:'Not performed'};
+  const vspMap={none:'No vasospasm on imaging',mild:'Mild (<33% narrowing)',mod:'Moderate (34-66% narrowing)',sev:'Severe (>=67%) - intervention indicated',nd:'Not imaged'};
+  const lrMap={low:'<3 - Hyperemia pattern (not vasospasm); avoid induced HTN',mod:'3-6 - Moderate vasospasm confirmed',high:'>6 - Severe vasospasm confirmed; DSA/intervention indicated',nd:'Not calculated'};
+  const note=`NEUROLOGY / NEUROCRITICAL CARE -- ANEURYSMAL SAH GRADING
+Hunt & Hess 1968 · WFNS 1988 · Modified Fisher (Frontera et al. Neurosurgery 2006;59:21-27)
+Vergouwen DCI Consensus (Stroke 2010;41:2391-2395)
+Date: ${new Date().toLocaleDateString()}
+
+OVERALL ASSESSMENT: ${title}
+
+CLINICAL GRADING:
+  Hunt-Hess Grade: ${hhMap[S.hh]||'Not entered'}
+  Systemic disease modifier: ${S.syst===true?'YES -- grade increased by 1 (effective grade '+hhEff+')':S.syst===false?'No serious systemic disease':'Not assessed'}
+  Effective Hunt-Hess Grade: ${hhEff||'Not entered'}
+  WFNS Grade: ${wfnsMap[wfns]||'Not entered'}
+  GCS at presentation: ${S.gcs!==null?'GCS '+S.gcs:'Not entered'}
+  Focal motor deficit: ${S.focal===true?'Present':S.focal===false?'Absent':'Not assessed'}
+  POOR-GRADE SAH (HH 4-5 or WFNS 4-5): ${poor?'YES -- aggressive management indicated':'No'}
+
+CT / RADIOLOGICAL GRADING:
+  Modified Fisher Grade: ${mfMap[S.mf]||'Not graded'}
+  Reference: Modified Fisher (Frontera 2006, n=1355): Grade 1 (~24%), Grade 2 (~33%), Grade 3 (~33%), Grade 4 (~40%)
+  Preferred over original Fisher scale (which has non-monotonic vasospasm risk: Grade 4 < Grade 3)
+  IVH: ${S.ivh===true?'Present':S.ivh===false?'Absent':'Not assessed'}
+  Acute hydrocephalus: ${S.hcp===true?'YES -- EVD indicated urgently':S.hcp===false?'Absent':'Not assessed'}
+
+VASOSPASM SURVEILLANCE (Days 3-14 post-ictus):
+  TCD MCA MFV: ${tcdMap[S.tcd]||'Not performed'}
+  Lindegaard Ratio: ${lrMap[S.lr]||'Not calculated'}
+  Clinical neurological trigger: ${S.clintrig===true?'YES -- new deficit/GCS decline; urgent CTA+CTP or DSA':S.clintrig===false?'Neurologically stable':'Not assessed'}
+
+  TCD THRESHOLD REFERENCE:
+    MFV <120 cm/s: No significant vasospasm -- routine monitoring
+    MFV 120-149 cm/s: Mild -- increase frequency, optimize volume
+    MFV 150-199 cm/s: Moderate -- CTA/CTP if clinical change; check Lindegaard ratio
+    MFV >=200 cm/s: Severe -- correlates with >=50% arterial narrowing; CTA+CTP or DSA indicated
+    Rate-of-rise: MFV increase >50 cm/s/day or >30 cm/s/study = escalation threshold
+
+DCI ASSESSMENT (Vergouwen et al. Stroke 2010;41:2391-2395):
+  Clinical criterion (focal deficit >1h or GCS decline >=2pts >1h, other causes excluded):
+    ${S.dciclin===true?'MET':S.dciclin===false?'NOT MET':'Not assessed'}
+  Imaging criterion (new CT/MRI infarction not on 24-48h baseline, not procedure-related):
+    ${S.dciimg===true?'MET':S.dciimg===false?'NOT MET':S.dciimg===null?'Not performed':''}
+  Angiographic vasospasm on CTA/MRA/DSA: ${vspMap[S.vsp]||'Not imaged'}
+  DCI DIAGNOSIS: ${dci?'YES -- CRITERIA MET':'No -- criteria not met at this assessment'}
+
+  Note: DCI ≠ vasospasm. DCI is a clinical/imaging definition; angiographic vasospasm is a separate entity.
+  DCI can occur without large-vessel vasospasm (microvascular spasm, cortical spreading depression,
+  microthrombosis). Both criteria independently diagnose DCI; vasospasm imaging is NOT required.
+
+DCI TREATMENT PROTOCOL (if criteria met):
+  Step 1: Induced hypertension -- SBP target 160-200 mmHg (norepinephrine or phenylephrine; euvolemia)
+  Step 2: Continue/optimize nimodipine 60mg PO q4h -- do NOT stop; manage BP separately
+  Step 3: CTA + CTP or DSA if not already done
+  Step 4: Intra-arterial nimodipine +/- balloon angioplasty for proximal severe vasospasm
+  Supportive: Normothermia (target <38°C), euglycemia, Hgb >=8-9 g/dL, avoid hypovolemia
+
+KEY MANAGEMENT PRIORITIES (ALL GRADES):
+  Aneurysm securing: <=24 hours (coiling preferred when feasible -- ISAT trial, Lancet 2002)
+  Nimodipine: 60 mg PO q4h x 21 days (NNT 8 for DCI prevention; NNT 13 for poor outcome prevention)
+  BP pre-securing: SBP <160 mmHg (titratable IV nicardipine or labetalol)
+  EVD: Acute obstructive hydrocephalus, IVH, GCS <=13 with ventriculomegaly, or progressive deterioration
+  CPP goal: >=60 mmHg in poor-grade SAH with ICP monitoring
+  TCD: Daily days 3-14; escalate with MFV >=150 or any clinical change
+  Hyponatremia (~30-40% of SAH): SIADH (euvolemic) vs CSW (hypovolemic, high urine Na)
+    CSW: treat with IV NS + fludrocortisone
+    SIADH: 3% NaCl preferred over fluid restriction (fluid restriction worsens DCI risk)
+  Fever: Target normothermia aggressively -- fever >38.5°C worsens ischemic injury
+  Continuous EEG: Consider in poor-grade SAH (HH 4-5) -- non-convulsive seizures ~10-20%
+  Cardiac monitoring: Neurogenic stunned myocardium, troponin elevation common in HH 4-5
+  Statin therapy: May be added to DCI treatment (rosuvastatin 40 mg) -- uncertain benefit
+  ISTAT: Triple-H therapy (hypervolemia-hypertension-hemodilution) is NO longer recommended;
+    induced hypertension alone with euvolemia is current standard
+
+KEY REFERENCES:
+  Hunt WE, Hess RM. J Neurosurg 1968;28:14-20 (Hunt-Hess scale)
+  WFNS Committee. J Neurosurg 1988;68:985-986 (WFNS scale)
+  Frontera JA et al. Neurosurgery 2006;59:21-27 (Modified Fisher, n=1355)
+  Vergouwen MD et al. Stroke 2010;41:2391-2395 (DCI consensus definition, OR 2.65)
+  Molyneux AJ et al. (ISAT) Lancet 2002;360:1267-1274 (coiling vs clipping)
+  Dorhout Mees SM et al. Cochrane 2007 (nimodipine, NNT 8 for DCI, NNT 13 for poor outcome)`;
+  document.getElementById('dn').textContent=note;
+}
+function sa(el,cls,msg){if(!el)return;el.className='alrt show '+cls;el.innerHTML=msg;}
+function ha(el){if(el)el.classList.remove('show');}
+function goTab(n){if(n===cur)return;go(n);}
+function go(n){
+  document.getElementById('s'+cur).classList.remove('active');
+  document.getElementById('s'+n).classList.add('active');
+  for(let i=0;i<6;i++){const d=document.getElementById('st'+i);d.classList.remove('active','done');if(i<n)d.classList.add('done');else if(i===n)d.classList.add('active');}
+  cur=n; document.getElementById('pf').style.width=((n/5)*100)+'%';
+  if(n===5)rv();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function xp(btn){
+  const d=btn.closest('.crit').querySelector('.crit-detail');
+  if(!d)return;
+  const o=d.classList.toggle('open');
+  btn.textContent=o?'close \u25b4':'details \u25be';
+}
+function toggleDoc(){
+  const body=document.getElementById('dn'),btn=document.getElementById('copy-btn'),tog=document.querySelector('.doc-tog');
+  if(!body)return;
+  const open=body.classList.toggle('open');
+  if(tog)tog.textContent=open?'\u25b2 Documentation Note':'\u25bc Documentation Note';
+  if(btn)btn.classList.toggle('visible',open);
+}
+function copyDoc(){
+  const body=document.getElementById('dn'),btn=document.getElementById('copy-btn');
+  if(!body)return;
+  const text=body.textContent||body.innerText;
+  navigator.clipboard.writeText(text).then(()=>{if(btn){btn.textContent='\u2713 Copied';btn.classList.add('copied');setTimeout(()=>{btn.textContent='\u238a Copy';btn.classList.remove('copied');},2000);}}).catch(()=>{const ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);if(btn){btn.textContent='\u2713 Copied';btn.classList.add('copied');setTimeout(()=>{btn.textContent='\u238a Copy';btn.classList.remove('copied');},2000);}});
+}
+function resetAll(){
+  Object.keys(S).forEach(k=>S[k]=null);
+  document.querySelectorAll('.crit').forEach(el=>el.className='crit');
+  document.querySelectorAll('.abtn').forEach(b=>b.classList.remove('ay','an','av','ab','aa','aw'));
+  document.querySelectorAll('.crit-detail').forEach(d=>d.classList.remove('open'));
+  document.querySelectorAll('.xbtn').forEach(b=>b.textContent='details \u25be');
+  document.querySelectorAll('.gcard').forEach(c=>c.className='gcard');
+  ['a0','a1','a2','a3','a4'].forEach(id=>{const el=document.getElementById(id);if(el)el.classList.remove('show');});
+  document.getElementById('vout').innerHTML='';
+  const dn=document.getElementById('dn');if(dn)dn.classList.remove('open');
+  const cb=document.getElementById('copy-btn');if(cb)cb.classList.remove('visible','copied');
+  const tog=document.querySelector('.doc-tog');if(tog)tog.textContent='\u25bc Documentation Note';
+  go(0); document.getElementById('n0').disabled=true;
+}
+ui();
+</script>
+</body>
+</html>
