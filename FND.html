@@ -1,0 +1,1161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Functional Neurological Disorder &middot; Diagnostic Navigator</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Lexend:wght@300;400;500;600;700&display=swap');
+:root {
+  --bg:#0d1117; --card:#161b22; --card2:#1c2330; --border:#2a3a4a; --border2:#3a5060;
+  --green:#3fb950; --green-bg:rgba(63,185,80,.10); --green-bd:rgba(63,185,80,.35);
+  --red:#f85149; --red-bg:rgba(248,81,73,.10); --red-bd:rgba(248,81,73,.35);
+  --amber:#e3b341; --amber-bg:rgba(227,179,65,.10); --amber-bd:rgba(227,179,65,.35);
+  --blue:#58a6ff; --blue-bg:rgba(88,166,255,.10); --blue-bd:rgba(88,166,255,.35);
+  --purple:#bc8cff; --purple-bg:rgba(188,140,255,.10); --purple-bd:rgba(188,140,255,.35);
+  /* FND accent: teal/cyan */
+  --accent:#2dd4bf; --accent-bg:rgba(45,212,191,.10); --accent-bd:rgba(45,212,191,.35);
+  --accent2:#0f766e;
+  --text:#e6edf3; --text2:#aab4c0; --text3:#6e7f94;
+  --sans:'Lexend','Inter',system-ui,sans-serif; --mono:'IBM Plex Mono',monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:14px;line-height:1.5;min-height:100vh;}
+.app{max-width:960px;margin:0 auto;padding:0 20px 80px;}
+header{padding:24px 0 16px;border-bottom:1px solid var(--border);margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;}
+.h-title{font-size:19px;font-weight:700;font-family:var(--sans);}.h-title span{color:var(--accent);}
+.h-sub{font-size:11px;color:var(--text3);margin-top:3px;line-height:1.6;font-family:var(--sans);}
+.h-credit{font-size:11px;color:var(--text3);margin-top:2px;font-family:var(--sans);}
+.reset-btn{background:var(--card2);border:1px solid var(--border);color:var(--text2);font-family:var(--sans);font-size:12px;padding:6px 14px;cursor:pointer;border-radius:4px;transition:all .15s;white-space:nowrap;font-weight:500;}
+.reset-btn:hover{border-color:var(--accent);color:var(--accent);}
+.prog-track{height:3px;background:var(--border);margin-bottom:20px;border-radius:2px;}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--accent2),var(--accent));border-radius:2px;transition:width .4s ease;box-shadow:0 0 8px rgba(45,212,191,.4);}
+.steps{display:grid;grid-template-columns:repeat(6,1fr);border:1px solid var(--border);border-radius:8px;margin-bottom:20px;overflow:hidden;background:var(--card);}
+.stab{padding:8px 3px 9px;text-align:center;font-size:10px;color:var(--text3);border-right:1px solid var(--border);transition:all .2s;cursor:pointer;background:var(--card);line-height:1.3;font-family:var(--sans);}
+.stab:nth-child(6n){border-right:none;}
+.stab .sn{display:flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;background:var(--card2);border:1px solid var(--border);font-size:10px;font-weight:700;margin:0 auto 3px;transition:all .2s;}
+.stab .slbl{display:block;font-size:9px;font-weight:600;line-height:1.3;font-family:var(--sans);}
+.stab.active{color:var(--accent);background:var(--accent-bg);}
+.stab.active .sn{background:var(--accent);color:#0d1117;border-color:var(--accent);}
+.stab.done{color:var(--green);}.stab.done .sn{background:var(--green);color:#0d1117;border-color:var(--green);}
+.stab:hover:not(.active){background:var(--card2);}
+.card{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:22px;margin-bottom:12px;}
+.ctitle{font-size:13px;font-weight:700;margin-bottom:3px;font-family:var(--sans);}
+.csub{font-size:12px;color:var(--text2);margin-bottom:16px;line-height:1.5;font-family:var(--sans);}
+.slabel{display:flex;align-items:center;gap:8px;font-size:11px;font-weight:600;color:var(--text);margin-bottom:9px;padding-bottom:6px;border-bottom:1px solid var(--border);font-family:var(--sans);}
+.pill{font-size:9px;padding:1px 7px;border-radius:20px;border:1px solid;margin-left:auto;letter-spacing:.04em;text-transform:uppercase;font-family:var(--sans);}
+.pill-r{border-color:var(--red);color:var(--red);background:var(--red-bg);}
+.pill-a{border-color:var(--accent);color:var(--accent);background:var(--accent-bg);}
+.pill-g{border-color:var(--green);color:var(--green);background:var(--green-bg);}
+.pill-b{border-color:var(--blue);color:var(--blue);background:var(--blue-bg);}
+.pill-am{border-color:var(--amber);color:var(--amber);background:var(--amber-bg);}
+.crit{border:1px solid var(--border);border-radius:6px;margin-bottom:5px;overflow:hidden;transition:border-color .15s,background .15s;}
+.crit.c-yes{border-color:var(--green-bd);background:var(--green-bg);}
+.crit.c-no{border-color:var(--red-bd);background:var(--red-bg);}
+.crit.c-a{border-color:var(--accent-bd);background:var(--accent-bg);}
+.crit.c-abs{border-color:var(--border2);background:var(--card2);}
+.crit.c-part{border-color:var(--amber-bd);background:var(--amber-bg);}
+.crit.c-blue{border-color:var(--blue-bd);background:var(--blue-bg);}
+.crit-main{display:flex;align-items:center;gap:10px;padding:10px 13px;}
+.crit-name{flex:1;font-size:13px;font-weight:500;color:var(--text);line-height:1.3;font-family:var(--sans);}
+.xbtn{background:var(--purple-bg);border:1px solid var(--purple-bd);color:var(--purple);font-size:11px;cursor:pointer;padding:2px 8px;white-space:nowrap;transition:all .15s;flex-shrink:0;border-radius:3px;font-weight:500;font-family:var(--sans);}
+.xbtn:hover{background:var(--purple);color:#0d1117;border-color:var(--purple);}
+.crit-detail{display:none;padding:10px 13px 12px;font-size:12px;color:var(--text);line-height:1.65;border-top:1px solid var(--border);font-family:var(--sans);}
+.crit-detail.open{display:block;}
+.cnote{margin-top:8px;padding:8px 11px;background:var(--card2);border-left:3px solid var(--border2);font-size:11px;color:var(--text2);line-height:1.75;border-radius:0 3px 3px 0;font-family:var(--sans);}
+.cnote strong{color:var(--text);}
+.brow{display:flex;border-top:1px solid var(--border);flex-wrap:wrap;}
+.abtn{flex:1;min-width:80px;padding:9px 10px;background:none;border:none;border-right:1px solid var(--border);border-bottom:1px solid var(--border);color:var(--text2);font-family:var(--sans);font-size:11px;cursor:pointer;transition:all .12s;font-weight:400;line-height:1.4;text-align:left;}
+.abtn:last-child{border-right:none;}.abtn:hover{background:var(--card2);color:var(--text);}
+.abtn.ay{background:var(--green-bg);color:var(--green);font-weight:700;}
+.abtn.an{background:var(--red-bg);color:var(--red);font-weight:700;}
+.abtn.aa{background:var(--accent-bg);color:var(--accent);font-weight:700;}
+.abtn.ab{background:var(--blue-bg);color:var(--blue);font-weight:700;}
+.abtn.agr{background:var(--amber-bg);color:var(--amber);font-weight:700;border-top:1px solid var(--amber-bd);}
+.abtn.aw{background:var(--amber-bg);color:var(--amber);font-weight:700;}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:5px;}
+@media(max-width:600px){.two-col{grid-template-columns:1fr;}}
+.alrt{padding:9px 13px;border-radius:5px;font-size:12px;line-height:1.55;margin-top:12px;border-left:3px solid;display:none;font-family:var(--sans);}
+.alrt.show{display:block;}
+.aok{border-color:var(--green);background:var(--green-bg);color:#7ee787;}
+.awn{border-color:var(--amber);background:var(--amber-bg);color:var(--amber);}
+.aerr{border-color:var(--red);background:var(--red-bg);color:#ff7b72;}
+.ainf{border-color:var(--blue);background:var(--blue-bg);color:var(--blue);}
+.ateal{border-color:var(--accent);background:var(--accent-bg);color:var(--accent);}
+.lbox{background:var(--card2);border:1px solid var(--border);border-radius:5px;padding:12px 15px;font-size:12px;color:var(--text2);line-height:1.75;margin-bottom:14px;font-family:var(--sans);}
+.lbox strong{color:var(--text);}
+.lt{color:var(--accent);font-weight:600;} .lg{color:var(--green);font-weight:600;}
+.lr{color:var(--red);font-weight:600;} .lb{color:var(--blue);font-weight:600;}
+.lam{color:var(--amber);font-weight:600;}
+/* Sign confidence badges */
+.sign-badge{display:inline-flex;align-items:center;gap:4px;font-size:9px;padding:1px 7px;border-radius:10px;border:1px solid;font-weight:700;font-family:var(--sans);vertical-align:middle;margin-left:4px;}
+.sb-hi{border-color:var(--green-bd);color:var(--green);background:var(--green-bg);}
+.sb-mod{border-color:var(--amber-bd);color:var(--amber);background:var(--amber-bg);}
+.sb-low{border-color:var(--border2);color:var(--text3);background:var(--card2);}
+/* Subtype selector */
+.subtype-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-bottom:14px;}
+@media(max-width:580px){.subtype-grid{grid-template-columns:1fr 1fr;}}
+.stcard{border:1px solid var(--border);border-radius:6px;padding:10px 12px;background:var(--card2);cursor:pointer;transition:all .2s;}
+.stcard:hover{border-color:var(--border2);}
+.stcard.stsel{border-color:var(--accent-bd);background:var(--accent-bg);}
+.stcard-name{font-size:12px;font-weight:600;color:var(--text);font-family:var(--sans);margin-bottom:2px;}
+.stcard-sub{font-size:10px;color:var(--text3);font-family:var(--sans);line-height:1.4;}
+/* Confidence meter */
+.conf-meter{display:flex;gap:4px;margin:12px 0;}
+.conf-seg{flex:1;height:8px;border-radius:4px;background:var(--border);}
+.conf-seg.filled-def{background:var(--green);}
+.conf-seg.filled-prob{background:var(--accent);}
+.conf-seg.filled-poss{background:var(--amber);}
+/* Nav */
+.nav-row{display:flex;justify-content:space-between;align-items:center;margin-top:20px;gap:10px;}
+.nbtn{padding:9px 22px;border-radius:5px;font-family:var(--sans);font-size:13px;border:1px solid;cursor:pointer;font-weight:600;transition:all .15s;}
+.np{background:var(--accent);border-color:var(--accent);color:#0d1117;font-weight:700;}
+.np:hover{background:#5eead4;border-color:#5eead4;}
+.np:disabled{opacity:.3;cursor:not-allowed;}
+.ns{background:transparent;border-color:var(--border2);color:var(--text2);}
+.ns:hover{border-color:var(--text);color:var(--text);}
+.screen{display:none;}.screen.active{display:block;animation:fu .25s ease;}
+@keyframes fu{from{opacity:0;transform:translateY(5px);}to{opacity:1;transform:translateY(0);}}
+/* Verdict */
+.vban{border-radius:8px;padding:22px 26px;margin-bottom:16px;border:2px solid;}
+.vdef{border-color:var(--green);background:var(--green-bg);}
+.vprob{border-color:var(--accent);background:var(--accent-bg);}
+.vposs{border-color:var(--amber);background:var(--amber-bg);}
+.vexcl{border-color:var(--red);background:var(--red-bg);}
+.vund{border-color:var(--border2);background:var(--card2);}
+.vban-head{text-align:center;margin-bottom:14px;}
+.vlbl{font-family:var(--sans);font-size:9px;letter-spacing:.15em;text-transform:uppercase;opacity:.6;margin-bottom:5px;}
+.vtitle{font-size:22px;font-weight:700;margin-bottom:6px;font-family:var(--sans);}
+.vdef .vtitle{color:var(--green);}.vprob .vtitle{color:var(--accent);}
+.vposs .vtitle{color:var(--amber);}.vexcl .vtitle{color:var(--red);}.vund .vtitle{color:var(--text2);}
+.vdesc{font-size:12px;color:var(--text2);line-height:1.7;max-width:640px;margin:0 auto;font-family:var(--sans);}
+.sum-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;}
+@media(max-width:580px){.sum-grid{grid-template-columns:1fr;}}
+.sblock{background:var(--card);border:1px solid var(--border);border-radius:6px;overflow:hidden;}
+.sbtitle{font-size:11px;font-weight:600;padding:7px 11px;border-bottom:1px solid var(--border);color:var(--text);background:var(--card2);font-family:var(--sans);}
+.srow{display:flex;align-items:flex-start;gap:8px;padding:6px 11px;border-bottom:1px solid var(--border);font-size:12px;font-family:var(--sans);}
+.srow:last-child{border-bottom:none;}
+.dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;margin-top:4px;}
+.dg{background:var(--green);}.dr{background:var(--red);}.dt{background:var(--accent);}
+.db{background:var(--blue);}.dam{background:var(--amber);}.dgr{background:var(--text3);}
+.sname{flex:1;color:var(--text);line-height:1.4;font-family:var(--sans);}
+.stag{font-family:var(--sans);font-size:9px;padding:1px 7px;border-radius:10px;border:1px solid;white-space:nowrap;}
+.tg{border-color:var(--green-bd);color:var(--green);}
+.tr{border-color:var(--red-bd);color:var(--red);}
+.tt{border-color:var(--accent-bd);color:var(--accent);}
+.tb{border-color:var(--blue-bd);color:var(--blue);}
+.tam{border-color:var(--amber-bd);color:var(--amber);}
+.tgr{border-color:var(--border2);color:var(--text3);}
+/* Doc note */
+.doc-header{display:flex;align-items:center;gap:8px;margin-bottom:5px;}
+.doc-tog{flex:1;text-align:left;background:var(--card2);border:1px solid var(--border2);border-radius:5px;color:var(--text2);font-family:var(--sans);font-size:13px;padding:8px 13px;cursor:pointer;transition:all .15s;}
+.doc-tog:hover{border-color:var(--accent);color:var(--accent);}
+.copy-btn{background:var(--card2);border:1px solid var(--border2);border-radius:5px;color:var(--text2);font-family:var(--sans);font-size:12px;padding:8px 14px;cursor:pointer;white-space:nowrap;transition:all .15s;display:none;}
+.copy-btn.visible{display:block;}.copy-btn:hover{border-color:var(--green);color:var(--green);}
+.copy-btn.copied{border-color:var(--green);color:var(--green);background:var(--green-bg);}
+.doc-body{display:none;background:var(--card2);border:1px solid var(--border2);border-radius:5px;padding:13px 15px;font-family:var(--mono);font-size:11px;color:var(--text2);line-height:1.85;white-space:pre-wrap;margin-bottom:12px;}
+.doc-body.open{display:block;}
+</style>
+</head>
+<body>
+<div class="app">
+<header>
+  <div>
+    <div class="h-title">Functional Neurological Disorder &middot; <span>Positive Sign Diagnostic Navigator</span></div>
+    <div class="h-sub">DSM-5-TR (APA 2022) &middot; Aybek S &amp; Perez DL, BMJ 2022 &middot; Espay AJ et al. JAMA Neurol 2018 &middot; Stone J et al. (neurosymptoms.org) &middot; For educator use only</div>
+    <div class="h-credit">Designed by Daniel Short, MD</div>
+  </div>
+  <button class="reset-btn" onclick="resetAll()">&#8634; Reset</button>
+</header>
+<div class="prog-track"><div class="prog-fill" id="pf" style="width:0%"></div></div>
+<div class="steps">
+  <div class="stab active" id="st0" onclick="goTab(0)"><span class="sn">1</span><span class="slbl">Presentation &amp; Subtype</span></div>
+  <div class="stab" id="st1" onclick="goTab(1)"><span class="sn">2</span><span class="slbl">DSM-5-TR Criteria</span></div>
+  <div class="stab" id="st2" onclick="goTab(2)"><span class="sn">3</span><span class="slbl">Positive Signs</span></div>
+  <div class="stab" id="st3" onclick="goTab(3)"><span class="sn">4</span><span class="slbl">Red Flags &amp; Mimics</span></div>
+  <div class="stab" id="st4" onclick="goTab(4)"><span class="sn">5</span><span class="slbl">Comorbidities &amp; Context</span></div>
+  <div class="stab" id="st5" onclick="goTab(5)"><span class="sn">6</span><span class="slbl">Confidence &amp; Treatment</span></div>
+</div>
+
+<!-- S0: PRESENTATION -->
+<div class="screen active" id="s0">
+<div class="card">
+  <div class="ctitle" style="color:var(--accent);">Step 1 &middot; Presentation &amp; FND Subtype</div>
+  <div class="csub">FND (functional neurological disorder) is diagnosed based on positive clinical signs demonstrating internal inconsistency or incongruence with recognised neurological disease. It is not a diagnosis of exclusion. FND accounts for 4&ndash;12% of neurology outpatient referrals. Diagnostic stability is comparable to MS and epilepsy when positive signs are used (Stone J et al. 2005, 2012). Select the primary presenting subtype &mdash; multiple subtypes frequently coexist.</div>
+
+  <div class="lbox">
+    <strong>Conceptual framework (Aybek &amp; Perez, BMJ 2022; Espay et al. JAMA Neurol 2018):</strong><br>
+    FND reflects altered brain network function &mdash; not structural damage, not malingering, not purely psychogenic. Functional neuroimaging demonstrates abnormal connectivity in motor control networks (supplementary motor area, anterior cingulate cortex) and altered predictive processing. Symptoms are <em>involuntary</em> and <em>genuine</em>. The biopsychosocial model incorporates predisposing (genetics, prior neurological disease), precipitating (physical injury, illness, trauma), and perpetuating (avoidance, fear, attention) factors.<br><br>
+    <span class="lt">Key terminology shift:</span> &ldquo;Functional&rdquo; is preferred over &ldquo;psychogenic,&rdquo; &ldquo;conversion,&rdquo; or &ldquo;hysteria.&rdquo; DSM-5-TR (2022) term: <em>Functional Neurological Symptom Disorder</em>. The DSM-5-TR no longer requires a psychological stressor for diagnosis.
+  </div>
+
+  <div class="slabel">Select primary FND subtype(s) <span class="pill pill-a">MULTIPLE SUBTYPES MAY COEXIST</span></div>
+  <div class="subtype-grid" id="subtype-grid"></div>
+
+  <div class="slabel" style="margin-top:4px;">Symptom onset pattern <span class="pill pill-am">INFORMS PROGNOSIS</span></div>
+  <div class="crit" id="onset-item">
+    <div class="crit-main">
+      <div class="crit-name">Onset character &mdash; abrupt/paroxysmal onset vs. gradual; associated trigger or precipitant (physical injury, illness, stressor, medical procedure)</div>
+      <button class="xbtn" onclick="xp(this)">details &#9662;</button>
+    </div>
+    <div class="crit-detail">
+      Acute onset (days to weeks) is associated with better prognosis than insidious onset. Physical injury or illness as a precipitant is common (present in ~37% of cases; Aybek &amp; Perez 2022) and does NOT invalidate the FND diagnosis &mdash; FND can coexist with genuine structural injury. Latrogenic precipitants (FND emerging after neurosurgery, spinal procedure, minor injury) are well-documented. Psychological trauma as a precipitant is important but is no longer required by DSM-5-TR.<br><br>
+      <strong>Prognosis data (Gelauff J et al. J Neurol Neurosurg Psychiatry 2014):</strong> In functional motor disorders, ~40% of patients improve or remit. Poor prognostic factors: longer symptom duration at diagnosis, high somatic symptom burden, disability benefits/litigation, and comorbid personality disorder.
+      <div class="cnote"><strong>Positive feedback loop:</strong> Attention to symptoms and fear of movement (kinesiophobia) perpetuate FND through reinforcement of aberrant predictive brain models. This is why physiotherapy that encourages movement paradoxically improves symptoms &mdash; Hoover sign positive patients who can run, walk backwards, or cycle may have preserved function in automatic vs. voluntary movement contexts.</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setOnset('acute')"  id="onset-acute">&#10003; Acute / paroxysmal onset (&lt;4 weeks)</button>
+      <button class="abtn" onclick="setOnset('subac')"  id="onset-subac">&#10003; Subacute (4&ndash;12 weeks)</button>
+      <button class="abtn" onclick="setOnset('chronic')" id="onset-chronic">&#10003; Chronic / insidious (&gt;12 weeks)</button>
+      <button class="abtn" onclick="setOnset('nd')"     id="onset-nd">&mdash; Not established</button>
+    </div>
+  </div>
+
+  <div class="crit" id="prior-item">
+    <div class="crit-main">
+      <div class="crit-name">Prior neurological disorder &mdash; does the patient have a documented, confirmed structural neurological disease that may <em>coexist</em> with FND?</div>
+      <button class="xbtn" onclick="xp(this)">details &#9662;</button>
+    </div>
+    <div class="crit-detail">
+      FND commonly coexists with genuine neurological disease &mdash; this is one of the most important paradigm shifts in modern FND diagnosis. Up to 20&ndash;30% of patients with epilepsy also have functional seizures (PNES). FND has been described alongside MS, Parkinson&rsquo;s disease, stroke, and peripheral neuropathy. The presence of an underlying neurological disease does NOT exclude FND, but does raise the bar for positive sign identification and increases the risk of diagnostic error in both directions. Document clearly what is attributable to each condition.
+      <div class="cnote"><strong>FND and Parkinson&rsquo;s disease:</strong> Functional tremor can overlay PD tremor. Clues to functional overlay: (1) tremor that entrains or suppresses beyond what is expected for PD; (2) variable frequency different from the characteristic 4&ndash;6 Hz rest tremor; (3) symptoms disproportionate to dopaminergic deficits on DATscan. Functional parkinsonism (without PD) shows excessive slowness without true decrement-fatigue, inconsistent rigidity, and normal DATscan.</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setPrior(true)"  id="prior-yes">&#10003; Yes &mdash; coexisting confirmed neurological disease</button>
+      <button class="abtn" onclick="setPrior(false)" id="prior-no">&#10007; No &mdash; no confirmed structural neurological disease</button>
+    </div>
+  </div>
+
+  <div id="a0" class="alrt"></div>
+  <div class="nav-row"><div></div><button class="nbtn np" id="n0" onclick="go(1)" disabled>Next: DSM-5-TR Criteria &#8594;</button></div>
+</div>
+</div>
+
+<!-- S1: DSM-5-TR CRITERIA -->
+<div class="screen" id="s1">
+<div class="card">
+  <div class="ctitle" style="color:var(--accent);">Step 2 &middot; DSM-5-TR Diagnostic Criteria (APA 2022)</div>
+  <div class="csub">The DSM-5-TR (2022) criteria for Functional Neurological Symptom Disorder (FNSD) require all four criteria to be met. The most important update from DSM-5 (2013): Criterion B now explicitly states that positive signs demonstrating internal inconsistency or incongruence are the diagnostic standard &mdash; no longer requires a psychological stressor (removed from all criteria), and does not require confirmation that symptoms are not intentionally produced.</div>
+
+  <div class="lbox">
+    <strong>DSM-5-TR Criteria for Functional Neurological Symptom Disorder (F44.x):</strong><br>
+    <span class="lt">Criterion A:</span> One or more symptoms of altered voluntary motor or sensory function<br>
+    <span class="lt">Criterion B:</span> Clinical findings provide evidence of incompatibility between the symptom and recognised neurological or medical conditions. <em>Incompatibility is demonstrated by positive signs (internal inconsistency or incongruence)</em><br>
+    <span class="lt">Criterion C:</span> The symptom or deficit is not better explained by another medical or mental disorder<br>
+    <span class="lt">Criterion D:</span> The symptom or deficit causes clinically significant distress or impairment in social, occupational, or other important areas of functioning, or warrants medical evaluation<br><br>
+    <strong>Specify subtype, onset (acute vs. persistent), and whether with/without psychological stressor (optional)</strong>
+  </div>
+
+  <div class="slabel">Criterion A &mdash; Altered voluntary motor or sensory function <span class="pill pill-r">REQUIRED</span></div>
+  <div class="crit" id="ca-item">
+    <div class="crit-main">
+      <div class="crit-name">One or more neurological symptoms: weakness/paralysis, tremor, dystonic posturing, myoclonus, gait disorder, sensory loss/altered sensation, vision/hearing loss, speech/swallowing, non-epileptic seizures, dissociative episodes, or cognitive symptoms</div>
+      <button class="xbtn" onclick="xp(this)">details &#9662;</button>
+    </div>
+    <div class="crit-detail">
+      FND symptoms span the full range of the nervous system. Criterion A is generally met by clinical presentation. Symptoms must affect voluntary motor or sensory function &mdash; this includes movement (tremor, weakness, dystonia, myoclonus, jerks, gait), sensation (numbness, pain, altered touch), special senses (functional blindness, diplopia, hearing loss), speech (functional dysphonia, dysarthria, foreign accent syndrome), swallowing, or episodic/paroxysmal symptoms (functional seizures, episodes of unresponsiveness).<br><br>
+      <strong>Important:</strong> Multiple symptom types commonly coexist. Functional cognitive symptoms (memory complaints, attention) may also form part of the FND spectrum (functional cognitive disorder, FCD), though this remains an evolving area distinct from dementia.
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setCrit('A',true)"  id="ca-yes">&#10003; Met &mdash; neurological symptom(s) present</button>
+      <button class="abtn" onclick="setCrit('A',false)" id="ca-no">&#10007; Not met</button>
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:14px;">Criterion B &mdash; Positive clinical evidence of incompatibility <span class="pill pill-r">REQUIRED &mdash; CORE OF MODERN FND DIAGNOSIS</span></div>
+  <div class="crit" id="cb-item">
+    <div class="crit-main">
+      <div class="crit-name">Positive signs demonstrating internal inconsistency (symptom varies based on attention/distraction) OR incongruence with known neurological disease patterns</div>
+      <button class="xbtn" onclick="xp(this)">details &#9662;</button>
+    </div>
+    <div class="crit-detail">
+      <strong>Internal inconsistency:</strong> The symptom improves, disappears, or changes character when the patient&rsquo;s attention is directed away from it. Examples: Hoover sign (hip extension normal when tested indirectly via contralateral hip flexion); tremor that entrains, pauses, or suppresses with contralateral rhythmic movement; weakness that is &ldquo;give-way&rdquo; (collapses suddenly) but not smooth/sustained as in UMN/LMN lesions; gait that improves when walking backwards or running despite severe apparent impairment walking forwards.<br><br>
+      <strong>Incongruence:</strong> The pattern of symptoms does not fit any known neurological disease. Examples: sensory loss that splits exactly at the midline (anatomically impossible given shared nerve supply); &ldquo;tubular&rdquo; visual field constriction that remains the same size regardless of viewing distance (impossible in genuine visual field loss); tremor that is present in all postures equally without the characteristic postural/rest/kinetic pattern of organic tremors.<br><br>
+      <strong>This criterion is now the diagnostic cornerstone</strong> (Aybek &amp; Perez BMJ 2022): a single, clear positive sign in the right context is sufficient. See Step 3 for the full positive signs checklist.
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setCrit('B',true)"  id="cb-yes">&#10003; Met &mdash; positive signs of incompatibility identified</button>
+      <button class="abtn" onclick="setCrit('B',false)" id="cb-no">&#10007; Not met &mdash; no positive signs found yet</button>
+      <button class="abtn" onclick="setCrit('B',null)"  id="cb-nd">&mdash; Examination pending</button>
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:14px;">Criterion C &mdash; Not better explained by another disorder <span class="pill pill-r">REQUIRED</span></div>
+  <div class="crit" id="cc-item">
+    <div class="crit-main">
+      <div class="crit-name">Symptoms are not fully accounted for by another medical or mental disorder. Note: FND CAN coexist with genuine neurological disease &mdash; Criterion C does not require excluding all other conditions</div>
+      <button class="xbtn" onclick="xp(this)">details &#9662;</button>
+    </div>
+    <div class="crit-detail">
+      Criterion C is NOT an exclusion criterion in the historical &ldquo;diagnosis of exclusion&rdquo; sense. Rather, it asks whether the specific FND symptoms can be fully explained by another condition. A patient may have both MS and FND-superimposed symptoms &mdash; if positive FND signs are present and the symptoms are not fully explicable by MS lesion location/burden, Criterion C can be met.<br><br>
+      Conditions to consider excluding before confirming FND: metabolic encephalopathy (thyroid, glucose, calcium, B12), autoimmune encephalitis (NMDAR, LGI1, CASPR2 &mdash; especially in young patients with new psychiatric symptoms + movement disorder), CNS vasculitis, complex regional pain syndrome (CRPS), Wilson&rsquo;s disease (young onset dyskinesia), Huntington&rsquo;s disease (early chorea), cervical/lumbar myelopathy/radiculopathy.
+      <div class="cnote"><strong>Autoimmune encephalitis:</strong> Anti-NMDAR encephalitis in particular can closely mimic FND (and FND can be misdiagnosed as autoimmune encephalitis). Key differentiators: NMDAR encephalitis typically has progressive course, altered consciousness, MRI/CSF/EEG abnormalities, and responds to immunotherapy. A careful history and appropriate antibody testing (serum and CSF) should precede an FND diagnosis in atypical presentations, particularly young women with rapid onset psychiatric/movement symptoms.</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setCrit('C',true)"  id="cc-yes">&#10003; Met &mdash; not better explained by another disorder</button>
+      <button class="abtn" onclick="setCrit('C',false)" id="cc-no">&#10007; Not met &mdash; another disorder is the primary explanation</button>
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:14px;">Criterion D &mdash; Clinically significant distress or impairment <span class="pill pill-r">REQUIRED</span></div>
+  <div class="crit" id="cd-item">
+    <div class="crit-main">
+      <div class="crit-name">Symptoms cause significant distress, functional impairment (work, social, ADLs), or prompt medical evaluation</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setCrit('D',true)"  id="cd-yes">&#10003; Met &mdash; significant distress or impairment present</button>
+      <button class="abtn" onclick="setCrit('D',false)" id="cd-no">&#10007; Not met</button>
+    </div>
+  </div>
+
+  <div id="a1" class="alrt"></div>
+  <div class="nav-row">
+    <button class="nbtn ns" onclick="go(0)">&larr; Back</button>
+    <button class="nbtn np" onclick="go(2)">Next: Positive Signs &#8594;</button>
+  </div>
+</div>
+</div>
+
+<!-- S2: POSITIVE SIGNS -->
+<div class="screen" id="s2">
+<div class="card">
+  <div class="ctitle" style="color:var(--accent);">Step 3 &middot; Positive Sign Examination</div>
+  <div class="csub">Positive signs are bedside examination findings that demonstrate internal inconsistency (symptom changes with attention/distraction) or anatomical/physiological incongruence. A single unequivocal positive sign in the appropriate clinical context is sufficient to meet Criterion B. Signs should be demonstrated to the patient as part of the diagnostic communication &mdash; this is both diagnostically and therapeutically valuable.</div>
+
+  <div class="lbox">
+    <strong>Evidence quality for positive signs:</strong>
+    <span class="sign-badge sb-hi">HIGH Sn/Sp</span> = well-validated (sensitivity &gt;80%, specificity &gt;90%) &nbsp;
+    <span class="sign-badge sb-mod">MODERATE</span> = useful but less validated &nbsp;
+    <span class="sign-badge sb-low">EMERGING</span> = clinically useful, limited formal data<br><br>
+    <strong>Key principle:</strong> No single sign is 100% specific. Clinical confidence comes from the combination of positive signs, clinical context, and symptom pattern incongruence. Signs should be reproducible, and ideally confirmed by a second examiner in diagnostically challenging cases.
+  </div>
+
+  <div class="slabel">Motor weakness signs <span class="pill pill-r">FOR FUNCTIONAL WEAKNESS SUBTYPE</span></div>
+  <div class="two-col">
+    <div class="crit" id="hoover-item">
+      <div class="crit-main">
+        <div class="crit-name">Hoover sign <span class="sign-badge sb-hi">Sn 63%, Sp 100%</span><br><small style="color:var(--text3);font-size:10px;">Hip extension weak voluntarily but normal when tested indirectly via contralateral hip flexion against resistance</small></div>
+        <button class="xbtn" onclick="xp(this)">details &#9662;</button>
+      </div>
+      <div class="crit-detail">
+        <strong>Technique:</strong> Patient supine. Examiner places one hand under the heel of the &ldquo;weak&rdquo; leg. Ask patient to lift the unaffected leg against resistance applied by examiner&rsquo;s other hand. A positive sign = the examiner feels <em>downward pressure</em> from the weak leg (involuntary hip extension accompanying synergistic contralateral flexion). Now ask patient to lift the weak leg &mdash; the pressure is absent (no effort transmitted).<br><br>
+        <strong>Evidence:</strong> McWhirter L et al. J Psychosom Res 2011: Sensitivity 63% (95% CI 24&ndash;91%), specificity 100% (95% CI 97&ndash;100%) in 337 patients presenting with suspected stroke. High specificity confirms functional aetiology when positive. Moderate sensitivity means a negative Hoover does not exclude FND.
+        <div class="cnote"><strong>Pitfalls:</strong> False positive if hip pain on the affected side limits voluntary extension effort. Apraxia (especially post-stroke) can cause failure of voluntary hip extension with preserved synergistic extension. Always interpret in the clinical context.</div>
+      </div>
+      <div class="brow">
+        <button class="abtn" onclick="setSign('hoover',true)"  id="hoover-yes">&#10003; Positive</button>
+        <button class="abtn" onclick="setSign('hoover',false)" id="hoover-no">&#10007; Negative</button>
+        <button class="abtn" onclick="setSign('hoover',null)"  id="hoover-nd">&mdash; Not tested</button>
+      </div>
+    </div>
+
+    <div class="crit" id="abductor-item">
+      <div class="crit-main">
+        <div class="crit-name">Hip abductor sign (Sonoo sign) <span class="sign-badge sb-hi">HIGH Sp</span><br><small style="color:var(--text3);font-size:10px;">Involuntary hip abduction of the &ldquo;weak&rdquo; leg during testing of the unaffected leg</small></div>
+        <button class="xbtn" onclick="xp(this)">details &#9662;</button>
+      </div>
+      <div class="crit-detail">
+        <strong>Technique (Sonoo M. J Neurol Neurosurg Psychiatry 2004):</strong> Patient supine, examiner resists hip abduction of both legs simultaneously. In functional leg weakness: the apparently weak leg abducts strongly when the unaffected leg is being tested against resistance (involuntary synergistic contraction), but abduction of the weak leg against direct resistance fails. This mirrors the same principle as the Hoover sign but applied to abductor muscles.<br><br>
+        <strong>Abductor finger sign (Tinazzi M. Mov Disord 2008):</strong> Analogous principle applied to the hand. Finger abduction on the affected side improves when the unaffected hand is tested against resistance.
+      </div>
+      <div class="brow">
+        <button class="abtn" onclick="setSign('abductor',true)"  id="abductor-yes">&#10003; Positive</button>
+        <button class="abtn" onclick="setSign('abductor',false)" id="abductor-no">&#10007; Negative</button>
+        <button class="abtn" onclick="setSign('abductor',null)"  id="abductor-nd">&mdash; Not tested</button>
+      </div>
+    </div>
+
+    <div class="crit" id="giveway-item">
+      <div class="crit-main">
+        <div class="crit-name">Give-way / collapsing weakness <span class="sign-badge sb-mod">MODERATE Sp</span><br><small style="color:var(--text3);font-size:10px;">Sudden give-way of resistance during strength testing, unlike smooth UMN or LMN weakness</small></div>
+        <button class="xbtn" onclick="xp(this)">details &#9662;</button>
+      </div>
+      <div class="crit-detail">
+        In genuine UMN or LMN weakness, the limb gives way smoothly and is graded consistently. In functional weakness, there is a characteristic &ldquo;give-way&rdquo; or &ldquo;collapse&rdquo; pattern &mdash; the limb starts with normal or near-normal strength then suddenly gives way completely. This may also vary between repeated tests (motor inconsistency). <strong>Important caveat:</strong> Give-way weakness is also seen in pain-limited effort. It is <em>not</em> specific for FND unless combined with other positive signs. Always consider pain (CRPS, radiculopathy) as an alternative.
+        <div class="cnote"><strong>Motor inconsistency:</strong> Strength that varies markedly between repeated measurements within the same examination &mdash; e.g., MRC 0/5 one moment and 4/5 the next for the same movement when the patient is distracted &mdash; is highly suggestive of functional weakness.</div>
+      </div>
+      <div class="brow">
+        <button class="abtn" onclick="setSign('giveway',true)"  id="giveway-yes">&#10003; Present</button>
+        <button class="abtn" onclick="setSign('giveway',false)" id="giveway-no">&#10007; Absent</button>
+        <button class="abtn" onclick="setSign('giveway',null)"  id="giveway-nd">&mdash; Not tested</button>
+      </div>
+    </div>
+
+    <div class="crit" id="driftpron-item">
+      <div class="crit-main">
+        <div class="crit-name">Drift without pronation <span class="sign-badge sb-hi">HIGH Sp</span><br><small style="color:var(--text3);font-size:10px;">Arm drifts downward without the pronation seen in genuine pyramidal (UMN) weakness</small></div>
+        <button class="xbtn" onclick="xp(this)">details &#9662;</button>
+      </div>
+      <div class="crit-detail">
+        <strong>Technique (Daum &amp; Aybek, validated 2013):</strong> Patient holds both arms extended in front with palms up and eyes closed. In genuine UMN (pyramidal) weakness, the weak arm drifts downward AND pronates (palm rotates downward) &mdash; this is the classic &ldquo;pronator drift.&rdquo; In functional arm weakness, the arm may drift downward (or the whole hand may drift sideways as a unit) but WITHOUT the characteristic pronation. This dissociation is highly specific for functional weakness.
+      </div>
+      <div class="brow">
+        <button class="abtn" onclick="setSign('driftpron',true)"  id="driftpron-yes">&#10003; Present (drift without pronation)</button>
+        <button class="abtn" onclick="setSign('driftpron',false)" id="driftpron-no">&#10007; Absent / pronator drift present (UMN pattern)</button>
+        <button class="abtn" onclick="setSign('driftpron',null)"  id="driftpron-nd">&mdash; Not tested</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:14px;">Tremor signs <span class="pill pill-r">FOR FUNCTIONAL TREMOR SUBTYPE</span></div>
+  <div class="two-col">
+    <div class="crit" id="entrain-item">
+      <div class="crit-main">
+        <div class="crit-name">Tremor entrainment test <span class="sign-badge sb-hi">HIGH Sp</span><br><small style="color:var(--text3);font-size:10px;">Tremor changes frequency, entrains to, or stops during contralateral rhythmic movement</small></div>
+        <button class="xbtn" onclick="xp(this)">details &#9662;</button>
+      </div>
+      <div class="crit-detail">
+        <strong>Technique:</strong> Ask patient to copy a rhythmic movement with the unaffected hand (e.g., tap at a specific cadence set by the examiner). Observe the tremulous limb. <strong>Positive result:</strong> the tremor changes frequency to match the tapping rhythm (entrainment), briefly pauses/suppresses, or becomes irregular. Organic tremors (ET, PD) maintain their characteristic frequency independent of contralateral rhythmic tasks.<br><br>
+        <strong>Electrophysiology (Schwingenschuh P et al. Mov Disord 2011):</strong> EMG/accelerometry battery validated for functional tremor: sensitivity 89.5%, specificity 95.9%. Positive features include: tonic coactivation before tremor burst, coherence between bilateral arm tremors (both arms trembling at identical frequency), tremor frequency shift with contralateral tapping.
+        <div class="cnote"><strong>Longstanding functional tremor resistance:</strong> Patients with chronic functional tremor (&gt;2 years) may have developed automatised patterns resistant to simple distraction. More complex or unexpected tasks may be needed (mental arithmetic, serial subtractions, cranial nerve testing). Resistance to easy distraction does not exclude FND.</div>
+      </div>
+      <div class="brow">
+        <button class="abtn" onclick="setSign('entrain',true)"  id="entrain-yes">&#10003; Positive (entrainment/suppression)</button>
+        <button class="abtn" onclick="setSign('entrain',false)" id="entrain-no">&#10007; Negative (tremor maintains frequency)</button>
+        <button class="abtn" onclick="setSign('entrain',null)"  id="entrain-nd">&mdash; Not tested</button>
+      </div>
+    </div>
+
+    <div class="crit" id="distract-item">
+      <div class="crit-main">
+        <div class="crit-name">Tremor distractibility <span class="sign-badge sb-mod">MODERATE Sp</span><br><small style="color:var(--text3);font-size:10px;">Tremor amplitude decreases or stops when patient is engaged in complex mental tasks</small></div>
+        <button class="xbtn" onclick="xp(this)">details &#9662;</button>
+      </div>
+      <div class="crit-detail">
+        Ask the patient to perform serial subtractions (100 &minus; 7, etc.), name months backwards, or describe a complex memory. Positive result: tremor diminishes during the demanding cognitive task and returns when the task is completed. <strong>Caution:</strong> Tremor variability is not unique to FND (psychogenic tremor is not the only cause of variable tremor) &mdash; this sign is best combined with entrainment and other positive signs.
+      </div>
+      <div class="brow">
+        <button class="abtn" onclick="setSign('distract',true)"  id="distract-yes">&#10003; Positive (reduces with distraction)</button>
+        <button class="abtn" onclick="setSign('distract',false)" id="distract-no">&#10007; Negative</button>
+        <button class="abtn" onclick="setSign('distract',null)"  id="distract-nd">&mdash; Not tested</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:14px;">Gait signs <span class="pill pill-r">FOR FUNCTIONAL GAIT SUBTYPE</span></div>
+  <div class="two-col">
+    <div class="crit" id="dragging-item">
+      <div class="crit-main">
+        <div class="crit-name">Dragging monoplegic gait <span class="sign-badge sb-mod">MODERATE Sp</span><br><small style="color:var(--text3);font-size:10px;">Leg dragged as a whole unit, without circumduction or typical hemiplegic posture</small></div>
+        <button class="xbtn" onclick="xp(this)">details &#9662;</button>
+      </div>
+      <div class="crit-detail">
+        Genuine hemiparesis typically produces circumduction (swinging the leg out laterally to clear the floor) and the classic hemiplegic posture (arm flexed, leg extended). Functional dragging gait pulls the leg behind as a limp unit without circumduction, often with the hip externally rotated in an exaggerated fashion. The &ldquo;ploughing&rdquo; appearance differs from UMN gait.
+      </div>
+      <div class="brow">
+        <button class="abtn" onclick="setSign('dragging',true)"  id="dragging-yes">&#10003; Present</button>
+        <button class="abtn" onclick="setSign('dragging',false)" id="dragging-no">&#10007; Absent</button>
+        <button class="abtn" onclick="setSign('dragging',null)"  id="dragging-nd">&mdash; Not tested</button>
+      </div>
+    </div>
+
+    <div class="crit" id="gait_improve-item">
+      <div class="crit-main">
+        <div class="crit-name">Gait improvement with backwards walking, running, or cycling <span class="sign-badge sb-hi">HIGH Sp</span><br><small style="color:var(--text3);font-size:10px;">Bypasses overlearned voluntary gait pattern; automatic movement circuits preserved</small></div>
+        <button class="xbtn" onclick="xp(this)">details &#9662;</button>
+      </div>
+      <div class="crit-detail">
+        Functional gait disorder often preferentially impairs forwards walking while preserving backwards walking, running, and cycling. This paradox reflects that automatic (subcortical) motor circuits are functionally intact but the voluntary (cortical) pathway is dysfunctional. Demonstrating this discrepancy to the patient is both diagnostically informative and therapeutically useful (physiotherapists use this as a starting point for gait rehabilitation).
+      </div>
+      <div class="brow">
+        <button class="abtn" onclick="setSign('gait_improve',true)"  id="gait_improve-yes">&#10003; Improves with backwards/running</button>
+        <button class="abtn" onclick="setSign('gait_improve',false)" id="gait_improve-no">&#10007; No improvement</button>
+        <button class="abtn" onclick="setSign('gait_improve',null)"  id="gait_improve-nd">&mdash; Not tested (safety/feasibility)</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:14px;">Sensory signs <span class="pill pill-r">FOR FUNCTIONAL SENSORY SUBTYPE</span></div>
+  <div class="two-col">
+    <div class="crit" id="midline-item">
+      <div class="crit-main">
+        <div class="crit-name">Midline splitting sensory loss <span class="sign-badge sb-hi">HIGH Sp</span><br><small style="color:var(--text3);font-size:10px;">Sensory loss that splits exactly at the midline of the face, trunk, or genitalia</small></div>
+        <button class="xbtn" onclick="xp(this)">details &#9662;</button>
+      </div>
+      <div class="crit-detail">
+        Anatomically, bilateral nerve supply overlaps at the midline by several millimetres (e.g., bilateral trigeminal territory overlaps at the philtrum of the lip). A sensory deficit that abruptly and sharply splits at the midline &mdash; especially when the patient can identify the exact midline with pinpoint accuracy &mdash; is anatomically incongruent with any known structural lesion. This is one of the most specific sensory signs for FND.
+      </div>
+      <div class="brow">
+        <button class="abtn" onclick="setSign('midline',true)"  id="midline-yes">&#10003; Present (exact midline splitting)</button>
+        <button class="abtn" onclick="setSign('midline',false)" id="midline-no">&#10007; Absent</button>
+        <button class="abtn" onclick="setSign('midline',null)"  id="midline-nd">&mdash; Not tested</button>
+      </div>
+    </div>
+
+    <div class="crit" id="nonanat-item">
+      <div class="crit-main">
+        <div class="crit-name">Non-anatomical sensory loss / inconsistent pattern <span class="sign-badge sb-mod">MODERATE Sp</span><br><small style="color:var(--text3);font-size:10px;">Distribution does not correspond to any nerve root, peripheral nerve, or CNS pathway</small></div>
+        <button class="xbtn" onclick="xp(this)">details &#9662;</button>
+      </div>
+      <div class="crit-detail">
+        Sensory loss that changes between examinations, shifts in location when patient is unaware they are being retested, or follows a &ldquo;glove-and-stocking&rdquo; pattern without nerve length dependency &mdash; these are signs of incongruence. Important caveat: sensory testing is subjective and variable, so this sign should be confirmed multiple times and combined with other positive signs before anchoring the diagnosis.
+      </div>
+      <div class="brow">
+        <button class="abtn" onclick="setSign('nonanat',true)"  id="nonanat-yes">&#10003; Present (non-anatomical pattern)</button>
+        <button class="abtn" onclick="setSign('nonanat',false)" id="nonanat-no">&#10007; Absent (anatomically explicable)</button>
+        <button class="abtn" onclick="setSign('nonanat',null)"  id="nonanat-nd">&mdash; Not tested</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:14px;">Functional seizure signs <span class="pill pill-r">FOR FUNCTIONAL SEIZURE (PNES) SUBTYPE</span></div>
+  <div class="two-col">
+    <div class="crit" id="eyeclosed-item">
+      <div class="crit-main">
+        <div class="crit-name">Eyes closed during episodes <span class="sign-badge sb-hi">Sp ~98%</span><br><small style="color:var(--text3);font-size:10px;">Eyes are typically forced closed during functional seizures; open during true epileptic seizures</small></div>
+        <button class="xbtn" onclick="xp(this)">details &#9662;</button>
+      </div>
+      <div class="crit-detail">
+        <strong>Clinical observation (Chung SS et al. Seizure 2006):</strong> During generalised tonic-clonic seizures and most focal seizures with LOC, the eyes are open (or deviated). During functional seizures, eyes are characteristically <em>closed</em> &mdash; often forcefully closed with active resistance to opening. This sign has high specificity (~98%) for functional vs. epileptic seizures. Note: some types of absence seizure may have eyes open but blank stare.<br><br>
+        <strong>Ictal semiology features favouring functional seizures:</strong> Eyes closed, asynchronous thrashing movements of the limbs (not the synchronised tonic-clonic of epilepsy), pelvic thrusting, side-to-side head movement, episodes longer than 2 minutes without post-ictal confusion, waxing/waning course, preserved consciousness despite bilateral motor activity, normal post-ictal EEG.
+        <div class="cnote"><strong>Gold standard for functional seizures: Video-EEG (vEEG).</strong> Diagnostic certainty levels (Reuber M &amp; Elger CE 2003): <em>Possible</em> = clinical history only; <em>Probable</em> = witnessed episode without vEEG; <em>Clinically established</em> = witnessed semiology by experienced clinician; <em>Documented</em> = vEEG capturing a habitual event with no epileptiform correlate. Gold standard = Documented. Discontinuation of AEDs after documented vEEG diagnosis is appropriate and improves outcomes.</div>
+      </div>
+      <div class="brow">
+        <button class="abtn" onclick="setSign('eyeclosed',true)"  id="eyeclosed-yes">&#10003; Eyes closed during episodes</button>
+        <button class="abtn" onclick="setSign('eyeclosed',false)" id="eyeclosed-no">&#10007; Eyes open during episodes</button>
+        <button class="abtn" onclick="setSign('eyeclosed',null)"  id="eyeclosed-nd">&mdash; Not witnessed / no video</button>
+      </div>
+    </div>
+
+    <div class="crit" id="vEEG-item">
+      <div class="crit-main">
+        <div class="crit-name">Video-EEG (vEEG) capture &mdash; habitual episode recorded with no epileptiform correlate <span class="sign-badge sb-hi">GOLD STANDARD</span></div>
+        <button class="xbtn" onclick="xp(this)">details &#9662;</button>
+      </div>
+      <div class="crit-detail">
+        vEEG is the gold standard for diagnosing functional seizures. A habitual seizure captured on simultaneous video and EEG, showing clinical ictal semiology (or semiology consistent with patient&rsquo;s reported events) without epileptiform EEG activity, establishes the &ldquo;documented&rdquo; level of diagnostic certainty. <strong>Important:</strong> EEG artefact during motor activity can obscure the trace &mdash; post-ictal EEG should also be reviewed for suppression (epilepsy) vs. normal alpha return (functional). Prolonged vEEG monitoring may be required if events are infrequent.
+      </div>
+      <div class="brow">
+        <button class="abtn" onclick="setSign('vEEG','pos')"    id="vEEG-pos">&#10003; Habitual event captured &mdash; no epileptiform correlate (Documented)</button>
+        <button class="abtn" onclick="setSign('vEEG','neg')"    id="vEEG-neg">&#10007; vEEG performed &mdash; no event captured</button>
+        <button class="abtn" onclick="setSign('vEEG','epilep')" id="vEEG-epi">&#9888; Epileptiform activity captured &mdash; epilepsy likely</button>
+        <button class="abtn" onclick="setSign('vEEG',null)"     id="vEEG-nd">&mdash; Not performed</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="a2" class="alrt"></div>
+  <div class="nav-row">
+    <button class="nbtn ns" onclick="go(1)">&larr; Back</button>
+    <button class="nbtn np" onclick="go(3)">Next: Red Flags &amp; Mimics &#8594;</button>
+  </div>
+</div>
+</div>
+
+<!-- S3: RED FLAGS -->
+<div class="screen" id="s3">
+<div class="card">
+  <div class="ctitle" style="color:var(--accent);">Step 4 &middot; Red Flags &amp; Diagnostic Pitfalls</div>
+  <div class="csub">FND is a diagnosis of inclusion based on positive signs, but diagnostic errors occur in both directions: over-diagnosis (attributing genuine neurological disease to FND) and under-diagnosis (labelling FND as &ldquo;medically unexplained&rdquo; without identifying positive signs). Careful assessment of these red flags is essential before confirming FND.</div>
+
+  <div class="lbox">
+    <strong>Misdiagnosis rate (Stone J et al. J Neurol Neurosurg Psychiatry 2005):</strong> In a systematic review of 1,466 patients diagnosed with &ldquo;hysteria&rdquo;/conversion disorder, 4% were subsequently found to have an alternative neurological diagnosis after long-term follow-up. This is comparable to the misdiagnosis rate for MS and epilepsy, confirming that positive-sign-based FND diagnosis has acceptable diagnostic stability. However, this figure <em>does not mean</em> red flags can be ignored &mdash; it means the positive-sign approach itself is validated when applied correctly.
+  </div>
+
+  <div class="slabel">Structural / organic red flags <span class="pill pill-r">ANY POSITIVE = REASSESS DIAGNOSIS</span></div>
+  <div class="two-col">
+    <div class="crit" id="rf-progressive-item">
+      <div class="crit-main">
+        <div class="crit-name">Progressive, unrelenting course without any fluctuation &mdash; FND typically fluctuates; relentlessly progressive symptoms are atypical</div>
+      </div>
+      <div class="brow">
+        <button class="abtn" onclick="setRF('progressive',true)"  id="rf-progressive-yes">&#9888; Present &mdash; reassess</button>
+        <button class="abtn" onclick="setRF('progressive',false)" id="rf-progressive-no">&#10007; Absent</button>
+      </div>
+    </div>
+
+    <div class="crit" id="rf-mri-item">
+      <div class="crit-main">
+        <div class="crit-name">MRI brain/spine abnormality that could explain the symptoms &mdash; structural lesion at appropriate location</div>
+        <button class="xbtn" onclick="xp(this)">details &#9662;</button>
+      </div>
+      <div class="crit-detail">
+        MRI is typically normal in FND. An abnormal MRI does NOT automatically exclude FND (the lesion may be incidental), but does require careful correlation: does the lesion&rsquo;s location, size, and expected functional deficit match the patient&rsquo;s symptoms? If a thalamic stroke explains sensory loss in the same distribution as the patient&rsquo;s symptoms, FND may not be the primary diagnosis. If an incidental white matter lesion is found in a patient with functional seizures and classic PNES semiology, vEEG should confirm before labelling as MS-related.
+      </div>
+      <div class="brow">
+        <button class="abtn" onclick="setRF('mri',true)"  id="rf-mri-yes">&#9888; Significant MRI abnormality present</button>
+        <button class="abtn" onclick="setRF('mri',false)" id="rf-mri-no">&#10007; MRI normal</button>
+        <button class="abtn" onclick="setRF('mri',null)"  id="rf-mri-nd">&mdash; MRI not performed</button>
+      </div>
+    </div>
+
+    <div class="crit" id="rf-age-item">
+      <div class="crit-main">
+        <div class="crit-name">Onset &gt;50 years with de novo movement disorder &mdash; new onset dystonia, tremor, or parkinsonism after age 50 has higher prior probability of structural/degenerative cause</div>
+      </div>
+      <div class="brow">
+        <button class="abtn" onclick="setRF('age',true)"  id="rf-age-yes">&#9888; New movement disorder &gt;50 years</button>
+        <button class="abtn" onclick="setRF('age',false)" id="rf-age-no">&#10007; Onset &lt;50 or not a movement disorder</button>
+      </div>
+    </div>
+
+    <div class="crit" id="rf-autoimmune-item">
+      <div class="crit-main">
+        <div class="crit-name">Autoimmune encephalitis features &mdash; rapid psychiatric change, movement disorder, autonomic instability, altered consciousness, young female; check CSF and antibody panel</div>
+        <button class="xbtn" onclick="xp(this)">details &#9662;</button>
+      </div>
+      <div class="crit-detail">
+        Anti-NMDAR encephalitis is the most commonly misdiagnosed condition as FND (and vice versa). Features suggestive of autoimmune encephalitis over FND: subacute onset (&lt;3 months) with behavioural/psychiatric change; movement disorder (orofacial dyskinesia, chorea, or catatonia); autonomic instability (tachycardia, hyperthermia); reduced consciousness or seizures; CSF pleocytosis or elevated protein; MRI abnormalities (T2/FLAIR signal in limbic regions); response to immunotherapy. Check serum and CSF antibodies (NMDAR, LGI1, CASPR2, AMPAR, GABA-B) in atypical presentations.
+      </div>
+      <div class="brow">
+        <button class="abtn" onclick="setRF('autoimmune',true)"  id="rf-auto-yes">&#9888; Autoimmune features present &mdash; antibody panel needed</button>
+        <button class="abtn" onclick="setRF('autoimmune',false)" id="rf-auto-no">&#10007; No autoimmune features</button>
+      </div>
+    </div>
+
+    <div class="crit" id="rf-eeg-item">
+      <div class="crit-main">
+        <div class="crit-name">Epileptiform activity on routine EEG or vEEG &mdash; interictal spikes, sharp waves, or ictal correlate during captured episode</div>
+      </div>
+      <div class="brow">
+        <button class="abtn" onclick="setRF('eeg',true)"  id="rf-eeg-yes">&#9888; Epileptiform EEG activity present</button>
+        <button class="abtn" onclick="setRF('eeg',false)" id="rf-eeg-no">&#10007; EEG normal</button>
+        <button class="abtn" onclick="setRF('eeg',null)"  id="rf-eeg-nd">&mdash; EEG not performed</button>
+      </div>
+    </div>
+
+    <div class="crit" id="rf-coexist-item">
+      <div class="crit-main">
+        <div class="crit-name">Symptoms fully explicable by identified structural disease &mdash; lesion location and deficit match perfectly; no positive FND signs demonstrable</div>
+      </div>
+      <div class="brow">
+        <button class="abtn" onclick="setRF('coexist',true)"  id="rf-coexist-yes">&#9888; Structural cause fully explains symptoms</button>
+        <button class="abtn" onclick="setRF('coexist',false)" id="rf-coexist-no">&#10007; Structural cause does not fully explain symptoms</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="a3" class="alrt"></div>
+  <div class="nav-row">
+    <button class="nbtn ns" onclick="go(2)">&larr; Back</button>
+    <button class="nbtn np" onclick="go(4)">Next: Comorbidities &amp; Context &#8594;</button>
+  </div>
+</div>
+</div>
+
+<!-- S4: COMORBIDITIES -->
+<div class="screen" id="s4">
+<div class="card">
+  <div class="ctitle" style="color:var(--accent);">Step 5 &middot; Comorbidities, Predisposing Factors &amp; Context</div>
+  <div class="csub">The biopsychosocial model is central to FND understanding. Comorbidities influence prognosis, treatment selection, and diagnostic confidence. They do not need to be present for FND diagnosis (DSM-5-TR removed the psychological stressor requirement), but should be documented as they inform the multidisciplinary treatment plan.</div>
+
+  <div class="lbox">
+    <strong>Biopsychosocial framework (Perez DL et al. CNS Spectr 2021; Aybek &amp; Perez BMJ 2022):</strong><br>
+    <span class="lt">Predisposing:</span> Prior neurological disease, adverse childhood experiences, comorbid psychiatric disorder, alexithymia, prior somatoform symptoms<br>
+    <span class="lt">Precipitating:</span> Physical injury or illness (~37%), psychological trauma/acute stress, medical procedure, iatrogenic exposure<br>
+    <span class="lt">Perpetuating:</span> Symptom-focused attention, avoidance behaviours, kinesiophobia, medically unexplained framing, social reinforcement, secondary gain (does not imply malingering)
+  </div>
+
+  <div class="slabel">Psychiatric comorbidities <span class="pill pill-am">IMPORTANT FOR TREATMENT PLANNING</span></div>
+  <div class="two-col">
+    <div class="crit" id="depression-item">
+      <div class="crit-main"><div class="crit-name">Major depressive disorder or persistent depressive disorder &mdash; common in FND (~30&ndash;50%); treat independently; does not explain FND symptoms</div></div>
+      <div class="brow">
+        <button class="abtn" onclick="setCom('depression',true)"  id="dep-yes">&#10003; Present</button>
+        <button class="abtn" onclick="setCom('depression',false)" id="dep-no">&#10007; Absent</button>
+        <button class="abtn" onclick="setCom('depression',null)"  id="dep-nd">&mdash; Not assessed</button>
+      </div>
+    </div>
+    <div class="crit" id="anxiety-item">
+      <div class="crit-main"><div class="crit-name">Anxiety disorder, panic disorder, or health anxiety &mdash; present in ~40% of FND; catastrophising and symptom monitoring perpetuate FND</div></div>
+      <div class="brow">
+        <button class="abtn" onclick="setCom('anxiety',true)"  id="anx-yes">&#10003; Present</button>
+        <button class="abtn" onclick="setCom('anxiety',false)" id="anx-no">&#10007; Absent</button>
+        <button class="abtn" onclick="setCom('anxiety',null)"  id="anx-nd">&mdash; Not assessed</button>
+      </div>
+    </div>
+    <div class="crit" id="ptsd-item">
+      <div class="crit-main"><div class="crit-name">PTSD or trauma history &mdash; present in ~30&ndash;40% of FND; trauma-focused CBT / EMDR indicated if present</div></div>
+      <div class="brow">
+        <button class="abtn" onclick="setCom('ptsd',true)"  id="ptsd-yes">&#10003; Present</button>
+        <button class="abtn" onclick="setCom('ptsd',false)" id="ptsd-no">&#10007; Absent</button>
+        <button class="abtn" onclick="setCom('ptsd',null)"  id="ptsd-nd">&mdash; Not assessed</button>
+      </div>
+    </div>
+    <div class="crit" id="pain-item">
+      <div class="crit-main"><div class="crit-name">Chronic pain, fibromyalgia, or functional somatic syndrome &mdash; frequently coexists; multidisciplinary pain management often needed</div></div>
+      <div class="brow">
+        <button class="abtn" onclick="setCom('pain',true)"  id="pain-yes">&#10003; Present</button>
+        <button class="abtn" onclick="setCom('pain',false)" id="pain-no">&#10007; Absent</button>
+        <button class="abtn" onclick="setCom('pain',null)"  id="pain-nd">&mdash; Not assessed</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:14px;">Contextual &amp; perpetuating factors <span class="pill pill-am">INFORMS TREATMENT APPROACH</span></div>
+  <div class="two-col">
+    <div class="crit" id="medattr-item">
+      <div class="crit-main">
+        <div class="crit-name">Ongoing diagnostic uncertainty &mdash; patient still searching for a &ldquo;real&rdquo; diagnosis; has not accepted FND explanation; multiple specialist opinions</div>
+        <button class="xbtn" onclick="xp(this)">details &#9662;</button>
+      </div>
+      <div class="crit-detail">
+        Ongoing diagnostic uncertainty is one of the strongest perpetuating factors in FND. Patients who have not accepted the diagnosis &mdash; or whose family has not &mdash; are unlikely to engage with physiotherapy or CBT. Clear, compassionate, and confident explanation of the FND diagnosis at the point of diagnosis is associated with better outcomes. The explanation should: (1) name the problem clearly; (2) validate that symptoms are real; (3) explain the mechanism (software vs. hardware); (4) emphasise reversibility; (5) demonstrate positive signs to the patient.
+      </div>
+      <div class="brow">
+        <button class="abtn" onclick="setCom('medattr',true)"  id="ma-yes">&#10003; Yes &mdash; ongoing diagnostic uncertainty</button>
+        <button class="abtn" onclick="setCom('medattr',false)" id="ma-no">&#10007; No &mdash; patient has accepted diagnosis</button>
+      </div>
+    </div>
+    <div class="crit" id="avoidance-item">
+      <div class="crit-main"><div class="crit-name">Avoidance behaviours / kinesiophobia &mdash; avoiding activities due to fear of worsening; using wheelchair/aids beyond functional need</div></div>
+      <div class="brow">
+        <button class="abtn" onclick="setCom('avoidance',true)"  id="av-yes">&#10003; Present</button>
+        <button class="abtn" onclick="setCom('avoidance',false)" id="av-no">&#10007; Absent</button>
+        <button class="abtn" onclick="setCom('avoidance',null)"  id="av-nd">&mdash; Not assessed</button>
+      </div>
+    </div>
+    <div class="crit" id="medleg-item">
+      <div class="crit-main"><div class="crit-name">Medico-legal claim / disability benefits in progress &mdash; does not imply malingering but is associated with poorer prognosis</div></div>
+      <div class="brow">
+        <button class="abtn" onclick="setCom('medleg',true)"  id="ml-yes">&#10003; Present</button>
+        <button class="abtn" onclick="setCom('medleg',false)" id="ml-no">&#10007; Absent</button>
+      </div>
+    </div>
+    <div class="crit" id="support-item">
+      <div class="crit-main"><div class="crit-name">Adequate social support &mdash; supportive family/network is a positive prognostic factor; social isolation worsens prognosis</div></div>
+      <div class="brow">
+        <button class="abtn" onclick="setCom('support',true)"  id="sup-yes">&#10003; Good social support</button>
+        <button class="abtn" onclick="setCom('support',false)" id="sup-no">&#10007; Poor / absent social support</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="a4" class="alrt"></div>
+  <div class="nav-row">
+    <button class="nbtn ns" onclick="go(3)">&larr; Back</button>
+    <button class="nbtn np" onclick="go(5)">Generate Verdict &amp; Treatment &#8594;</button>
+  </div>
+</div>
+</div>
+
+<!-- S5: VERDICT -->
+<div class="screen" id="s5">
+  <div id="vout"></div>
+  <div class="doc-header">
+    <button class="doc-tog" onclick="toggleDoc()">&#9660; Documentation Note</button>
+    <button class="copy-btn" id="copy-btn" onclick="copyDoc()">&#9138; Copy</button>
+  </div>
+  <div class="doc-body" id="dn"></div>
+  <div class="nav-row">
+    <button class="nbtn ns" onclick="go(4)">&larr; Back</button>
+    <button class="nbtn np" onclick="resetAll()">&#8634; New Evaluation</button>
+  </div>
+</div>
+
+<script>
+const subtypes = [
+  {id:'weakness',   name:'Functional Weakness',     sub:'Mono/hemi/paraparesis or paralysis'},
+  {id:'tremor',     name:'Functional Tremor',        sub:'Variable frequency, distractible'},
+  {id:'dystonia',   name:'Functional Dystonia',      sub:'Fixed posturing, often painful'},
+  {id:'seizures',   name:'Functional Seizures',      sub:'PNES / dissociative seizures'},
+  {id:'gait',       name:'Functional Gait Disorder', sub:'Dragging, lurching, astasia-abasia'},
+  {id:'sensory',    name:'Functional Sensory',       sub:'Non-anatomical sensory loss/pain'},
+  {id:'cognitive',  name:'Functional Cognitive',     sub:'Memory/attention complaints'},
+  {id:'speech',     name:'Functional Speech',        sub:'Dysphonia, dysarthria, mutism'},
+  {id:'visual',     name:'Functional Visual',        sub:'Tunnel vision, monocular diplopia'}
+];
+
+const S = {
+  subtypes: {},
+  onset: null, prior: null,
+  crit: {A:null, B:null, C:null, D:null},
+  signs: {hoover:null, abductor:null, giveway:null, driftpron:null,
+          entrain:null, distract:null, dragging:null, gait_improve:null,
+          midline:null, nonanat:null, eyeclosed:null, vEEG:null},
+  rf: {progressive:null, mri:null, age:null, autoimmune:null, eeg:null, coexist:null},
+  com: {depression:null, anxiety:null, ptsd:null, pain:null,
+        medattr:null, avoidance:null, medleg:null, support:null}
+};
+subtypes.forEach(s => S.subtypes[s.id] = false);
+let cur = 0;
+
+function buildSubtypes() {
+  const g = document.getElementById('subtype-grid'); if(!g)return;
+  g.innerHTML = '';
+  subtypes.forEach(s => {
+    const div = document.createElement('div');
+    div.className = 'stcard' + (S.subtypes[s.id] ? ' stsel' : '');
+    div.onclick = () => { S.subtypes[s.id] = !S.subtypes[s.id]; buildSubtypes(); checkN0(); ui(); };
+    div.innerHTML = `<div class="stcard-name">${s.name}</div><div class="stcard-sub">${s.sub}</div>`;
+    g.appendChild(div);
+  });
+}
+function checkN0() {
+  const any = Object.values(S.subtypes).some(v=>v);
+  document.getElementById('n0').disabled = !any;
+}
+function setOnset(v) {
+  S.onset = v;
+  ['onset-acute','onset-subac','onset-chronic','onset-nd'].forEach(id=>{const b=document.getElementById(id);if(b)b.classList.remove('ay','aw','an','agr');});
+  const map={'acute':'ay','subac':'aw','chronic':'an','nd':'agr'};
+  const btn=document.getElementById('onset-'+v);if(btn)btn.classList.add(map[v]||'agr');
+  const item=document.getElementById('onset-item');
+  if(item)item.className='crit '+(v==='acute'?'c-yes':v==='chronic'?'c-part':'c-a');
+  if(cur===5)rv(); ui();
+}
+function setPrior(v) {
+  S.prior = v;
+  const item=document.getElementById('prior-item');
+  if(item)item.className='crit '+(v===true?'c-part':v===false?'c-yes':'');
+  const y=document.getElementById('prior-yes'),n=document.getElementById('prior-no');
+  if(y)y.classList.remove('ay','aw'); if(n)n.classList.remove('ay','aw');
+  if(v===true&&y)y.classList.add('aw'); if(v===false&&n)n.classList.add('ay');
+  if(cur===5)rv(); ui();
+}
+function setCrit(k, v) {
+  S.crit[k] = v;
+  const ids = {A:['ca-yes','ca-no'], B:['cb-yes','cb-no','cb-nd'], C:['cc-yes','cc-no'], D:['cd-yes','cd-no']};
+  if(ids[k]) ids[k].forEach(id=>{const b=document.getElementById(id);if(b)b.classList.remove('ay','an','agr');});
+  const item = document.getElementById('c'+k.toLowerCase()+'-item');
+  if(item) item.className = 'crit '+(v===true?'c-yes':v===false?'c-no':'c-abs');
+  const yId='c'+k.toLowerCase()+'-yes', nId='c'+k.toLowerCase()+'-no', ndId='c'+k.toLowerCase()+'-nd';
+  if(v===true){const b=document.getElementById(yId);if(b)b.classList.add('ay');}
+  else if(v===false){const b=document.getElementById(nId);if(b)b.classList.add('an');}
+  else{const b=document.getElementById(ndId);if(b)b.classList.add('agr');}
+  if(cur===5)rv(); ui();
+}
+function setSign(k, v) {
+  S.signs[k] = v;
+  const item = document.getElementById(k+'-item');
+  const isPos = v===true||v==='pos';
+  const isNeg = v===false||v==='neg';
+  const isEpi = v==='epilep';
+  if(item) item.className = 'crit '+(isPos?'c-yes':isNeg?'c-abs':isEpi?'c-no':'c-abs');
+  // buttons
+  const btnIds = {
+    hoover:['hoover-yes','hoover-no','hoover-nd'],
+    abductor:['abductor-yes','abductor-no','abductor-nd'],
+    giveway:['giveway-yes','giveway-no','giveway-nd'],
+    driftpron:['driftpron-yes','driftpron-no','driftpron-nd'],
+    entrain:['entrain-yes','entrain-no','entrain-nd'],
+    distract:['distract-yes','distract-no','distract-nd'],
+    dragging:['dragging-yes','dragging-no','dragging-nd'],
+    gait_improve:['gait_improve-yes','gait_improve-no','gait_improve-nd'],
+    midline:['midline-yes','midline-no','midline-nd'],
+    nonanat:['nonanat-yes','nonanat-no','nonanat-nd'],
+    eyeclosed:['eyeclosed-yes','eyeclosed-no','eyeclosed-nd'],
+    vEEG:['vEEG-pos','vEEG-neg','vEEG-epi','vEEG-nd']
+  };
+  if(btnIds[k]) btnIds[k].forEach(id=>{const b=document.getElementById(id);if(b)b.classList.remove('ay','an','aw','agr');});
+  if(isPos){const b=document.getElementById(btnIds[k][0]);if(b)b.classList.add('ay');}
+  else if(isNeg){const b=document.getElementById(btnIds[k][1]);if(b)b.classList.add('agr');}
+  else if(isEpi){const b=document.getElementById(btnIds[k][2]);if(b)b.classList.add('an');}
+  else{const last=btnIds[k][btnIds[k].length-1];const b=document.getElementById(last);if(b)b.classList.add('agr');}
+  if(cur===5)rv(); ui();
+}
+function setRF(k, v) {
+  S.rf[k] = v;
+  const item = document.getElementById('rf-'+k+'-item');
+  if(item) item.className = 'crit '+(v===true?'c-part':v===false?'c-yes':'c-abs');
+  const sfx = k==='mri'||k==='eeg'||k==='coexist'?['yes','no','nd']:['yes','no'];
+  sfx.forEach(s=>{const b=document.getElementById('rf-'+k+'-'+s);if(b)b.classList.remove('ay','aw','agr');});
+  if(v===true){const b=document.getElementById('rf-'+k+'-yes');if(b)b.classList.add('aw');}
+  else if(v===false){const b=document.getElementById('rf-'+k+'-no');if(b)b.classList.add('ay');}
+  else{const b=document.getElementById('rf-'+k+'-nd');if(b)b.classList.add('agr');}
+  if(cur===5)rv(); ui();
+}
+function setCom(k, v) {
+  S.com[k] = v;
+  const idMap = {depression:'depression-item',anxiety:'anxiety-item',ptsd:'ptsd-item',pain:'pain-item',medattr:'medattr-item',avoidance:'avoidance-item',medleg:'medleg-item',support:'support-item'};
+  const item = document.getElementById(idMap[k]);
+  if(item) item.className = 'crit '+(v===true?'c-a':v===false?'c-yes':'c-abs');
+  const yMap={depression:'dep-yes',anxiety:'anx-yes',ptsd:'ptsd-yes',pain:'pain-yes',medattr:'ma-yes',avoidance:'av-yes',medleg:'ml-yes',support:'sup-yes'};
+  const nMap={depression:'dep-no',anxiety:'anx-no',ptsd:'ptsd-no',pain:'pain-no',medattr:'ma-no',avoidance:'av-no',medleg:'ml-no',support:'sup-no'};
+  const ndMap={depression:'dep-nd',anxiety:'anx-nd',ptsd:'ptsd-nd',pain:'pain-nd',avoidance:'av-nd'};
+  [yMap[k],nMap[k],ndMap[k]].filter(Boolean).forEach(id=>{const b=document.getElementById(id);if(b)b.classList.remove('ay','aa','agr');});
+  if(v===true){const b=document.getElementById(yMap[k]);if(b)b.classList.add('aa');}
+  else if(v===false){const b=document.getElementById(nMap[k]);if(b)b.classList.add('ay');}
+  else if(ndMap[k]){const b=document.getElementById(ndMap[k]);if(b)b.classList.add('agr');}
+  if(cur===5)rv(); ui();
+}
+
+function posSignCount() { return Object.values(S.signs).filter(v=>v===true||v==='pos').length; }
+function rfCount() { return Object.values(S.rf).filter(v=>v===true).length; }
+function allCritMet() { return S.crit.A===true && S.crit.B===true && S.crit.C===true && S.crit.D===true; }
+function getConfidence() {
+  if(S.rf.eeg==='epilep'||S.signs.vEEG==='epilep') return 'epilepsy';
+  if(S.rf.coexist===true) return 'excluded';
+  if(!allCritMet()) return 'incomplete';
+  const nPos = posSignCount();
+  const vEEG = S.signs.vEEG;
+  if(vEEG==='pos') return 'documented';
+  if(nPos>=2 && S.crit.B===true) return 'established';
+  if(nPos===1 && S.crit.B===true) return 'probable';
+  if(nPos===0 && S.crit.B===true) return 'probable';
+  if(S.crit.B===null) return 'possible';
+  return 'incomplete';
+}
+function getSubtypeNames() { return subtypes.filter(s=>S.subtypes[s.id]).map(s=>s.name).join(', ')||'Not specified'; }
+
+function ui() {
+  const a0=document.getElementById('a0');
+  const nSub=Object.values(S.subtypes).filter(v=>v).length;
+  if(nSub>0) sa(a0,'ateal',nSub+' subtype'+(nSub>1?'s':'')+' selected: '+getSubtypeNames()+'. FND subtypes frequently coexist and overlap. Proceed to apply DSM-5-TR criteria and identify positive signs for the presenting subtype(s).');
+  else ha(a0);
+
+  const a1=document.getElementById('a1');
+  const n=Object.values(S.crit).filter(v=>v===true).length;
+  if(n===4) sa(a1,'aok','All four DSM-5-TR criteria met. Proceed to confirm positive signs (Step 3) for maximum diagnostic confidence.');
+  else if(S.crit.B===false) sa(a1,'awn','Criterion B not met &mdash; no positive signs of incompatibility identified yet. FND diagnosis requires a positive examination finding. Proceed to Step 3 to systematically assess positive signs.');
+  else if(S.crit.C===false) sa(a1,'aerr','Criterion C not met &mdash; another medical or mental disorder better explains the symptoms. Reassess the primary diagnosis before labelling FND.');
+  else if(n>0) sa(a1,'awn',n+'/4 DSM-5-TR criteria met. Complete remaining criteria assessment.');
+  else ha(a1);
+
+  const a2=document.getElementById('a2');
+  const nPos=posSignCount();
+  if(S.signs.vEEG==='epilep') sa(a2,'aerr','Epileptiform activity captured on vEEG. This is NOT consistent with functional seizures as the primary diagnosis. Reassess for epilepsy. Note: epilepsy and PNES can coexist in ~10&ndash;20% of patients.');
+  else if(S.signs.vEEG==='pos') sa(a2,'aok','vEEG confirmed habitual event with no epileptiform correlate &mdash; DOCUMENTED functional seizures (gold standard diagnosis). Discontinuation of AEDs is appropriate after confirmed diagnosis.');
+  else if(nPos>=2) sa(a2,'aok',nPos+' positive signs identified. Strong positive evidence for FND. Combined with DSM-5-TR criteria, this supports a confident clinical diagnosis. Diagnostic confidence: Clinically Established.');
+  else if(nPos===1) sa(a2,'ateal','1 positive sign identified. Supportive of FND. Continue assessing additional signs. A single unequivocal positive sign in the right context can be sufficient (Aybek &amp; Perez BMJ 2022).');
+  else if(Object.values(S.signs).some(v=>v!==null)) sa(a2,'awn','No positive signs identified yet. Positive signs are required for Criterion B (DSM-5-TR). Consider: were all relevant subtypes tested? Were distraction manoeuvres performed adequately? Is the clinical picture consistent with FND?');
+  else ha(a2);
+
+  const a3=document.getElementById('a3');
+  const nRF=rfCount();
+  if(S.rf.coexist===true) sa(a3,'aerr','Structural disease fully explains all symptoms. FND is not the primary diagnosis. If additional symptoms cannot be explained by the structural lesion, FND may still coexist &mdash; but reassess carefully.');
+  else if(S.rf.eeg===true) sa(a3,'aerr','Epileptiform activity on EEG. Epilepsy must be excluded or a combined epilepsy+PNES diagnosis considered before diagnosing functional seizures. vEEG is mandatory.');
+  else if(S.rf.autoimmune===true) sa(a3,'awn','Autoimmune encephalitis features present. Check serum and CSF antibody panel (NMDAR, LGI1, CASPR2, AMPAR, GABA-B) before confirming FND. Anti-NMDAR encephalitis can closely mimic FND.');
+  else if(nRF>0) sa(a3,'awn',nRF+' red flag'+(nRF>1?'s':'')+' identified. These do not exclude FND but require careful evaluation before confirming diagnosis. Ensure positive signs are unequivocal in the context of these findings.');
+  else if(Object.values(S.rf).some(v=>v!==null)) sa(a3,'aok','No significant red flags identified. Diagnostic safety profile is reassuring. Proceed with confidence.');
+  else ha(a3);
+
+  const a4=document.getElementById('a4');
+  const comPresent = Object.values(S.com).filter(v=>v===true).length;
+  if(comPresent>0) {
+    const names=[];
+    if(S.com.depression===true)names.push('depression');
+    if(S.com.anxiety===true)names.push('anxiety');
+    if(S.com.ptsd===true)names.push('PTSD');
+    if(S.com.pain===true)names.push('chronic pain');
+    if(S.com.medattr===true)names.push('ongoing diagnostic uncertainty');
+    if(S.com.avoidance===true)names.push('avoidance/kinesiophobia');
+    if(S.com.medleg===true)names.push('medico-legal claim');
+    if(S.com.support===false)names.push('poor social support');
+    sa(a4,'awn','Comorbidities/perpetuating factors identified: '+names.join(', ')+'. These should be addressed in the multidisciplinary treatment plan. Comorbid psychiatric conditions require independent treatment &mdash; addressing them in isolation is insufficient for FND recovery.');
+  } else if(Object.values(S.com).some(v=>v!==null)) sa(a4,'aok','No significant comorbidities or perpetuating factors identified at this time. Prognostic profile is more favourable. Physiotherapy and early diagnosis communication are first-line.');
+  else ha(a4);
+}
+
+function rv() {
+  const conf=getConfidence();
+  const nPos=posSignCount();
+  const subNames=getSubtypeNames();
+  const nRF=rfCount();
+
+  let banCls,banTitle,banDesc;
+  if(conf==='epilepsy') {
+    banCls='vexcl'; banTitle='Epilepsy Likely &mdash; FND Diagnosis Not Supported';
+    banDesc='Epileptiform activity was captured on EEG/vEEG. Epilepsy is the primary diagnosis or must be fully evaluated. Note: ~10&ndash;20% of patients with epilepsy also have functional seizures (PNES). vEEG capturing multiple habitual events is essential before any diagnosis of coexistent PNES in a known epilepsy patient.';
+  } else if(conf==='excluded') {
+    banCls='vexcl'; banTitle='FND Not Supported &mdash; Structural Cause Explains Symptoms';
+    banDesc='The identified structural or organic disease fully accounts for the presenting symptoms. Positive FND signs are absent. Manage the underlying condition. If additional symptoms emerge that cannot be explained by the structural lesion, reassess for possible coexistent FND.';
+  } else if(conf==='documented') {
+    banCls='vdef'; banTitle='FND &mdash; DOCUMENTED Diagnostic Certainty';
+    banDesc='Habitual functional seizures captured on video-EEG without epileptiform correlate. This is the highest diagnostic certainty level (Reuber &amp; Elger 2003). Diagnose as: Functional Neurological Symptom Disorder, Functional Seizures (F44.5). AED discontinuation is appropriate after clear diagnosis communication. CBT with FND-informed protocol is first-line treatment.';
+  } else if(conf==='established') {
+    banCls='vdef'; banTitle='FND &mdash; Clinically Established Diagnosis';
+    banDesc='All four DSM-5-TR criteria are met, and '+nPos+' positive bedside sign'+(nPos>1?'s are':' is')+' present ('+subNames+'). This meets the threshold for a clinically established FND diagnosis. Communicate the diagnosis clearly and positively. Multidisciplinary treatment (physiotherapy, CBT, occupational therapy) should be initiated promptly. Earlier treatment initiation is associated with better outcomes.';
+  } else if(conf==='probable') {
+    banCls='vprob'; banTitle='FND &mdash; Clinically Probable';
+    banDesc='DSM-5-TR criteria appear met and 1 positive sign supports the diagnosis. Clinically probable FND. A second positive sign or specialist confirmation would increase diagnostic confidence to &ldquo;established.&rdquo; Proceed with initial management while seeking confirmatory evidence. Neurology specialist review is recommended.';
+  } else if(conf==='possible') {
+    banCls='vposs'; banTitle='Possible FND &mdash; Assessment Incomplete';
+    banDesc='The clinical picture is consistent with FND but positive signs have not been fully assessed or confirmed. Do not communicate a diagnosis of FND without positive examination evidence. Complete the positive sign assessment (Step 3). If no positive signs are identified after a thorough examination, consider specialist review before labelling FND.';
+  } else {
+    banCls='vund'; banTitle='Evaluation Incomplete &mdash; Continue Assessment';
+    banDesc='Complete all steps including DSM-5-TR criteria, positive sign examination, and red flag assessment before forming a diagnostic conclusion. FND is a diagnosis of inclusion, not exclusion &mdash; positive evidence is required.';
+  }
+
+  let html=`<div class="vban ${banCls}"><div class="vban-head">
+    <div class="vlbl">DSM-5-TR (APA 2022) &middot; Aybek &amp; Perez BMJ 2022 &middot; Espay et al. JAMA Neurol 2018 &middot; Reuber &amp; Elger 2003 (certainty levels)</div>
+    <div class="vtitle">${banTitle}</div>
+    <div class="vdesc">${banDesc}</div>
+  </div></div>`;
+
+  // Treatment section
+  html+=`<div class="card" style="margin-bottom:12px;"><div class="ctitle" style="color:var(--accent);margin-bottom:8px;">Treatment Framework</div>
+  <div class="lbox">
+    <strong>Evidence summary (umbrella review, J Neurol 2025):</strong><br>
+    <span class="lt">CBT:</span> Strongest evidence, particularly for functional seizures (PNES). CODES RCT (Goldstein LH et al. 2020, n=368): CBT for dissociative seizures reduced seizure frequency vs. standardised medical care at 12 months (responder rate 47% vs 23%, NNT ~4). Also beneficial for mixed FND presentations in multidisciplinary settings.<br>
+    <span class="lt">Physiotherapy:</span> Moderate evidence for functional motor symptoms. Nielsen G et al. JNNP 2015 consensus: physiotherapy addressing abnormal illness beliefs, movement re-education, and graduated exposure is effective. Improvements reported in gait, weakness, tremor. Key: physio must be FND-informed, not generic strengthening.<br>
+    <span class="lt">Multidisciplinary rehabilitation:</span> Inpatient or intensive outpatient MDT (neurology + psychiatry + physiotherapy + OT) shows consistent benefit for complex or severe FND, particularly in specialist FND units.<br>
+    <span class="lt">Pharmacotherapy:</span> No drug is specifically licensed for FND. Treat comorbid depression (SSRI), anxiety, and pain independently. SSRIs may have modest benefit for somatic symptoms. Avoid opioids (perpetuate avoidance and symptom focus).
+  </div>
+  <div class="lbox" style="border-color:var(--accent-bd);background:var(--accent-bg);">
+    <strong style="color:var(--accent);">Diagnosis communication &mdash; key principles (Aybek &amp; Perez BMJ 2022):</strong><br>
+    1. <strong>Name it clearly:</strong> &ldquo;You have functional neurological disorder&rdquo; &mdash; not &ldquo;we can&rsquo;t find anything wrong&rdquo;<br>
+    2. <strong>Validate:</strong> &ldquo;Your symptoms are real and not imagined or made up&rdquo;<br>
+    3. <strong>Explain the mechanism:</strong> &ldquo;It is a problem with how your brain controls movement, not damage to the brain itself &mdash; software not hardware&rdquo;<br>
+    4. <strong>Demonstrate reversibility:</strong> Show the patient their Hoover sign, tremor entrainment &mdash; prove the brain can work normally in certain conditions<br>
+    5. <strong>Emphasise treatment:</strong> &ldquo;This is treatable and many people improve significantly&rdquo;<br>
+    6. <strong>Refer early:</strong> FND-informed physiotherapy and/or psychology. Neurosymptoms.org as patient resource.
+  </div></div>`;
+
+  html+=`<div class="sum-grid">
+  <div class="sblock"><div class="sbtitle">DSM-5-TR &amp; Positive Signs</div>
+    <div class="srow"><div class="dot ${Object.values(S.subtypes).some(v=>v)?'dt':'dgr'}"></div><div class="sname">FND subtype(s)</div><div class="stag ${Object.values(S.subtypes).some(v=>v)?'tt':'tgr'}">${subNames.length>30?subNames.slice(0,30)+'...':subNames}</div></div>
+    <div class="srow"><div class="dot ${allCritMet()?'dg':S.crit.A?'dt':'dgr'}"></div><div class="sname">DSM-5-TR criteria</div><div class="stag ${allCritMet()?'tg':Object.values(S.crit).filter(v=>v===true).length>0?'tt':'tgr'}">${allCritMet()?'All 4 met':Object.values(S.crit).filter(v=>v===true).length+'/4 met'}</div></div>
+    <div class="srow"><div class="dot ${nPos>=2?'dg':nPos===1?'dt':'dgr'}"></div><div class="sname">Positive signs identified</div><div class="stag ${nPos>=2?'tg':nPos===1?'tt':'tgr'}">${nPos} positive sign${nPos!==1?'s':''}</div></div>
+    <div class="srow"><div class="dot ${S.signs.vEEG==='pos'?'dg':S.signs.vEEG==='epilep'?'dr':'dgr'}"></div><div class="sname">vEEG result</div><div class="stag ${S.signs.vEEG==='pos'?'tg':S.signs.vEEG==='epilep'?'tr':S.signs.vEEG==='neg'?'tgr':'tgr'}">${{pos:'Documented functional seizures',neg:'No event captured',epilep:'Epileptiform activity',null:'Not performed'}[String(S.signs.vEEG)]||'Not performed'}</div></div>
+  </div>
+  <div class="sblock"><div class="sbtitle">Risk Flags &amp; Confidence</div>
+    <div class="srow"><div class="dot ${nRF===0&&Object.values(S.rf).some(v=>v!==null)?'dg':nRF>0?'dam':'dgr'}"></div><div class="sname">Organic red flags</div><div class="stag ${nRF===0&&Object.values(S.rf).some(v=>v!==null)?'tg':nRF>0?'tam':'tgr'}">${nRF>0?nRF+' flag'+(nRF>1?'s':'')+' present':'None identified'}</div></div>
+    <div class="srow"><div class="dot ${S.prior===true?'dam':S.prior===false?'dg':'dgr'}"></div><div class="sname">Coexisting neurological disease</div><div class="stag ${S.prior===true?'tam':S.prior===false?'tg':'tgr'}">${S.prior===true?'Yes &mdash; coexists with FND':S.prior===false?'No':'Not assessed'}</div></div>
+    <div class="srow"><div class="dot ${conf==='documented'||conf==='established'?'dg':conf==='probable'?'dt':conf==='possible'?'dam':'dgr'}"></div><div class="sname">Diagnostic confidence</div><div class="stag ${conf==='documented'||conf==='established'?'tg':conf==='probable'?'tt':conf==='possible'?'tam':'tgr'}">${{documented:'Documented',established:'Clinically Established',probable:'Clinically Probable',possible:'Possible',incomplete:'Incomplete',excluded:'Not FND',epilepsy:'Epilepsy likely'}[conf]||'Incomplete'}</div></div>
+    <div class="srow"><div class="dot ${S.onset==='acute'?'dg':S.onset==='chronic'?'dr':'dgr'}"></div><div class="sname">Symptom onset / prognosis</div><div class="stag ${S.onset==='acute'?'tg':S.onset==='chronic'?'tr':S.onset==='subac'?'tam':'tgr'}">${{acute:'Acute (<4w) &mdash; better prognosis',subac:'Subacute (4-12w)',chronic:'Chronic (>12w) &mdash; harder to treat',nd:'Not established'}[S.onset]||'Not assessed'}</div></div>
+  </div></div>`;
+
+  document.getElementById('vout').innerHTML=html;
+  buildDoc(banTitle, conf, subNames, nPos, nRF);
+}
+
+function buildDoc(title, conf, subNames, nPos, nRF) {
+  const signLines = Object.entries(S.signs).map(([k,v])=>{
+    const labels={hoover:'Hoover sign',abductor:'Hip abductor sign',giveway:'Give-way weakness',driftpron:'Drift without pronation',entrain:'Tremor entrainment',distract:'Tremor distractibility',dragging:'Dragging monoplegic gait',gait_improve:'Gait improvement (backwards/running)',midline:'Midline splitting sensory loss',nonanat:'Non-anatomical sensory loss',eyeclosed:'Eyes closed during episodes',vEEG:'Video-EEG result'};
+    const vStr=v===true?'POSITIVE':v===false?'Negative':v==='pos'?'DOCUMENTED (no epileptiform correlate)':v==='neg'?'Performed - no event captured':v==='epilep'?'EPILEPTIFORM ACTIVITY':'\u2014 Not tested';
+    return `    ${labels[k]||k}: ${vStr}`;
+  }).join('\n');
+  const rfLines=Object.entries(S.rf).map(([k,v])=>{
+    const labels={progressive:'Progressive unrelenting course',mri:'MRI abnormality',age:'Onset >50 with de novo movement disorder',autoimmune:'Autoimmune encephalitis features',eeg:'Epileptiform EEG activity',coexist:'Structural cause fully explains symptoms'};
+    return `    ${labels[k]||k}: ${v===true?'PRESENT (red flag)':v===false?'Absent':'\u2014 Not assessed'}`;
+  }).join('\n');
+  const comLines=Object.entries(S.com).map(([k,v])=>{
+    const labels={depression:'Depression',anxiety:'Anxiety disorder',ptsd:'PTSD/trauma history',pain:'Chronic pain/fibromyalgia',medattr:'Ongoing diagnostic uncertainty',avoidance:'Avoidance/kinesiophobia',medleg:'Medico-legal claim',support:'Social support'};
+    return `    ${labels[k]||k}: ${v===true?'Present':v===false?'Absent/adequate':'\u2014 Not assessed'}`;
+  }).join('\n');
+  const note=`NEUROLOGY -- FUNCTIONAL NEUROLOGICAL DISORDER (FND) DIAGNOSTIC NAVIGATOR
+DSM-5-TR (APA 2022) -- Functional Neurological Symptom Disorder (FNSD)
+Aybek S & Perez DL. Diagnosis and management of FND. BMJ 2022;376:o64
+Espay AJ et al. Current concepts in diagnosis and treatment of FND. JAMA Neurol 2018;75:1132
+Reuber M & Elger CE. Psychogenic nonepileptic seizures: review and update. Epilepsy Behav 2003;4:205
+Stone J et al. Systematic review of misdiagnosis of conversion symptoms. BMJ 2005;331:989
+Nielsen G et al. Physiotherapy for functional motor disorders. JNNP 2015;86:1113
+Date: ${new Date().toLocaleDateString()}
+
+OVERALL ASSESSMENT: ${title.replace(/&mdash;/g,'--').replace(/&amp;/g,'&').replace(/&ldquo;/g,'"').replace(/&rdquo;/g,'"')}
+Diagnostic Confidence Level: ${conf.toUpperCase()}
+
+SUBTYPE(S): ${subNames}
+Symptom onset: ${{'acute':'Acute (<4 weeks)','subac':'Subacute (4-12 weeks)','chronic':'Chronic (>12 weeks)','nd':'Not established'}[S.onset]||'Not assessed'}
+Coexisting confirmed neurological disease: ${S.prior===true?'YES':S.prior===false?'No':'Not assessed'}
+
+DSM-5-TR CRITERIA (ALL FOUR REQUIRED):
+  Criterion A (Altered voluntary motor/sensory function): ${S.crit.A===true?'MET':S.crit.A===false?'NOT MET':'Not assessed'}
+  Criterion B (Positive evidence of incompatibility): ${S.crit.B===true?'MET':S.crit.B===false?'NOT MET':'Pending examination'}
+  Criterion C (Not better explained by another disorder): ${S.crit.C===true?'MET':S.crit.C===false?'NOT MET':'Not assessed'}
+  Criterion D (Significant distress or impairment): ${S.crit.D===true?'MET':S.crit.D===false?'NOT MET':'Not assessed'}
+  OVERALL: ${allCritMet()?'ALL CRITERIA MET':'INCOMPLETE'}
+
+POSITIVE SIGNS EXAMINATION (${nPos} positive sign${nPos!==1?'s':''} identified):
+${signLines}
+
+  Key diagnostic thresholds (Aybek & Perez BMJ 2022):
+  - 1 unequivocal positive sign + right clinical context = sufficient for Criterion B
+  - >= 2 positive signs = Clinically Established confidence level
+  - vEEG-confirmed habitual event = Documented (gold standard for functional seizures)
+
+  Sensitivity/specificity reference:
+  - Hoover sign: Sn 63%, Sp 100% (McWhirter et al. J Psychosom Res 2011, n=337)
+  - Tremor electrophysiology battery: Sn 89.5%, Sp 95.9% (Schwingenschuh et al. Mov Disord 2011)
+  - Eyes closed in functional seizures: Sp ~98% (Chung et al. Seizure 2006)
+
+ORGANIC RED FLAGS (${nRF} flag${nRF!==1?'s':''} identified):
+${rfLines}
+
+COMORBIDITIES & PERPETUATING FACTORS:
+${comLines}
+
+PROGNOSIS:
+  ~40% of functional motor disorder patients improve significantly (Gelauff et al. JNNP 2014)
+  Better prognosis: acute onset, younger age, acceptance of diagnosis, no litigation, good social support
+  Poorer prognosis: chronic symptoms, high somatic burden, ongoing diagnostic uncertainty, medico-legal issues
+
+TREATMENT PLAN:
+  1. Diagnosis communication (PRIORITY):
+     - Name clearly: "Functional neurological disorder" -- not "nothing wrong" or "all in your head"
+     - Validate: symptoms are real, involuntary, and genuine
+     - Explain mechanism: brain software problem, not hardware damage
+     - Demonstrate reversibility using positive signs (Hoover, entrainment)
+     - Provide neurosymptoms.org as patient resource
+  2. FND-informed physiotherapy (for motor symptoms):
+     Nielsen G et al. JNNP 2015 consensus protocol
+     Graduated movement re-education, normalisation of gait/movement patterns
+  3. Psychological treatment:
+     CBT: strongest evidence especially for functional seizures (CODES RCT, Goldstein 2020; NNT ~4)
+     Trauma-focused CBT/EMDR if comorbid PTSD
+     Consider psychodynamic or ACT-based approaches
+  4. Psychiatric comorbidities: treat independently
+     SSRI for depression/anxiety
+     Avoid opioids (perpetuate symptom focus)
+  5. Multidisciplinary team: neurology + psychiatry/psychology + physiotherapy + OT
+  6. For functional seizures: discontinue AEDs after documented vEEG diagnosis
+  7. Follow-up: 6-week review, then 3-monthly; monitor for symptom change or emergence of organic disease
+
+KEY REFERENCES:
+  DSM-5-TR. American Psychiatric Association, 2022
+  Aybek S, Perez DL. BMJ 2022;376:o64
+  Espay AJ et al. JAMA Neurol 2018;75(9):1132-1141
+  Stone J et al. BMJ 2005;331:989 (misdiagnosis rate 4%)
+  Nielsen G et al. JNNP 2015;86:1113 (physiotherapy consensus)
+  Goldstein LH et al. (CODES trial) Lancet Psychiatry 2020;7:213 (CBT for PNES; NNT ~4)
+  McWhirter L et al. J Psychosom Res 2011;71:384 (Hoover sign: Sn 63%, Sp 100%)
+  Reuber M & Elger CE. Epilepsy Behav 2003;4:205 (PNES diagnostic certainty levels)`;
+  document.getElementById('dn').textContent=note;
+}
+
+function sa(el,cls,msg){if(!el)return;el.className='alrt show '+cls;el.innerHTML=msg;}
+function ha(el){if(el)el.classList.remove('show');}
+function goTab(n){if(n===cur)return;go(n);}
+function go(n){
+  document.getElementById('s'+cur).classList.remove('active');
+  document.getElementById('s'+n).classList.add('active');
+  for(let i=0;i<6;i++){const d=document.getElementById('st'+i);d.classList.remove('active','done');if(i<n)d.classList.add('done');else if(i===n)d.classList.add('active');}
+  cur=n; document.getElementById('pf').style.width=((n/5)*100)+'%';
+  if(n===5) rv();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function xp(btn){
+  const d=btn.closest('.crit').querySelector('.crit-detail');
+  if(!d)return;
+  const o=d.classList.toggle('open');
+  btn.textContent=o?'close \u25b4':'details \u25be';
+}
+function toggleDoc(){
+  const body=document.getElementById('dn'),btn=document.getElementById('copy-btn'),tog=document.querySelector('.doc-tog');
+  if(!body)return;
+  const open=body.classList.toggle('open');
+  if(tog)tog.textContent=open?'\u25b2 Documentation Note':'\u25bc Documentation Note';
+  if(btn)btn.classList.toggle('visible',open);
+}
+function copyDoc(){
+  const body=document.getElementById('dn'),btn=document.getElementById('copy-btn');
+  if(!body)return;
+  const text=body.textContent||body.innerText;
+  navigator.clipboard.writeText(text).then(()=>{if(btn){btn.textContent='\u2713 Copied';btn.classList.add('copied');setTimeout(()=>{btn.textContent='\u238a Copy';btn.classList.remove('copied');},2000);}}).catch(()=>{const ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);if(btn){btn.textContent='\u2713 Copied';btn.classList.add('copied');setTimeout(()=>{btn.textContent='\u238a Copy';btn.classList.remove('copied');},2000);}});
+}
+function resetAll(){
+  subtypes.forEach(s=>S.subtypes[s.id]=false);
+  S.onset=null; S.prior=null;
+  Object.keys(S.crit).forEach(k=>S.crit[k]=null);
+  Object.keys(S.signs).forEach(k=>S.signs[k]=null);
+  Object.keys(S.rf).forEach(k=>S.rf[k]=null);
+  Object.keys(S.com).forEach(k=>S.com[k]=null);
+  document.querySelectorAll('.crit').forEach(el=>el.className='crit');
+  document.querySelectorAll('.abtn').forEach(b=>b.classList.remove('ay','an','aa','ab','agr','aw'));
+  document.querySelectorAll('.crit-detail').forEach(d=>d.classList.remove('open'));
+  document.querySelectorAll('.xbtn').forEach(b=>b.textContent='details \u25be');
+  ['a0','a1','a2','a3','a4'].forEach(id=>{const el=document.getElementById(id);if(el)el.classList.remove('show');});
+  document.getElementById('vout').innerHTML='';
+  const dn=document.getElementById('dn');if(dn)dn.classList.remove('open');
+  const cb=document.getElementById('copy-btn');if(cb)cb.classList.remove('visible','copied');
+  const tog=document.querySelector('.doc-tog');if(tog)tog.textContent='\u25bc Documentation Note';
+  buildSubtypes();
+  go(0);
+  document.getElementById('n0').disabled=true;
+}
+buildSubtypes();
+ui();
+</script>
+</body>
+</html>
