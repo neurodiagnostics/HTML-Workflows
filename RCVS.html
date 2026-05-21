@@ -1,0 +1,1333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RCVS &middot; Diagnostic Navigator</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Lexend:wght@300;400;500;600;700&display=swap');
+:root {
+  --bg:#0d1117; --card:#161b22; --card2:#1c2330; --border:#2a3a4a; --border2:#3a5060;
+  --green:#3fb950; --green-bg:rgba(63,185,80,.10); --green-bd:rgba(63,185,80,.35);
+  --red:#f85149; --red-bg:rgba(248,81,73,.10); --red-bd:rgba(248,81,73,.35);
+  --amber:#e3b341; --amber-bg:rgba(227,179,65,.10); --amber-bd:rgba(227,179,65,.35);
+  --blue:#58a6ff; --blue-bg:rgba(88,166,255,.10); --blue-bd:rgba(88,166,255,.35);
+  --purple:#bc8cff; --purple-bg:rgba(188,140,255,.10); --purple-bd:rgba(188,140,255,.35);
+  /* RCVS accent: rose/pink — titles and interactive elements only */
+  --accent:#fb7185; --accent-bg:rgba(251,113,133,.10); --accent-bd:rgba(251,113,133,.35);
+  --accent2:#9f1239;
+  --text:#e6edf3; --text2:#aab4c0; --text3:#6e7f94;
+  --sans:'Lexend','Inter',system-ui,sans-serif; --mono:'IBM Plex Mono',monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:14px;line-height:1.5;min-height:100vh;}
+.app{max-width:960px;margin:0 auto;padding:0 20px 80px;}
+header{padding:24px 0 16px;border-bottom:1px solid var(--border);margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;}
+.h-title{font-size:19px;font-weight:700;}.h-title span{color:var(--accent);}
+.h-sub{font-size:11px;color:var(--text3);margin-top:3px;line-height:1.6;}
+.h-credit{font-size:11px;color:var(--text3);margin-top:2px;}
+.reset-btn{background:var(--card2);border:1px solid var(--border);color:var(--text2);font-size:12px;padding:6px 14px;cursor:pointer;border-radius:4px;transition:all .15s;white-space:nowrap;font-weight:500;}
+.reset-btn:hover{border-color:var(--accent);color:var(--accent);}
+.prog-track{height:3px;background:var(--border);margin-bottom:20px;border-radius:2px;}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--accent2),var(--accent));border-radius:2px;transition:width .4s ease;box-shadow:0 0 8px rgba(251,113,133,.4);}
+.steps{display:grid;grid-template-columns:repeat(6,1fr);border:1px solid var(--border);border-radius:8px;margin-bottom:20px;overflow:hidden;background:var(--card);}
+.stab{padding:8px 3px 9px;text-align:center;font-size:10px;color:var(--text3);border-right:1px solid var(--border);transition:all .2s;cursor:pointer;background:var(--card);line-height:1.3;}
+.stab:nth-child(6n){border-right:none;}
+.stab .sn{display:flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;background:var(--card2);border:1px solid var(--border);font-size:10px;font-weight:700;margin:0 auto 3px;transition:all .2s;}
+.stab .slbl{display:block;font-size:9px;font-weight:600;line-height:1.3;}
+.stab.active{color:var(--accent);background:var(--accent-bg);}
+.stab.active .sn{background:var(--accent);color:#0d1117;border-color:var(--accent);}
+.stab.done{color:var(--green);}.stab.done .sn{background:var(--green);color:#0d1117;border-color:var(--green);}
+.stab:hover:not(.active){background:var(--card2);}
+.card{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:22px;margin-bottom:12px;}
+.ctitle{font-size:13px;font-weight:700;margin-bottom:3px;}
+.csub{font-size:12px;color:var(--text2);margin-bottom:16px;line-height:1.5;}
+.slabel{display:flex;align-items:center;gap:8px;font-size:11px;font-weight:600;color:var(--text);margin-bottom:9px;padding-bottom:6px;border-bottom:1px solid var(--border);}
+.pill{font-size:9px;padding:1px 7px;border-radius:20px;border:1px solid;margin-left:auto;letter-spacing:.04em;text-transform:uppercase;}
+.pill-r{border-color:var(--red);color:var(--red);background:var(--red-bg);}
+.pill-a{border-color:var(--accent);color:var(--accent);background:var(--accent-bg);}
+.pill-g{border-color:var(--green);color:var(--green);background:var(--green-bg);}
+.pill-b{border-color:var(--blue);color:var(--blue);background:var(--blue-bg);}
+.pill-am{border-color:var(--amber);color:var(--amber);background:var(--amber-bg);}
+.crit{border:1px solid var(--border);border-radius:6px;margin-bottom:5px;overflow:hidden;transition:border-color .15s,background .15s;}
+.crit.c-yes{border-color:var(--green-bd);background:var(--green-bg);}
+.crit.c-no{border-color:var(--red-bd);background:var(--red-bg);}
+.crit.c-a{border-color:var(--accent-bd);background:var(--accent-bg);}
+.crit.c-abs{border-color:var(--border2);background:var(--card2);}
+.crit.c-am{border-color:var(--amber-bd);background:var(--amber-bg);}
+.crit.c-blue{border-color:var(--blue-bd);background:var(--blue-bg);}
+.crit-main{display:flex;align-items:center;gap:10px;padding:10px 13px;}
+.crit-name{flex:1;font-size:13px;font-weight:500;color:var(--text);font-family:var(--sans);line-height:1.3;}
+.xbtn{background:var(--purple-bg);border:1px solid var(--purple-bd);color:var(--purple);font-size:11px;cursor:pointer;padding:2px 8px;white-space:nowrap;transition:all .15s;flex-shrink:0;border-radius:3px;font-weight:500;font-family:var(--sans);}
+.xbtn:hover{background:var(--purple);color:#0d1117;border-color:var(--purple);}
+.crit-detail{display:none;padding:10px 13px 12px;font-size:12px;color:var(--text);font-family:var(--sans);line-height:1.65;border-top:1px solid var(--border);}
+.crit-detail.open{display:block;}
+.cnote{margin-top:8px;padding:8px 11px;background:var(--card2);border-left:3px solid var(--border2);font-size:11px;color:var(--text2);font-family:var(--sans);line-height:1.75;border-radius:0 3px 3px 0;}
+.cnote strong{color:var(--text);}
+.brow{display:flex;border-top:1px solid var(--border);flex-wrap:wrap;}
+.abtn{flex:1;min-width:70px;padding:9px 10px;background:none;border:none;border-right:1px solid var(--border);border-bottom:1px solid var(--border);color:var(--text2);font-family:var(--sans);font-size:11px;cursor:pointer;transition:all .12s;font-weight:400;line-height:1.4;text-align:left;}
+.abtn:last-child{border-right:none;}.abtn:hover{background:var(--card2);color:var(--text);}
+.abtn.ay{background:var(--green-bg);color:var(--green);font-weight:700;}
+.abtn.an{background:var(--red-bg);color:var(--red);font-weight:700;}
+.abtn.aa{background:var(--accent-bg);color:var(--accent);font-weight:700;}
+.abtn.ab{background:var(--blue-bg);color:var(--blue);font-weight:700;}
+.abtn.agr{background:var(--amber-bg);color:var(--amber);font-weight:700;}
+.abtn.aw{background:var(--amber-bg);color:var(--amber);font-weight:700;}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:5px;}
+@media(max-width:600px){.two-col{grid-template-columns:1fr;}}
+.alrt{padding:9px 13px;border-radius:5px;font-size:12px;font-family:var(--sans);line-height:1.55;margin-top:12px;border-left:3px solid;display:none;}
+.alrt.show{display:block;}
+.aok{border-color:var(--green);background:var(--green-bg);color:#7ee787;}
+.awn{border-color:var(--amber);background:var(--amber-bg);color:var(--amber);}
+.aerr{border-color:var(--red);background:var(--red-bg);color:#ff7b72;}
+.ainf{border-color:var(--blue);background:var(--blue-bg);color:var(--blue);}
+.arose{border-color:var(--accent);background:var(--accent-bg);color:var(--accent);}
+.lbox{background:var(--card2);border:1px solid var(--border);border-radius:5px;padding:12px 15px;font-size:12px;font-family:var(--sans);color:var(--text2);line-height:1.75;margin-bottom:14px;}
+.lbox strong{color:var(--text);}
+.lr{color:var(--accent);font-weight:600;} .lg{color:var(--green);font-weight:600;}
+.lam{color:var(--amber);font-weight:600;} .lb{color:var(--blue);font-weight:600;}
+.lrd{color:var(--red);font-weight:600;}
+
+/* RCVS2 score calculator */
+.rcvs2-grid{display:flex;flex-direction:column;gap:4px;margin-bottom:12px;}
+.rcvs2-row{display:flex;align-items:center;gap:10px;padding:9px 13px;border:1px solid var(--border);border-radius:5px;background:var(--card2);transition:all .15s;}
+.rcvs2-row.r-pos{border-color:var(--green-bd);background:var(--green-bg);}
+.rcvs2-row.r-neg{border-color:var(--red-bd);background:var(--red-bg);}
+.rcvs2-row.r-nd{border-color:var(--amber-bd);background:var(--amber-bg);}
+.rcvs2-label{flex:1;font-size:12px;font-weight:500;color:var(--text);font-family:var(--sans);line-height:1.3;}
+.rcvs2-pts{font-size:11px;font-weight:700;padding:2px 8px;border-radius:10px;border:1px solid;white-space:nowrap;flex-shrink:0;font-family:var(--sans);}
+.rcvs2-pts.pp{border-color:var(--green-bd);color:var(--green);}
+.rcvs2-pts.pm{border-color:var(--red-bd);color:var(--red);}
+.rcvs2-btns{display:flex;gap:3px;flex-shrink:0;}
+.r2btn{padding:4px 10px;border:1px solid var(--border);background:var(--card);color:var(--text3);border-radius:4px;cursor:pointer;font-family:var(--sans);font-size:11px;font-weight:600;transition:all .12s;}
+.r2btn:hover{border-color:var(--border2);color:var(--text2);}
+.r2btn.rsy{background:var(--green-bg);color:var(--green);border-color:var(--green-bd);}
+.r2btn.rsn{background:var(--red-bg);color:var(--red);border-color:var(--red-bd);}
+.r2btn.rsnd{background:var(--amber-bg);color:var(--amber);border-color:var(--amber-bd);}
+.score-display{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:var(--card2);border:1px solid var(--border);border-radius:6px;margin-bottom:12px;}
+.score-num{font-size:28px;font-weight:700;}
+.score-cat{font-size:11px;font-weight:600;margin-top:2px;}
+.score-bar{height:8px;background:var(--border);border-radius:4px;margin-bottom:12px;position:relative;}
+.score-fill{height:100%;border-radius:4px;transition:width .4s ease;}
+
+/* Side-by-side comparison table */
+.diff-table{width:100%;border-collapse:collapse;font-size:12px;margin-bottom:14px;font-family:var(--sans);}
+.diff-table th{padding:8px 12px;text-align:left;font-weight:600;font-size:11px;border-bottom:2px solid var(--border);font-family:var(--sans);}
+.diff-table th.th-rcvs{color:var(--accent);background:var(--accent-bg);border-bottom-color:var(--accent-bd);}
+.diff-table th.th-pacns{color:var(--blue);background:var(--blue-bg);border-bottom-color:var(--blue-bd);}
+.diff-table th.th-feat{color:var(--text2);background:var(--card2);}
+.diff-table td{padding:7px 12px;border-bottom:1px solid var(--border);vertical-align:top;line-height:1.5;color:var(--text2);font-family:var(--sans);}
+.diff-table tr:last-child td{border-bottom:none;}
+.diff-table tr:nth-child(even) td{background:rgba(255,255,255,.02);}
+.td-feat{font-weight:500;color:var(--text);font-size:11px;}
+.td-rcvs{border-left:2px solid var(--accent-bd);}
+.td-pacns{border-left:2px solid var(--blue-bd);}
+.fav-rcvs{color:var(--accent);font-weight:600;}
+.fav-pacns{color:var(--blue);font-weight:600;}
+.fav-neu{color:var(--text3);}
+
+/* Nav */
+.nav-row{display:flex;justify-content:space-between;align-items:center;margin-top:20px;gap:10px;}
+.nbtn{padding:9px 22px;border-radius:5px;font-size:13px;border:1px solid;cursor:pointer;font-weight:600;transition:all .15s;}
+.np{background:var(--accent);border-color:var(--accent);color:#0d1117;font-weight:700;}
+.np:hover{background:#fda4af;border-color:#fda4af;}
+.np:disabled{opacity:.3;cursor:not-allowed;}
+.ns{background:transparent;border-color:var(--border2);color:var(--text2);}
+.ns:hover{border-color:var(--text);color:var(--text);}
+.screen{display:none;}.screen.active{display:block;animation:fu .25s ease;}
+@keyframes fu{from{opacity:0;transform:translateY(5px);}to{opacity:1;transform:translateY(0);}}
+
+/* Verdict */
+.vban{border-radius:8px;padding:22px 26px;margin-bottom:16px;border:2px solid;}
+.vrcvs{border-color:var(--accent);background:var(--accent-bg);}
+.vposs{border-color:var(--amber);background:var(--amber-bg);}
+.vexcl{border-color:var(--red);background:var(--red-bg);}
+.vund{border-color:var(--border2);background:var(--card2);}
+.vban-head{text-align:center;margin-bottom:14px;}
+.vlbl{font-size:9px;letter-spacing:.15em;text-transform:uppercase;opacity:.6;margin-bottom:5px;}
+.vtitle{font-size:22px;font-weight:700;margin-bottom:6px;}
+.vrcvs .vtitle{color:var(--accent);}.vposs .vtitle{color:var(--amber);}
+.vexcl .vtitle{color:var(--red);}.vund .vtitle{color:var(--text2);}
+.vdesc{font-size:12px;color:var(--text2);line-height:1.7;max-width:640px;margin:0 auto;}
+.sum-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;}
+@media(max-width:580px){.sum-grid{grid-template-columns:1fr;}}
+.sblock{background:var(--card);border:1px solid var(--border);border-radius:6px;overflow:hidden;}
+.sbtitle{font-size:11px;font-weight:600;padding:7px 11px;border-bottom:1px solid var(--border);color:var(--text);background:var(--card2);}
+.srow{display:flex;align-items:flex-start;gap:8px;padding:6px 11px;border-bottom:1px solid var(--border);font-size:12px;}
+.srow:last-child{border-bottom:none;}
+.dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;margin-top:4px;}
+.dg{background:var(--green);}.dr{background:var(--red);}.da{background:var(--accent);}
+.db{background:var(--blue);}.dam{background:var(--amber);}.dgr{background:var(--text3);}
+.sname{flex:1;color:var(--text);line-height:1.4;}
+.stag{font-size:9px;padding:1px 7px;border-radius:10px;border:1px solid;white-space:nowrap;}
+.tg{border-color:var(--green-bd);color:var(--green);}
+.tr{border-color:var(--red-bd);color:var(--red);}
+.ta{border-color:var(--accent-bd);color:var(--accent);}
+.tb{border-color:var(--blue-bd);color:var(--blue);}
+.tam{border-color:var(--amber-bd);color:var(--amber);}
+.tgr{border-color:var(--border2);color:var(--text3);}
+
+/* Doc */
+.doc-header{display:flex;align-items:center;gap:8px;margin-bottom:5px;}
+.doc-tog{flex:1;text-align:left;background:var(--card2);border:1px solid var(--border2);border-radius:5px;color:var(--text2);font-size:13px;padding:8px 13px;cursor:pointer;transition:all .15s;}
+.doc-tog:hover{border-color:var(--accent);color:var(--accent);}
+.copy-btn{background:var(--card2);border:1px solid var(--border2);border-radius:5px;color:var(--text2);font-size:12px;padding:8px 14px;cursor:pointer;white-space:nowrap;transition:all .15s;display:none;}
+.copy-btn.visible{display:block;}.copy-btn:hover{border-color:var(--green);color:var(--green);}
+.copy-btn.copied{border-color:var(--green);color:var(--green);background:var(--green-bg);}
+.doc-body{display:none;background:var(--card2);border:1px solid var(--border2);border-radius:5px;padding:13px 15px;font-family:var(--mono);font-size:11px;color:var(--text2);line-height:1.85;white-space:pre-wrap;margin-bottom:12px;}
+.doc-body.open{display:block;}
+</style>
+</head>
+<body>
+<div class="app">
+<header>
+  <div>
+    <div class="h-title">Reversible Cerebral Vasoconstriction Syndrome &middot; <span>Diagnostic Navigator</span></div>
+    <div class="h-sub">Calabrese LH et al. Ann Intern Med 2007 (criteria) &middot; Ducros A. Lancet Neurol 2012 (review) &middot; Rocha EA et al. Neurology 2019 (RCVS2 score) &middot; For educator use only</div>
+    <div class="h-credit">Designed by Daniel Short, MD</div>
+  </div>
+  <button class="reset-btn" onclick="resetAll()">&#8634; Reset</button>
+</header>
+<div class="prog-track"><div class="prog-fill" id="pf" style="width:0%"></div></div>
+<div class="steps">
+  <div class="stab active" id="st0" onclick="goTab(0)"><span class="sn">1</span><span class="slbl">Clinical Presentation</span></div>
+  <div class="stab" id="st1" onclick="goTab(1)"><span class="sn">2</span><span class="slbl">Calabrese Criteria</span></div>
+  <div class="stab" id="st2" onclick="goTab(2)"><span class="sn">3</span><span class="slbl">RCVS2 Score</span></div>
+  <div class="stab" id="st3" onclick="goTab(3)"><span class="sn">4</span><span class="slbl">Imaging &amp; CSF</span></div>
+  <div class="stab" id="st4" onclick="goTab(4)"><span class="sn">5</span><span class="slbl">RCVS vs PACNS</span></div>
+  <div class="stab" id="st5" onclick="goTab(5)"><span class="sn">6</span><span class="slbl">Treatment &amp; Verdict</span></div>
+</div>
+
+<!-- S0: CLINICAL PRESENTATION -->
+<div class="screen active" id="s0">
+<div class="card">
+  <div class="ctitle" style="color:var(--accent);">Step 1 &middot; Clinical Presentation &amp; Triggers</div>
+  <div class="csub">RCVS is characterised by recurrent thunderclap headaches (TCH) over 1&ndash;4 weeks, caused by reversible multifocal constriction of cerebral arteries. It predominantly affects women (F:M 2&ndash;10:1) aged 20&ndash;50 years. Up to 80% have an identifiable trigger. It is the most common cause of TCH after SAH has been excluded, and one of the most frequently misdiagnosed conditions in neurovascular medicine.</div>
+
+  <div class="lbox">
+    <strong>Epidemiology &amp; natural history:</strong><br>
+    <span class="lr">Recurrent TCH</span> is nearly pathognomonic for RCVS &mdash; a single TCH could be SAH, but recurrent TCHs over days to weeks in a haemodynamically stable alert patient are RCVS until proven otherwise.<br>
+    <span class="lr">Timeline:</span> Headaches peak in first 1&ndash;2 weeks; vasoconstriction peaks at ~2 weeks and resolves within 12 weeks (by definition). Over 70% of hospitalised patients develop complications within 2 weeks (stroke, SAH, PRES).<br>
+    <span class="lr">Prognosis:</span> &gt;90% have benign course; morbidity and mortality are driven by stroke complications. mRS 0&ndash;1 at discharge in &gt;85% without stroke.
+  </div>
+
+  <div class="slabel">Headache characterisation <span class="pill pill-r">RECURRENT TCH IS THE HALLMARK</span></div>
+  <div class="crit" id="tch-item">
+    <div class="crit-main">
+      <div class="crit-name">Thunderclap headache &mdash; severe headache peaking within 60 seconds; &ldquo;worst headache of my life&rdquo; or &ldquo;like a thunderclap&rdquo;</div>
+      <button class="xbtn" onclick="xp(this)">details &#9662;</button>
+    </div>
+    <div class="crit-detail">
+      The TCH of RCVS characteristically: (1) peaks within seconds; (2) lasts minutes to hours (self-limiting, unlike SAH which persists); (3) recurs multiple times over 1&ndash;4 weeks &mdash; this recurrent pattern distinguishes RCVS from SAH; (4) is triggered by Valsalva, exertion, emotion, bathing, orgasm, or occurs spontaneously. The pain usually resolves within 1&ndash;3 hours, contrasting with the persistent headache of SAH. During the recurrence phase, headaches may occur multiple times per day.
+      <div class="cnote"><strong>RCVS headache vs. SAH headache:</strong> The single most helpful clinical distinguisher is recurrence &mdash; SAH causes one catastrophic headache with persistent meningeal irritation; RCVS produces repeated stereotyped TCH attacks with normal intervals. Neck stiffness is much more common in SAH (from blood) and rare in RCVS (unless convexal SAH with meningeal blood).</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setF('tch','recurrent',this)" id="tch-recur">&#10003; Recurrent TCH (&ge;2 episodes)</button>
+      <button class="abtn" onclick="setF('tch','single',this)"    id="tch-single">&#10003; Single TCH episode</button>
+      <button class="abtn" onclick="setF('tch','none',this)"      id="tch-none">&#10007; No thunderclap headache</button>
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:14px;">Triggers <span class="pill pill-am">UP TO 80% HAVE AN IDENTIFIABLE TRIGGER</span></div>
+  <div class="two-col">
+    <div class="crit" id="trig-drug-item">
+      <div class="crit-main">
+        <div class="crit-name">Vasoconstrictive drug/substance exposure &mdash; SSRIs, SNRIs, triptans, ergotamines, nasal decongestants (pseudoephedrine, oxymetazoline), cocaine, amphetamines, cannabis, MDMA, bromocriptine, tacrolimus, cyclophosphamide</div>
+        <button class="xbtn" onclick="xp(this)">details &#9662;</button>
+      </div>
+      <div class="crit-detail">
+        Vasoconstrictive drug exposure is the strongest single trigger and the most important for management &mdash; all implicated agents must be stopped immediately. <strong>SSRIs/SNRIs</strong> are among the most common triggers (serotonergic pathway activation increases vascular tone). <strong>Triptans</strong> are both a trigger and a contraindication for treatment (worsen vasoconstriction). <strong>Cannabis</strong> is increasingly recognised as a trigger, particularly in younger patients. <strong>Nasal decongestants</strong> (OTC sympathomimetics) are frequently overlooked. <strong>Immunosuppressants</strong> (tacrolimus, cyclophosphamide) cause RCVS as a delayed drug effect, typically 1&ndash;6 months after initiation.
+        <div class="cnote"><strong>Crucial treatment implication:</strong> If RCVS is suspected, avoid vasoconstrictive medications including triptans (frequently prescribed for &ldquo;migraine&rdquo; prior to RCVS diagnosis) and ergotamines. These can perpetuate or worsen vasoconstriction. Glucocorticoids are also contraindicated in RCVS and may worsen outcomes (Ducros A et al. retrospective series); this is why RCVS/PACNS differentiation is critical.</div>
+      </div>
+      <div class="brow">
+        <button class="abtn" onclick="setF('trig_drug',true,this)"  id="td-yes">&#10003; Present</button>
+        <button class="abtn" onclick="setF('trig_drug',false,this)" id="td-no">&#10007; Absent</button>
+        <button class="abtn" onclick="setF('trig_drug',null,this)"  id="td-nd">&mdash; Not assessed</button>
+      </div>
+    </div>
+
+    <div class="crit" id="trig-post-item">
+      <div class="crit-main">
+        <div class="crit-name">Postpartum state &mdash; within 4 weeks of delivery; most common single trigger; associated with pre-eclampsia, eclampsia, and PRES</div>
+        <button class="xbtn" onclick="xp(this)">details &#9662;</button>
+      </div>
+      <div class="crit-detail">
+        The postpartum period is the most common single trigger for RCVS in women. RCVS typically occurs within the first week after delivery. The pathogenesis involves oestrogen withdrawal, fluid shifts, and sympathetic hyperactivation after delivery. Postpartum RCVS has a higher rate of complications than non-postpartum RCVS, including intracerebral haemorrhage. Postpartum RCVS exists on a spectrum with postpartum PRES (posterior reversible encephalopathy syndrome). Eclampsia shares a similar pathophysiology (endothelial dysfunction and blood-brain barrier breakdown).
+      </div>
+      <div class="brow">
+        <button class="abtn" onclick="setF('trig_post',true,this)"  id="tp-yes">&#10003; Present (within 4 weeks postpartum)</button>
+        <button class="abtn" onclick="setF('trig_post',false,this)" id="tp-no">&#10007; Absent</button>
+      </div>
+    </div>
+
+    <div class="crit" id="trig-exert-item">
+      <div class="crit-main">
+        <div class="crit-name">Exertional / Valsalva triggers &mdash; TCH during or immediately after sexual activity (orgasm), exercise, coughing, straining, bathing, or emotional stress</div>
+      </div>
+      <div class="brow">
+        <button class="abtn" onclick="setF('trig_exert',true,this)"  id="te-yes">&#10003; Present</button>
+        <button class="abtn" onclick="setF('trig_exert',false,this)" id="te-no">&#10007; Absent</button>
+        <button class="abtn" onclick="setF('trig_exert',null,this)"  id="te-nd">&mdash; Not assessed</button>
+      </div>
+    </div>
+
+    <div class="crit" id="sex-item">
+      <div class="crit-main">
+        <div class="crit-name">Female sex &mdash; F:M ratio 2:1 to 10:1; RCVS2 score component (+1 point)</div>
+      </div>
+      <div class="brow">
+        <button class="abtn" onclick="setF('female',true,this)"  id="sx-yes">&#10003; Female</button>
+        <button class="abtn" onclick="setF('female',false,this)" id="sx-no">&#10007; Male</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:14px;">Associated neurological features <span class="pill pill-am">PRESENT IN ~25% AT ONSET</span></div>
+  <div class="two-col">
+    <div class="crit" id="neuro-item">
+      <div class="crit-main">
+        <div class="crit-name">Focal neurological deficits &mdash; hemiparesis, visual disturbance, speech disturbance, hemisensory loss; develops in ~25% due to ischaemic or haemorrhagic complications</div>
+        <button class="xbtn" onclick="xp(this)">details &#9662;</button>
+      </div>
+      <div class="crit-detail">
+        Focal deficits in RCVS usually develop 1&ndash;3 weeks after headache onset, not at the very first TCH (distinguishing from aneurysmal SAH). They reflect the ischaemic or haemorrhagic complications of vasoconstriction: watershed/border zone infarcts (from proximal vasoconstriction), convexal SAH (from distal cortical artery rupture), intracerebral haemorrhage, or PRES (vasogenic oedema from posterior circulation autoregulatory failure). Visual symptoms are particularly common and reflect posterior circulation involvement.
+      </div>
+      <div class="brow">
+        <button class="abtn" onclick="setF('neuro',true,this)"  id="neuro-yes">&#10003; Present</button>
+        <button class="abtn" onclick="setF('neuro',false,this)" id="neuro-no">&#10007; Absent</button>
+      </div>
+    </div>
+
+    <div class="crit" id="neckstiff-item">
+      <div class="crit-main">
+        <div class="crit-name">Neck stiffness &mdash; less common in RCVS than SAH; if present, suggests convexal SAH or meningeal irritation; neck stiffness strongly favours SAH over RCVS when presenting with first TCH</div>
+      </div>
+      <div class="brow">
+        <button class="abtn" onclick="setF('neckstiff',true,this)"  id="ns-yes">&#10003; Present (raises SAH suspicion)</button>
+        <button class="abtn" onclick="setF('neckstiff',false,this)" id="ns-no">&#10007; Absent</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="a0" class="alrt"></div>
+  <div class="nav-row"><div></div><button class="nbtn np" id="n0" onclick="go(1)" disabled>Next: Calabrese Criteria &#8594;</button></div>
+</div>
+</div>
+
+<!-- S1: CALABRESE CRITERIA -->
+<div class="screen" id="s1">
+<div class="card">
+  <div class="ctitle" style="color:var(--accent);">Step 2 &middot; Calabrese Diagnostic Criteria (2007, Modified 2012)</div>
+  <div class="csub">The original criteria were proposed by Calabrese LH et al. (Ann Intern Med 2007;146:34) and subsequently refined based on large case series by Ducros A (Lancet Neurol 2012;11:906). All criteria must be met for a definitive diagnosis. RCVS is confirmed retrospectively when vasoconstriction resolves within 3 months &mdash; at presentation, a &ldquo;probable RCVS&rdquo; designation is used pending follow-up imaging.</div>
+
+  <div class="lbox">
+    <strong>Calabrese criteria (all required for definitive RCVS):</strong><br>
+    <span class="lr">1.</span> Acute severe headache (thunderclap or reaching maximum in &lt;1 minute) with or without focal neurological deficits or seizures<br>
+    <span class="lr">2.</span> Monophasic course with no new symptoms after 1 month<br>
+    <span class="lr">3.</span> Segmental cerebral artery vasoconstriction on angiography (direct or indirect: CTA, MRA, or TCD)<br>
+    <span class="lr">4.</span> No evidence of aneurysmal subarachnoid haemorrhage (aneurysmal SAH excluded by imaging)<br>
+    <span class="lr">5.</span> Near-normal CSF (protein &lt;100 mg/dL, WBC &lt;10 cells/&mu;L, normal glucose)<br>
+    <span class="lr">6.</span> Complete or near-complete reversal of vasoconstriction within 12 weeks on follow-up imaging
+  </div>
+
+  <div class="slabel">Criterion 1 &mdash; Acute severe headache <span class="pill pill-r">REQUIRED</span></div>
+  <div class="crit" id="cr1-item">
+    <div class="crit-main">
+      <div class="crit-name">Acute severe headache (thunderclap or maximal within 1 minute) &mdash; may be accompanied by focal deficits or seizures</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setCR(1,true,this)"  id="cr1-yes">&#10003; Met</button>
+      <button class="abtn" onclick="setCR(1,false,this)" id="cr1-no">&#10007; Not met</button>
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:14px;">Criterion 2 &mdash; Monophasic course <span class="pill pill-r">REQUIRED</span></div>
+  <div class="crit" id="cr2-item">
+    <div class="crit-main">
+      <div class="crit-name">Monophasic course &mdash; no new symptoms after 1 month; headaches recur but do not worsen or add new neurological features after 4 weeks</div>
+      <button class="xbtn" onclick="xp(this)">details &#9662;</button>
+    </div>
+    <div class="crit-detail">
+      This criterion distinguishes RCVS from PACNS, which typically has a progressive or relapsing course over months. In RCVS, the headache phase lasts 1&ndash;4 weeks. New neurological symptoms emerging after 4&ndash;6 weeks, or a relapsing course, should prompt reconsideration of PACNS or other diagnoses. Relapses of RCVS can occur (months to years later, especially with continued trigger exposure) but are uncommon.
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setCR(2,true,this)"  id="cr2-yes">&#10003; Met (monophasic, no new features after 1 month)</button>
+      <button class="abtn" onclick="setCR(2,false,this)" id="cr2-no">&#10007; Not met (progressive or relapsing course)</button>
+      <button class="abtn" onclick="setCR(2,null,this)"  id="cr2-nd">&mdash; Too early to determine (&lt;1 month)</button>
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:14px;">Criterion 3 &mdash; Segmental vasoconstriction on imaging <span class="pill pill-r">REQUIRED</span></div>
+  <div class="crit" id="cr3-item">
+    <div class="crit-main">
+      <div class="crit-name">Segmental vasoconstriction of cerebral arteries on CTA, MRA, or catheter angiography &mdash; &ldquo;string of beads&rdquo; pattern; may be absent early (&lt;7 days from symptom onset)</div>
+      <button class="xbtn" onclick="xp(this)">details &#9662;</button>
+    </div>
+    <div class="crit-detail">
+      Vasoconstriction in RCVS proceeds <em>centripetally</em>: begins in the distal small pial and cortical arteries (not visible on CTA/MRA), then progresses to mid-sized and proximal arteries over 2 weeks. This explains why early imaging (first 1&ndash;3 days) may be <strong>falsely negative</strong> on non-invasive angiography. Maximum vasoconstriction is typically reached 2&ndash;3 weeks after symptom onset.<br><br>
+      <strong>Angiographic patterns:</strong> Multifocal &ldquo;string of beads&rdquo; (alternating dilatation and constriction) of mid-to-distal cerebral arteries. Typically bilateral and affects multiple vascular territories simultaneously. Proximal vessels (carotid siphon, M1, P1) are usually spared &mdash; involvement of proximal/carotid arteries (intracranial carotid) is a <em>negative predictor</em> for RCVS (RCVS2 score: &minus;2 points).<br><br>
+      <strong>TCD:</strong> Elevated MCA mean flow velocity (&gt;120&ndash;140 cm/s) may detect proximal vasoconstriction earlier than MRA, though TCD is operator-dependent and may miss distal vasoconstriction.
+      <div class="cnote"><strong>Negative early CTA/MRA does not exclude RCVS.</strong> If clinical suspicion is high (recurrent TCH with triggers), repeat MRA at 7&ndash;14 days. Catheter angiography remains the gold standard and has the highest sensitivity, especially for distal vasoconstriction. The intra-arterial nimodipine test (vasodilation with nimodipine during catheter angiography) is positive in RCVS and negative in PACNS &mdash; a useful bedside differentiator.</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setCR(3,'yes',this)"     id="cr3-yes">&#10003; Vasoconstriction confirmed (CTA/MRA/DSA)</button>
+      <button class="abtn" onclick="setCR(3,'neg-early',this)" id="cr3-early">&#9888; Negative but early (&lt;7 days) &mdash; repeat imaging needed</button>
+      <button class="abtn" onclick="setCR(3,'no',this)"      id="cr3-no">&#10007; No vasoconstriction on imaging</button>
+      <button class="abtn" onclick="setCR(3,null,this)"      id="cr3-nd">&mdash; Imaging pending</button>
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:14px;">Criterion 4 &mdash; No aneurysmal SAH <span class="pill pill-r">REQUIRED</span></div>
+  <div class="crit" id="cr4-item">
+    <div class="crit-main">
+      <div class="crit-name">Aneurysmal SAH excluded &mdash; CT head negative for subarachnoid blood, OR blood pattern is convexal (cortical surface, not basal cisterns); no intracranial aneurysm on CTA/MRA</div>
+      <button class="xbtn" onclick="xp(this)">details &#9662;</button>
+    </div>
+    <div class="crit-detail">
+      RCVS can cause convexal (cortical) SAH &mdash; thin blood on the cortical surface in the sulci &mdash; which is distinct from the basal cistern SAH of aneurysmal rupture. Convexal SAH in a young patient with recurrent TCH and triggers is highly suggestive of RCVS. Basal cistern SAH (interpeduncular, suprasellar) strongly suggests aneurysmal SAH and should prompt full aneurysm workup. CT within 6 hours is ~100% sensitive for SAH; LP for xanthochromia is indicated if CT is negative and &gt;6 hours from symptom onset.
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setCR(4,'excl',this)"    id="cr4-excl">&#10003; Aneurysmal SAH excluded</button>
+      <button class="abtn" onclick="setCR(4,'cSAH',this)"    id="cr4-csah">&#10003; Convexal SAH only (RCVS-consistent)</button>
+      <button class="abtn" onclick="setCR(4,'basal',this)"   id="cr4-basal">&#10007; Basal SAH or aneurysm present &mdash; prioritise SAH workup</button>
+      <button class="abtn" onclick="setCR(4,null,this)"      id="cr4-nd">&mdash; Imaging pending</button>
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:14px;">Criterion 5 &mdash; Near-normal CSF <span class="pill pill-r">REQUIRED IF LP PERFORMED</span></div>
+  <div class="crit" id="cr5-item">
+    <div class="crit-main">
+      <div class="crit-name">CSF near-normal &mdash; protein &lt;100 mg/dL, WBC &lt;10 cells/&mu;L, normal glucose; pleocytosis or very elevated protein favours PACNS or infection</div>
+      <button class="xbtn" onclick="xp(this)">details &#9662;</button>
+    </div>
+    <div class="crit-detail">
+      CSF in RCVS may be: (1) entirely normal; (2) mildly elevated protein (&lt;100 mg/dL) without pleocytosis; (3) show RBCs if convexal SAH has occurred. <strong>RCVS red flag:</strong> WBC &gt;10 cells/&mu;L or protein &gt;100 mg/dL without bloody tap should prompt workup for PACNS, meningitis/encephalitis, or other vasculitic causes. In PACNS, CSF is abnormal in ~80&ndash;90% (pleocytosis, elevated protein, oligoclonal bands). Importantly, both RCVS and PACNS have negative inflammatory serology (normal CRP, ESR, CBC, metabolic panel, ANA, ANCA).
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setCR(5,'normal',this)"   id="cr5-norm">&#10003; Normal CSF</button>
+      <button class="abtn" onclick="setCR(5,'mildly',this)"   id="cr5-mild">&#10003; Mildly elevated protein (&lt;100), no pleocytosis</button>
+      <button class="abtn" onclick="setCR(5,'abnormal',this)" id="cr5-abn">&#10007; Abnormal (WBC &gt;10 or protein &gt;100) &mdash; consider PACNS</button>
+      <button class="abtn" onclick="setCR(5,null,this)"       id="cr5-nd">&mdash; LP not performed</button>
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:14px;">Criterion 6 &mdash; Vasoconstriction reversal within 12 weeks <span class="pill pill-am">CONFIRMS DIAGNOSIS RETROSPECTIVELY</span></div>
+  <div class="crit" id="cr6-item">
+    <div class="crit-main">
+      <div class="crit-name">Complete or near-complete reversal of vasoconstriction within 12 weeks of symptom onset on follow-up angiography (CTA, MRA, or DSA)</div>
+      <button class="xbtn" onclick="xp(this)">details &#9662;</button>
+    </div>
+    <div class="crit-detail">
+      This criterion is the defining feature of RCVS but is only confirmable retrospectively. Follow-up MRA or CTA should be performed at 6&ndash;12 weeks from symptom onset. Persistent vasoconstriction at 12 weeks suggests: (1) PACNS &mdash; the most important alternative; (2) Intracranial atherosclerosis; (3) Fibromuscular dysplasia; (4) Cocaine or other drug-induced vasculopathy (may be slower to resolve); (5) Rare RCVS variants with prolonged course. Vessel wall MRI (high-resolution 3T MRI) is emerging as a key tool: RCVS shows no vessel wall enhancement; PACNS shows circumferential wall thickening and enhancement.
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setCR(6,'resolved',this)"   id="cr6-res">&#10003; Resolved at follow-up (&le;12 weeks)</button>
+      <button class="abtn" onclick="setCR(6,'resolving',this)"  id="cr6-resvg">&#10003; Partially resolved (in progress)</button>
+      <button class="abtn" onclick="setCR(6,'persist',this)"    id="cr6-pers">&#10007; Persistent at 12 weeks &mdash; reassess diagnosis</button>
+      <button class="abtn" onclick="setCR(6,null,this)"         id="cr6-nd">&mdash; Follow-up pending</button>
+    </div>
+  </div>
+
+  <div id="a1" class="alrt"></div>
+  <div class="nav-row">
+    <button class="nbtn ns" onclick="go(0)">&larr; Back</button>
+    <button class="nbtn np" onclick="go(2)">Next: RCVS2 Score &#8594;</button>
+  </div>
+</div>
+</div>
+
+<!-- S2: RCVS2 SCORE -->
+<div class="screen" id="s2">
+<div class="card">
+  <div class="ctitle" style="color:var(--accent);">Step 3 &middot; RCVS2 Score (Rocha EA et al. Neurology 2019)</div>
+  <div class="csub">The RCVS2 score (Rocha EA, Topcuoglu MA, Singhal AB. Neurology 2019;92:e639) was developed to distinguish RCVS from other intracranial arteriopathies &mdash; especially PACNS &mdash; at the time of admission, using clinical and imaging features available on presentation. Score range: &minus;2 to +10. Validated in patients aged 18&ndash;55 years with new-onset abnormal intracranial vascular imaging.</div>
+
+  <div class="lbox">
+    <strong>RCVS2 diagnostic thresholds (Rocha 2019, n=30 RCVS vs. 80 non-RCVS):</strong><br>
+    <span class="lr">Score &ge;5:</span> Sensitivity 90%, Specificity 99% for RCVS vs. other arteriopathies<br>
+    <span class="lr">Score &le;2:</span> Sensitivity 85%, Specificity 100% for excluding RCVS<br>
+    <span class="lam">Score 3&ndash;4:</span> Equivocal &mdash; use bedside clinical approach (recurrent TCH + trigger + normal parenchymal MRI, or convexal SAH &rarr; RCVS likely; subcortical infarcts + abnormal CSF &rarr; PACNS more likely)<br><br>
+    <strong>Limitation:</strong> Validated in a stroke-centre population, not in pure TCH populations. The RCVS2 score is most useful for differentiating RCVS from other angiopathies on vascular imaging &mdash; not for diagnosing RCVS from primary TCH alone (thunderclap headache alone carries 5 points, strongly influencing the score).
+  </div>
+
+  <div class="slabel">RCVS2 components &mdash; score each <span class="pill pill-r">TOTAL RANGE &minus;2 TO +10</span></div>
+  <div class="rcvs2-grid" id="rcvs2-grid"></div>
+  <div class="score-display" id="score-display" style="display:none;">
+    <div>
+      <div style="font-size:12px;font-weight:600;color:var(--text);">RCVS2 Total Score</div>
+      <div class="score-cat" id="score-cat"></div>
+    </div>
+    <div class="score-num" id="score-num"></div>
+  </div>
+
+  <div id="a2" class="alrt"></div>
+  <div class="nav-row">
+    <button class="nbtn ns" onclick="go(1)">&larr; Back</button>
+    <button class="nbtn np" onclick="go(3)">Next: Imaging &amp; CSF &#8594;</button>
+  </div>
+</div>
+</div>
+
+<!-- S3: IMAGING & CSF -->
+<div class="screen" id="s3">
+<div class="card">
+  <div class="ctitle" style="color:var(--accent);">Step 4 &middot; Imaging Findings &amp; CSF</div>
+  <div class="csub">Multimodal imaging is essential for RCVS diagnosis, complication detection, and PACNS differentiation. Brain parenchymal imaging may be normal initially (&gt;70% of cases at presentation) but develops complications in the 1&ndash;3 week window. Vascular imaging may also be initially negative if obtained within the first week.</div>
+
+  <div class="lbox">
+    <strong>Expected imaging timeline in RCVS (Ducros A. Lancet Neurol 2012):</strong><br>
+    <span class="lr">Days 0&ndash;7:</span> Brain MRI often normal; CTA/MRA may miss distal vasoconstriction; convexal SAH (if present) visible on CT<br>
+    <span class="lr">Days 7&ndash;14:</span> Vasoconstriction becomes visible on CTA/MRA; complications begin (ischaemia, cortical haemorrhage, PRES)<br>
+    <span class="lr">Days 14&ndash;21:</span> Maximum vasoconstriction; highest stroke/haemorrhage risk<br>
+    <span class="lr">Weeks 4&ndash;12:</span> Gradual resolution of vasoconstriction on serial imaging
+  </div>
+
+  <div class="slabel">Vascular imaging findings <span class="pill pill-r">MULTIFOCAL CONSTRICTION IN &ge;2 VESSELS REQUIRED</span></div>
+  <div class="crit" id="img-vasc-item">
+    <div class="crit-main">
+      <div class="crit-name">Intracranial vascular imaging (CTA / MRA / DSA) &mdash; multifocal segmental constriction in &ge;2 vascular territories</div>
+      <button class="xbtn" onclick="xp(this)">details &#9662;</button>
+    </div>
+    <div class="crit-detail">
+      <strong>CTA:</strong> Rapid, widely available; sensitivity ~50&ndash;70% for distal vasoconstriction (misses very distal and small pial vessels); best for proximal/mid-sized vessel involvement and for ruling out aneurysm.<br>
+      <strong>MRA (TOF):</strong> No contrast required; sensitivity for distal vasoconstriction is limited; most useful for follow-up at 6&ndash;12 weeks to document resolution.<br>
+      <strong>DSA (catheter angiography):</strong> Gold standard; highest sensitivity for both proximal and distal vasoconstriction; allows intra-arterial nimodipine test (positive response = vasodilation confirms RCVS, no response suggests PACNS).<br>
+      <strong>Vessel wall MRI (3T high-resolution):</strong> No vessel wall enhancement in RCVS; circumferential concentric enhancement in PACNS. This is the most powerful non-invasive differentiator and is increasingly available.
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setImg('vasc','multi',this)"    id="iv-multi">&#10003; Multifocal constriction &ge;2 territories</button>
+      <button class="abtn" onclick="setImg('vasc','unifocal',this)" id="iv-uni">&#9888; Unifocal constriction only</button>
+      <button class="abtn" onclick="setImg('vasc','neg',this)"      id="iv-neg">&#10007; Normal (may be too early)</button>
+      <button class="abtn" onclick="setImg('vasc',null,this)"       id="iv-nd">&mdash; Pending</button>
+    </div>
+  </div>
+
+  <div class="crit" id="img-carotid-item">
+    <div class="crit-main">
+      <div class="crit-name">Intracranial carotid / proximal vessel involvement &mdash; constriction of ICA siphon, M1, or proximal basilar; RCVS2 negative predictor (&minus;2 points)</div>
+      <button class="xbtn" onclick="xp(this)">details &#9662;</button>
+    </div>
+    <div class="crit-detail">
+      RCVS characteristically involves mid-sized and distal arteries (M2&ndash;M4, A2&ndash;A4, P2&ndash;P4). Involvement of the intracranial internal carotid artery, M1 segment, or proximal basilar is atypical for RCVS and suggests an alternative diagnosis such as PACNS, intracranial atherosclerosis, or dissection. The RCVS2 score assigns &minus;2 points for carotid (intracranial) involvement &mdash; a negative predictor because it is uncommon in RCVS and common in other arteriopathies.
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setImg('carotid',true,this)"  id="ic-yes">&#10003; Carotid/proximal vessel involved (&minus;2 RCVS2 pts)</button>
+      <button class="abtn" onclick="setImg('carotid',false,this)" id="ic-no">&#10007; No proximal vessel involvement</button>
+      <button class="abtn" onclick="setImg('carotid',null,this)"  id="ic-nd">&mdash; Not assessable</button>
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:14px;">Brain parenchymal complications <span class="pill pill-am">DEVELOP 1&ndash;3 WEEKS AFTER HEADACHE ONSET</span></div>
+  <div class="two-col">
+    <div class="crit" id="img-csah-item">
+      <div class="crit-main">
+        <div class="crit-name">Convexal (cortical) SAH &mdash; thin haemorrhage on cortical surface, sulci; NOT in basal cisterns; RCVS2 +1 point</div>
+        <button class="xbtn" onclick="xp(this)">details &#9662;</button>
+      </div>
+      <div class="crit-detail">
+        Convexal SAH is the most characteristic haemorrhagic complication of RCVS, occurring in ~20&ndash;35% of cases. It results from rupture of distal cortical arteries under vasoconstriction-related pressure. Key distinction: convexal SAH in RCVS is typically thin, sulcal, and over the cerebral convexity (NOT in the basal cisterns which are the hallmark of aneurysmal SAH). On FLAIR MRI, convexal SAH appears as bright sulcal signal. This pattern is also seen in cerebral amyloid angiopathy (in older patients) &mdash; an important mimic in patients &gt;60 years.
+      </div>
+      <div class="brow">
+        <button class="abtn" onclick="setImg('csah',true,this)"  id="csah-yes">&#10003; Convexal SAH present</button>
+        <button class="abtn" onclick="setImg('csah',false,this)" id="csah-no">&#10007; Absent</button>
+      </div>
+    </div>
+
+    <div class="crit" id="img-pres-item">
+      <div class="crit-main">
+        <div class="crit-name">PRES (posterior reversible encephalopathy syndrome) &mdash; T2/FLAIR hyperintensity in posterior cerebral regions (occipital, parietal); vasogenic oedema</div>
+        <button class="xbtn" onclick="xp(this)">details &#9662;</button>
+      </div>
+      <div class="crit-detail">
+        PRES occurs in ~10&ndash;20% of RCVS cases and represents blood-brain barrier breakdown from vasoconstriction-induced posterior circulation dysautoregulation. Clinical features: headache, visual disturbance, seizures, confusion. MRI shows T2/FLAIR hyperintensity in the posterior parietal and occipital regions (sometimes frontal), representing vasogenic oedema. PRES and RCVS share pathophysiology and frequently coexist; postpartum RCVS-PRES overlap is particularly common. PRES is also associated with hypertension, pre-eclampsia, immunosuppressants, and renal failure.
+      </div>
+      <div class="brow">
+        <button class="abtn" onclick="setImg('pres',true,this)"  id="pres-yes">&#10003; PRES changes present</button>
+        <button class="abtn" onclick="setImg('pres',false,this)" id="pres-no">&#10007; Absent</button>
+      </div>
+    </div>
+
+    <div class="crit" id="img-infarct-item">
+      <div class="crit-main">
+        <div class="crit-name">Cerebral infarction &mdash; ischaemic stroke; watershed / border-zone distribution typical of RCVS (from proximal vasoconstriction); deep subcortical infarcts favour PACNS</div>
+        <button class="xbtn" onclick="xp(this)">details &#9662;</button>
+      </div>
+      <div class="crit-detail">
+        Ischaemic complications occur in ~5&ndash;15% of RCVS cases, typically 1&ndash;3 weeks after symptom onset. The distribution is important: <strong>border-zone (watershed) infarcts</strong> suggest proximal vasoconstriction affecting perfusion pressure &mdash; favours RCVS. <strong>Deep subcortical (white matter, basal ganglia, thalamic) infarcts</strong> suggest small vessel disease in vessel walls &mdash; strongly favours PACNS or other small-vessel vasculitis. Cortical infarcts may occur in both.
+      </div>
+      <div class="brow">
+        <button class="abtn" onclick="setImg('infarct','border',this)"    id="inf-border">&#10003; Border-zone / watershed infarct</button>
+        <button class="abtn" onclick="setImg('infarct','deep',this)"      id="inf-deep">&#9888; Deep subcortical infarct (favours PACNS)</button>
+        <button class="abtn" onclick="setImg('infarct','cortical',this)"  id="inf-cortical">&#10003; Cortical infarct</button>
+        <button class="abtn" onclick="setImg('infarct',false,this)"       id="inf-no">&#10007; No infarct</button>
+      </div>
+    </div>
+
+    <div class="crit" id="img-vwi-item">
+      <div class="crit-main">
+        <div class="crit-name">Vessel wall MRI (3T high-resolution) &mdash; no enhancement in RCVS vs. circumferential concentric enhancement in PACNS</div>
+        <button class="xbtn" onclick="xp(this)">details &#9662;</button>
+      </div>
+      <div class="crit-detail">
+        High-resolution vessel wall MRI (VWI) at 3T is the most powerful non-invasive tool to differentiate RCVS from PACNS: <strong>RCVS:</strong> vessel walls are thin, show no gadolinium enhancement (non-inflammatory vasoconstriction). <strong>PACNS:</strong> vessel walls show circumferential thickening and concentric enhancement (inflammatory destruction). VWI is increasingly available at tertiary centres and avoids the need for brain biopsy in many cases where PACNS was previously the only definitive confirmation. A negative VWI in a patient with vasoconstriction strongly supports RCVS.
+      </div>
+      <div class="brow">
+        <button class="abtn" onclick="setImg('vwi','no-enh',this)"  id="vwi-neg">&#10003; No vessel wall enhancement (favours RCVS)</button>
+        <button class="abtn" onclick="setImg('vwi','enh',this)"     id="vwi-pos">&#10007; Vessel wall enhancement present (favours PACNS)</button>
+        <button class="abtn" onclick="setImg('vwi',null,this)"      id="vwi-nd">&mdash; Not performed</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="a3" class="alrt"></div>
+  <div class="nav-row">
+    <button class="nbtn ns" onclick="go(2)">&larr; Back</button>
+    <button class="nbtn np" onclick="go(4)">Next: RCVS vs PACNS &#8594;</button>
+  </div>
+</div>
+</div>
+
+<!-- S4: RCVS vs PACNS -->
+<div class="screen" id="s4">
+<div class="card">
+  <div class="ctitle" style="color:var(--accent);">Step 5 &middot; RCVS vs. PACNS &mdash; Side-by-Side Differentiator</div>
+  <div class="csub">Distinguishing RCVS from primary angiitis of the CNS (PACNS) is the most critical diagnostic challenge in this field, because their treatments are diametrically opposed: RCVS is managed with calcium channel blockers and trigger avoidance; PACNS requires immunosuppression with steroids &plusmn; cyclophosphamide. Steroids may worsen RCVS outcomes (Ducros A et al. retrospective data). The RCVS2 score was specifically developed for this differentiation.</div>
+
+  <table class="diff-table">
+    <thead>
+      <tr>
+        <th class="th-feat">Feature</th>
+        <th class="th-rcvs">RCVS</th>
+        <th class="th-pacns">PACNS</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="td-feat">Headache onset</td>
+        <td class="td-rcvs"><span class="fav-rcvs">Thunderclap, peaks in seconds</span>; recurrent over 1&ndash;4 weeks</td>
+        <td class="td-pacns">Insidious, progressive, dull; may be <span class="fav-neu">weeks to months</span></td>
+      </tr>
+      <tr>
+        <td class="td-feat">Sex predominance</td>
+        <td class="td-rcvs"><span class="fav-rcvs">Female dominant (F:M 2&ndash;10:1)</span></td>
+        <td class="td-pacns">Male slight predominance</td>
+      </tr>
+      <tr>
+        <td class="td-feat">Age</td>
+        <td class="td-rcvs"><span class="fav-rcvs">20&ndash;50 years</span> (postpartum or drug-associated)</td>
+        <td class="td-pacns">40&ndash;60 years; wider range</td>
+      </tr>
+      <tr>
+        <td class="td-feat">Trigger</td>
+        <td class="td-rcvs"><span class="fav-rcvs">Identified in ~80%</span> (drugs, postpartum, exertion)</td>
+        <td class="td-pacns">None identified; <span class="fav-pacns">idiopathic autoimmune</span></td>
+      </tr>
+      <tr>
+        <td class="td-feat">Disease course</td>
+        <td class="td-rcvs"><span class="fav-rcvs">Monophasic, self-limiting</span> (resolves 1&ndash;3 months)</td>
+        <td class="td-pacns"><span class="fav-pacns">Progressive or relapsing</span> over months; fatal if untreated</td>
+      </tr>
+      <tr>
+        <td class="td-feat">Neurological deficits</td>
+        <td class="td-rcvs">Present in ~25%; complication of vasospasm</td>
+        <td class="td-pacns"><span class="fav-pacns">Progressive cognitive decline, stroke</span>; more prominent</td>
+      </tr>
+      <tr>
+        <td class="td-feat">CSF</td>
+        <td class="td-rcvs"><span class="fav-rcvs">Normal or mildly elevated protein</span>; WBC &lt;10</td>
+        <td class="td-pacns"><span class="fav-pacns">Abnormal in ~80%</span>: pleocytosis, elevated protein, oligoclonal bands</td>
+      </tr>
+      <tr>
+        <td class="td-feat">Inflammatory markers</td>
+        <td class="td-rcvs"><span class="fav-rcvs">Normal</span> CRP, ESR, CBC, ANA, ANCA</td>
+        <td class="td-pacns"><span class="fav-neu">Usually normal</span> (systemic inflammation is absent in PACNS)</td>
+      </tr>
+      <tr>
+        <td class="td-feat">Angiographic pattern</td>
+        <td class="td-rcvs"><span class="fav-rcvs">&ldquo;String of beads&rdquo;</span>; bilateral; multiple territories; distal predominance</td>
+        <td class="td-pacns">Irregular, notched, eccentric narrowing; may include vessel occlusion</td>
+      </tr>
+      <tr>
+        <td class="td-feat">Vessel distribution</td>
+        <td class="td-rcvs"><span class="fav-rcvs">Mid-to-distal arteries</span>; proximal vessels spared</td>
+        <td class="td-pacns">May involve <span class="fav-pacns">large, medium, and small vessels</span>; small vessel predominant</td>
+      </tr>
+      <tr>
+        <td class="td-feat">Infarct location</td>
+        <td class="td-rcvs"><span class="fav-rcvs">Border-zone / watershed</span>; cortical; convexal SAH</td>
+        <td class="td-pacns"><span class="fav-pacns">Deep subcortical</span> (white matter, basal ganglia, thalamus)</td>
+      </tr>
+      <tr>
+        <td class="td-feat">Vessel wall MRI</td>
+        <td class="td-rcvs"><span class="fav-rcvs">No vessel wall enhancement</span></td>
+        <td class="td-pacns"><span class="fav-pacns">Circumferential concentric enhancement</span></td>
+      </tr>
+      <tr>
+        <td class="td-feat">Nimodipine test (DSA)</td>
+        <td class="td-rcvs"><span class="fav-rcvs">Positive (vasodilation)</span></td>
+        <td class="td-pacns">Negative (no vasodilation; inflammatory stenosis)</td>
+      </tr>
+      <tr>
+        <td class="td-feat">Brain biopsy</td>
+        <td class="td-rcvs">Normal (not indicated in typical RCVS)</td>
+        <td class="td-pacns"><span class="fav-pacns">Gold standard</span>: granulomatous / lymphocytic vasculitis in vessel wall</td>
+      </tr>
+      <tr>
+        <td class="td-feat">Response to steroids</td>
+        <td class="td-rcvs"><span class="fav-rcvs">May worsen</span> (retrospective data; avoid in RCVS)</td>
+        <td class="td-pacns"><span class="fav-pacns">Dramatic improvement</span>; essential for survival</td>
+      </tr>
+      <tr>
+        <td class="td-feat">Prognosis</td>
+        <td class="td-rcvs"><span class="fav-rcvs">&gt;90% benign</span>; mRS 0&ndash;1 in most; rare deaths</td>
+        <td class="td-pacns">Poor without treatment; &gt;50% disabled; fatal if missed</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="slabel">Clinical leaning based on findings so far <span class="pill pill-a">USE RCVS2 SCORE + THIS TABLE TOGETHER</span></div>
+  <div class="crit" id="lean-item">
+    <div class="crit-main">
+      <div class="crit-name">Based on your assessment, which diagnosis is currently more favoured?</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setLean('rcvs',this)"  id="lean-rcvs">&#10003; RCVS favoured</button>
+      <button class="abtn" onclick="setLean('pacns',this)" id="lean-pacns">&#9888; PACNS cannot be excluded &mdash; further workup needed</button>
+      <button class="abtn" onclick="setLean('both',this)"  id="lean-both">&#9888; Equivocal &mdash; VWI / biopsy may be required</button>
+      <button class="abtn" onclick="setLean('other',this)" id="lean-other">&#10007; Alternative diagnosis more likely</button>
+    </div>
+  </div>
+
+  <!-- Equivocal workup sections — shown only when lean=both -->
+  <div id="equivocal-workup" style="display:none;">
+    <div class="slabel" style="margin-top:14px;">Vessel wall MRI (VWI) result <span class="pill pill-r">MOST POWERFUL NON-INVASIVE DIFFERENTIATOR</span></div>
+    <div class="crit" id="eq-vwi-item">
+      <div class="crit-main">
+        <div class="crit-name">3T high-resolution vessel wall MRI with gadolinium contrast &mdash; assess for arterial wall enhancement at sites of vasoconstriction</div>
+        <button class="xbtn" onclick="xp(this)">details &#9662;</button>
+      </div>
+      <div class="crit-detail">
+        Vessel wall MRI (VWI) images the arterial wall itself rather than the lumen. At sites of angiographic vasoconstriction:<br><br>
+        <strong>RCVS findings:</strong> Vessel walls appear thin and show <em>no gadolinium enhancement</em>. This reflects non-inflammatory vasoconstriction &mdash; the wall architecture is intact, only the tone is dysregulated. This is the expected finding in pure RCVS.<br><br>
+        <strong>PACNS findings:</strong> Vessel walls show <em>circumferential concentric thickening and gadolinium enhancement</em>, reflecting active transmural inflammation and destruction of the vessel wall. Enhancement persists or worsens on follow-up if untreated.<br><br>
+        <strong>Technical requirements:</strong> Must be performed at 3T (1.5T has insufficient resolution for small intracranial vessel walls). Black-blood sequences with fat suppression and gadolinium contrast. Images should be acquired at the sites of angiographic abnormality. Interpretation requires neuroradiologist experience with VWI.<br><br>
+        <strong>Evidence (Mandell DM et al. Stroke 2012):</strong> In a prospective study of patients with intracranial vasculopathy, VWI correctly identified RCVS (no enhancement) vs. CNS vasculitis (concentric enhancement) in all cases. This has been replicated in multiple cohort studies.<br><br>
+        <strong>Caveats:</strong> (1) Steroid treatment before VWI may suppress enhancement in PACNS, producing false-negative results &mdash; perform VWI before starting immunosuppression. (2) Very proximal large-vessel involvement in PACNS may not show wall enhancement on all studies. (3) A small number of atypical RCVS cases show mild enhancement; clinical context remains essential.
+        <div class="cnote"><strong>Practical note:</strong> VWI is the single most valuable investigation when RCVS and PACNS cannot be differentiated on clinical and standard imaging grounds. It should be performed urgently in equivocal cases before any treatment decision, particularly before starting steroids. It is increasingly available at tertiary stroke and neuroradiology centres.</div>
+      </div>
+      <div class="brow">
+        <button class="abtn" onclick="setEquivocal('vwi','no-enh',this)" id="eq-vwi-noenh">&#10003; No vessel wall enhancement &mdash; favours RCVS</button>
+        <button class="abtn" onclick="setEquivocal('vwi','enh',this)"    id="eq-vwi-enh">&#10007; Circumferential wall enhancement &mdash; favours PACNS</button>
+        <button class="abtn" onclick="setEquivocal('vwi','equiv',this)"  id="eq-vwi-equiv">&#9888; Equivocal / technically limited result</button>
+        <button class="abtn" onclick="setEquivocal('vwi',null,this)"     id="eq-vwi-nd">&mdash; VWI not yet performed</button>
+      </div>
+    </div>
+
+    <div class="slabel" style="margin-top:14px;">Brain biopsy result <span class="pill pill-am">GOLD STANDARD &mdash; WHEN NON-INVASIVE TOOLS INCONCLUSIVE</span></div>
+    <div class="crit" id="eq-biopsy-item">
+      <div class="crit-main">
+        <div class="crit-name">Stereotactic or open brain biopsy targeting leptomeninges and cortex at a site of angiographic or MRI abnormality</div>
+        <button class="xbtn" onclick="xp(this)">details &#9662;</button>
+      </div>
+      <div class="crit-detail">
+        Brain biopsy remains the gold standard for diagnosing PACNS when non-invasive tests are inconclusive. It is indicated when: (1) VWI is equivocal or technically limited; (2) the patient has a deteriorating clinical course and the diagnosis is uncertain; (3) treatment decisions cannot be safely made without histological confirmation.<br><br>
+        <strong>RCVS biopsy findings:</strong> Normal vessel wall architecture. No inflammatory infiltrate. No granulomas. No fibrinoid necrosis. This finding, combined with the clinical picture, confirms RCVS and excludes PACNS.<br><br>
+        <strong>PACNS biopsy findings:</strong> Transmural granulomatous or lymphocytic inflammation of vessel walls. Multi-nucleated giant cells (granulomatous PACNS, most common). Fibrinoid necrosis in necrotising PACNS. Amyloid deposition in amyloid-beta-related angiitis (ABRA), a subtype of PACNS.<br><br>
+        <strong>Yield and limitations:</strong> Sensitivity of biopsy for PACNS is ~53&ndash;74% (false negatives occur due to sampling error &mdash; PACNS is segmental and may not be present at the biopsy site). Specificity is high when positive. Targeting a site of leptomeningeal enhancement on MRI or an area of parenchymal or vessel abnormality improves yield. A normal biopsy does not definitively exclude PACNS but significantly raises the probability of RCVS or another diagnosis.<br><br>
+        <strong>Risk:</strong> Complication rate approximately 0.5&ndash;2% (haemorrhage, infection, neurological deficit depending on biopsy site). Should be performed at a specialised neurovascular/neurosurgical centre.
+        <div class="cnote"><strong>Timing:</strong> Brain biopsy should be performed before starting steroids or cyclophosphamide &mdash; treatment may suppress the histological findings and reduce diagnostic yield. If the patient is rapidly deteriorating and PACNS is clinically suspected, empirical treatment while awaiting or pursuing biopsy may occasionally be necessary, but this decision should involve neurology and rheumatology jointly.</div>
+      </div>
+      <div class="brow">
+        <button class="abtn" onclick="setEquivocal('biopsy','normal',this)"    id="eq-bx-normal">&#10003; Normal &mdash; no vasculitis; favours RCVS</button>
+        <button class="abtn" onclick="setEquivocal('biopsy','vasculitis',this)" id="eq-bx-vasc">&#10007; Granulomatous / lymphocytic vasculitis &mdash; PACNS confirmed</button>
+        <button class="abtn" onclick="setEquivocal('biopsy','abra',this)"      id="eq-bx-abra">&#10007; ABRA (amyloid-beta-related angiitis) &mdash; PACNS subtype</button>
+        <button class="abtn" onclick="setEquivocal('biopsy','nondiag',this)"   id="eq-bx-nd2">&#9888; Non-diagnostic sample (sampling error possible)</button>
+        <button class="abtn" onclick="setEquivocal('biopsy',null,this)"        id="eq-bx-nd">&mdash; Biopsy not performed</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="a4" class="alrt"></div>
+  <div class="nav-row">
+    <button class="nbtn ns" onclick="go(3)">&larr; Back</button>
+    <button class="nbtn np" onclick="go(5)">Generate Verdict &amp; Treatment &#8594;</button>
+  </div>
+</div>
+</div>
+
+<!-- S5: VERDICT -->
+<div class="screen" id="s5">
+  <div id="vout"></div>
+  <div class="doc-header">
+    <button class="doc-tog" onclick="toggleDoc()">&#9660; Documentation Note</button>
+    <button class="copy-btn" id="copy-btn" onclick="copyDoc()">&#9138; Copy</button>
+  </div>
+  <div class="doc-body" id="dn"></div>
+  <div class="nav-row">
+    <button class="nbtn ns" onclick="go(4)">&larr; Back</button>
+    <button class="nbtn np" onclick="resetAll()">&#8634; New Evaluation</button>
+  </div>
+</div>
+
+<script>
+const rcvs2Items = [
+  {id:'R_recur',  label:'R \u2014 Recurrent TCH (2+ thunderclap headaches)', pts:+5, neg_label:'Single TCH only'},
+  {id:'R_single', label:'R \u2014 Single TCH (if no recurrent events)', pts:+5, neg_label:'No TCH', note:'Score 5 pts for ANY TCH (recurrent or single). If recurrent TCH, this is nearly pathognomonic.', is_combo: true},
+  {id:'C',        label:'C \u2014 Carotid intracranial artery involvement on vascular imaging', pts:-2, neg_label:'No carotid involvement'},
+  {id:'V',        label:'V \u2014 Vasoconstrictive trigger (drug, postpartum, exertion)', pts:+3, neg_label:'No trigger identified'},
+  {id:'S_sex',    label:'S \u2014 Female sex', pts:+1, neg_label:'Male sex'},
+  {id:'S_sah',    label:'S \u2014 Subarachnoid haemorrhage on imaging (any type)', pts:+1, neg_label:'No SAH on imaging'}
+];
+
+// Actually RCVS2 = R (single or recurrent TCH +5), C (-2), V (+3), S_sex (+1), S_sah (+1) = total 5 components
+const rcvs2Comps = [
+  {id:'R', label:'R \u2014 Recurrent or single thunderclap headache', pts:'+5', val:5, neg:0, note:'Either a single TCH or recurrent TCHs. This single component alone drives the score substantially.'},
+  {id:'C', label:'C \u2014 Carotid (intracranial) artery involvement', pts:'-2', val:-2, neg:0, note:'Involvement of the ICA siphon, M1, or proximal basilar. Absent = 0 pts (score the -2 only if present).'},
+  {id:'V', label:'V \u2014 Vasoconstrictive trigger', pts:'+3', val:3, neg:0, note:'Drug (SSRI, stimulant, triptan, decongestant), postpartum state, or exertional trigger.'},
+  {id:'S1', label:'S \u2014 Female sex', pts:'+1', val:1, neg:0, note:''},
+  {id:'S2', label:'S \u2014 Subarachnoid haemorrhage on imaging', pts:'+1', val:1, neg:0, note:'Any SAH pattern (convexal or otherwise).'}
+];
+
+const S = {
+  f: {tch:null, trig_drug:null, trig_post:null, trig_exert:null, female:null, neuro:null, neckstiff:null},
+  cr: {1:null, 2:null, 3:null, 4:null, 5:null, 6:null},
+  rcvs2: {R:null, C:null, V:null, S1:null, S2:null},
+  img: {vasc:null, carotid:null, csah:null, pres:null, infarct:null, vwi:null},
+  lean: null,
+  eq: {vwi:null, biopsy:null}  // equivocal workup results
+};
+let cur = 0;
+
+
+// Universal button activation — looks up the correct highlight class from a static map
+const BTN_CLS = {
+  'tch-recur':'ay',
+  'tch-single':'ay',
+  'tch-none':'an',
+  'td-yes':'ay',
+  'td-no':'an',
+  'td-nd':'agr',
+  'tp-yes':'ay',
+  'tp-no':'an',
+  'te-yes':'ay',
+  'te-no':'an',
+  'te-nd':'agr',
+  'sx-yes':'ay',
+  'sx-no':'an',
+  'neuro-yes':'ay',
+  'neuro-no':'an',
+  'ns-yes':'aw',
+  'ns-no':'an',
+  'cr1-yes':'ay',
+  'cr1-no':'an',
+  'cr2-yes':'ay',
+  'cr2-no':'an',
+  'cr2-nd':'agr',
+  'cr3-yes':'ay',
+  'cr3-early':'aw',
+  'cr3-no':'an',
+  'cr3-nd':'agr',
+  'cr4-excl':'ay',
+  'cr4-csah':'ay',
+  'cr4-basal':'an',
+  'cr4-nd':'agr',
+  'cr5-norm':'ay',
+  'cr5-mild':'ay',
+  'cr5-abn':'an',
+  'cr5-nd':'agr',
+  'cr6-res':'ay',
+  'cr6-resvg':'aw',
+  'cr6-pers':'an',
+  'cr6-nd':'agr',
+  'iv-multi':'ay',
+  'iv-uni':'aw',
+  'iv-neg':'aw',
+  'iv-nd':'agr',
+  'ic-yes':'an',
+  'ic-no':'ay',
+  'ic-nd':'agr',
+  'csah-yes':'ay',
+  'csah-no':'an',
+  'pres-yes':'aw',
+  'pres-no':'an',
+  'inf-border':'ay',
+  'inf-deep':'an',
+  'inf-cortical':'aw',
+  'inf-no':'an',
+  'vwi-neg':'ay',
+  'vwi-pos':'an',
+  'vwi-nd':'agr',
+  'lean-rcvs':'ay',
+  'lean-pacns':'an',
+  'lean-both':'aw',
+  'lean-other':'agr',
+  // Equivocal workup buttons
+  'eq-vwi-noenh':'ay',
+  'eq-vwi-enh':'an',
+  'eq-vwi-equiv':'aw',
+  'eq-vwi-nd':'agr',
+  'eq-bx-normal':'ay',
+  'eq-bx-vasc':'an',
+  'eq-bx-abra':'an',
+  'eq-bx-nd2':'aw',
+  'eq-bx-nd':'agr'
+};
+function activateBtn(btn) {
+  if(!btn) return;
+  // Deactivate siblings within the same .brow
+  const brow = btn.closest('.brow');
+  if(brow) brow.querySelectorAll('.abtn').forEach(b => b.classList.remove('ay','an','aa','agr','aw'));
+  const cls = BTN_CLS[btn.id] || 'agr';
+  btn.classList.add(cls);
+}
+
+function setF(k, v, btn) {
+  S.f[k] = v;
+  const item = document.getElementById(k.replace('_','-')+'-item') || document.getElementById(k+'-item');
+  if(item) {
+    const isPos = v===true||v==='recurrent'||v==='single';
+    const isNeg = v===false||v==='none';
+    item.className = 'crit '+(isPos?'c-yes':isNeg?'c-no':'c-abs');
+  }
+  // button states — collect all buttons in the crit
+  const btns = document.querySelectorAll(`[id^="${k}-"]`);
+  btns.forEach(b => b.classList.remove('ay','an','aa','agr','aw'));
+  const activeId = k+'-'+(v===true?'yes':v===false?'no':v===null?'nd':v);
+  const activeBtn = document.getElementById(activeId);
+  if(activeBtn) activeBtn.classList.add(v===true||v==='recurrent'||v==='single'?'ay':v===false||v==='none'?'an':v===null?'agr':'aa');
+  activateBtn(btn);
+  // sync with RCVS2 where applicable
+  if(k==='female') { S.rcvs2.S1 = v===true ? 'yes' : v===false ? 'no' : null; buildRCVS2(); }
+  if(k==='trig_drug'||k==='trig_post'||k==='trig_exert') {
+    const anyTrig = S.f.trig_drug===true || S.f.trig_post===true || S.f.trig_exert===true;
+    S.rcvs2.V = anyTrig ? 'yes' : (S.f.trig_drug===false && S.f.trig_post===false && S.f.trig_exert===false) ? 'no' : null;
+    buildRCVS2();
+  }
+  if(k==='tch') {
+    S.rcvs2.R = (v==='recurrent'||v==='single') ? 'yes' : v==='none' ? 'no' : null;
+    buildRCVS2();
+    document.getElementById('n0').disabled = (v===null);
+  }
+  if(cur===5) rv(); ui();
+}
+function setCR(n, v, btn) {
+  S.cr[n] = v;
+  const item = document.getElementById('cr'+n+'-item');
+  const isPos = v===true||v==='yes'||v==='excl'||v==='cSAH'||v==='normal'||v==='mildly'||v==='resolved'||v==='resolving';
+  const isNeg = v===false||v==='no'||v==='basal'||v==='abnormal'||v==='persist';
+  const isWarn = v==='neg-early';
+  if(item) item.className = 'crit '+(isPos?'c-yes':isNeg?'c-no':isWarn?'c-am':'c-abs');
+  document.querySelectorAll(`[id^="cr${n}-"]`).forEach(b => b.classList.remove('ay','an','aa','agr','aw'));
+  activateBtn(btn);
+
+  // sync SAH with RCVS2
+  if(n===4) {
+    const hasSAH = v==='cSAH';
+    S.rcvs2.S2 = hasSAH ? 'yes' : v==='excl' ? 'no' : null;
+    S.img.csah = hasSAH ? true : null;
+    buildRCVS2();
+  }
+  if(n===3) {
+    S.img.carotid = null; // reset if cr3 changes
+  }
+  if(cur===5) rv(); ui();
+}
+function buildRCVS2() {
+  const g = document.getElementById('rcvs2-grid'); if(!g) return;
+  g.innerHTML = '';
+  rcvs2Comps.forEach(comp => {
+    const v = S.rcvs2[comp.id];
+    const scored = v==='yes';
+    const notScored = v==='no';
+    const nd = v===null;
+    const row = document.createElement('div');
+    row.className = 'rcvs2-row' + (scored?' r-pos':notScored?' r-neg':nd?' r-nd':'');
+    const ptsClass = comp.val > 0 ? 'pp' : 'pm';
+    const ptsLabel = comp.val > 0 ? '+'+comp.val : comp.val;
+    const actualScore = scored ? comp.val : 0;
+    let noteHtml = comp.note ? `<div style="font-size:10px;color:var(--text3);margin-top:3px;">${comp.note}</div>` : '';
+    row.innerHTML = `
+      <div class="rcvs2-label">${comp.label}${noteHtml}</div>
+      <span class="rcvs2-pts ${ptsClass}">${ptsLabel} pts</span>
+      <div class="rcvs2-btns">
+        <button class="r2btn${scored?' rsy':''}" onclick="setR2('${comp.id}','yes')">Yes</button>
+        <button class="r2btn${notScored?' rsn':''}" onclick="setR2('${comp.id}','no')">No</button>
+        <button class="r2btn${nd?' rsnd':''}" onclick="setR2('${comp.id}',null)">&mdash;</button>
+      </div>`;
+    g.appendChild(row);
+  });
+  updateScoreDisplay();
+}
+function setR2(id, v) {
+  S.rcvs2[id] = v;
+  // sync back to clinical fields
+  if(id==='S1') { S.f.female = v==='yes'?true:v==='no'?false:null; }
+  if(id==='V') {
+    if(v==='yes' && !S.f.trig_drug && !S.f.trig_post && !S.f.trig_exert) { /* don't auto-set */ }
+  }
+  buildRCVS2();
+  if(cur===5) rv(); ui();
+}
+function calcRCVS2() {
+  let score = 0; let hasNull = false;
+  rcvs2Comps.forEach(comp => {
+    if(S.rcvs2[comp.id]===null) { hasNull=true; return; }
+    if(S.rcvs2[comp.id]==='yes') score += comp.val;
+  });
+  return {score, hasNull};
+}
+function updateScoreDisplay() {
+  const {score, hasNull} = calcRCVS2();
+  const disp = document.getElementById('score-display');
+  if(!disp) return;
+  const answered = !rcvs2Comps.some(c => S.rcvs2[c.id]===null);
+  disp.style.display = answered ? 'flex' : 'none';
+  if(!answered) return;
+  const numEl = document.getElementById('score-num');
+  const catEl = document.getElementById('score-cat');
+  if(numEl) { numEl.textContent = score; numEl.style.color = score>=5?'var(--green)':score<=2?'var(--red)':'var(--amber)'; }
+  if(catEl) {
+    if(score>=5) { catEl.textContent='RCVS likely \u2014 Sn 90%, Sp 99%'; catEl.style.color='var(--green)'; }
+    else if(score<=2) { catEl.textContent='RCVS unlikely \u2014 Sp 100% (excludes RCVS)'; catEl.style.color='var(--red)'; }
+    else { catEl.textContent='Equivocal (3\u20134) \u2014 bedside clinical approach needed'; catEl.style.color='var(--amber)'; }
+  }
+}
+function setImg(k, v, btn) {
+  S.img[k] = v;
+  const item = document.getElementById('img-'+k+'-item');
+  const isPos = v===true||v==='multi'||v==='no-enh'||v==='border'||v==='cortical';
+  const isNeg = v===false||v==='enh'||v==='deep';
+  const isWarn = v==='unifocal'||v==='neg';
+  if(item) item.className = 'crit '+(isPos?'c-yes':isNeg?'c-no':isWarn?'c-am':'c-abs');
+  activateBtn(btn);
+  // sync carotid to RCVS2
+  if(k==='carotid') {
+    S.rcvs2.C = v===true ? 'yes' : v===false ? 'no' : null;
+    buildRCVS2();
+  }
+  if(k==='csah') {
+    S.rcvs2.S2 = v===true ? 'yes' : v===false ? 'no' : null;
+    buildRCVS2();
+  }
+  if(cur===5) rv(); ui();
+}
+function setLean(v, btn) {
+  S.lean = v;
+  ['lean-rcvs','lean-pacns','lean-both','lean-other'].forEach(id=>{const b=document.getElementById(id);if(b)b.classList.remove('ay','an','aa','aw','agr');});
+  activateBtn(btn);
+  const item = document.getElementById('lean-item');
+  if(item) item.className='crit '+(v==='rcvs'?'c-yes':v==='pacns'?'c-no':v==='both'?'c-am':'c-abs');
+  // Show equivocal workup sections only when equivocal
+  const ew = document.getElementById('equivocal-workup');
+  if(ew) ew.style.display = (v==='both') ? 'block' : 'none';
+  // Reset eq results if user moves away from equivocal
+  if(v !== 'both') {
+    S.eq.vwi = null; S.eq.biopsy = null;
+    ['eq-vwi-item','eq-biopsy-item'].forEach(id=>{const el=document.getElementById(id);if(el)el.className='crit';});
+    ['eq-vwi-noenh','eq-vwi-enh','eq-vwi-equiv','eq-vwi-nd',
+     'eq-bx-normal','eq-bx-vasc','eq-bx-abra','eq-bx-nd2','eq-bx-nd'].forEach(id=>{const b=document.getElementById(id);if(b)b.classList.remove('ay','an','aw','agr');});
+  }
+  if(cur===5) rv(); ui();
+}
+function setEquivocal(k, v, btn) {
+  S.eq[k] = v;
+  const itemId = k==='vwi' ? 'eq-vwi-item' : 'eq-biopsy-item';
+  const item = document.getElementById(itemId);
+  const isPos = v==='no-enh'||v==='normal';
+  const isNeg = v==='enh'||v==='vasculitis'||v==='abra';
+  const isWarn = v==='equiv'||v==='nondiag';
+  if(item) item.className='crit '+(isPos?'c-yes':isNeg?'c-no':isWarn?'c-am':'c-abs');
+  activateBtn(btn);
+  if(cur===5) rv(); ui();
+}
+
+function crMetCount() {
+  let n=0;
+  [1,2,3,4,5,6].forEach(i => {
+    const v = S.cr[i];
+    if(v===true||v==='yes'||v==='excl'||v==='cSAH'||v==='normal'||v==='mildly'||v==='resolved'||v==='resolving') n++;
+  });
+  return n;
+}
+function crConfirmed() {
+  const c1 = S.cr[1]===true;
+  const c3 = S.cr[3]==='yes';
+  const c4 = S.cr[4]==='excl'||S.cr[4]==='cSAH';
+  const c5 = S.cr[5]==='normal'||S.cr[5]==='mildly'||S.cr[5]===null; // LP not done = not against
+  const c6 = S.cr[6]==='resolved';
+  return c1&&c3&&c4&&c5&&c6;
+}
+function crProbable() {
+  const c1 = S.cr[1]===true;
+  const c3 = S.cr[3]==='yes'||S.cr[3]==='neg-early'||S.cr[3]===null;
+  const c4 = S.cr[4]==='excl'||S.cr[4]==='cSAH';
+  const c5 = S.cr[5]!=='abnormal';
+  return c1&&c4&&c5&&(S.cr[3]==='yes'||S.f.tch==='recurrent');
+}
+
+function ui() {
+  const a0=document.getElementById('a0');
+  const tch=S.f.tch;
+  if(tch==='recurrent') sa(a0,'arose','Recurrent thunderclap headache \u2014 this pattern is nearly pathognomonic for RCVS. Proceed to apply Calabrese criteria and calculate RCVS2 score. SAH must still be excluded urgently.');
+  else if(tch==='single') sa(a0,'awn','Single thunderclap headache. Must exclude SAH urgently (CT within 6h + LP if CT negative). RCVS is possible but other diagnoses (SAH, CVT, dissection) must be excluded first before RCVS workup.');
+  else if(tch==='none') sa(a0,'aerr','No thunderclap headache reported. RCVS is unlikely \u2014 TCH is the clinical hallmark. Reconsider diagnosis.');
+  else ha(a0);
+
+  const a1=document.getElementById('a1');
+  const cr=crMetCount();
+  if(crConfirmed()) sa(a1,'aok','All six Calabrese criteria met \u2014 RCVS confirmed (definitive diagnosis). Vasoconstriction has resolved at follow-up.');
+  else if(crProbable()) sa(a1,'arose','Clinical picture is consistent with probable RCVS. Vasoconstriction confirmed on imaging + SAH excluded. Awaiting follow-up imaging at 6\u201312 weeks to confirm reversal (Criterion 6).');
+  else if(cr>0) sa(a1,'awn',cr+'/6 Calabrese criteria met so far. Complete remaining assessment. Note: Criterion 6 (reversal) is only confirmable at follow-up imaging.');
+  else ha(a1);
+
+  const a2=document.getElementById('a2');
+  const {score} = calcRCVS2();
+  const answered = !rcvs2Comps.some(c => S.rcvs2[c.id]===null);
+  if(answered) {
+    if(score>=5) sa(a2,'aok','RCVS2 score '+score+'/10 \u2014 RCVS strongly favoured (Sn 90%, Sp 99%). Proceed with RCVS management. Avoid steroids and vasoconstrictive medications.');
+    else if(score<=2) sa(a2,'aerr','RCVS2 score '+score+'/10 \u2014 RCVS unlikely (Sp 100%). Consider alternative diagnosis: PACNS, intracranial atherosclerosis, dissection, or other arteriopathy. Vessel wall MRI and/or brain biopsy may be needed.');
+    else sa(a2,'awn','RCVS2 score '+score+'/10 \u2014 equivocal range (3\u20134). Apply bedside approach: recurrent TCH + trigger + normal parenchymal MRI or convexal SAH \u2192 RCVS likely. Subcortical infarcts + abnormal CSF \u2192 PACNS more likely. Consider vessel wall MRI.');
+  } else ha(a2);
+
+  const a3=document.getElementById('a3');
+  if(S.img.vwi==='enh') sa(a3,'aerr','Vessel wall enhancement on VWI \u2014 strongly favours PACNS over RCVS. Initiate immunosuppression workup. Avoid steroids empirically without firm diagnosis. Neurology/rheumatology consultation. Brain biopsy may be required for definitive PACNS diagnosis.');
+  else if(S.img.vwi==='no-enh') sa(a3,'aok','No vessel wall enhancement on VWI \u2014 strongly supports RCVS over PACNS (inflammatory stenosis excluded). This is the most powerful non-invasive differentiator.');
+  else if(S.img.infarct==='deep') sa(a3,'awn','Deep subcortical infarcts \u2014 favours PACNS over RCVS. RCVS predominantly causes border-zone/watershed infarcts. Reassess RCVS2 score and consider vessel wall MRI, LP, and neurological/rheumatology consultation.');
+  else if(S.img.vasc==='neg') sa(a3,'awn','Normal vascular imaging. If &lt;7 days from symptom onset, this may be falsely negative (RCVS starts distally, beyond CTA/MRA resolution). Repeat MRA at 7\u201314 days. Catheter angiography is the gold standard if suspicion remains high.');
+  else if(S.img.vasc==='multi') sa(a3,'aok','Multifocal vasoconstriction confirmed on vascular imaging \u2014 supports RCVS or other arteriopathy. Proceed to RCVS2 score and RCVS vs. PACNS differentiation.');
+  else ha(a3);
+
+  const a4=document.getElementById('a4');
+  if(S.lean==='rcvs') sa(a4,'arose','RCVS favoured. Initiate RCVS-specific management: nimodipine (oral or IV), trigger removal, BP control, avoid triptans and steroids. Monitor for complications with serial neurological exams and repeat MRA at 6\u201312 weeks.');
+  else if(S.lean==='pacns') sa(a4,'aerr','PACNS cannot be excluded. Do NOT start steroids empirically without firm diagnosis (may worsen RCVS if diagnosis is wrong). Vessel wall MRI is the priority. If VWI shows enhancement, initiate PACNS treatment with prednisone \u00b1 cyclophosphamide. If VWI is non-diagnostic, consider brain biopsy. Rheumatology/neurology consultation urgently.');
+  else if(S.lean==='both') sa(a4,'awn','Equivocal. Vessel wall MRI is the immediate priority \u2014 it is the most powerful non-invasive differentiator. If VWI unavailable, catheter angiography with nimodipine test (positive in RCVS, negative in PACNS). Brain biopsy if all non-invasive tools remain inconclusive.');
+  else ha(a4);
+}
+
+function rv() {
+  const {score} = calcRCVS2();
+  const answered = !rcvs2Comps.some(c => S.rcvs2[c.id]===null);
+  const confirmed=crConfirmed(), probable=crProbable();
+  const lean=S.lean;
+
+  let banCls, banTitle, banDesc;
+  if(S.cr[4]==='basal') {
+    banCls='vexcl'; banTitle='Aneurysmal SAH Not Excluded \u2014 Prioritise SAH Workup';
+    banDesc='Basal cistern SAH or intracranial aneurysm is present. This is a neurosurgical/neurointerventional emergency. Aneurysmal SAH must be fully evaluated and secured before RCVS can be considered. Complete CTA/DSA for aneurysm identification and neurosurgical consultation.';
+  } else if(S.cr[5]==='abnormal'&&lean!=='rcvs') {
+    banCls='vposs'; banTitle='Abnormal CSF \u2014 PACNS or Infection Must Be Excluded';
+    banDesc='CSF pleocytosis or significantly elevated protein (&gt;100 mg/dL) is not consistent with RCVS. Consider: PACNS (abnormal CSF in ~80\u201390%), meningitis/encephalitis, or autoimmune encephalitis. Vessel wall MRI, antibody panel, and neurology/rheumatology consultation are indicated before any treatment decisions.';
+  } else if(confirmed) {
+    banCls='vrcvs'; banTitle='RCVS \u2014 Definitive Diagnosis (All Calabrese Criteria Met)';
+    banDesc='All six Calabrese criteria are satisfied including vasoconstriction reversal at follow-up. Definitive RCVS. Ensure all triggers have been removed and avoided. Calcium channel blocker therapy should continue until symptoms resolve and imaging confirms reversal. Counsel on recurrence risk (~5\u201310%, especially if triggers not eliminated).';
+  } else if(probable||lean==='rcvs') {
+    banCls='vrcvs'; banTitle='RCVS \u2014 Probable Diagnosis (Criteria Met, Awaiting Follow-Up)';
+    banDesc='Clinical picture is consistent with RCVS. Calabrese criteria 1\u20135 are met; awaiting follow-up imaging at 6\u201312 weeks to confirm criterion 6 (vasoconstriction reversal). Initiate RCVS management now. Avoid steroids and vasoconstrictive medications. RCVS2 score'+(answered?' = '+score:'')+(answered&&score>=5?' (RCVS strongly favoured)':answered&&score<=2?' (equivocal \u2014 reassess)':'')+'.' ;
+  } else if(lean==='pacns') {
+    banCls='vexcl'; banTitle='PACNS Cannot Be Excluded \u2014 Further Workup Required';
+    banDesc='The clinical picture does not clearly favour RCVS. PACNS or another arteriopathy requires exclusion before treatment. Vessel wall MRI is the priority. Do not start empirical steroids without a firm diagnosis \u2014 if the patient has RCVS, steroids may worsen outcomes. Rheumatology and neurology consultation are essential.';
+  } else if(lean==='both') {
+    const eVwi = S.eq.vwi;
+    const eBx  = S.eq.biopsy;
+    // Biopsy confirms PACNS
+    if(eBx==='vasculitis'||eBx==='abra') {
+      banCls='vexcl';
+      banTitle='PACNS Confirmed on Biopsy \u2014 Initiate Immunosuppression';
+      banDesc='Brain biopsy demonstrates '+(eBx==='abra'?'amyloid-beta-related angiitis (ABRA), a subtype of PACNS':'granulomatous / lymphocytic vasculitis consistent with PACNS')+'. This is the gold standard diagnosis. Initiate prednisone (1 mg/kg/day, taper over months) and cyclophosphamide for induction (or rituximab as an alternative). Avoid steroids alone for ABRA \u2014 response to immunosuppression is generally good. Neurology/rheumatology joint management. Do NOT use steroids alone for severe PACNS; cytotoxic therapy is required.';
+    } else if(eBx==='normal') {
+      banCls='vrcvs';
+      banTitle='Brain Biopsy Normal \u2014 PACNS Excluded; RCVS Confirmed';
+      banDesc='Normal brain biopsy (no vasculitis, no inflammatory infiltrate) effectively excludes PACNS at the sampled site. Combined with the clinical picture, this confirms RCVS. Note: PACNS biopsy sensitivity is ~53\u201374% due to sampling error \u2014 if clinical suspicion for PACNS remains very high despite normal biopsy, discuss with neurology/rheumatology. Initiate RCVS management: nimodipine, trigger removal, avoid steroids.';
+    } else if(eVwi==='no-enh') {
+      banCls='vrcvs';
+      banTitle='VWI No Enhancement \u2014 RCVS Strongly Supported';
+      banDesc='Vessel wall MRI shows no gadolinium enhancement at sites of vasoconstriction \u2014 the most important non-invasive finding supporting RCVS over PACNS. Non-inflammatory vasoconstriction is confirmed. Initiate RCVS management: nimodipine 60 mg q4h, remove all vasoconstrictive triggers, avoid steroids. Brain biopsy is not required. Follow-up MRA at 6\u201312 weeks to confirm vasoconstriction reversal.';
+    } else if(eVwi==='enh') {
+      banCls='vexcl';
+      banTitle='VWI Wall Enhancement \u2014 PACNS Strongly Favoured';
+      banDesc='Vessel wall MRI demonstrates circumferential concentric gadolinium enhancement at sites of vasoconstriction, indicating active transmural inflammation \u2014 the hallmark of PACNS. This finding strongly favours PACNS over RCVS. Do NOT start steroids without rheumatology/neurology input. Confirm with brain biopsy before immunosuppression if feasible and time permits. If the patient is deteriorating rapidly, empirical prednisone \u00b1 cyclophosphamide may be warranted while pursuing biopsy.';
+    } else {
+      banCls='vposs';
+      banTitle='Equivocal \u2014 RCVS vs. PACNS Requires Further Differentiation';
+      banDesc='The clinical picture does not clearly distinguish RCVS from PACNS on current data. Next steps in order of priority: (1) Vessel wall MRI (3T) \u2014 no enhancement = RCVS; circumferential enhancement = PACNS (most powerful non-invasive differentiator). (2) CSF analysis if not yet done \u2014 pleocytosis or protein >100 mg/dL favours PACNS. (3) Catheter angiography with intra-arterial nimodipine test \u2014 vasodilation = RCVS, no response = PACNS. (4) Brain biopsy if all non-invasive tools remain inconclusive (gold standard for PACNS). Do NOT start empirical steroids \u2014 if the patient has RCVS, steroids may worsen outcomes. Neurology/rheumatology consultation recommended urgently.';
+    }
+  } else {
+    banCls='vund'; banTitle='Assessment Incomplete \u2014 Continue Workup';
+    banDesc='Complete all six Calabrese criteria, RCVS2 score, and imaging assessment. Key next steps: (1) CT/LP to exclude aneurysmal SAH; (2) CTA or MRA for vasoconstriction; (3) RCVS2 score; (4) vessel wall MRI if RCVS vs. PACNS remains uncertain.';
+  }
+
+  const {score: s2} = calcRCVS2();
+
+  let html=`<div class="vban ${banCls}"><div class="vban-head">
+    <div class="vlbl">Calabrese LH et al. Ann Intern Med 2007 &middot; Ducros A. Lancet Neurol 2012 &middot; Rocha EA et al. Neurology 2019 (RCVS2)</div>
+    <div class="vtitle">${banTitle}</div>
+    <div class="vdesc">${banDesc}</div>
+  </div></div>`;
+
+  html += `<div class="card" style="margin-bottom:12px;"><div class="ctitle" style="color:var(--accent);margin-bottom:8px;">Treatment Framework</div>
+  <div class="lbox">
+    <strong>RCVS management (no RCTs; evidence from observational series &amp; expert consensus):</strong><br>
+    <span class="lr">Immediate trigger removal:</span> Discontinue all serotonergic agents, sympathomimetics, triptans, ergotamines, nasal decongestants, illicit stimulants. This is the single most important intervention.<br>
+    <span class="lr">Calcium channel blockers (CCBs):</span> Nimodipine 60 mg PO q4h (most commonly used; oral or IV). Verapamil, nicardipine as alternatives. Goal: headache suppression and vasodilation. Continue until headache-free and vasoconstriction resolves on imaging. No RCT evidence that CCBs prevent ischaemic complications; headache relief is primary endpoint.<br>
+    <span class="lr">Blood pressure control:</span> Avoid hypertension (worsens vasoconstriction and PRES risk); avoid aggressive hypotension (worsens watershed ischaemia in vasoconstriction). Target SBP &lt;160 mmHg.<br>
+    <span class="lr">Avoid triptans:</span> Contraindicated &mdash; vasoconstricting mechanism may worsen cerebral vasospasm.<br>
+    <span class="lrd">AVOID STEROIDS:</span> Retrospective data (Ducros A et al.) show trend toward worse outcomes with glucocorticoids in RCVS. Steroids should only be used if PACNS is confirmed. This is the key reason the RCVS/PACNS distinction matters.<br>
+    <span class="lg">Follow-up:</span> Repeat MRA or CTA at 6&ndash;12 weeks to confirm criterion 6 (reversal). If persistent, reconsider PACNS. Monitor for recurrence (5&ndash;10%), especially if triggers not fully eliminated.
+  </div></div>`;
+
+  html += `<div class="sum-grid">
+  <div class="sblock"><div class="sbtitle">Calabrese Criteria</div>
+    ${[1,2,3,4,5,6].map(i=>{
+      const v=S.cr[i];
+      const isPos=v===true||v==='yes'||v==='excl'||v==='cSAH'||v==='normal'||v==='mildly'||v==='resolved'||v==='resolving';
+      const isNeg=v===false||v==='no'||v==='basal'||v==='abnormal'||v==='persist';
+      const labels={1:'Acute severe headache',2:'Monophasic course',3:'Segmental vasoconstriction',4:'Aneurysmal SAH excluded',5:'Near-normal CSF',6:'Reversal at 12 weeks'};
+      const disp={true:'Met','yes':'Met (confirmed)','excl':'Met (SAH excluded)','cSAH':'Met (convexal SAH only)','normal':'Met (normal)','mildly':'Met (mildly abnormal)','resolved':'Met (resolved)','resolving':'Partially met',false:'Not met','no':'Not met','basal':'NOT met (basal SAH)','abnormal':'Not met (abnormal)','persist':'Not met (persistent)',null:'Pending'}[String(v)]||'Pending';
+      return `<div class="srow"><div class="dot ${isPos?'dg':isNeg?'dr':'dgr'}"></div><div class="sname">${i}. ${labels[i]}</div><div class="stag ${isPos?'tg':isNeg?'tr':'tgr'}">${disp}</div></div>`;
+    }).join('')}
+  </div>
+  <div class="sblock"><div class="sbtitle">RCVS2 Score &amp; Key Findings</div>
+    <div class="srow"><div class="dot ${answered&&s2>=5?'dg':answered&&s2<=2?'dr':answered?'dam':'dgr'}"></div><div class="sname">RCVS2 score</div><div class="stag ${answered&&s2>=5?'tg':answered&&s2<=2?'tr':answered?'tam':'tgr'}">${answered?s2+'/10':'\u2014 Incomplete'}</div></div>
+    <div class="srow"><div class="dot ${S.img.vasc==='multi'?'dg':S.img.vasc==='neg'?'dam':'dgr'}"></div><div class="sname">Vascular imaging</div><div class="stag ${S.img.vasc==='multi'?'tg':S.img.vasc==='neg'?'tam':'tgr'}">${{'multi':'Multifocal constriction','unifocal':'Unifocal','neg':'Normal (may be early)',null:'Pending'}[S.img.vasc]||'Pending'}</div></div>
+    <div class="srow"><div class="dot ${S.img.vwi==='no-enh'?'dg':S.img.vwi==='enh'?'dr':'dgr'}"></div><div class="sname">Vessel wall MRI</div><div class="stag ${S.img.vwi==='no-enh'?'tg':S.img.vwi==='enh'?'tr':'tgr'}">${{'no-enh':'No enhancement (RCVS)','enh':'Enhancement (PACNS)',null:'Not performed'}[S.img.vwi]||'Not performed'}</div></div>
+    <div class="srow"><div class="dot ${S.lean==='rcvs'?'da':S.lean==='pacns'?'dr':S.lean==='both'?'dam':'dgr'}"></div><div class="sname">Clinical leaning</div><div class="stag ${S.lean==='rcvs'?'ta':S.lean==='pacns'?'tr':S.lean==='both'?'tam':'tgr'}">${{rcvs:'RCVS favoured',pacns:'PACNS cannot be excluded',both:'Equivocal',other:'Alternative diagnosis',null:'Not assessed'}[S.lean]||'Not assessed'}</div></div>
+    <div class="srow"><div class="dot ${S.eq.vwi==='no-enh'?'dg':S.eq.vwi==='enh'?'dr':S.eq.vwi?'dam':'dgr'}"></div><div class="sname">VWI (equivocal workup)</div><div class="stag ${S.eq.vwi==='no-enh'?'tg':S.eq.vwi==='enh'?'tr':S.eq.vwi?'tam':'tgr'}">${{'no-enh':'No enhancement \u2014 RCVS','enh':'Wall enhancement \u2014 PACNS','equiv':'Equivocal VWI',null:'Not performed'}[String(S.eq.vwi)]||'Not performed'}</div></div>
+    <div class="srow"><div class="dot ${S.eq.biopsy==='normal'?'dg':S.eq.biopsy==='vasculitis'||S.eq.biopsy==='abra'?'dr':S.eq.biopsy?'dam':'dgr'}"></div><div class="sname">Biopsy (equivocal workup)</div><div class="stag ${S.eq.biopsy==='normal'?'tg':S.eq.biopsy==='vasculitis'||S.eq.biopsy==='abra'?'tr':S.eq.biopsy?'tam':'tgr'}">${{'normal':'Normal \u2014 RCVS supported','vasculitis':'Vasculitis \u2014 PACNS','abra':'ABRA \u2014 PACNS subtype','nondiag':'Non-diagnostic',null:'Not performed'}[String(S.eq.biopsy)]||'Not performed'}</div></div>
+    <div class="srow"><div class="dot ${S.img.csah===true?'da':'dgr'}"></div><div class="sname">Convexal SAH</div><div class="stag ${S.img.csah===true?'ta':'tgr'}">${S.img.csah===true?'Present (RCVS-consistent)':S.img.csah===false?'Absent':'Not reported'}</div></div>
+  </div></div>`;
+
+  document.getElementById('vout').innerHTML=html;
+  buildDoc(banTitle, s2, answered);
+}
+
+function buildDoc(title, score, scored) {
+  const cr_lines=[1,2,3,4,5,6].map(i=>{
+    const v=S.cr[i];
+    const dispMap={true:'Met',yes:'Met (vasoconstriction confirmed)',excl:'Met (aneurysmal SAH excluded)',cSAH:'Met (convexal SAH only)',normal:'Met (CSF normal)',mildly:'Met (protein mildly elevated <100, no pleocytosis)',resolved:'Met (vasoconstriction resolved at follow-up)',resolving:'Partially met (resolving)',false:'Not met',no:'Not met',basal:'NOT MET — basal SAH / aneurysm present',abnormal:'NOT MET — CSF abnormal (WBC >10 or protein >100)',persist:'NOT MET — vasoconstriction persists at 12 weeks',null:'Pending assessment'};
+    return `    Criterion ${i}: ${dispMap[String(v)]||'Pending'}`;
+  }).join('\n');
+  const r2_lines=rcvs2Comps.map(c=>`    ${c.label}: ${S.rcvs2[c.id]==='yes'?'YES (scored '+c.val+' points)':S.rcvs2[c.id]==='no'?'No (0 points)':'Not assessed'}`).join('\n');
+  const note=`NEUROVASCULAR -- REVERSIBLE CEREBRAL VASOCONSTRICTION SYNDROME (RCVS) NAVIGATOR
+Calabrese LH et al. Narrative review: reversible cerebral vasoconstriction syndromes. Ann Intern Med 2007;146:34-44
+Ducros A. Reversible cerebral vasoconstriction syndrome. Lancet Neurol 2012;11:906-917
+Rocha EA, Topcuoglu MA, Singhal AB. RCVS2 score and diagnostic approach for RCVS. Neurology 2019;92:e639-e647
+  - RCVS2 score >=5: Sn 90%, Sp 99% for RCVS vs. other arteriopathies
+  - RCVS2 score <=2: Sp 100%, Sn 85% for excluding RCVS
+Date: ${new Date().toLocaleDateString()}
+
+OVERALL ASSESSMENT: ${title.replace(/&mdash;/g,'--').replace(/&amp;/g,'&').replace(/&ge;/g,'>=').replace(/&le;/g,'<=').replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&ndash;/g,'-').replace(/&plusmn;/g,'+/-').replace(/&times;/g,'x')}
+
+CLINICAL PRESENTATION:
+  Thunderclap headache pattern: ${{'recurrent':'Recurrent TCH (>=2 episodes) -- nearly pathognomonic for RCVS','single':'Single TCH episode -- SAH must be excluded urgently','none':'No TCH -- RCVS unlikely'}[S.f.tch]||'Not assessed'}
+  Vasoconstrictive drug trigger: ${S.f.trig_drug===true?'YES':S.f.trig_drug===false?'No':'Not assessed'}
+  Postpartum state: ${S.f.trig_post===true?'YES (within 4 weeks postpartum)':S.f.trig_post===false?'No':'Not assessed'}
+  Exertional/Valsalva trigger: ${S.f.trig_exert===true?'YES':S.f.trig_exert===false?'No':'Not assessed'}
+  Female sex: ${S.f.female===true?'Yes (F:M 2-10:1 in RCVS)':S.f.female===false?'Male':'Not recorded'}
+  Focal neurological deficits: ${S.f.neuro===true?'Present (complication of vasoconstriction)':S.f.neuro===false?'Absent':'Not assessed'}
+  Neck stiffness: ${S.f.neckstiff===true?'Present (raises SAH suspicion)':S.f.neckstiff===false?'Absent':'Not assessed'}
+
+CALABRESE DIAGNOSTIC CRITERIA (2007, modified Ducros 2012):
+${cr_lines}
+  Summary: ${crConfirmed()?'DEFINITIVE RCVS (all 6 criteria met)':crProbable()?'PROBABLE RCVS (key criteria met, awaiting follow-up imaging)':'Criteria incomplete / not confirmed'}
+
+RCVS2 SCORE (Rocha et al. Neurology 2019; range -2 to +10):
+${r2_lines}
+  RCVS2 TOTAL: ${scored?score+'/10 -- '+(score>=5?'RCVS favoured (Sn 90%, Sp 99%)':score<=2?'RCVS unlikely (Sp 100%)':'Equivocal (3-4); apply bedside clinical approach'):'Not fully completed'}
+
+IMAGING:
+  Vascular imaging (CTA/MRA/DSA): ${{'multi':'Multifocal segmental vasoconstriction (>=2 territories)','unifocal':'Unifocal constriction only','neg':'Normal -- may be falsely negative if <7 days from onset',null:'Pending'}[S.img.vasc]||'Pending'}
+  Intracranial carotid/proximal vessel involvement: ${S.img.carotid===true?'YES (atypical for RCVS; -2 RCVS2 points)':S.img.carotid===false?'No':'-'}
+  Convexal (cortical) SAH: ${S.img.csah===true?'YES (RCVS-consistent; +1 RCVS2 point)':S.img.csah===false?'Absent':'-'}
+  PRES changes (T2/FLAIR posterior signal): ${S.img.pres===true?'YES':S.img.pres===false?'No':'-'}
+  Cerebral infarction: ${{'border':'Border-zone/watershed (favours RCVS)','deep':'Deep subcortical (favours PACNS)','cortical':'Cortical infarct',false:'None identified',null:'-'}[String(S.img.infarct)]||'-'}
+  Vessel wall MRI: ${{'no-enh':'No vessel wall enhancement -- supports RCVS (non-inflammatory)','enh':'Vessel wall enhancement PRESENT -- favours PACNS; initiate PACNS workup',null:'Not performed'}[String(S.img.vwi)]||'Not performed'}
+
+RCVS vs PACNS DIFFERENTIATION:
+  Clinical leaning: ${S.lean||'Not assessed'}
+  Key differentiators:
+  - Headache: thunderclap (RCVS) vs. insidious progressive (PACNS)
+  - CSF: near-normal in RCVS; abnormal in ~80-90% of PACNS
+  - Infarct: border-zone (RCVS) vs. deep subcortical (PACNS)
+  - Vessel wall MRI: no enhancement (RCVS) vs. circumferential enhancement (PACNS)
+  - Nimodipine test (DSA): vasodilation (RCVS) vs. no response (PACNS)
+  - Treatment: CCBs + trigger avoidance (RCVS) vs. steroids + cyclophosphamide (PACNS)
+  - STEROIDS: may worsen RCVS outcomes -- DO NOT use empirically without PACNS confirmed
+
+TREATMENT (no RCTs; observational data + expert consensus):
+  1. IMMEDIATE: Remove all vasoconstrictive triggers (SSRIs, SNRIs, triptans, decongestants, stimulants, ergots)
+  2. Nimodipine 60 mg PO q4h (or IV nicardipine if severe/unable to swallow)
+     Alternative: Verapamil if nimodipine unavailable or not tolerated
+  3. Blood pressure: target SBP <160 mmHg; avoid hypotension (watershed ischaemia risk)
+  4. AVOID triptans (vasoconstriction), ergotamines, nasal decongestants
+  5. AVOID glucocorticoids unless PACNS is firmly confirmed (may worsen RCVS)
+  6. Pain management: non-NSAID analgesics; opioids with caution
+  7. Follow-up MRA/CTA at 6-12 weeks to confirm vasoconstriction reversal (Calabrese Criterion 6)
+  8. Counsel on recurrence risk: ~5-10%; higher if triggers not eliminated
+  9. If vasoconstriction persists at 12 weeks: reassess for PACNS; vessel wall MRI; consider brain biopsy
+
+KEY REFERENCES:
+  Calabrese LH et al. Ann Intern Med 2007;146:34 (original RCVS criteria)
+  Ducros A. Lancet Neurol 2012;11:906 (large case series, management review)
+  Rocha EA et al. Neurology 2019;92:e639 (RCVS2 score; Sn 90%, Sp 99% at score >=5)
+  Singhal AB et al. Arch Neurol 2011;68:1005 (139-case analysis, complications, prognosis)
+  Ducros A et al. Brain 2007 (glucocorticoids associated with worse outcomes)
+  Mandell DM et al. Stroke 2012 (vessel wall MRI: no enhancement in RCVS vs. enhancement in PACNS)`;
+  document.getElementById('dn').textContent=note;
+}
+
+function sa(el,cls,msg){if(!el)return;el.className='alrt show '+cls;el.innerHTML=msg;}
+function ha(el){if(el)el.classList.remove('show');}
+function goTab(n){if(n===cur)return;go(n);}
+function go(n){
+  document.getElementById('s'+cur).classList.remove('active');
+  document.getElementById('s'+n).classList.add('active');
+  for(let i=0;i<6;i++){const d=document.getElementById('st'+i);d.classList.remove('active','done');if(i<n)d.classList.add('done');else if(i===n)d.classList.add('active');}
+  cur=n; document.getElementById('pf').style.width=((n/5)*100)+'%';
+  if(n===2) buildRCVS2();
+  if(n===5) rv();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function xp(btn){
+  const d=btn.closest('.crit').querySelector('.crit-detail');
+  if(!d)return;
+  const o=d.classList.toggle('open');
+  btn.textContent=o?'close \u25b4':'details \u25be';
+}
+function toggleDoc(){
+  const body=document.getElementById('dn'),btn=document.getElementById('copy-btn'),tog=document.querySelector('.doc-tog');
+  if(!body)return;
+  const open=body.classList.toggle('open');
+  if(tog)tog.textContent=open?'\u25b2 Documentation Note':'\u25bc Documentation Note';
+  if(btn)btn.classList.toggle('visible',open);
+}
+function copyDoc(){
+  const body=document.getElementById('dn'),btn=document.getElementById('copy-btn');
+  if(!body)return;
+  const text=body.textContent||body.innerText;
+  navigator.clipboard.writeText(text).then(()=>{if(btn){btn.textContent='\u2713 Copied';btn.classList.add('copied');setTimeout(()=>{btn.textContent='\u238a Copy';btn.classList.remove('copied');},2000);}}).catch(()=>{const ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);if(btn){btn.textContent='\u2713 Copied';btn.classList.add('copied');setTimeout(()=>{btn.textContent='\u238a Copy';btn.classList.remove('copied');},2000);}});
+}
+function resetAll(){
+  Object.keys(S.f).forEach(k=>S.f[k]=null);
+  Object.keys(S.cr).forEach(k=>S.cr[k]=null);
+  Object.keys(S.rcvs2).forEach(k=>S.rcvs2[k]=null);
+  Object.keys(S.img).forEach(k=>S.img[k]=null);
+  S.lean=null; S.eq={vwi:null,biopsy:null};
+  const ew=document.getElementById('equivocal-workup');if(ew)ew.style.display='none';
+  document.querySelectorAll('.crit').forEach(el=>el.className='crit');
+  document.querySelectorAll('.abtn').forEach(b=>b.classList.remove('ay','an','aa','agr','aw','ab'));
+  document.querySelectorAll('.crit-detail').forEach(d=>d.classList.remove('open'));
+  document.querySelectorAll('.xbtn').forEach(b=>b.textContent='details \u25be');
+  ['a0','a1','a2','a3','a4'].forEach(id=>{const el=document.getElementById(id);if(el)el.classList.remove('show');});
+  document.getElementById('vout').innerHTML='';
+  const dn=document.getElementById('dn');if(dn)dn.classList.remove('open');
+  const cb=document.getElementById('copy-btn');if(cb)cb.classList.remove('visible','copied');
+  const tog=document.querySelector('.doc-tog');if(tog)tog.textContent='\u25bc Documentation Note';
+  buildRCVS2();
+  go(0);
+  document.getElementById('n0').disabled=true;
+}
+buildRCVS2();
+ui();
+</script>
+</body>
+</html>
