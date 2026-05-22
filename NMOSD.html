@@ -3,1541 +3,838 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NMOSD 2015 | Diagnostic Criteria Navigator</title>
+<title>NMOSD &middot; Diagnostic Navigator</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Lexend:wght@300;400;500;600&family=Inter:wght@300;400;500;600;700&display=swap');
-
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Lexend:wght@300;400;500;600;700&display=swap');
 :root {
-  --bg: #080b10;
-  --s1: #0f1318;
-  --s2: #161b22;
-  --s3: #1c222c;
-  --s4: #222a36;
-  --b1: #1e2730;
-  --b2: #28333f;
-  --b3: #344050;
-  --text: #c8d4e0;
-  --text2: #7a8fa8;
-  --text3: #4a5f72;
-  --cyan: #40c8e0;
-  --cyan2: #60d8ec;
-  --cyan-d: rgba(64,200,224,0.12);
-  --cyan-g: rgba(64,200,224,0.06);
-  --amber: #e8a030;
-  --amber2: #f0b848;
-  --amber-d: rgba(232,160,48,0.14);
-  --red: #d85050;
-  --red2: #e06868;
-  --red-d: rgba(216,80,80,0.14);
-  --green: #38b870;
-  --green2: #50cc84;
-  --green-d: rgba(56,184,112,0.14);
-  --purple: #8870d8;
-  --purple2: #a090e8;
-  --purple-d: rgba(136,112,216,0.14);
-  --mono: 'IBM Plex Mono', monospace;
-  --sans: 'Lexend', 'Inter', system-ui, sans-serif;
-  --cond: 'Lexend', 'Inter', system-ui, sans-serif;
-}
-
-* { box-sizing: border-box; margin: 0; padding: 0; }
-
-body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: var(--sans);
-  min-height: 100vh;
-}
-
-/* scanline overlay */
-body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.03) 2px, rgba(0,0,0,0.03) 4px);
-  pointer-events: none;
-  z-index: 1000;
-}
-
-/* ── HEADER ── */
-.hdr {
-  background: var(--s1);
-  border-bottom: 1px solid var(--b1);
-  padding: 16px 24px 14px;
-  position: sticky;
-  top: 0;
-  z-index: 100;
-}
-.hdr-inner {
-  max-width: 960px;
-  margin: 0 auto;
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
-.hdr-icon {
-  width: 36px; height: 36px;
-  background: var(--cyan-d);
-  border: 1px solid rgba(64,200,224,0.3);
-  border-radius: 8px;
-  display: flex; align-items: center; justify-content: center;
-  font-family: var(--sans);
-  font-size: 12px;
-  color: var(--cyan);
-  letter-spacing: 0.05em;
-  flex-shrink: 0;
-}
-.hdr-titles { flex: 1; }
-.hdr-title {
-  font-family: var(--cond);
-  font-size: 15px;
-  font-weight: 700;
-  color: var(--text);
-  letter-spacing: 0;
-  text-transform: none;
-}
-.hdr-sub {
-  font-family: var(--sans);
-  font-size: 11px;
-  color: var(--text3);
-  letter-spacing: 0;
-  margin-top: 2px;
-}
-.hdr-credit {
-  font-family: var(--sans);
-  font-size: 11px;
-  color: var(--text3);
-  margin-top: 2px;
-}
-.hdr-badge {
-  font-family: var(--sans);
-  font-size: 9px;
-  color: var(--cyan);
-  background: var(--cyan-d);
-  border: 1px solid rgba(64,200,224,0.25);
-  padding: 3px 8px;
-  border-radius: 3px;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-}
-
-/* ── PROGRESS ── */
-.progress-bar {
-  background: var(--s1);
-  border-bottom: 1px solid var(--b1);
-  padding: 10px 24px;
-}
-.progress-inner {
-  max-width: 960px;
-  margin: 0 auto;
-  display: flex;
-  gap: 6px;
-  align-items: center;
-}
-.prog-step {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  flex: 1;
-  cursor: pointer;
-}
-.prog-dot {
-  width: 20px; height: 20px;
-  border-radius: 50%;
-  border: 1.5px solid var(--b3);
-  background: var(--s2);
-  font-family: var(--sans);
-  font-size: 9px;
-  font-weight: 700;
-  color: var(--text3);
-  display: flex; align-items: center; justify-content: center;
-  flex-shrink: 0;
-  transition: all 0.25s;
-}
-.prog-dot.active {
-  border-color: var(--cyan);
-  background: var(--cyan-d);
-  color: var(--cyan);
-}
-.prog-dot.done {
-  border-color: var(--green);
-  background: var(--green-d);
-  color: var(--green);
-}
-.prog-label {
-  font-family: var(--sans);
-  font-size: 9px;
-  color: var(--text3);
-  letter-spacing: 0;
-  white-space: nowrap;
-  transition: color 0.25s;
-}
-.prog-step.active .prog-label { color: var(--cyan); }
-.prog-step.done .prog-label { color: var(--green); }
-.prog-line {
-  flex: 1;
-  height: 1px;
-  background: var(--b2);
-  max-width: 40px;
-}
-
-/* ── MAIN ── */
-.main {
-  max-width: 960px;
-  margin: 0 auto;
-  padding: 24px;
-}
-
-/* ── PANEL ── */
-.panel {
-  display: none;
-  animation: fadeUp 0.3s ease;
-}
-.panel.active { display: block; }
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(8px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-/* ── SECTION HEADER ── */
-.sec-hdr {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 20px;
-}
-.sec-num {
-  font-family: var(--sans);
-  font-size: 10px;
-  color: var(--text3);
-  width: 24px;
-  letter-spacing: 0;
-}
-.sec-title {
-  font-family: var(--cond);
-  font-size: 18px;
-  font-weight: 700;
-  color: var(--text);
-  letter-spacing: 0;
-  text-transform: none;
-}
-.sec-line {
-  flex: 1;
-  height: 1px;
-  background: linear-gradient(90deg, var(--b2), transparent);
-}
-
-/* STEP TABS */
-.steps { display: grid; grid-template-columns: repeat(5, 1fr); border: 1px solid var(--b2); border-radius: 8px; margin: 0 24px 20px; overflow: hidden; background: var(--s2); }
-.stab { padding: 9px 4px 10px; text-align: center; font-family: var(--sans); font-size: 10px; color: var(--text3); border-right: 1px solid var(--b1); transition: all 0.2s; cursor: pointer; background: var(--s2); line-height: 1.3; }
-.stab:nth-child(5n) { border-right: none; }
-.stab .sn { display: flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 50%; background: var(--s3); border: 1px solid var(--b2); font-size: 11px; font-weight: 700; margin: 0 auto 4px; transition: all 0.2s; }
-.stab .slbl { display: block; font-size: 9px; font-weight: 600; letter-spacing: 0; line-height: 1.3; }
-.stab.active { color: var(--cyan); background: var(--cyan-g); }
-.stab.active .sn { background: var(--cyan); color: #0d1117; border-color: var(--cyan); }
-.stab.done { color: var(--green); }
-.stab.done .sn { background: var(--green); color: #0d1117; border-color: var(--green); }
-.stab:hover:not(.active) { background: var(--s3); }
-
-/* ── QUESTION CARD ── */
-.qcard {
-  background: var(--s2);
-  border: 1px solid var(--b2);
-  border-radius: 10px;
-  padding: 20px;
-  margin-bottom: 16px;
-}
-.qcard-label {
-  font-family: var(--sans);
-  font-size: 10px;
-  font-weight: 600;
-  color: var(--text3);
-  letter-spacing: 0;
-  text-transform: none;
-  margin-bottom: 8px;
-}
-.qcard-text {
-  font-size: 14px;
-  color: var(--text);
-  line-height: 1.55;
-  font-weight: 400;
-  margin-bottom: 14px;
-}
-.qcard-note {
-  font-family: var(--sans);
-  font-size: 10px;
-  color: var(--text2);
-  line-height: 1.5;
-  margin-bottom: 14px;
-  padding: 8px 12px;
-  background: var(--s3);
-  border-left: 2px solid var(--b3);
-  border-radius: 0 4px 4px 0;
-}
-
-/* ── BUTTONS ── */
-.btn-row {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-.btn {
-  font-family: var(--sans);
-  font-size: 13px;
-  font-weight: 600;
-  letter-spacing: 0;
-  text-transform: none;
-  padding: 9px 20px;
-  border-radius: 5px;
-  border: 1.5px solid;
-  cursor: pointer;
-  transition: all 0.15s;
-}
-.btn-y {
-  background: var(--cyan-d);
-  border-color: rgba(64,200,224,0.35);
-  color: var(--cyan);
-}
-.btn-y:hover { background: rgba(64,200,224,0.2); border-color: var(--cyan); }
-.btn-n {
-  background: var(--red-d);
-  border-color: rgba(216,80,80,0.3);
-  color: var(--red2);
-}
-.btn-n:hover { background: rgba(216,80,80,0.22); border-color: var(--red2); }
-.btn-back {
-  background: var(--s3);
-  border-color: var(--b3);
-  color: var(--text2);
-  font-size: 10px;
-  padding: 6px 14px;
-}
-.btn-back:hover { background: var(--s4); color: var(--text); }
-.btn-restart {
-  background: var(--s3);
-  border-color: var(--b3);
-  color: var(--text2);
-}
-.btn-restart:hover { background: var(--s4); color: var(--text); }
-
-/* ── CHOICE GRID ── */
-.choice-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-  margin-top: 4px;
-}
-.choice-card {
-  background: var(--s3);
-  border: 1.5px solid var(--b2);
-  border-radius: 8px;
-  padding: 14px 16px;
-  cursor: pointer;
-  transition: all 0.15s;
-}
-.choice-card:hover {
-  border-color: var(--cyan);
-  background: var(--cyan-d);
-}
-.choice-card.selected {
-  border-color: var(--cyan);
-  background: var(--cyan-d);
-}
-.choice-title {
-  font-family: var(--sans);
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--text);
-  letter-spacing: 0;
-  margin-bottom: 4px;
-}
-.choice-desc {
-  font-family: var(--sans);
-  font-size: 10px;
-  color: var(--text2);
-  line-height: 1.5;
-}
-
-/* ── CHECKBOX LIST ── */
-.check-list {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-.check-item {
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
-  padding: 12px 14px;
-  background: var(--s3);
-  border: 1.5px solid var(--b2);
-  border-radius: 7px;
-  cursor: pointer;
-  transition: all 0.15s;
-  user-select: none;
-}
-.check-item:hover { border-color: var(--b3); background: var(--s4); }
-.check-item.checked {
-  border-color: rgba(64,200,224,0.4);
-  background: var(--cyan-d);
-}
-.check-box {
-  width: 16px; height: 16px;
-  border: 1.5px solid var(--b3);
-  border-radius: 3px;
-  background: var(--s2);
-  flex-shrink: 0;
-  margin-top: 1px;
-  display: flex; align-items: center; justify-content: center;
-  transition: all 0.15s;
-  font-size: 10px;
-}
-.check-item.checked .check-box {
-  background: var(--cyan-d);
-  border-color: var(--cyan);
-  color: var(--cyan);
-}
-.check-label {
-  font-size: 13px;
-  color: var(--text);
-  line-height: 1.5;
-  flex: 1;
-}
-.check-sub {
-  font-family: var(--sans);
-  font-size: 10px;
-  color: var(--text2);
-  margin-top: 3px;
-  line-height: 1.45;
-}
-.check-tag {
-  font-family: var(--sans);
-  font-size: 9px;
-  font-weight: 600;
-  padding: 2px 6px;
-  border-radius: 3px;
-  margin-top: 4px;
-  display: inline-block;
-}
-.tag-req {
-  background: var(--amber-d);
-  color: var(--amber);
-  border: 1px solid rgba(232,160,48,0.3);
-}
-.tag-common {
-  background: var(--cyan-d);
-  color: var(--cyan);
-  border: 1px solid rgba(64,200,224,0.3);
-}
-
-/* ── COUNTER BADGE ── */
-.counter-row {
-  display: flex;
-  gap: 10px;
-  margin: 12px 0 16px;
-  flex-wrap: wrap;
-}
-.counter {
-  background: var(--s3);
-  border: 1px solid var(--b2);
-  border-radius: 6px;
-  padding: 8px 14px;
-  font-family: var(--sans);
-  font-size: 11px;
-  color: var(--text2);
-}
-.counter span {
-  font-size: 16px;
-  font-weight: 500;
-  color: var(--cyan);
-  margin-right: 4px;
-}
-.counter.met span { color: var(--green); }
-.counter.warn span { color: var(--amber); }
-.counter.fail span { color: var(--red2); }
-
-/* ── INFO BOX ── */
-.info-box {
-  background: var(--cyan-d);
-  border: 1px solid rgba(64,200,224,0.25);
-  border-radius: 8px;
-  padding: 14px 16px;
-  margin-bottom: 16px;
-  font-size: 13px;
-  color: var(--text);
-  line-height: 1.55;
-}
-.info-box .ib-title {
-  font-family: var(--sans);
-  font-size: 10px;
-  font-weight: 600;
-  color: var(--cyan);
-  letter-spacing: 0;
-  text-transform: none;
-  margin-bottom: 6px;
-}
-.warn-box {
-  background: var(--amber-d);
-  border: 1px solid rgba(232,160,48,0.25);
-  border-radius: 8px;
-  padding: 14px 16px;
-  margin-bottom: 16px;
-  font-size: 13px;
-  color: var(--text);
-  line-height: 1.55;
-}
-.warn-box .ib-title {
-  font-family: var(--sans);
-  font-size: 10px;
-  font-weight: 600;
-  color: var(--amber);
-  letter-spacing: 0;
-  text-transform: none;
-  margin-bottom: 6px;
-}
-
-/* ── RED FLAG ROW ── */
-.redflag-section {
-  margin-top: 4px;
-}
-.redflag-item {
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
-  padding: 10px 14px;
-  background: var(--s3);
-  border: 1.5px solid var(--b2);
-  border-radius: 7px;
-  cursor: pointer;
-  transition: all 0.15s;
-  margin-bottom: 6px;
-  user-select: none;
-}
-.redflag-item:hover { border-color: rgba(216,80,80,0.3); }
-.redflag-item.flagged {
-  border-color: rgba(216,80,80,0.45);
-  background: var(--red-d);
-}
-.redflag-item .rf-icon {
-  font-size: 14px;
-  flex-shrink: 0;
-  margin-top: 1px;
-}
-.redflag-item .rf-text {
-  font-size: 12px;
-  color: var(--text);
-  line-height: 1.5;
-  flex: 1;
-}
-.redflag-item .rf-sub {
-  font-family: var(--sans);
-  font-size: 10px;
-  color: var(--text2);
-  margin-top: 3px;
-}
-.redflag-item .rf-cb {
-  width: 16px; height: 16px;
-  border: 1.5px solid var(--b3);
-  border-radius: 3px;
-  background: var(--s2);
-  flex-shrink: 0;
-  margin-top: 1px;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 10px;
-  transition: all 0.15s;
-}
-.redflag-item.flagged .rf-cb {
-  background: var(--red-d);
-  border-color: var(--red2);
-  color: var(--red2);
-}
-
-/* ── VERDICT CARD ── */
-.verdict {
-  background: var(--s2);
-  border-radius: 12px;
-  overflow: hidden;
-  border: 1px solid var(--b2);
-  margin-bottom: 20px;
-}
-.verdict-header {
-  padding: 20px 24px 16px;
-  border-bottom: 1px solid var(--b2);
-}
-.verdict-status {
-  font-family: var(--sans);
-  font-size: 9px;
-  font-weight: 600;
-  letter-spacing: 0;
-  text-transform: none;
-  margin-bottom: 8px;
-}
-.verdict-title {
-  font-family: var(--cond);
-  font-size: 22px;
-  font-weight: 700;
-  letter-spacing: 0.03em;
-  line-height: 1.2;
-}
-.verdict.positive .verdict-header { border-left: 4px solid var(--green); }
-.verdict.positive .verdict-status { color: var(--green); }
-.verdict.positive .verdict-title { color: var(--green2); }
-.verdict.negative .verdict-header { border-left: 4px solid var(--red); }
-.verdict.negative .verdict-status { color: var(--red2); }
-.verdict.negative .verdict-title { color: var(--red2); }
-.verdict.caution .verdict-header { border-left: 4px solid var(--amber); }
-.verdict.caution .verdict-status { color: var(--amber); }
-.verdict.caution .verdict-title { color: var(--amber2); }
-.verdict.indeterminate .verdict-header { border-left: 4px solid var(--purple); }
-.verdict.indeterminate .verdict-status { color: var(--purple2); }
-.verdict.indeterminate .verdict-title { color: var(--purple2); }
-
-.verdict-body {
-  padding: 18px 24px 20px;
-}
-.verdict-subtype {
-  font-family: var(--sans);
-  font-size: 10px;
-  color: var(--text2);
-  margin-bottom: 12px;
-  line-height: 1.5;
-}
-.verdict-criteria {
-  margin-bottom: 16px;
-}
-.vc-row {
-  display: flex;
-  align-items: flex-start;
-  gap: 8px;
-  padding: 7px 0;
-  border-bottom: 1px solid var(--b1);
-  font-size: 12px;
-}
-.vc-row:last-child { border-bottom: none; }
-.vc-icon { flex-shrink: 0; font-size: 12px; width: 16px; }
-.vc-text { color: var(--text); line-height: 1.5; }
-.vc-dim { color: var(--text2); }
-
-.verdict-note {
-  background: var(--s3);
-  border-radius: 6px;
-  padding: 12px 14px;
-  font-family: var(--sans);
-  font-size: 10px;
-  color: var(--text2);
-  line-height: 1.55;
-  margin-top: 14px;
-}
-.verdict-note strong {
-  color: var(--text);
-  font-weight: 500;
-}
-
-/* ── MRI REQUIREMENTS TABLE ── */
-.mri-table {
-  background: var(--s3);
-  border: 1px solid var(--b2);
-  border-radius: 8px;
-  overflow: hidden;
-  margin-bottom: 16px;
-}
-.mri-row {
-  display: flex;
-  align-items: flex-start;
-  gap: 0;
-  border-bottom: 1px solid var(--b1);
-  padding: 0;
-}
-.mri-row:last-child { border-bottom: none; }
-.mri-syndrome {
-  font-family: var(--sans);
-  font-size: 10px;
-  color: var(--cyan);
-  padding: 10px 12px;
-  width: 160px;
-  flex-shrink: 0;
-  border-right: 1px solid var(--b1);
-  background: var(--s2);
-  line-height: 1.4;
-}
-.mri-req {
-  font-size: 12px;
-  color: var(--text);
-  padding: 10px 14px;
-  line-height: 1.5;
-  flex: 1;
-}
-.mri-req em {
-  color: var(--text2);
-  font-style: normal;
-  font-family: var(--sans);
-  font-size: 10px;
-}
-
-/* ── SUMMARY BOX ── */
-.summary-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-  margin-bottom: 16px;
-}
-.summary-item {
-  background: var(--s3);
-  border: 1px solid var(--b2);
-  border-radius: 7px;
-  padding: 12px 14px;
-}
-.si-label {
-  font-family: var(--sans);
-  font-size: 9px;
-  font-weight: 600;
-  color: var(--text3);
-  letter-spacing: 0;
-  text-transform: none;
-  margin-bottom: 5px;
-}
-.si-val {
-  font-size: 13px;
-  color: var(--text);
-  line-height: 1.4;
-}
-.si-val.pos { color: var(--green2); }
-.si-val.neg { color: var(--red2); }
-.si-val.warn { color: var(--amber2); }
-.si-val.unk { color: var(--text2); }
-
-/* ── INLINE ACTIONS ── */
-.action-row {
-  display: flex;
-  gap: 8px;
-  margin-top: 16px;
-}
-.btn-proceed {
-  font-family: var(--sans);
-  font-size: 13px;
-  font-weight: 700;
-  letter-spacing: 0;
-  text-transform: none;
-  padding: 10px 24px;
-  border-radius: 5px;
-  border: 1.5px solid var(--cyan);
-  background: var(--cyan-d);
-  color: var(--cyan);
-  cursor: pointer;
-  transition: all 0.15s;
-}
-.btn-proceed:hover { background: rgba(64,200,224,0.2); }
-.btn-proceed:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
-}
-
-/* ── DIVIDER ── */
-.divider {
-  height: 1px;
-  background: var(--b1);
-  margin: 20px 0;
-}
-
-/* ── TOOLTIP EXPAND ── */
-.expand-block {
-  margin-top: 10px;
-}
-.expand-toggle {
-  font-family: var(--sans);
-  font-size: 10px;
-  color: var(--text3);
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  border-bottom: 1px dashed var(--b3);
-  padding-bottom: 1px;
-  transition: color 0.15s;
-}
-.expand-toggle:hover { color: var(--cyan); }
-.expand-content {
-  display: none;
-  margin-top: 10px;
-  padding: 12px 14px;
-  background: var(--s3);
-  border-radius: 6px;
-  font-family: var(--sans);
-  font-size: 10px;
-  color: var(--text2);
-  line-height: 1.6;
-  border: 1px solid var(--b2);
-}
-.expand-content.open { display: block; }
-
-/* ── CITATION ── */
-.citation {
-  background: var(--s1);
-  border-top: 1px solid var(--b1);
-  padding: 12px 24px;
-  font-family: var(--sans);
-  font-size: 9px;
-  color: var(--text3);
-  letter-spacing: 0.04em;
-  line-height: 1.6;
-}
-.citation-inner { max-width: 960px; margin: 0 auto; }
-
-/* util */
-.mt8 { margin-top: 8px; }
-.mt12 { margin-top: 12px; }
-.mt16 { margin-top: 16px; }
-.mb8 { margin-bottom: 8px; }
+  --bg:#0d1117; --card:#161b22; --card2:#1c2330; --border:#2a3a4a; --border2:#3a5060;
+  --green:#3fb950; --green-bg:rgba(63,185,80,.10); --green-bd:rgba(63,185,80,.35);
+  --red:#f85149; --red-bg:rgba(248,81,73,.10); --red-bd:rgba(248,81,73,.35);
+  --amber:#e3b341; --amber-bg:rgba(227,179,65,.10); --amber-bd:rgba(227,179,65,.35);
+  --blue:#58a6ff; --blue-bg:rgba(88,166,255,.10); --blue-bd:rgba(88,166,255,.35);
+  --purple:#bc8cff; --purple-bg:rgba(188,140,255,.10); --purple-bd:rgba(188,140,255,.35);
+  /* NMOSD accent: sky blue/cyan */
+  --accent:#38bdf8; --accent-bg:rgba(56,189,248,.10); --accent-bd:rgba(56,189,248,.35);
+  --accent2:#0369a1;
+  --text:#e6edf3; --text2:#aab4c0; --text3:#6e7f94;
+  --sans:'Lexend','Inter',system-ui,sans-serif; --mono:'IBM Plex Mono',monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:14px;line-height:1.5;min-height:100vh;}
+.app{max-width:960px;margin:0 auto;padding:0 20px 80px;}
+header{padding:24px 0 16px;border-bottom:1px solid var(--border);margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;}
+.h-title{font-size:19px;font-weight:700;font-family:var(--sans);}.h-title span{color:var(--accent);}
+.h-sub{font-size:11px;color:var(--text3);margin-top:3px;line-height:1.6;font-family:var(--sans);}
+.h-credit{font-size:11px;color:var(--accent);font-weight:700;margin-top:2px;font-family:var(--sans);}
+.reset-btn{background:var(--card2);border:1px solid var(--border);color:var(--text2);font-family:var(--sans);font-size:12px;padding:6px 14px;cursor:pointer;border-radius:4px;transition:all .15s;white-space:nowrap;font-weight:500;}
+.reset-btn:hover{border-color:var(--accent);color:var(--accent);}
+.prog-track{height:3px;background:var(--border);margin-bottom:20px;border-radius:2px;}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--accent2),var(--accent));border-radius:2px;transition:width .4s ease;box-shadow:0 0 8px rgba(56,189,248,.4);}
+.steps{display:grid;grid-template-columns:repeat(5,1fr);border:1px solid var(--border);border-radius:8px;margin-bottom:20px;overflow:hidden;background:var(--card);}
+.stab{padding:8px 3px 9px;text-align:center;font-size:10px;color:var(--text3);border-right:1px solid var(--border);transition:all .2s;cursor:pointer;background:var(--card);line-height:1.3;font-family:var(--sans);}
+.stab:nth-child(5n){border-right:none;}
+.stab .sn{display:flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;background:var(--card2);border:1px solid var(--border);font-size:10px;font-weight:700;margin:0 auto 3px;transition:all .2s;}
+.stab .slbl{display:block;font-size:9px;font-weight:600;line-height:1.3;font-family:var(--sans);}
+.stab.active{color:var(--accent);background:var(--accent-bg);}
+.stab.active .sn{background:var(--accent);color:#0d1117;border-color:var(--accent);}
+.stab.done{color:var(--green);}.stab.done .sn{background:var(--green);color:#0d1117;border-color:var(--green);}
+.stab:hover:not(.active){background:var(--card2);}
+.card{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:22px;margin-bottom:12px;}
+.ctitle{font-size:13px;font-weight:700;margin-bottom:3px;font-family:var(--sans);}
+.csub{font-size:12px;color:var(--text2);margin-bottom:16px;line-height:1.5;font-family:var(--sans);}
+.slabel{display:flex;align-items:center;gap:8px;font-size:11px;font-weight:600;color:var(--text);margin-bottom:9px;padding-bottom:6px;border-bottom:1px solid var(--border);font-family:var(--sans);}
+.pill{font-size:9px;padding:1px 7px;border-radius:20px;border:1px solid;margin-left:auto;letter-spacing:.04em;text-transform:uppercase;font-family:var(--sans);}
+.pill-r{border-color:var(--red);color:var(--red);background:var(--red-bg);}
+.pill-a{border-color:var(--accent);color:var(--accent);background:var(--accent-bg);}
+.pill-g{border-color:var(--green);color:var(--green);background:var(--green-bg);}
+.pill-am{border-color:var(--amber);color:var(--amber);background:var(--amber-bg);}
+/* crit rows */
+.crit{border:1px solid var(--border);border-radius:6px;margin-bottom:5px;overflow:hidden;transition:border-color .15s,background .15s;}
+.crit.c-yes{border-color:var(--green-bd);background:var(--green-bg);}
+.crit.c-no{border-color:var(--red-bd);background:var(--red-bg);}
+.crit.c-a{border-color:var(--accent-bd);background:var(--accent-bg);}
+.crit.c-abs{border-color:var(--border2);background:var(--card2);}
+.crit.c-am{border-color:var(--amber-bd);background:var(--amber-bg);}
+.crit-main{display:flex;align-items:center;gap:10px;padding:10px 13px;}
+.crit-name{flex:1;font-size:13px;font-weight:500;color:var(--text);font-family:var(--sans);line-height:1.3;}
+.xbtn{background:var(--purple-bg);border:1px solid var(--purple-bd);color:var(--purple);font-size:11px;cursor:pointer;padding:2px 8px;white-space:nowrap;transition:all .15s;flex-shrink:0;border-radius:3px;font-weight:500;font-family:var(--sans);}
+.xbtn:hover{background:var(--purple);color:#0d1117;border-color:var(--purple);}
+.crit-detail{display:none;padding:10px 13px 12px;font-size:12px;color:var(--text);font-family:var(--sans);line-height:1.65;border-top:1px solid var(--border);}
+.crit-detail.open{display:block;}
+.cnote{margin-top:8px;padding:8px 11px;background:var(--card2);border-left:3px solid var(--border2);font-size:11px;color:var(--text2);font-family:var(--sans);line-height:1.75;border-radius:0 3px 3px 0;}
+.cnote strong{color:var(--text);}
+.brow{display:flex;border-top:1px solid var(--border);flex-wrap:wrap;}
+.abtn{flex:1;min-width:80px;padding:9px 10px;background:none;border:none;border-right:1px solid var(--border);border-bottom:1px solid var(--border);color:var(--text2);font-family:var(--sans);font-size:11px;cursor:pointer;transition:all .12s;font-weight:400;line-height:1.4;text-align:left;}
+.abtn:last-child{border-right:none;}.abtn:hover{background:var(--card2);color:var(--text);}
+.abtn.ay{background:var(--green-bg);color:var(--green);font-weight:700;}
+.abtn.an{background:var(--red-bg);color:var(--red);font-weight:700;}
+.abtn.aa{background:var(--accent-bg);color:var(--accent);font-weight:700;}
+.abtn.agr{background:var(--amber-bg);color:var(--amber);font-weight:700;}
+.alrt{padding:9px 13px;border-radius:5px;font-size:12px;font-family:var(--sans);line-height:1.55;margin-top:12px;border-left:3px solid;display:none;}
+.alrt.show{display:block;}
+.aok{border-color:var(--green);background:var(--green-bg);color:#7ee787;}
+.awn{border-color:var(--amber);background:var(--amber-bg);color:var(--amber);}
+.aerr{border-color:var(--red);background:var(--red-bg);color:#ff7b72;}
+.ablue{border-color:var(--accent);background:var(--accent-bg);color:var(--accent);}
+.lbox{background:var(--card2);border:1px solid var(--border);border-radius:5px;padding:12px 15px;font-size:12px;font-family:var(--sans);color:var(--text2);line-height:1.75;margin-bottom:14px;}
+.lbox strong{color:var(--text);}
+.la{color:var(--accent);font-weight:600;} .lg{color:var(--green);font-weight:600;}
+.lam{color:var(--amber);font-weight:600;} .lr{color:var(--red);font-weight:600;}
+/* serostatus cards */
+.sero-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px;}
+@media(max-width:580px){.sero-grid{grid-template-columns:1fr;}}
+.scard{border:1px solid var(--border);border-radius:7px;padding:14px 15px;background:var(--card2);cursor:pointer;transition:all .2s;font-family:var(--sans);}
+.scard:hover{border-color:var(--border2);}
+.scard.sc-pos{border-color:var(--green-bd);background:var(--green-bg);}
+.scard.sc-neg{border-color:var(--red-bd);background:var(--red-bg);}
+.scard.sc-unk{border-color:var(--amber-bd);background:var(--amber-bg);}
+.scard-title{font-size:13px;font-weight:700;margin-bottom:4px;}
+.scard.sc-pos .scard-title{color:var(--green);}
+.scard.sc-neg .scard-title{color:var(--red);}
+.scard.sc-unk .scard-title{color:var(--amber);}
+.scard-desc{font-size:11px;color:var(--text2);line-height:1.45;}
+/* core feature checkboxes */
+.core-list{display:flex;flex-direction:column;gap:5px;margin-bottom:14px;}
+.core-item{display:flex;align-items:flex-start;gap:10px;padding:10px 13px;border:1px solid var(--border);border-radius:6px;background:var(--card2);cursor:pointer;transition:all .15s;user-select:none;font-family:var(--sans);}
+.core-item:hover{border-color:var(--border2);background:rgba(255,255,255,.03);}
+.core-item.ci-checked{border-color:var(--accent-bd);background:var(--accent-bg);}
+.core-cb{width:16px;height:16px;border:1.5px solid var(--border2);border-radius:3px;background:var(--card);flex-shrink:0;margin-top:2px;display:flex;align-items:center;justify-content:center;font-size:10px;transition:all .15s;}
+.core-item.ci-checked .core-cb{background:var(--accent-bg);border-color:var(--accent);color:var(--accent);}
+.core-label{flex:1;}
+.core-name{font-size:13px;font-weight:600;color:var(--text);line-height:1.3;}
+.core-sub{font-size:11px;color:var(--text2);margin-top:3px;line-height:1.45;}
+.core-tag{font-size:9px;font-weight:700;padding:1px 7px;border-radius:10px;border:1px solid;margin-top:4px;display:inline-block;}
+.tag-common{border-color:var(--accent-bd);color:var(--accent);background:var(--accent-bg);}
+.tag-req{border-color:var(--amber-bd);color:var(--amber);background:var(--amber-bg);}
+/* counter pills */
+.counter-row{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;}
+.counter{background:var(--card2);border:1px solid var(--border);border-radius:5px;padding:7px 13px;font-family:var(--sans);font-size:11px;color:var(--text2);}
+.counter .cnum{font-size:17px;font-weight:700;color:var(--accent);margin-right:4px;}
+.counter.cnt-met .cnum{color:var(--green);}
+.counter.cnt-warn .cnum{color:var(--amber);}
+.counter.cnt-fail .cnum{color:var(--red);}
+/* MRI requirements table */
+.mri-table{border:1px solid var(--border);border-radius:6px;overflow:hidden;margin-bottom:14px;}
+.mri-row{display:flex;align-items:flex-start;border-bottom:1px solid var(--border);}
+.mri-row:last-child{border-bottom:none;}
+.mri-feature{font-size:11px;font-weight:600;color:var(--accent);padding:9px 12px;width:170px;flex-shrink:0;border-right:1px solid var(--border);background:var(--card2);line-height:1.4;font-family:var(--sans);}
+.mri-req-text{font-size:12px;color:var(--text2);padding:9px 13px;line-height:1.5;flex:1;font-family:var(--sans);}
+.mri-row.mri-hdr .mri-feature{color:var(--text3);font-size:10px;font-weight:600;}
+.mri-row.mri-hdr .mri-req-text{color:var(--text3);font-size:10px;}
+/* MRI confirm checkboxes */
+.mri-check-item{display:flex;align-items:flex-start;gap:10px;padding:9px 13px;border:1px solid var(--border);border-radius:6px;background:var(--card2);cursor:pointer;transition:all .15s;user-select:none;margin-bottom:5px;font-family:var(--sans);}
+.mri-check-item:hover{border-color:var(--border2);}
+.mri-check-item.mc-checked{border-color:var(--green-bd);background:var(--green-bg);}
+.mri-cb{width:16px;height:16px;border:1.5px solid var(--border2);border-radius:3px;background:var(--card);flex-shrink:0;margin-top:2px;display:flex;align-items:center;justify-content:center;font-size:10px;transition:all .15s;}
+.mri-check-item.mc-checked .mri-cb{background:var(--green-bg);border-color:var(--green);color:var(--green);}
+/* red flag items */
+.rf-item{display:flex;align-items:flex-start;gap:10px;padding:10px 13px;border:1px solid var(--border);border-radius:6px;background:var(--card2);cursor:pointer;transition:all .15s;user-select:none;margin-bottom:5px;font-family:var(--sans);}
+.rf-item:hover{border-color:rgba(248,81,73,.25);}
+.rf-item.rf-flagged{border-color:var(--red-bd);background:var(--red-bg);}
+.rf-icon{font-size:13px;flex-shrink:0;margin-top:1px;}
+.rf-text{flex:1;font-size:12px;color:var(--text);line-height:1.4;}
+.rf-sub{font-size:10px;color:var(--text2);margin-top:3px;line-height:1.4;}
+.rf-cb{width:16px;height:16px;border:1.5px solid var(--border2);border-radius:3px;background:var(--card);flex-shrink:0;margin-top:2px;display:flex;align-items:center;justify-content:center;font-size:10px;transition:all .15s;}
+.rf-item.rf-flagged .rf-cb{background:var(--red-bg);border-color:var(--red);color:var(--red);}
+/* exclusion checkboxes (same as core style but red tint when checked) */
+.exc-item{display:flex;align-items:flex-start;gap:10px;padding:10px 13px;border:1px solid var(--border);border-radius:6px;background:var(--card2);cursor:pointer;transition:all .15s;user-select:none;margin-bottom:5px;font-family:var(--sans);}
+.exc-item:hover{border-color:var(--border2);}
+.exc-item.exc-checked{border-color:var(--amber-bd);background:var(--amber-bg);}
+.exc-cb{width:16px;height:16px;border:1.5px solid var(--border2);border-radius:3px;background:var(--card);flex-shrink:0;margin-top:2px;display:flex;align-items:center;justify-content:center;font-size:10px;transition:all .15s;}
+.exc-item.exc-checked .exc-cb{background:var(--amber-bg);border-color:var(--amber);color:var(--amber);}
+/* nav */
+.nav-row{display:flex;justify-content:space-between;align-items:center;margin-top:20px;gap:10px;}
+.nbtn{padding:9px 22px;border-radius:5px;font-family:var(--sans);font-size:13px;border:1px solid;cursor:pointer;font-weight:600;transition:all .15s;}
+.np{background:var(--accent);border-color:var(--accent);color:#0d1117;font-weight:700;}
+.np:hover{background:#7dd3fc;border-color:#7dd3fc;}
+.np:disabled{opacity:.3;cursor:not-allowed;}
+.ns{background:transparent;border-color:var(--border2);color:var(--text2);}
+.ns:hover{border-color:var(--text);color:var(--text);}
+.screen{display:none;}.screen.active{display:block;animation:fu .25s ease;}
+@keyframes fu{from{opacity:0;transform:translateY(5px);}to{opacity:1;transform:translateY(0);}}
+/* verdict */
+.vban{border-radius:8px;padding:22px 26px;margin-bottom:16px;border:2px solid;}
+.vpos{border-color:var(--green);background:var(--green-bg);}
+.vcaut{border-color:var(--amber);background:var(--amber-bg);}
+.vneg{border-color:var(--red);background:var(--red-bg);}
+.vund{border-color:var(--border2);background:var(--card2);}
+.vban-head{text-align:center;margin-bottom:14px;}
+.vlbl{font-family:var(--sans);font-size:9px;letter-spacing:.15em;text-transform:uppercase;opacity:.6;margin-bottom:5px;}
+.vtitle{font-size:22px;font-weight:700;margin-bottom:6px;font-family:var(--sans);}
+.vpos .vtitle{color:var(--green);}.vcaut .vtitle{color:var(--amber);}
+.vneg .vtitle{color:var(--red);}.vund .vtitle{color:var(--text2);}
+.vdesc{font-size:12px;color:var(--text2);line-height:1.7;max-width:640px;margin:0 auto;font-family:var(--sans);}
+.vc-list{display:flex;flex-direction:column;gap:5px;margin-bottom:14px;}
+.vc-row{display:flex;align-items:flex-start;gap:8px;padding:7px 10px;background:var(--card2);border:1px solid var(--border);border-radius:5px;font-size:12px;font-family:var(--sans);}
+.vc-icon{flex-shrink:0;font-size:12px;width:16px;}
+.vc-text{color:var(--text);line-height:1.5;}
+.vc-dim{color:var(--text2);}
+.sum-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;}
+@media(max-width:580px){.sum-grid{grid-template-columns:1fr;}}
+.sblock{background:var(--card);border:1px solid var(--border);border-radius:6px;overflow:hidden;}
+.sbtitle{font-size:11px;font-weight:600;padding:7px 11px;border-bottom:1px solid var(--border);color:var(--text);background:var(--card2);font-family:var(--sans);}
+.srow{display:flex;align-items:flex-start;gap:8px;padding:6px 11px;border-bottom:1px solid var(--border);font-size:12px;font-family:var(--sans);}
+.srow:last-child{border-bottom:none;}
+.dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;margin-top:4px;}
+.dg{background:var(--green);}.dr{background:var(--red);}.da{background:var(--accent);}
+.dam{background:var(--amber);}.dgr{background:var(--text3);}
+.sname{flex:1;color:var(--text);line-height:1.4;font-family:var(--sans);}
+.stag{font-family:var(--sans);font-size:9px;padding:1px 7px;border-radius:10px;border:1px solid;white-space:nowrap;}
+.tg{border-color:var(--green-bd);color:var(--green);}
+.tr{border-color:var(--red-bd);color:var(--red);}
+.ta{border-color:var(--accent-bd);color:var(--accent);}
+.tam{border-color:var(--amber-bd);color:var(--amber);}
+.tgr{border-color:var(--border2);color:var(--text3);}
+/* treatment warning box */
+.tx-warn{padding:12px 15px;border-radius:6px;font-size:12px;font-family:var(--sans);line-height:1.6;border:1px solid var(--red-bd);background:var(--red-bg);color:var(--text);margin-bottom:12px;}
+.tx-warn strong{color:var(--red);}
+/* doc note */
+.doc-header{display:flex;align-items:center;gap:8px;margin-bottom:5px;}
+.doc-tog{flex:1;text-align:left;background:var(--card2);border:1px solid var(--border2);border-radius:5px;color:var(--text2);font-family:var(--sans);font-size:13px;padding:8px 13px;cursor:pointer;transition:all .15s;}
+.doc-tog:hover{border-color:var(--accent);color:var(--accent);}
+.copy-btn{background:var(--card2);border:1px solid var(--border2);border-radius:5px;color:var(--text2);font-family:var(--sans);font-size:12px;padding:8px 14px;cursor:pointer;white-space:nowrap;transition:all .15s;display:none;}
+.copy-btn.visible{display:block;}.copy-btn:hover{border-color:var(--green);color:var(--green);}
+.copy-btn.copied{border-color:var(--green);color:var(--green);background:var(--green-bg);}
+.doc-body{display:none;background:var(--card2);border:1px solid var(--border2);border-radius:5px;padding:13px 15px;font-family:var(--mono);font-size:11px;color:var(--text2);line-height:1.85;white-space:pre-wrap;margin-bottom:12px;}
+.doc-body.open{display:block;}
 </style>
 </head>
 <body>
-
-<!-- HEADER -->
-<div class="hdr">
-  <div class="hdr-inner">
-    <div class="hdr-icon">NMO</div>
-    <div class="hdr-titles">
-      <div class="hdr-title">NMOSD Diagnostic Criteria Navigator</div>
-      <div class="hdr-sub">Wingerchuk et al. — Neurology 2015;85:177–189 · IPND Consensus Criteria · For educator use only</div>
-      <div class="hdr-credit">Designed by Daniel Short, MD</div>
-    </div>
-    <div class="hdr-badge">Adult</div>
+<div class="app">
+<header>
+  <div>
+    <div class="h-title">Neuromyelitis Optica Spectrum Disorder &middot; <span>Diagnostic Navigator</span></div>
+    <div class="h-sub">Wingerchuk DM et al. Neurology 2015;85:177&ndash;189 &middot; IPND Consensus Criteria &middot; For educator use only</div>
+    <div class="h-credit">Designed by Daniel Short, MD</div>
   </div>
-</div>
-
-<!-- PROGRESS -->
-
+  <button class="reset-btn" onclick="resetAll()">&#8634; Reset</button>
+</header>
+<div class="prog-track"><div class="prog-fill" id="pf" style="width:0%"></div></div>
 <div class="steps">
-  <div class="stab active" id="st0" onclick="goTab(0)" title="Go to step 1"><span class="sn">1</span><span class="slbl">AQP4-IgG Status</span></div>
-  <div class="stab" id="st1" onclick="goTab(1)" title="Go to step 2"><span class="sn">2</span><span class="slbl">Core Features</span></div>
-  <div class="stab" id="st2" onclick="goTab(2)" title="Go to step 3"><span class="sn">3</span><span class="slbl">MRI Findings</span></div>
-  <div class="stab" id="st3" onclick="goTab(3)" title="Go to step 4"><span class="sn">4</span><span class="slbl">Red Flags</span></div>
-  <div class="stab" id="st4" onclick="goTab(4)" title="Go to step 5"><span class="sn">5</span><span class="slbl">Verdict</span></div>
+  <div class="stab active" id="st0" onclick="goTab(0)"><span class="sn">1</span><span class="slbl">AQP4-IgG Status</span></div>
+  <div class="stab" id="st1" onclick="goTab(1)"><span class="sn">2</span><span class="slbl">Core Features</span></div>
+  <div class="stab" id="st2" onclick="goTab(2)"><span class="sn">3</span><span class="slbl">MRI Requirements</span></div>
+  <div class="stab" id="st3" onclick="goTab(3)"><span class="sn">4</span><span class="slbl">Red Flags</span></div>
+  <div class="stab" id="st4" onclick="goTab(4)"><span class="sn">5</span><span class="slbl">Verdict</span></div>
 </div>
 
+<!-- S0: SEROSTATUS -->
+<div class="screen active" id="s0">
+<div class="card">
+  <div class="ctitle" style="color:var(--accent);">Step 1 &middot; AQP4-IgG Serologic Status</div>
+  <div class="csub">Diagnosis requires at least <strong>1 discrete clinical attack</strong> of CNS symptoms. Asymptomatic seropositivity alone &mdash; even with compatible MRI &mdash; is not sufficient. AQP4-IgG stratification determines downstream criteria stringency. Cell-based assay (CBA) is strongly recommended.</div>
 
-<div class="main">
-
-<!-- ══════════════════════════════════════════════
-     PANEL 0 — AQP4-IgG Status
-══════════════════════════════════════════════ -->
-<div class="panel active" id="panel-0">
-  <div class="sec-hdr">
-    <div class="sec-num">01</div>
-    <div class="sec-title">Serologic Status</div>
-    <div class="sec-line"></div>
+  <div class="lbox">
+    <strong>Assay performance (Wingerchuk 2015 IPND):</strong><br>
+    <span class="la">Cell-based assay (CBA):</span> Sensitivity ~76.7%, false-positive rate ~0.1% &mdash; recommended method<br>
+    <span class="lam">IIF / ELISA:</span> Lower sensitivity (63&ndash;64%), higher false-positive rate (0.5&ndash;1.3%) &mdash; low-titer ELISA positives require CBA confirmation<br>
+    <span class="la">Retest indication:</span> Seronegative patients who relapse; before B-cell / antibody-targeted therapy; if initially tested by non-CBA method
   </div>
 
-  <div class="info-box">
-    <div class="ib-title">Clinical Context</div>
-    Diagnosis requires at least <strong>1 discrete clinical attack</strong> of CNS symptoms. Asymptomatic seropositivity alone — even with compatible MRI — is <em>not</em> sufficient for NMOSD diagnosis. AQP4-IgG stratification determines downstream criteria stringency.
-  </div>
-
-  <div class="qcard">
-    <div class="qcard-label">Step 1 · Serologic Testing</div>
-    <div class="qcard-text">What is the patient's AQP4-IgG (aquaporin-4 IgG) serostatus?</div>
-    <div class="qcard-note">
-      ▸ Cell-based assay (CBA) is strongly recommended — sensitivity ~76.7%, false-positive rate ~0.1%<br>
-      ▸ IIF and ELISA have lower sensitivity (63–64%) and higher false-positive rates (0.5–1.3%)<br>
-      ▸ Low-titer positive ELISA results require confirmatory testing with CBA<br>
-      ▸ Consider retesting seronegative patients who relapse, or before B-cell / antibody-targeted therapy
+  <div class="crit" id="aqp4-item">
+    <div class="crit-main">
+      <div class="crit-name">What is the patient&rsquo;s AQP4-IgG (aquaporin-4 IgG) serostatus by best available assay?</div>
+      <button class="xbtn" onclick="xp(this)">details &#9662;</button>
     </div>
-    <div class="choice-grid">
-      <div class="choice-card" onclick="setAQP4('pos')">
-        <div class="choice-title">✓ Positive</div>
-        <div class="choice-desc">AQP4-IgG detected using best available assay (CBA preferred)</div>
-      </div>
-      <div class="choice-card" onclick="setAQP4('neg')">
-        <div class="choice-title">✗ Negative</div>
-        <div class="choice-desc">AQP4-IgG not detected using best available method</div>
-      </div>
-      <div class="choice-card" onclick="setAQP4('unk')">
-        <div class="choice-title">? Unavailable</div>
-        <div class="choice-desc">Serologic testing not performed or result unavailable</div>
-      </div>
+    <div class="crit-detail">
+      AQP4 is the water channel protein expressed predominantly on CNS astrocyte end-feet at the blood-brain barrier. AQP4-IgG (anti-aquaporin-4 antibody) is the specific autoantibody that causes NMOSD in the majority of patients by activating complement and NK cell-mediated astrocyte destruction. Seropositivity is diagnostic when any core feature is present.<br><br>
+      <strong>Pathophysiology:</strong> AQP4-IgG binds to AQP4 on astrocyte end-feet &rarr; complement activation (C3d, C5b-9 membrane attack complex) &rarr; astrocyte death &rarr; secondary oligodendrocyte and axon injury. This explains the preference for areas of high AQP4 expression: spinal cord central canal, optic nerves, area postrema, diencephalon, corpus callosum periventricular surfaces.<br><br>
+      <strong>Seronegative NMOSD:</strong> ~20&ndash;25% are AQP4-IgG negative on best available assay. A subset (~10% of seronegative) are MOG-IgG positive &mdash; distinct pathophysiology, younger onset, less female predominance, different relapse risk and treatment response. MOG-IgG testing should be considered in seronegative patients.
+      <div class="cnote"><strong>Titre matters:</strong> High AQP4-IgG titre is associated with more severe attacks and higher relapse rate. Low-titre CBA positives are still diagnostically significant. Titres do not reliably track disease activity or predict relapse timing.</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setAQP4('pos',this)" id="aqp4-pos">&#10003; Positive &mdash; AQP4-IgG detected (CBA preferred)</button>
+      <button class="abtn" onclick="setAQP4('neg',this)" id="aqp4-neg">&#10007; Negative &mdash; not detected on best available assay</button>
+      <button class="abtn" onclick="setAQP4('unk',this)" id="aqp4-unk">&mdash; Unavailable / not yet tested</button>
     </div>
   </div>
+
+  <div id="a0" class="alrt"></div>
+  <div class="nav-row"><div></div><button class="nbtn np" id="n0" onclick="go(1)" disabled>Next: Core Features &#8594;</button></div>
+</div>
 </div>
 
+<!-- S1: CORE FEATURES -->
+<div class="screen" id="s1">
+<div class="card">
+  <div class="ctitle" style="color:var(--accent);">Step 2 &middot; Core Clinical Characteristics</div>
+  <div class="csub" id="core-csub">Select all core clinical characteristics documented during discrete clinical attacks. Each feature must reflect a genuine inflammatory CNS attack, not progressive worsening between attacks.</div>
 
-<!-- ══════════════════════════════════════════════
-     PANEL 1 — Core Clinical Characteristics
-══════════════════════════════════════════════ -->
-<div class="panel" id="panel-1">
-  <div class="sec-hdr">
-    <div class="sec-num">02</div>
-    <div class="sec-title">Core Clinical Characteristics</div>
-    <div class="sec-line"></div>
-  </div>
-
-  <div class="info-box" id="core-info-box">
-    <div class="ib-title">Criteria Requirement</div>
-    <span id="core-info-text"></span>
-  </div>
+  <div class="lbox" id="core-req-box"></div>
 
   <div class="counter-row">
-    <div class="counter" id="core-count-display">
-      <span id="core-count-num">0</span> core feature(s) selected
-    </div>
-    <div class="counter" id="common-count-display" style="display:none">
-      <span id="common-count-num">0</span> of 3 "common" features (ON / LETM / Area Postrema)
+    <div class="counter" id="cnt-core"><span class="cnum" id="cnt-core-num">0</span> core feature(s) selected</div>
+    <div class="counter" id="cnt-common" style="display:none;"><span class="cnum" id="cnt-common-num">0</span> of 3 &ldquo;common&rdquo; features (ON / myelitis / area postrema)</div>
+  </div>
+
+  <div class="slabel">Select all applicable core features <span class="pill pill-a">CLICK TO TOGGLE</span></div>
+  <div class="core-list" id="core-list"></div>
+
+  <div class="crit" id="core-notes-item" style="margin-top:10px;">
+    <div class="crit-main"><div class="crit-name" style="color:var(--text2);font-size:12px;">Additional clinical notes &amp; CSF guidance</div><button class="xbtn" onclick="xp(this)">details &#9662;</button></div>
+    <div class="crit-detail">
+      &bull; No single characteristic is pathognomonic &mdash; clinical judgment essential<br>
+      &bull; Altitudinal visual field defects may also result from ischaemic optic neuropathy<br>
+      &bull; Bilateral simultaneous optic neuritis can occur in MS (less common)<br>
+      &bull; Gradually progressive course (vs. attack-based) occurs in only 1&ndash;2% of NMOSD &mdash; a red flag if present<br>
+      &bull; &ldquo;Dissemination in space&rdquo; for seronegative criteria = &ge;2 different core features from &ge;2 distinct neuroanatomic regions<br><br>
+      <strong>CSF supportive of NMOSD over MS:</strong><br>
+      &bull; Pleocytosis &gt;50 WBC/&mu;L (~35% of NMOSD attacks)<br>
+      &bull; Neutrophils &gt;5/&mu;L (~44%) or eosinophils &gt;5/&mu;L (~10%)<br>
+      &bull; Elevated CSF GFAP (peaks days&ndash;weeks post-attack; reflects astrocyte injury)<br>
+      &bull; Absence of oligoclonal bands (OCBs present in &lt;20% NMOSD vs &gt;80% MS)
     </div>
   </div>
 
-  <div class="check-list" id="core-checklist">
-
-    <div class="check-item" data-core="ON" data-common="1" onclick="toggleCore(this)">
-      <div class="check-box">✓</div>
-      <div class="check-label">
-        <strong>Optic Neuritis</strong>
-        <div class="check-sub">Unilateral or bilateral; suggestive features include simultaneous bilateral ON, chiasmal involvement, altitudinal field defect, or severe residual loss (≥20/200)</div>
-        <span class="check-tag tag-common">Most common · NMOSD with AQP4-IgG</span>
-      </div>
-    </div>
-
-    <div class="check-item" data-core="TM" data-common="1" onclick="toggleCore(this)">
-      <div class="check-box">✓</div>
-      <div class="check-label">
-        <strong>Acute Myelitis</strong>
-        <div class="check-sub">Complete cord syndrome preferred; paroxysmal tonic spasms are characteristic; LETM lesion (≥3 contiguous segments) required for seronegative/unknown arms</div>
-        <span class="check-tag tag-common">Most common · NMOSD with AQP4-IgG</span>
-      </div>
-    </div>
-
-    <div class="check-item" data-core="AP" data-common="1" onclick="toggleCore(this)">
-      <div class="check-box">✓</div>
-      <div class="check-label">
-        <strong>Area Postrema Syndrome</strong>
-        <div class="check-sub">Episode of otherwise unexplained intractable hiccups or nausea/vomiting (16–43% incidence in NMOSD); dorsal medulla lesion required for seronegative/unknown arms</div>
-        <span class="check-tag tag-common">Most common · NMOSD with AQP4-IgG</span>
-      </div>
-    </div>
-
-    <div class="check-item" data-core="BS" data-common="0" onclick="toggleCore(this)">
-      <div class="check-box">✓</div>
-      <div class="check-label">
-        <strong>Acute Brainstem Syndrome</strong>
-        <div class="check-sub">Symptomatic brainstem dysfunction; periependymal brainstem lesion required for seronegative/unknown arms (pons, midbrain, fourth ventricle region)</div>
-      </div>
-    </div>
-
-    <div class="check-item" data-core="DI" data-common="0" onclick="toggleCore(this)">
-      <div class="check-box">✓</div>
-      <div class="check-label">
-        <strong>Symptomatic Narcolepsy or Acute Diencephalic Syndrome</strong>
-        <div class="check-sub">Must be accompanied by NMOSD-typical diencephalic MRI lesions (hypothalamus, thalamus, or periependymal surfaces of the third ventricle)</div>
-      </div>
-    </div>
-
-    <div class="check-item" data-core="CE" data-common="0" onclick="toggleCore(this)">
-      <div class="check-box">✓</div>
-      <div class="check-label">
-        <strong>Symptomatic Cerebral Syndrome</strong>
-        <div class="check-sub">Must be accompanied by NMOSD-typical brain lesions: large confluent white matter, long corpus callosum lesion (≥½ length), corticospinal tract, or extensive periependymal lesions</div>
-      </div>
-    </div>
-
+  <div id="a1" class="alrt"></div>
+  <div class="nav-row">
+    <button class="nbtn ns" onclick="go(0)">&larr; Back</button>
+    <button class="nbtn np" id="n1" onclick="proceedFromCore()" disabled>Next &#8594;</button>
   </div>
+</div>
+</div>
 
-  <div class="expand-block mt12">
-    <div class="expand-toggle" onclick="toggleExpand('exp-core-notes')">▾ Additional clinical notes</div>
-    <div class="expand-content" id="exp-core-notes">
-      • No single characteristic is pathognomonic — clinical judgment remains essential<br>
-      • Altitudinal visual field defects may also result from ischemic optic neuropathy<br>
-      • Bilateral simultaneous optic neuritis can occur in MS<br>
-      • Gradually progressive course (vs. attack-based) occurs in only 1–2% of NMOSD — a red flag if present<br>
-      • "Dissemination in space" for seronegative criteria means ≥2 different core features from ≥2 distinct neuroanatomic regions<br>
-      • CSF: pleocytosis >50 WBC/μL, neutrophils >5/μL, or eosinophils >5/μL favor NMOSD over MS
+<!-- S2: MRI REQUIREMENTS -->
+<div class="screen" id="s2">
+<div class="card">
+  <div class="ctitle" style="color:var(--accent);">Step 3 &middot; MRI Requirements <span style="font-size:11px;font-weight:400;color:var(--amber);">(AQP4-IgG Negative / Unavailable only)</span></div>
+  <div class="csub">For seronegative or untested patients, each applicable core clinical characteristic must be supported by its corresponding MRI finding. Confirm MRI requirements for all selected core features below.</div>
+
+  <div id="mri-table-container"></div>
+
+  <div class="slabel">Confirm MRI findings for each applicable core feature <span class="pill pill-am">REQUIRED FOR SERONEGATIVE / UNKNOWN</span></div>
+  <div id="mri-checks"></div>
+
+  <div class="crit" id="mri-notes-item" style="margin-top:10px;">
+    <div class="crit-main"><div class="crit-name" style="color:var(--text2);font-size:12px;">MRI characteristics reference &amp; MS-atypical red flags</div><button class="xbtn" onclick="xp(this)">details &#9662;</button></div>
+    <div class="crit-detail">
+      <strong>LETM lesion characteristics:</strong><br>
+      &bull; T2 hyperintense &ge;3 contiguous vertebral segments (sagittal)<br>
+      &bull; Central gray matter predominance (&gt;70% of lesion axially)<br>
+      &bull; May show T1 hypointensity and gadolinium enhancement<br>
+      &bull; Cervical lesions may extend rostrally into brainstem<br>
+      &bull; Cord swelling in acute phase; longitudinally extensive atrophy chronically<br><br>
+      <strong>Optic nerve MRI (NMOSD-typical):</strong><br>
+      &bull; Fat-suppressed T2/STIR with gadolinium T1 enhancement<br>
+      &bull; Posterior predominance, &gt;&frac12; nerve length, or chiasmal involvement<br><br>
+      <strong>Area postrema / brainstem:</strong><br>
+      &bull; Dorsal medulla lesions: small, often bilateral, or contiguous with cervical cord<br>
+      &bull; Periependymal fourth ventricular, pontine, and dorsal midbrain lesions<br><br>
+      <strong>Brain MRI red flags (MS-typical, not NMOSD):</strong><br>
+      &bull; Dawson&rsquo;s fingers (perpendicular periventricular lesions on sagittal T2/FLAIR)<br>
+      &bull; Inferior temporal lobe periventricular lesions<br>
+      &bull; Cortical / juxtacortical lesions<br>
+      &bull; Persistent enhancement &gt;3 months
     </div>
   </div>
 
-  <div class="action-row">
-    <button class="btn btn-back" onclick="go(0)">← Back</button>
-    <button class="btn-proceed" id="btn-core-proceed" onclick="proceedFromCore()" disabled>Continue →</button>
+  <div id="a2" class="alrt"></div>
+  <div class="nav-row">
+    <button class="nbtn ns" onclick="go(1)">&larr; Back</button>
+    <button class="nbtn np" onclick="go(3)">Next: Red Flags &#8594;</button>
+  </div>
+</div>
+</div>
+
+<!-- S3: RED FLAGS -->
+<div class="screen" id="s3">
+<div class="card">
+  <div class="ctitle" style="color:var(--accent);">Step 4 &middot; Red Flags &amp; Competing Diagnoses</div>
+  <div class="csub">No single feature is exclusionary, but red flags warrant thorough investigation before confirming NMOSD. The weight of evidence may justify NMOSD diagnosis even with &ge;1 red flag after full workup.</div>
+
+  <div class="slabel">Clinical &amp; laboratory red flags <span class="pill pill-r">CLICK TO FLAG IF PRESENT</span></div>
+  <div id="rf-clinical-list"></div>
+
+  <div class="slabel" style="margin-top:14px;">Neuroimaging red flags <span class="pill pill-r">CLICK TO FLAG IF PRESENT</span></div>
+  <div id="rf-imaging-list"></div>
+
+  <div class="slabel" style="margin-top:14px;">Competing diagnoses to consider <span class="pill pill-am">CHECK ALL THAT APPLY</span></div>
+  <div id="rf-excl-list"></div>
+
+  <div class="crit" id="rf-support-item" style="margin-top:10px;">
+    <div class="crit-main"><div class="crit-name" style="color:var(--text2);font-size:12px;">Supportive features that increase NMOSD confidence</div><button class="xbtn" onclick="xp(this)">details &#9662;</button></div>
+    <div class="crit-detail">
+      <strong>CSF supportive of NMOSD (vs. MS):</strong><br>
+      &bull; Absence of oligoclonal bands (OCBs present in &lt;20% NMOSD vs &gt;80% MS)<br>
+      &bull; Pleocytosis &gt;50 WBC/&mu;L (~35% incidence in NMOSD)<br>
+      &bull; Neutrophils &gt;5/&mu;L (~44%) or eosinophils &gt;5/&mu;L (~10%)<br>
+      &bull; Elevated CSF GFAP (peaks days&ndash;weeks post-attack)<br><br>
+      <strong>Systemic autoimmunity (strengthens NMOSD confidence):</strong><br>
+      &bull; Coexisting SLE or Sj&ouml;gren syndrome &mdash; makes NMOSD (not CNS vasculitis) the more likely cause<br>
+      &bull; Myasthenia gravis or detectable serum AChR antibodies<br><br>
+      <strong>Seronegative NMOSD considerations:</strong><br>
+      &bull; Minority have detectable MOG-IgG (younger, less female-predominant, lower relapse risk, possibly distinct pathogenesis and treatment response)<br>
+      &bull; Consider retesting: antibody titres increase with relapse, decrease with immunosuppression
+    </div>
+  </div>
+
+  <div id="a3" class="alrt"></div>
+  <div class="nav-row">
+    <button class="nbtn ns" onclick="rfBack()">&larr; Back</button>
+    <button class="nbtn np" onclick="go(4)">Generate Verdict &#8594;</button>
+  </div>
+</div>
+</div>
+
+<!-- S4: VERDICT -->
+<div class="screen" id="s4">
+  <div id="vout"></div>
+  <div class="doc-header">
+    <button class="doc-tog" onclick="toggleDoc()">&#9660; Documentation Note</button>
+    <button class="copy-btn" id="copy-btn" onclick="copyDoc()">&#9138; Copy</button>
+  </div>
+  <div class="doc-body" id="dn"></div>
+  <div class="nav-row">
+    <button class="nbtn ns" onclick="go(3)">&larr; Back</button>
+    <button class="nbtn np" onclick="resetAll()">&#8634; New Assessment</button>
   </div>
 </div>
 
-
-<!-- ══════════════════════════════════════════════
-     PANEL 2 — MRI Requirements (Seroneg/Unk only)
-══════════════════════════════════════════════ -->
-<div class="panel" id="panel-2">
-  <div class="sec-hdr">
-    <div class="sec-num">03</div>
-    <div class="sec-title">MRI Requirements</div>
-    <div class="sec-line"></div>
-  </div>
-
-  <div class="warn-box">
-    <div class="ib-title">Required for AQP4-IgG Negative / Unknown</div>
-    For seronegative or untested patients, each applicable core clinical characteristic must be supported by its corresponding MRI finding. Verify MRI requirements for all selected core features below.
-  </div>
-
-  <div class="mri-table" id="mri-requirements-table">
-    <!-- populated by JS -->
-  </div>
-
-  <div class="check-list mt12" id="mri-checklist">
-    <!-- populated by JS -->
-  </div>
-
-  <div class="expand-block mt12">
-    <div class="expand-toggle" onclick="toggleExpand('exp-mri-notes')">▾ MRI characteristics reference</div>
-    <div class="expand-content" id="exp-mri-notes">
-      <strong style="color:var(--text)">LETM lesion characteristics:</strong><br>
-      • T2 hyperintense ≥3 contiguous vertebral segments (sagittal)<br>
-      • Central gray matter predominance (>70% of lesion axially)<br>
-      • May show T1 hypointensity and gadolinium enhancement<br>
-      • Cervical lesions may extend rostrally into brainstem<br>
-      • Cord swelling in acute phase; longitudinally extensive atrophy chronically<br><br>
-      <strong style="color:var(--text)">Optic nerve MRI:</strong><br>
-      • Fat-suppressed T2 / STIR with gadolinium T1 enhancement<br>
-      • Posterior predominance, >½ nerve length, or chiasmal involvement suggest NMOSD<br><br>
-      <strong style="color:var(--text)">Area postrema / brainstem:</strong><br>
-      • Dorsal medulla lesions (area postrema): small, often bilateral, or contiguous with cervical cord<br>
-      • Periependymal fourth ventricular, pontine, and dorsal midbrain lesions<br><br>
-      <strong style="color:var(--text)">Brain MRI red flags (MS-typical, not NMOSD):</strong><br>
-      • Dawson's fingers (perpendicular periventricular lesions)<br>
-      • Inferior temporal lobe periventricular lesions<br>
-      • Cortical / juxtacortical lesions<br>
-      • Persistent enhancement >3 months
-    </div>
-  </div>
-
-  <div class="action-row">
-    <button class="btn btn-back" onclick="go(1)">← Back</button>
-    <button class="btn-proceed" id="btn-mri-proceed" onclick="go(3)">Continue →</button>
-  </div>
-</div>
-
-
-<!-- ══════════════════════════════════════════════
-     PANEL 3 — Red Flags & Exclusions
-══════════════════════════════════════════════ -->
-<div class="panel" id="panel-3">
-  <div class="sec-hdr">
-    <div class="sec-num">04</div>
-    <div class="sec-title">Red Flags &amp; Alternative Diagnoses</div>
-    <div class="sec-line"></div>
-  </div>
-
-  <div class="info-box">
-    <div class="ib-title">Interpretation Note</div>
-    No single feature is exclusionary, but red flags warrant thorough investigation for competing diagnoses before confirming NMOSD. The weight of evidence may justify NMOSD diagnosis even with ≥1 red flag present after full workup.
-  </div>
-
-  <div class="qcard-label mb8">Clinical / Laboratory Red Flags — check all that apply</div>
-  <div class="redflag-section" id="rf-clinical"></div>
-
-  <div class="qcard-label mb8 mt16">Neuroimaging Red Flags — check all that apply</div>
-  <div class="redflag-section" id="rf-imaging"></div>
-
-  <div class="qcard-label mb8 mt16">Competing Diagnoses to Exclude</div>
-  <div class="check-list" id="rf-exclusions"></div>
-
-  <div class="expand-block mt12">
-    <div class="expand-toggle" onclick="toggleExpand('exp-rf-notes')">▾ Supportive features that increase NMOSD confidence</div>
-    <div class="expand-content" id="exp-rf-notes">
-      <strong style="color:var(--text)">CSF supportive of NMOSD (vs. MS):</strong><br>
-      • Absence of oligoclonal bands (OCB present in &lt;20% NMOSD vs &gt;80% MS)<br>
-      • Pleocytosis >50 WBC/μL (~35% incidence in NMOSD)<br>
-      • Neutrophils >5/μL (~44% incidence) or eosinophils >5/μL (~10%)<br>
-      • Elevated CSF GFAP (peaks days-weeks post-attack)<br><br>
-      <strong style="color:var(--text)">Systemic autoimmunity (strengthens NMOSD confidence):</strong><br>
-      • Coexisting SLE or Sjögren syndrome — makes NMOSD (not CNS vasculitis) the more likely cause<br>
-      • Myasthenia gravis or detectable serum AChR antibodies<br><br>
-      <strong style="color:var(--text)">Seronegative NMOSD:</strong><br>
-      • Minority have detectable MOG-IgG (younger, less female-predominant, lower relapse risk)<br>
-      • Consider retesting: antibody titers increase with relapse, decrease with immunosuppression
-    </div>
-  </div>
-
-  <div class="action-row">
-    <button class="btn btn-back" onclick="rfBack()">← Back</button>
-    <button class="btn-proceed" onclick="go(4)">View Verdict →</button>
-  </div>
-</div>
-
-
-<!-- ══════════════════════════════════════════════
-     PANEL 4 — VERDICT
-══════════════════════════════════════════════ -->
-<div class="panel" id="panel-4">
-  <div class="sec-hdr">
-    <div class="sec-num">05</div>
-    <div class="sec-title">Diagnostic Verdict</div>
-    <div class="sec-line"></div>
-  </div>
-
-  <div id="verdict-container"></div>
-
-  <div class="summary-grid" id="summary-grid"></div>
-
-  <div id="redflag-summary-box"></div>
-
-  <div id="treatment-note"></div>
-
-  <div class="action-row">
-    <button class="btn btn-restart" onclick="restart()">↺ Restart Assessment</button>
-  </div>
-</div>
-
-</div><!-- /main -->
-
-<div class="citation">
-  <div class="citation-inner">
-    Wingerchuk DM, Banwell B, Bennett JL, et al. International consensus diagnostic criteria for neuromyelitis optica spectrum disorders. <em>Neurology.</em> 2015;85(2):177–189. doi:10.1212/WNL.0000000000001729 · IPND Criteria · For clinical support use only — does not replace physician judgment.
-  </div>
-</div>
+</div><!-- /app -->
 
 <script>
-// ═══════════════════════════════════════════
-// STATE
-// ═══════════════════════════════════════════
-var state = {
-  aqp4: null,         // 'pos' | 'neg' | 'unk'
-  coreSelected: [],   // array of core feature keys
-  mriMet: {},         // { ON: bool, TM: bool, AP: bool, BS: bool, DI: bool, CE: bool }
-  redflags: [],       // array of flagged red flag ids
-  exclusions: [],     // array of checked exclusion ids
-  currentPanel: 0
+// ── State ──
+var S = {
+  aqp4: null,           // 'pos'|'neg'|'unk'
+  cores: [],            // array of selected core keys
+  mriMet: {},           // {key: bool}
+  redflags: [],         // array of flagged rf ids
+  exclusions: [],       // array of checked exclusion ids
+  cur: 0
 };
 
+// ── Data ──
 var CORE_LABELS = {
   ON: 'Optic Neuritis',
-  TM: 'Acute Myelitis',
+  TM: 'Acute Myelitis (LETM)',
   AP: 'Area Postrema Syndrome',
   BS: 'Acute Brainstem Syndrome',
-  DI: 'Diencephalic / Narcolepsy Syndrome',
-  CE: 'Cerebral Syndrome'
+  DI: 'Symptomatic Narcolepsy / Diencephalic Syndrome',
+  CE: 'Symptomatic Cerebral Syndrome'
 };
-
-var MRI_REQ = {
-  ON: 'Normal brain OR nonspecific white matter lesions, OR optic nerve T2 hyperintensity / Gd enhancement extending >½ nerve length or involving chiasm',
-  TM: 'Intramedullary lesion ≥3 contiguous segments (LETM), OR ≥3 contiguous segments of focal spinal cord atrophy (chronic)',
-  AP: 'Associated dorsal medulla / area postrema lesion',
-  BS: 'Associated periependymal brainstem lesion',
-  DI: 'NMOSD-typical diencephalic MRI lesions (hypothalamus, thalamus, periependymal 3rd ventricle)',
-  CE: 'NMOSD-typical brain lesions (large confluent WM, long corpus callosum lesion ≥½ length, corticospinal tract, or extensive periependymal)'
-};
-
-// features requiring MRI for seroneg/unk
-var MRI_REQUIRED_FEATURES = ['ON','TM','AP','BS'];
-
-// ═══════════════════════════════════════════
-// NAVIGATION
-// ═══════════════════════════════════════════
-function goTab(n) {
-  if (n === state.currentPanel) return;
-  go(n);
-}
-
-function go(n) {
-  document.querySelectorAll('.panel').forEach(function(p,i){
-    p.classList.toggle('active', i === n);
-  });
-  state.currentPanel = n;
-  // Update step tabs
-  for (var i = 0; i < 5; i++) {
-    var t = document.getElementById('st'+i);
-    if (!t) continue;
-    t.classList.remove('active','done');
-    if (i < n) t.classList.add('done');
-    else if (i === n) t.classList.add('active');
-  }
-  updateProgress();
-  if (n === 4) renderVerdict();
-  window.scrollTo({top:0, behavior:'smooth'});
-}
-
-function updateProgress() {
-  var n = state.currentPanel;
-  for (var i = 0; i < 5; i++) {
-    var dot = document.getElementById('pd'+i);
-    var step = document.getElementById('ps'+i);
-    if (dot) { dot.classList.remove('active','done'); }
-    if (step) { step.classList.remove('active','done'); }
-    if (i < n) { if(dot){dot.classList.add('done');dot.textContent='✓';} if(step)step.classList.add('done'); }
-    else if (i === n) { if(dot){dot.classList.add('active');dot.textContent=i+1;} if(step)step.classList.add('active'); }
-    else { if(dot) dot.textContent = i+1; }
-  }
-}
-
-// ═══════════════════════════════════════════
-// PANEL 0 — AQP4 SEROSTATUS
-// ═══════════════════════════════════════════
-function setAQP4(val) {
-  state.aqp4 = val;
-  state.coreSelected = [];
-  state.mriMet = {};
-  // Reset core checkboxes
-  document.querySelectorAll('#core-checklist .check-item').forEach(function(el){
-    el.classList.remove('checked');
-  });
-  setupCorePanel();
-  go(1);
-}
-
-// ═══════════════════════════════════════════
-// PANEL 1 — CORE FEATURES
-// ═══════════════════════════════════════════
-function setupCorePanel() {
-  var box = document.getElementById('core-info-text');
-  var commonDisp = document.getElementById('common-count-display');
-  if (state.aqp4 === 'pos') {
-    box.innerHTML = 'AQP4-IgG <strong style="color:var(--green2)">Positive</strong> — requires <strong>≥1 core clinical characteristic</strong> plus exclusion of alternative diagnoses. Any of the 6 features qualifies.';
-    commonDisp.style.display = 'none';
-  } else {
-    var seroLabel = state.aqp4 === 'neg' ? '<strong style="color:var(--red2)">Negative</strong>' : '<strong style="color:var(--amber2)">Unavailable</strong>';
-    box.innerHTML = 'AQP4-IgG ' + seroLabel + ' — requires <strong>≥2 core clinical characteristics</strong> (dissemination in space), where <strong>≥1 must be ON, acute myelitis with LETM, or area postrema syndrome</strong>, plus additional MRI requirements.';
-    commonDisp.style.display = '';
-  }
-  updateCoreCount();
-}
-
-function toggleCore(el) {
-  el.classList.toggle('checked');
-  var key = el.getAttribute('data-core');
-  var idx = state.coreSelected.indexOf(key);
-  if (el.classList.contains('checked')) {
-    if (idx === -1) state.coreSelected.push(key);
-  } else {
-    if (idx > -1) state.coreSelected.splice(idx,1);
-    delete state.mriMet[key];
-  }
-  updateCoreCount();
-}
-
-function updateCoreCount() {
-  var n = state.coreSelected.length;
-  var numEl = document.getElementById('core-count-num');
-  var dispEl = document.getElementById('core-count-display');
-  numEl.textContent = n;
-  dispEl.classList.remove('met','warn','fail');
-
-  var commonKeys = state.coreSelected.filter(function(k){ return ['ON','TM','AP'].indexOf(k) > -1; });
-  var commonN = commonKeys.length;
-  var commonDisp = document.getElementById('common-count-display');
-  var commonNum = document.getElementById('common-count-num');
-  if (commonDisp && state.aqp4 !== 'pos') {
-    commonNum.textContent = commonN;
-    commonDisp.classList.remove('met','warn','fail');
-    commonDisp.classList.add(commonN >= 1 ? 'met' : 'warn');
-  }
-
-  var proceed = document.getElementById('btn-core-proceed');
-  if (state.aqp4 === 'pos') {
-    proceed.disabled = n < 1;
-    dispEl.classList.add(n >= 1 ? 'met' : 'fail');
-  } else {
-    var ok = n >= 2 && commonN >= 1;
-    proceed.disabled = !ok;
-    dispEl.classList.add(n >= 2 ? 'met' : (n >= 1 ? 'warn' : 'fail'));
-  }
-}
-
-function proceedFromCore() {
-  if (state.aqp4 === 'pos') {
-    // Skip MRI requirements panel
-    setupRedFlagsPanel();
-    go(3);
-  } else {
-    setupMRIPanel();
-    go(2);
-  }
-}
-
-// ═══════════════════════════════════════════
-// PANEL 2 — MRI REQUIREMENTS
-// ═══════════════════════════════════════════
-function setupMRIPanel() {
-  var tbl = document.getElementById('mri-requirements-table');
-  var cl = document.getElementById('mri-checklist');
-  tbl.innerHTML = '';
-  cl.innerHTML = '';
-
-  // Header row
-  var hdr = document.createElement('div');
-  hdr.className = 'mri-row';
-  hdr.innerHTML = '<div class="mri-syndrome" style="color:var(--text3);background:var(--s1)">Core Feature</div><div class="mri-req" style="color:var(--text3);font-family:var(--sans);font-size:10px">Required MRI Finding</div>';
-  tbl.appendChild(hdr);
-
-  state.coreSelected.forEach(function(key) {
-    var row = document.createElement('div');
-    row.className = 'mri-row';
-    var needsMRI = MRI_REQUIRED_FEATURES.indexOf(key) > -1;
-    var reqText = needsMRI ? MRI_REQ[key] : '<em>No specific MRI requirement for this feature in seronegative criteria</em>';
-    row.innerHTML = '<div class="mri-syndrome">' + CORE_LABELS[key] + '</div><div class="mri-req">' + reqText + '</div>';
-    tbl.appendChild(row);
-
-    if (needsMRI) {
-      var item = document.createElement('div');
-      item.className = 'check-item';
-      if (state.mriMet[key]) item.classList.add('checked');
-      item.setAttribute('data-mri-key', key);
-      item.innerHTML = '<div class="check-box">✓</div><div class="check-label"><strong>MRI confirmed for: ' + CORE_LABELS[key] + '</strong><div class="check-sub">' + MRI_REQ[key] + '</div></div>';
-      item.onclick = function() {
-        this.classList.toggle('checked');
-        state.mriMet[key] = this.classList.contains('checked');
-      };
-      cl.appendChild(item);
-    }
-  });
-}
-
-// ═══════════════════════════════════════════
-// PANEL 3 — RED FLAGS
-// ═══════════════════════════════════════════
+var CORE_DATA = [
+  {key:'ON', common:true,
+   name:'Optic Neuritis',
+   sub:'Unilateral or bilateral; NMOSD features: simultaneous bilateral ON, chiasmal involvement, altitudinal field defect, or severe residual loss (&ge;20/200)',
+   mriReq:'Normal brain OR nonspecific white matter lesions, OR optic nerve T2 hyperintensity / Gd enhancement extending &gt;&frac12; nerve length or involving chiasm',
+   needsMRI:true},
+  {key:'TM', common:true,
+   name:'Acute Myelitis (LETM)',
+   sub:'Intramedullary lesion &ge;3 contiguous segments (LETM), or &ge;3 contiguous segments of focal spinal cord atrophy in context of prior inflammatory attack',
+   mriReq:'Intramedullary lesion &ge;3 contiguous vertebral segments (LETM), OR &ge;3 contiguous segments of focal spinal cord atrophy (chronic)',
+   needsMRI:true},
+  {key:'AP', common:true,
+   name:'Area Postrema Syndrome',
+   sub:'Otherwise unexplained intractable hiccups or nausea/vomiting (16&ndash;43% incidence in NMOSD); dorsal medulla lesion required for seronegative/unknown arms',
+   mriReq:'Associated dorsal medulla / area postrema lesion',
+   needsMRI:true},
+  {key:'BS', common:false,
+   name:'Acute Brainstem Syndrome',
+   sub:'Symptomatic brainstem dysfunction; periependymal brainstem lesion required for seronegative/unknown arms (pons, midbrain, fourth ventricle region)',
+   mriReq:'Associated periependymal brainstem lesion (fourth ventricle, pons, dorsal midbrain)',
+   needsMRI:true},
+  {key:'DI', common:false,
+   name:'Symptomatic Narcolepsy / Acute Diencephalic Syndrome',
+   sub:'Must be accompanied by NMOSD-typical diencephalic MRI lesions (hypothalamus, thalamus, or periependymal surfaces of the third ventricle)',
+   mriReq:'NMOSD-typical diencephalic MRI lesions (hypothalamus, thalamus, periependymal 3rd ventricle)',
+   needsMRI:false},
+  {key:'CE', common:false,
+   name:'Symptomatic Cerebral Syndrome',
+   sub:'Must be accompanied by NMOSD-typical brain lesions: large confluent white matter, long corpus callosum lesion (&ge;&frac12; length), corticospinal tract, or extensive periependymal lesions',
+   mriReq:'NMOSD-typical brain lesions (large confluent WM, long corpus callosum &ge;&frac12; length, corticospinal tract, or extensive periependymal)',
+   needsMRI:false}
+];
 var RF_CLINICAL = [
-  { id: 'rf_progressive', text: 'Progressive overall clinical course', sub: 'Neurologic deterioration not related to discrete attacks; occurs in only 1–2% of NMOSD — consider MS' },
-  { id: 'rf_nadir_fast', text: 'Atypical time to nadir: <4 hours', sub: 'Consider cord ischemia / infarction rather than inflammatory myelitis' },
-  { id: 'rf_nadir_slow', text: 'Atypical time to nadir: >4 weeks of continual worsening from onset', sub: 'Consider sarcoidosis or neoplasm' },
-  { id: 'rf_partial_tm', text: 'Partial transverse myelitis without LETM', sub: 'Especially without associated LETM lesion — consider MS' },
-  { id: 'rf_ocb', text: 'CSF oligoclonal bands present', sub: 'Present in <20% NMOSD vs >80% MS; presence is a red flag but not exclusionary' },
+  {id:'rf_prog',    text:'Progressive overall clinical course',         sub:'Neurologic deterioration not related to discrete attacks; occurs in only 1&ndash;2% of NMOSD &mdash; consider MS or other diagnosis'},
+  {id:'rf_fast',    text:'Atypical time to nadir: &lt;4 hours',         sub:'Consider cord ischaemia / infarction rather than inflammatory myelitis'},
+  {id:'rf_slow',    text:'Atypical time to nadir: &gt;4 weeks of continual worsening', sub:'Consider sarcoidosis or neoplasm'},
+  {id:'rf_partial', text:'Partial transverse myelitis without LETM',    sub:'Especially without associated LETM lesion &mdash; consider MS'},
+  {id:'rf_ocb',     text:'CSF oligoclonal bands present',               sub:'Present in &lt;20% NMOSD vs &gt;80% MS; red flag but not exclusionary'}
 ];
 var RF_IMAGING = [
-  { id: 'rfi_dawson', text: 'Dawson\'s fingers (perpendicular periventricular lesions on T2)', sub: 'MS-typical brain MRI pattern — uncommon in NMOSD' },
-  { id: 'rfi_inf_temp', text: 'Inferior temporal lobe periventricular lesions', sub: 'MS-typical pattern' },
-  { id: 'rfi_cortical', text: 'Juxtacortical / cortical lesions', sub: 'Cortical lesions absent in NMOSD on 7T MRI; present in MS' },
-  { id: 'rfi_persist_gad', text: 'Persistent gadolinium enhancement (>3 months)', sub: 'Suggests competing diagnosis' },
-  { id: 'rfi_short_cord', text: 'Spinal cord lesions <3 complete vertebral segments', sub: 'MS-typical; NMOSD cord lesions are typically LETM' },
-  { id: 'rfi_peripheral_cord', text: 'Cord lesions predominantly (>70%) peripheral on axial T2', sub: 'MS favors dorsal columns / peripheral white matter; NMOSD favors central gray' },
+  {id:'rfi_dawson', text:'Dawson&rsquo;s fingers (perpendicular periventricular T2 lesions)', sub:'MS-typical brain MRI pattern &mdash; uncommon in NMOSD'},
+  {id:'rfi_inft',   text:'Inferior temporal lobe periventricular lesions',                    sub:'MS-typical pattern'},
+  {id:'rfi_cort',   text:'Juxtacortical / cortical lesions',                                  sub:'Cortical lesions absent in NMOSD on 7T MRI; present in MS'},
+  {id:'rfi_gad',    text:'Persistent gadolinium enhancement (&gt;3 months)',                  sub:'Suggests competing diagnosis'},
+  {id:'rfi_short',  text:'Spinal cord lesions &lt;3 complete vertebral segments',             sub:'MS-typical; NMOSD cord lesions are typically LETM (&ge;3 segments)'},
+  {id:'rfi_periph', text:'Cord lesions predominantly peripheral (&gt;70%) on axial T2',      sub:'MS favors dorsal columns/peripheral WM; NMOSD favors central gray'}
 ];
-var RF_EXCLUSIONS = [
-  { id: 'exc_sarcoid', text: 'Sarcoidosis', sub: 'Mediastinal adenopathy, fever/night sweats, elevated ACE or IL-2R' },
-  { id: 'exc_cancer', text: 'Malignancy / paraneoplastic disorder', sub: 'Consider lymphoma, CRMP-5 optic neuropathy/myelopathy, anti-Ma diencephalic syndrome' },
-  { id: 'exc_infection', text: 'Chronic infection', sub: 'HIV, syphilis, or other relevant chronic CNS infection' },
-  { id: 'exc_ms', text: 'Multiple Sclerosis fulfilling separate criteria', sub: 'Brain MRI compatible with MS is a red flag requiring additional evidence to distinguish' },
+var RF_EXCL = [
+  {id:'exc_sarc',  text:'Sarcoidosis',                        sub:'Mediastinal adenopathy, fever/night sweats, elevated ACE or IL-2R'},
+  {id:'exc_ca',    text:'Malignancy / paraneoplastic disorder', sub:'Consider lymphoma, CRMP-5 optic neuropathy/myelopathy, anti-Ma diencephalic syndrome'},
+  {id:'exc_inf',   text:'Chronic infection',                  sub:'HIV, syphilis, or other relevant chronic CNS infection'},
+  {id:'exc_ms',    text:'Multiple Sclerosis fulfilling separate criteria', sub:'MS-compatible brain MRI is a red flag requiring additional evidence to distinguish'}
 ];
 
-function setupRedFlagsPanel() {
-  function makeRFItem(item) {
-    var div = document.createElement('div');
-    div.className = 'redflag-item';
-    if (state.redflags.indexOf(item.id) > -1) div.classList.add('flagged');
-    div.setAttribute('data-rfid', item.id);
-    div.innerHTML = '<div class="rf-icon">⚑</div><div class="rf-text">' + item.text + '<div class="rf-sub">' + item.sub + '</div></div><div class="rf-cb">✓</div>';
-    div.onclick = function() {
-      this.classList.toggle('flagged');
-      var id = this.getAttribute('data-rfid');
-      var idx = state.redflags.indexOf(id);
-      if (this.classList.contains('flagged')) { if (idx === -1) state.redflags.push(id); }
-      else { if (idx > -1) state.redflags.splice(idx,1); }
-    };
-    return div;
-  }
+var cur = 0;
 
-  function makeExcItem(item) {
-    var div = document.createElement('div');
-    div.className = 'check-item';
-    if (state.exclusions.indexOf(item.id) > -1) div.classList.add('checked');
-    div.setAttribute('data-excid', item.id);
-    div.innerHTML = '<div class="check-box">✓</div><div class="check-label">' + item.text + '<div class="check-sub">' + item.sub + '</div></div>';
-    div.onclick = function() {
-      this.classList.toggle('checked');
-      var id = this.getAttribute('data-excid');
-      var idx = state.exclusions.indexOf(id);
-      if (this.classList.contains('checked')) { if (idx === -1) state.exclusions.push(id); }
-      else { if (idx > -1) state.exclusions.splice(idx,1); }
-    };
-    return div;
+// ── Navigation ──
+function goTab(n){ if(n===cur)return; go(n); }
+function go(n){
+  document.getElementById('s'+cur).classList.remove('active');
+  document.getElementById('s'+n).classList.add('active');
+  for(var i=0;i<5;i++){
+    var t=document.getElementById('st'+i);
+    t.classList.remove('active','done');
+    if(i<n)t.classList.add('done');
+    else if(i===n)t.classList.add('active');
   }
+  cur=n;
+  document.getElementById('pf').style.width=((n/4)*100)+'%';
+  if(n===1) setupCorePanel();
+  if(n===2) setupMRIPanel();
+  if(n===3) setupRedFlagsPanel();
+  if(n===4) rv();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function rfBack(){ go(S.aqp4==='pos'?1:2); }
 
-  var rfc = document.getElementById('rf-clinical');
-  var rfi = document.getElementById('rf-imaging');
-  var rfe = document.getElementById('rf-exclusions');
-  rfc.innerHTML = ''; rfi.innerHTML = ''; rfe.innerHTML = '';
-  RF_CLINICAL.forEach(function(item){ rfc.appendChild(makeRFItem(item)); });
-  RF_IMAGING.forEach(function(item){ rfi.appendChild(makeRFItem(item)); });
-  RF_EXCLUSIONS.forEach(function(item){ rfe.appendChild(makeExcItem(item)); });
+// ── Step 0: AQP4 ──
+const BTN_CLS = {'aqp4-pos':'ay','aqp4-neg':'an','aqp4-unk':'agr'};
+function activateBtn(btn){
+  if(!btn)return;
+  var brow=btn.closest('.brow');
+  if(brow)brow.querySelectorAll('.abtn').forEach(function(b){b.classList.remove('ay','an','agr','aa');});
+  var cls=BTN_CLS[btn.id]||'agr';
+  btn.classList.add(cls);
+}
+function setAQP4(v, btn){
+  S.aqp4=v; S.cores=[]; S.mriMet={};
+  activateBtn(btn);
+  var item=document.getElementById('aqp4-item');
+  if(item)item.className='crit '+(v==='pos'?'c-yes':v==='neg'?'c-no':'c-am');
+  document.getElementById('n0').disabled=false;
+  // alert
+  var a=document.getElementById('a0');
+  if(v==='pos')sa(a,'aok','AQP4-IgG Positive &mdash; requires &ge;1 core clinical characteristic plus exclusion of alternative diagnoses. Any of the 6 features qualifies. MRI requirements are not separately mandated for seropositive patients.');
+  else if(v==='neg')sa(a,'awn','AQP4-IgG Negative &mdash; requires &ge;2 core features (dissemination in space), at least 1 must be ON, acute myelitis, or area postrema syndrome, plus MRI verification for all applicable features. Higher diagnostic stringency applies.');
+  else sa(a,'agr2','AQP4-IgG unavailable &mdash; seronegative stringency criteria apply. Prioritise obtaining CBA-based serology before committing to seronegative NMOSD diagnosis.');
+}
+function sa(el,cls,msg){if(!el)return;el.className='alrt show '+cls;el.innerHTML=msg;}
+function ha(el){if(el)el.classList.remove('show');}
+// extra alert class for amber
+document.head.insertAdjacentHTML('beforeend','<style>.agr2{border-color:var(--amber);background:var(--amber-bg);color:var(--amber);}</style>');
+
+// ── Step 1: Core Features ──
+function setupCorePanel(){
+  var isPos=S.aqp4==='pos';
+  var sub=document.getElementById('core-csub');
+  if(sub)sub.textContent=isPos
+    ?'Select all core clinical characteristics documented during discrete attacks. For seropositive patients, any single core feature is sufficient alongside exclusion of alternatives.'
+    :'Select all core features. Seronegative/unknown requires \u22652 core features (dissemination in space) with \u22651 of the three \u201ccommon\u201d features (ON, myelitis, area postrema).';
+  var req=document.getElementById('core-req-box');
+  if(req){
+    if(isPos)req.innerHTML='<strong>Seropositive requirement:</strong> <span style="color:var(--green)">&ge;1 core clinical characteristic</span> required (any of the 6 features). Plus exclusion of alternative diagnoses. MRI requirements are <em>not</em> separately mandated.';
+    else req.innerHTML='<strong>Seroneg/unknown requirement:</strong> <span style="color:var(--amber)">&ge;2 core features</span> with dissemination in space, <span style="color:var(--amber)">&ge;1 must be</span> optic neuritis, acute myelitis, or area postrema syndrome. Plus MRI verification and exclusion of alternatives.';
+  }
+  var cd=document.getElementById('common-count-display');
+  if(cd)cd.style.display=isPos?'none':'';
+  buildCoreList();
+  updateCoreCount();
+}
+function buildCoreList(){
+  var cl=document.getElementById('core-list'); if(!cl)return; cl.innerHTML='';
+  CORE_DATA.forEach(function(c){
+    var div=document.createElement('div');
+    div.className='core-item'+(S.cores.indexOf(c.key)>-1?' ci-checked':'');
+    div.setAttribute('data-key',c.key);
+    var tagHtml=c.common?'<span class="core-tag tag-common">Common feature (ON / LETM / Area Postrema)</span>':'';
+    div.innerHTML='<div class="core-cb">\u2713</div><div class="core-label"><div class="core-name">'+c.name+'</div><div class="core-sub">'+c.sub+'</div>'+tagHtml+'</div>';
+    div.onclick=function(){
+      var key=this.getAttribute('data-key');
+      var idx=S.cores.indexOf(key);
+      if(this.classList.contains('ci-checked')){
+        this.classList.remove('ci-checked');
+        if(idx>-1)S.cores.splice(idx,1);
+        delete S.mriMet[key];
+      } else {
+        this.classList.add('ci-checked');
+        if(idx===-1)S.cores.push(key);
+      }
+      updateCoreCount();
+    };
+    cl.appendChild(div);
+  });
+}
+function updateCoreCount(){
+  var n=S.cores.length;
+  var isPos=S.aqp4==='pos';
+  var commonN=S.cores.filter(function(k){return['ON','TM','AP'].indexOf(k)>-1;}).length;
+  var coreNum=document.getElementById('cnt-core-num');
+  var coreCnt=document.getElementById('cnt-core');
+  var commNum=document.getElementById('cnt-common-num');
+  var commCnt=document.getElementById('cnt-common');
+  if(coreNum)coreNum.textContent=n;
+  if(coreCnt){coreCnt.classList.remove('cnt-met','cnt-warn','cnt-fail');
+    if(isPos)coreCnt.classList.add(n>=1?'cnt-met':'cnt-fail');
+    else coreCnt.classList.add(n>=2?'cnt-met':n>=1?'cnt-warn':'cnt-fail');}
+  if(commNum&&commCnt&&!isPos){commNum.textContent=commonN;commCnt.classList.remove('cnt-met','cnt-warn');commCnt.classList.add(commonN>=1?'cnt-met':'cnt-warn');}
+  var ok=isPos?(n>=1):(n>=2&&commonN>=1);
+  var n1=document.getElementById('n1'); if(n1)n1.disabled=!ok;
+  // alert
+  var a=document.getElementById('a1');
+  if(n===0)ha(a);
+  else if(isPos&&n>=1)sa(a,'aok',n+' core feature'+(n>1?'s':'')+' selected: '+S.cores.map(function(k){return CORE_LABELS[k];}).join(', ')+'. Seropositive requirement met. Proceed to red flags.');
+  else if(!isPos&&n>=2&&commonN>=1)sa(a,'aok',n+' core features (DIS confirmed), '+commonN+' common feature(s). Seroneg/unknown core requirement met. Next: confirm MRI findings.');
+  else if(!isPos&&n>=2&&commonN===0)sa(a,'awn',n+' features selected but none are the 3 common types (ON, myelitis, area postrema). Need \u22651 common feature.');
+  else sa(a,'awn',n+' feature'+(n>1?'s':'')+' selected.'+(isPos?'':' Need \u22652 with \u22651 common feature.'));
+}
+function proceedFromCore(){
+  if(S.aqp4==='pos'){setupRedFlagsPanel();go(3);}
+  else{setupMRIPanel();go(2);}
 }
 
-function rfBack() {
-  if (state.aqp4 === 'pos') go(1);
-  else go(2);
+// ── Step 2: MRI ──
+function setupMRIPanel(){
+  // Table
+  var tc=document.getElementById('mri-table-container'); if(!tc)return; tc.innerHTML='';
+  var tbl=document.createElement('div'); tbl.className='mri-table';
+  var hdr=document.createElement('div'); hdr.className='mri-row mri-hdr';
+  hdr.innerHTML='<div class="mri-feature">Core Feature</div><div class="mri-req-text">Required MRI Finding</div>';
+  tbl.appendChild(hdr);
+  S.cores.forEach(function(key){
+    var c=CORE_DATA.find(function(x){return x.key===key;});
+    if(!c)return;
+    var row=document.createElement('div'); row.className='mri-row';
+    var reqText=c.needsMRI?c.mriReq:'<em style="color:var(--text3)">No specific MRI requirement for this feature in seronegative criteria</em>';
+    row.innerHTML='<div class="mri-feature">'+c.name+'</div><div class="mri-req-text">'+reqText+'</div>';
+    tbl.appendChild(row);
+  });
+  tc.appendChild(tbl);
+  // Checkboxes
+  var mc=document.getElementById('mri-checks'); if(!mc)return; mc.innerHTML='';
+  S.cores.forEach(function(key){
+    var c=CORE_DATA.find(function(x){return x.key===key;});
+    if(!c||!c.needsMRI)return;
+    var div=document.createElement('div');
+    div.className='mri-check-item'+(S.mriMet[key]?' mc-checked':'');
+    div.setAttribute('data-mri',key);
+    div.innerHTML='<div class="mri-cb">\u2713</div><div style="flex:1;font-family:var(--sans);font-size:12px;color:var(--text)"><strong>MRI confirmed: '+c.name+'</strong><div style="font-size:11px;color:var(--text2);margin-top:3px">'+c.mriReq+'</div></div>';
+    div.onclick=function(){
+      this.classList.toggle('mc-checked');
+      S.mriMet[key]=this.classList.contains('mc-checked');
+      updateMRIAlert();
+    };
+    mc.appendChild(div);
+  });
+  updateMRIAlert();
+}
+function updateMRIAlert(){
+  var a=document.getElementById('a2'); if(!a)return;
+  var needed=S.cores.filter(function(key){var c=CORE_DATA.find(function(x){return x.key===key;});return c&&c.needsMRI;});
+  var metN=needed.filter(function(key){return S.mriMet[key];}).length;
+  if(needed.length===0)sa(a,'aok','No MRI requirements applicable for the selected core features.');
+  else if(metN===needed.length)sa(a,'aok','MRI requirements confirmed for all '+needed.length+' applicable core feature'+(needed.length>1?'s':'')+'. Proceed to red flags.');
+  else sa(a,'awn',metN+'/'+needed.length+' MRI requirements confirmed. Confirm remaining features before proceeding.');
 }
 
-// ═══════════════════════════════════════════
-// PANEL 4 — VERDICT
-// ═══════════════════════════════════════════
-function renderVerdict() {
-  var aqp4 = state.aqp4;
-  var cores = state.coreSelected;
-  var rfCount = state.redflags.length;
-  var excCount = state.exclusions.length;
-  var commonCores = cores.filter(function(k){ return ['ON','TM','AP'].indexOf(k) > -1; });
+// ── Step 3: Red Flags ──
+function setupRedFlagsPanel(){
+  buildRFList('rf-clinical-list', RF_CLINICAL, 'rf');
+  buildRFList('rf-imaging-list', RF_IMAGING, 'rf');
+  buildExclList();
+  updateRFAlert();
+}
+function buildRFList(containerId, items, type){
+  var c=document.getElementById(containerId); if(!c)return; c.innerHTML='';
+  items.forEach(function(item){
+    var div=document.createElement('div');
+    div.className='rf-item'+(S.redflags.indexOf(item.id)>-1?' rf-flagged':'');
+    div.setAttribute('data-rfid',item.id);
+    div.innerHTML='<div class="rf-icon">\u2691</div><div style="flex:1"><div class="rf-text">'+item.text+'<div class="rf-sub">'+item.sub+'</div></div></div><div class="rf-cb">\u2713</div>';
+    div.onclick=function(){
+      this.classList.toggle('rf-flagged');
+      var id=this.getAttribute('data-rfid');
+      var idx=S.redflags.indexOf(id);
+      if(this.classList.contains('rf-flagged')){if(idx===-1)S.redflags.push(id);}
+      else{if(idx>-1)S.redflags.splice(idx,1);}
+      updateRFAlert();
+    };
+    c.appendChild(div);
+  });
+}
+function buildExclList(){
+  var c=document.getElementById('rf-excl-list'); if(!c)return; c.innerHTML='';
+  RF_EXCL.forEach(function(item){
+    var div=document.createElement('div');
+    div.className='exc-item'+(S.exclusions.indexOf(item.id)>-1?' exc-checked':'');
+    div.setAttribute('data-excid',item.id);
+    div.innerHTML='<div class="exc-cb">\u2713</div><div style="flex:1;font-family:var(--sans);font-size:12px;color:var(--text)">'+item.text+'<div style="font-size:11px;color:var(--text2);margin-top:3px">'+item.sub+'</div></div>';
+    div.onclick=function(){
+      this.classList.toggle('exc-checked');
+      var id=this.getAttribute('data-excid');
+      var idx=S.exclusions.indexOf(id);
+      if(this.classList.contains('exc-checked')){if(idx===-1)S.exclusions.push(id);}
+      else{if(idx>-1)S.exclusions.splice(idx,1);}
+      updateRFAlert();
+    };
+    c.appendChild(div);
+  });
+}
+function updateRFAlert(){
+  var a=document.getElementById('a3'); if(!a)return;
+  var rfN=S.redflags.length, exN=S.exclusions.length;
+  if(rfN===0&&exN===0)sa(a,'aok','No red flags or competing diagnoses identified. Proceed to generate verdict.');
+  else if(rfN>0||exN>0){
+    var parts=[];
+    if(rfN>0)parts.push(rfN+' red flag'+(rfN>1?'s':'')+' flagged');
+    if(exN>0)parts.push(exN+' competing diagnosis/'+(exN>1?'diagnoses':'')+' identified');
+    sa(a,'awn',parts.join('; ')+'. Thorough investigation required before confirming NMOSD. Weight of evidence may still justify NMOSD after full workup.');
+  }
+}
 
-  // Determine MRI met for all required selected cores
-  var mriAllMet = true;
-  if (aqp4 !== 'pos') {
-    MRI_REQUIRED_FEATURES.forEach(function(k){
-      if (cores.indexOf(k) > -1 && !state.mriMet[k]) mriAllMet = false;
+// ── Step 4: Verdict ──
+function rv(){
+  var aqp4=S.aqp4, cores=S.cores, rfN=S.redflags.length, exN=S.exclusions.length;
+  var commonCores=cores.filter(function(k){return['ON','TM','AP'].indexOf(k)>-1;});
+  var mriAllMet=true;
+  if(aqp4!=='pos'){
+    S.cores.forEach(function(key){
+      var c=CORE_DATA.find(function(x){return x.key===key;});
+      if(c&&c.needsMRI&&!S.mriMet[key])mriAllMet=false;
     });
   }
+  var banCls,banTitle,banDesc,rows=[];
 
-  var verdict = {};
-
-  // ─── SEROPOSITIVE ───
-  if (aqp4 === 'pos') {
-    if (cores.length >= 1 && excCount === 0) {
-      verdict = {
-        cls: 'positive',
-        status: 'Criteria Met',
-        title: 'NMOSD with AQP4-IgG',
-        subtype: 'Seropositive NMOSD — Wingerchuk 2015 IPND Criteria',
-        rows: [
-          { icon: '✓', text: 'AQP4-IgG positive (cell-based assay recommended)', dim: false },
-          { icon: '✓', text: cores.length + ' core clinical characteristic(s) present: ' + cores.map(function(k){return CORE_LABELS[k];}).join(', '), dim: false },
-          { icon: '✓', text: 'No alternative diagnoses identified', dim: false }
-        ],
-        note: '<strong>Treatment implication:</strong> Initiate immunotherapy for relapse prevention. Note: interferon-β, natalizumab, and fingolimod may worsen NMOSD — avoid MS-directed DMTs. Even with prolonged clinical remission, seropositive patients remain at risk for relapse indefinitely.'
-      };
-    } else if (cores.length >= 1 && excCount > 0) {
-      verdict = {
-        cls: 'caution',
-        status: 'Criteria Met — With Caution',
-        title: 'NMOSD with AQP4-IgG (Possible)',
-        subtype: 'Competing diagnoses identified — clinical judgment required',
-        rows: [
-          { icon: '✓', text: 'AQP4-IgG positive', dim: false },
-          { icon: '✓', text: cores.length + ' core feature(s): ' + cores.map(function(k){return CORE_LABELS[k];}).join(', '), dim: false },
-          { icon: '⚠', text: 'Alternative diagnosis/diagnoses under consideration: ' + state.exclusions.join(', '), dim: true }
-        ],
-        note: '<strong>Action:</strong> Thorough investigation of competing diagnoses is required before confirming NMOSD. Depending on workup, weight of evidence may still support NMOSD diagnosis.'
-      };
+  if(aqp4==='pos'){
+    if(cores.length>=1&&exN===0){
+      banCls='vpos'; banTitle='NMOSD with AQP4-IgG \u2014 Criteria Met';
+      banDesc='Seropositive NMOSD (Wingerchuk 2015 IPND Criteria). AQP4-IgG positive, \u22651 core clinical characteristic, no alternative diagnoses identified.';
+      rows=[{ok:true,text:'AQP4-IgG positive (cell-based assay recommended)'},
+            {ok:true,text:cores.length+' core clinical characteristic'+(cores.length>1?'s':'')+': '+cores.map(function(k){return CORE_LABELS[k];}).join(', ')},
+            {ok:true,text:'No alternative diagnoses identified'}];
+    } else if(cores.length>=1&&exN>0){
+      banCls='vcaut'; banTitle='NMOSD with AQP4-IgG \u2014 Criteria Met With Caution';
+      banDesc='Seropositive criteria technically fulfilled but competing diagnoses are under consideration. Thorough investigation required before confirming NMOSD.';
+      rows=[{ok:true,text:'AQP4-IgG positive'},
+            {ok:true,text:cores.length+' core feature'+(cores.length>1?'s':'')+': '+cores.map(function(k){return CORE_LABELS[k];}).join(', ')},
+            {ok:false,text:'Competing diagnosis/diagnoses under consideration: '+S.exclusions.map(function(id){var f=RF_EXCL.find(function(r){return r.id===id;});return f?f.text:id;}).join(', ')}];
     } else {
-      verdict = {
-        cls: 'negative',
-        status: 'Criteria Not Met',
-        title: 'Insufficient for NMOSD Diagnosis',
-        subtype: 'At least 1 core clinical characteristic required for seropositive NMOSD',
-        rows: [
-          { icon: '✓', text: 'AQP4-IgG positive', dim: false },
-          { icon: '✗', text: 'No core clinical characteristic documented', dim: true },
-          { icon: 'ℹ', text: 'Note: asymptomatic seropositivity with compatible MRI alone is insufficient — ≥1 discrete clinical attack required', dim: true }
-        ],
-        note: 'Longitudinal observation recommended. Document first discrete clinical attack when it occurs to re-apply criteria.'
-      };
+      banCls='vneg'; banTitle='Insufficient for NMOSD Diagnosis';
+      banDesc='AQP4-IgG positive but no core clinical characteristic has been documented. At least 1 discrete clinical attack with a core feature is required.';
+      rows=[{ok:true,text:'AQP4-IgG positive'},
+            {ok:false,text:'No core clinical characteristic documented'},
+            {ok:false,text:'Note: asymptomatic seropositivity with compatible MRI alone is insufficient \u2014 \u22651 discrete clinical attack required'}];
+    }
+  } else {
+    var hasTwoPlus=cores.length>=2, hasCommon=commonCores.length>=1;
+    if(hasTwoPlus&&hasCommon&&mriAllMet&&exN===0){
+      banCls='vpos'; banTitle=(aqp4==='neg'?'NMOSD without AQP4-IgG':'NMOSD with Unknown AQP4-IgG Status')+' \u2014 Criteria Met';
+      banDesc=(aqp4==='neg'?'Seronegative':'Serostatus unavailable')+' NMOSD (Wingerchuk 2015 IPND Criteria). \u22652 core features with DIS, \u22651 common feature, MRI confirmed, no competing diagnoses.';
+      rows=[{ok:true,text:'AQP4-IgG '+(aqp4==='neg'?'negative (best available assay)':'not tested')},
+            {ok:true,text:cores.length+' core features with DIS: '+cores.map(function(k){return CORE_LABELS[k];}).join(', ')},
+            {ok:true,text:'\u22651 common feature present: '+commonCores.map(function(k){return CORE_LABELS[k];}).join(', ')},
+            {ok:true,text:'MRI requirements verified for all applicable features'},
+            {ok:true,text:'No alternative diagnoses identified'}];
+    } else if(hasTwoPlus&&hasCommon&&mriAllMet&&exN>0){
+      banCls='vcaut'; banTitle=(aqp4==='neg'?'NMOSD without AQP4-IgG':'NMOSD Unknown Status')+' \u2014 Criteria Met With Caution';
+      banDesc='Seronegative criteria technically fulfilled but competing diagnoses identified. Full investigation required.';
+      rows=[{ok:true,text:'Core features, DIS, and MRI requirements met'},
+            {ok:false,text:'Competing diagnoses under consideration: '+S.exclusions.map(function(id){var f=RF_EXCL.find(function(r){return r.id===id;});return f?f.text:id;}).join(', ')}];
+    } else {
+      banCls='vneg'; banTitle='Insufficient for NMOSD Diagnosis';
+      banDesc=aqp4==='neg'?'Seronegative criteria not fulfilled.':'Serostatus unavailable; criteria not fulfilled.';
+      if(!hasTwoPlus)rows.push({ok:false,text:'Fewer than 2 core features selected (need \u22652 for dissemination in space)'});
+      if(hasTwoPlus&&!hasCommon)rows.push({ok:false,text:'None of the 3 required common features present (need \u22651 of: ON, acute myelitis, area postrema syndrome)'});
+      if(!mriAllMet)rows.push({ok:false,text:'MRI requirements not confirmed for all applicable core features'});
+      if(rows.length===0)rows.push({ok:false,text:'Criteria not met'});
     }
   }
 
-  // ─── SERONEGATIVE / UNKNOWN ───
-  else {
-    var hasTwoPlus = cores.length >= 2;
-    var hasCommon = commonCores.length >= 1;
-    var hasDIS = cores.length >= 2; // ≥2 from different regions = dissemination in space
-
-    if (hasTwoPlus && hasCommon && mriAllMet && excCount === 0) {
-      verdict = {
-        cls: 'positive',
-        status: 'Criteria Met',
-        title: aqp4 === 'neg' ? 'NMOSD without AQP4-IgG' : 'NMOSD with Unknown AQP4-IgG Status',
-        subtype: (aqp4 === 'neg' ? 'Seronegative' : 'Serostatus unavailable') + ' NMOSD — Wingerchuk 2015 IPND Criteria',
-        rows: [
-          { icon: '✓', text: 'AQP4-IgG ' + (aqp4 === 'neg' ? 'negative (best available assay)' : 'not tested'), dim: false },
-          { icon: '✓', text: cores.length + ' core features with DIS: ' + cores.map(function(k){return CORE_LABELS[k];}).join(', '), dim: false },
-          { icon: '✓', text: 'At least 1 of 3 most common features present (ON, TM, AP): ' + commonCores.map(function(k){return CORE_LABELS[k];}).join(', '), dim: false },
-          { icon: '✓', text: 'MRI requirements verified for all applicable features', dim: false },
-          { icon: '✓', text: 'No alternative diagnoses identified', dim: false }
-        ],
-        note: '<strong>Heterogeneous population:</strong> Seronegative NMOSD carries greater diagnostic uncertainty. Consider MOG-IgG testing — a minority have detectable MOG antibodies (younger, less female-predominant, lower relapse risk, possibly different pathogenesis). Retesting AQP4-IgG should be considered before B-cell–targeted therapy and after clinical relapse.'
-      };
-    } else if (hasTwoPlus && hasCommon && mriAllMet && excCount > 0) {
-      verdict = {
-        cls: 'caution',
-        status: 'Criteria Met — With Caution',
-        title: aqp4 === 'neg' ? 'NMOSD without AQP4-IgG (Possible)' : 'NMOSD Unknown Status (Possible)',
-        subtype: 'Competing diagnoses identified — thorough investigation required',
-        rows: [
-          { icon: '✓', text: 'Core features, DIS, and MRI requirements met', dim: false },
-          { icon: '⚠', text: 'Alternative diagnoses under consideration — requires exclusion', dim: true }
-        ],
-        note: '<strong>Action required:</strong> Complete workup for identified competing diagnoses before confirming NMOSD.'
-      };
-    } else {
-      var missingParts = [];
-      if (!hasTwoPlus) missingParts.push('fewer than 2 core clinical characteristics selected (need ≥2 for dissemination in space)');
-      if (!hasCommon && hasTwoPlus) missingParts.push('none of the 3 required common features present (need ≥1 of: ON, acute myelitis, area postrema syndrome)');
-      if (!mriAllMet) missingParts.push('MRI requirements not confirmed for all applicable core features');
-      verdict = {
-        cls: 'negative',
-        status: 'Criteria Not Met',
-        title: 'Insufficient for NMOSD Diagnosis',
-        subtype: aqp4 === 'neg' ? 'Seronegative criteria not fulfilled' : 'Unknown serostatus criteria not fulfilled',
-        rows: missingParts.map(function(m){ return { icon: '✗', text: m, dim: true }; }),
-        note: '<strong>Consider:</strong> If index of suspicion remains high, pursue AQP4-IgG testing (if unavailable), MOG-IgG testing, repeat imaging, and longitudinal clinical observation. Criteria may be met after subsequent clinical attack.'
-      };
-    }
-  }
-
-  // Render verdict card
-  var vc = document.getElementById('verdict-container');
-  var rowsHtml = verdict.rows.map(function(r){
-    return '<div class="vc-row"><div class="vc-icon">' + r.icon + '</div><div class="vc-text' + (r.dim ? ' vc-dim':'') + '">' + r.text + '</div></div>';
+  var vc_html=rows.map(function(r){
+    return '<div class="vc-row"><div class="vc-icon">'+(r.ok?'\u2713':'\u2717')+'</div><div class="vc-text'+(r.ok?'':' vc-dim')+'">'+r.text+'</div></div>';
   }).join('');
-  vc.innerHTML =
-    '<div class="verdict ' + verdict.cls + '">' +
-      '<div class="verdict-header">' +
-        '<div class="verdict-status">' + verdict.status + '</div>' +
-        '<div class="verdict-title">' + verdict.title + '</div>' +
-        '<div class="verdict-subtype" style="margin-top:6px">' + verdict.subtype + '</div>' +
-      '</div>' +
-      '<div class="verdict-body">' +
-        '<div class="verdict-criteria">' + rowsHtml + '</div>' +
-        (verdict.note ? '<div class="verdict-note">' + verdict.note + '</div>' : '') +
-      '</div>' +
-    '</div>';
+
+  // Special notes
+  var noteHtml='';
+  if(banCls==='vpos'&&aqp4==='pos')noteHtml='<div class="cnote" style="margin-top:10px"><strong>Treatment implication:</strong> Initiate immunotherapy for relapse prevention. Interferon-&beta;, natalizumab, and fingolimod are associated with NMOSD worsening &mdash; avoid MS-directed DMTs. Even with prolonged remission, seropositive patients remain at risk for relapse indefinitely.</div>';
+  else if(banCls==='vpos'&&aqp4!=='pos')noteHtml='<div class="cnote" style="margin-top:10px"><strong>Heterogeneous population:</strong> Seronegative NMOSD carries greater diagnostic uncertainty. Consider MOG-IgG testing &mdash; a minority have detectable MOG antibodies (younger, less female-predominant, lower relapse risk, possibly distinct pathogenesis). Retesting AQP4-IgG should be considered before B-cell&ndash;targeted therapy and after clinical relapse.</div>';
+  else if(banCls==='vneg')noteHtml='<div class="cnote" style="margin-top:10px"><strong>Consider:</strong> If index of suspicion remains high, pursue AQP4-IgG testing (if unavailable), MOG-IgG testing, repeat imaging, and longitudinal clinical observation. Criteria may be met after a subsequent clinical attack.</div>';
+
+  var html='<div class="vban '+banCls+'"><div class="vban-head"><div class="vlbl">Wingerchuk DM et al. Neurology 2015;85:177&ndash;189 &middot; IPND Consensus Criteria</div><div class="vtitle">'+banTitle+'</div><div class="vdesc">'+banDesc+'</div></div><div class="vc-list">'+vc_html+'</div>'+noteHtml+'</div>';
+
+  // Red flags warning
+  if(rfN>0){
+    var rfNames=S.redflags.map(function(id){
+      var f=RF_CLINICAL.concat(RF_IMAGING).find(function(r){return r.id===id;});
+      return f?'\u2022 '+f.text.replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&mdash;/g,'--').replace(/&rsquo;/g,"'"):'';
+    }).filter(Boolean).join('<br>');
+    html+='<div class="lbox" style="border-color:var(--amber-bd);background:var(--amber-bg);"><strong style="color:var(--amber);">Red Flags Identified ('+rfN+')</strong><br><span style="font-size:11px;color:var(--text2);">'+rfNames+'</span><br><br><span style="font-size:11px;color:var(--text2);">Thorough investigation of competing diagnoses warranted before confirming NMOSD. Weight of evidence may still justify diagnosis after full workup.</span></div>';
+  }
+
+  // Treatment warning
+  html+='<div class="tx-warn"><strong>&#9888; Treatment Warning:</strong> Interferon-&beta;, natalizumab, and fingolimod are associated with worsening in NMOSD &mdash; avoid these MS-directed therapies. Immunosuppressive therapies used for NMOSD relapse prevention: azathioprine, mycophenolate mofetil, rituximab, eculizumab, inebilizumab, satralizumab. Early accurate diagnosis is critical given these divergent treatment pathways.</div>';
 
   // Summary grid
-  var sg = document.getElementById('summary-grid');
-  var aqpLabel = aqp4 === 'pos' ? 'Positive' : (aqp4 === 'neg' ? 'Negative' : 'Unavailable');
-  var aqpCls = aqp4 === 'pos' ? 'pos' : (aqp4 === 'neg' ? 'neg' : 'unk');
-  sg.innerHTML =
-    '<div class="summary-item"><div class="si-label">AQP4-IgG</div><div class="si-val ' + aqpCls + '">' + aqpLabel + '</div></div>' +
-    '<div class="summary-item"><div class="si-label">Core Features Selected</div><div class="si-val">' + cores.map(function(k){return CORE_LABELS[k];}).join('<br>') + (cores.length === 0 ? '—':'') + '</div></div>' +
-    '<div class="summary-item"><div class="si-label">Red Flags Noted</div><div class="si-val ' + (rfCount > 0 ? 'warn' : '') + '">' + (rfCount > 0 ? rfCount + ' red flag(s)' : 'None identified') + '</div></div>' +
-    '<div class="summary-item"><div class="si-label">Competing Diagnoses</div><div class="si-val ' + (excCount > 0 ? 'warn' : '') + '">' + (excCount > 0 ? state.exclusions.map(function(id){ var f = RF_EXCLUSIONS.find(function(r){return r.id===id;}); return f ? f.text : id; }).join('<br>') : 'None identified') + '</div></div>';
+  html+='<div class="sum-grid">';
+  html+='<div class="sblock"><div class="sbtitle">Serologic &amp; Core Features</div>';
+  html+='<div class="srow"><div class="dot '+(aqp4==='pos'?'dg':aqp4==='neg'?'dr':'dam')+'"></div><div class="sname">AQP4-IgG status</div><div class="stag '+(aqp4==='pos'?'tg':aqp4==='neg'?'tr':'tam')+'">'+(aqp4==='pos'?'Positive':aqp4==='neg'?'Negative':'Unavailable')+'</div></div>';
+  html+='<div class="srow"><div class="dot '+(cores.length>0?'da':'dgr')+'"></div><div class="sname">Core features</div><div class="stag '+(cores.length>0?'ta':'tgr')+'">'+( cores.length>0?cores.length+' selected: '+cores.map(function(k){return CORE_LABELS[k].split(' ')[0];}).join(', '):'None')+'</div></div>';
+  html+='<div class="srow"><div class="dot '+(commonCores.length>0?'dg':'dam')+'"></div><div class="sname">Common features (ON/TM/AP)</div><div class="stag '+(commonCores.length>0?'tg':'tam')+'">'+commonCores.length+' present</div></div>';
+  html+='<div class="srow"><div class="dot '+(mriAllMet||aqp4==='pos'?'dg':'dam')+'"></div><div class="sname">MRI requirements</div><div class="stag '+(mriAllMet||aqp4==='pos'?'tg':'tam')+'">'+(aqp4==='pos'?'N/A (seropositive)':mriAllMet?'All confirmed':'Not fully confirmed')+'</div></div>';
+  html+='</div>';
+  html+='<div class="sblock"><div class="sbtitle">Red Flags &amp; Diagnosis</div>';
+  html+='<div class="srow"><div class="dot '+(rfN===0&&S.redflags!==null?'dg':'dam')+'"></div><div class="sname">Red flags</div><div class="stag '+(rfN===0?'tg':'tam')+'">'+(rfN===0?'None identified':rfN+' flag'+(rfN>1?'s':'')+' present')+'</div></div>';
+  html+='<div class="srow"><div class="dot '+(exN===0?'dg':'dam')+'"></div><div class="sname">Competing diagnoses</div><div class="stag '+(exN===0?'tg':'tam')+'">'+(exN===0?'None identified':exN+' identified')+'</div></div>';
+  html+='<div class="srow"><div class="dot '+(banCls==='vpos'?'dg':banCls==='vcaut'?'dam':'dr')+'"></div><div class="sname">Overall verdict</div><div class="stag '+(banCls==='vpos'?'tg':banCls==='vcaut'?'tam':'tr')+'">'+({vpos:'Criteria Met',vcaut:'Met \u2014 With Caution',vneg:'Not Met',vund:'Incomplete'}[banCls]||'Incomplete')+'</div></div>';
+  html+='</div></div>';
 
-  // Red flag summary
-  var rfs = document.getElementById('redflag-summary-box');
-  if (rfCount > 0) {
-    var rfNames = state.redflags.map(function(id){
-      var f = RF_CLINICAL.concat(RF_IMAGING).find(function(r){return r.id===id;});
-      return f ? '• ' + f.text : '';
-    }).filter(Boolean).join('<br>');
-    rfs.innerHTML = '<div class="warn-box"><div class="ib-title">Red Flags Identified (' + rfCount + ')</div>' + rfNames + '<br><br>Thorough investigation of competing diagnoses warranted before confirming NMOSD. Weight of evidence may still justify diagnosis after full workup.</div>';
-  } else {
-    rfs.innerHTML = '';
-  }
-
-  // Treatment note
-  var tn = document.getElementById('treatment-note');
-  tn.innerHTML = '<div class="info-box" style="margin-top:0"><div class="ib-title">Treatment Reminder</div>Interferon-β, natalizumab, and fingolimod are associated with worsening in NMOSD — avoid these MS-directed therapies. Immunosuppressive therapies (azathioprine, mycophenolate, rituximab, eculizumab, inebilizumab, satralizumab) are used for relapse prevention in NMOSD. Early, accurate diagnosis is critical given these divergent treatment pathways.</div>';
+  document.getElementById('vout').innerHTML=html;
+  buildDoc(banTitle, aqp4, cores, mriAllMet, rfN, exN);
 }
 
-// ═══════════════════════════════════════════
-// EXPAND TOGGLE
-// ═══════════════════════════════════════════
-function toggleExpand(id) {
-  var el = document.getElementById(id);
-  el.classList.toggle('open');
+function buildDoc(title, aqp4, cores, mriAllMet, rfN, exN){
+  var rfNames=S.redflags.map(function(id){
+    var f=RF_CLINICAL.concat(RF_IMAGING).find(function(r){return r.id===id;});
+    return f?f.text.replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&mdash;/g,'--').replace(/&rsquo;/g,"'").replace(/&ndash;/g,'-').replace(/&ge;/g,'>=').replace(/&le;/g,'<='):'';
+  }).filter(Boolean);
+  var exNames=S.exclusions.map(function(id){
+    var f=RF_EXCL.find(function(r){return r.id===id;});
+    return f?f.text:'';
+  }).filter(Boolean);
+  var note='NEUROLOGY -- NEUROMYELITIS OPTICA SPECTRUM DISORDER (NMOSD) DIAGNOSTIC NAVIGATOR\nWingerchuk DM, Banwell B, Bennett JL, et al. International consensus diagnostic criteria for NMOSD.\nNeurology 2015;85(2):177-189. doi:10.1212/WNL.0000000000001729\nIPND Consensus Criteria. For clinical support use only -- does not replace physician judgment.\nDate: '+new Date().toLocaleDateString()+'\n\nOVERALL VERDICT: '+title+'\n\nSEROLOGIC STATUS:\n  AQP4-IgG: '+(aqp4==='pos'?'POSITIVE (cell-based assay recommended)':aqp4==='neg'?'Negative (best available assay)':'Unavailable / not tested')+'\n\nCORE CLINICAL CHARACTERISTICS ('+cores.length+' selected):\n'+( cores.length>0?cores.map(function(k){return '  - '+CORE_LABELS[k];}).join('\n'):'  None selected')+'\n\nCRITERIA REQUIREMENT:\n'+(aqp4==='pos'?'  Seropositive: >=1 core feature required. Any of 6 features qualifies.':'  Seroneg/unknown: >=2 core features (DIS), >=1 common (ON/myelitis/area postrema), MRI confirmed.')+'\n\nMRI REQUIREMENTS ('+(aqp4==='pos'?'N/A for seropositive':(mriAllMet?'All confirmed':'Not fully confirmed'))+')'+(aqp4!=='pos'?':\n'+S.cores.map(function(key){var c=CORE_DATA.find(function(x){return x.key===key;});if(!c)return '';return c.needsMRI?'  '+CORE_LABELS[key]+': '+(S.mriMet[key]?'CONFIRMED':'Not confirmed'):'  '+CORE_LABELS[key]+': No MRI requirement';}).join('\n'):'.')+'\n\nRED FLAGS ('+(rfN>0?rfN+' identified':'None')+')'+(rfN>0?':\n'+rfNames.map(function(r){return '  - '+r;}).join('\n'):'.')+'\n\nCOMPETING DIAGNOSES ('+(exN>0?exN+' identified':'None')+')'+(exN>0?':\n'+exNames.map(function(r){return '  - '+r;}).join('\n'):'.')+'\n\nTREATMENT CONSIDERATIONS:\n  AVOID in NMOSD (associated with worsening): Interferon-beta, natalizumab, fingolimod\n  Approved/used for relapse prevention:\n    - Azathioprine (2-3 mg/kg/day)\n    - Mycophenolate mofetil (1-3 g/day)\n    - Rituximab (B-cell depletion)\n    - Eculizumab (complement inhibitor; FDA-approved 2019)\n    - Inebilizumab (anti-CD19; FDA-approved 2020)\n    - Satralizumab (anti-IL-6R; FDA-approved 2020)\n  Acute relapse treatment: high-dose IV methylprednisolone +/- plasmapheresis\n\nKEY REFERENCE:\n  Wingerchuk DM et al. Neurology 2015;85:177-189';
+  var dn=document.getElementById('dn'); if(dn)dn.textContent=note;
 }
 
-// ═══════════════════════════════════════════
-// RESTART
-// ═══════════════════════════════════════════
-function restart() {
-  state = { aqp4: null, coreSelected: [], mriMet: {}, redflags: [], exclusions: [], currentPanel: 0 };
-  document.querySelectorAll('.check-item').forEach(function(el){ el.classList.remove('checked'); });
-  document.querySelectorAll('.choice-card').forEach(function(el){ el.classList.remove('selected'); });
-  document.querySelectorAll('.redflag-item').forEach(function(el){ el.classList.remove('flagged'); });
-  document.querySelectorAll('.expand-content').forEach(function(el){ el.classList.remove('open'); });
+function xp(btn){
+  var d=btn.closest('.crit').querySelector('.crit-detail');
+  if(!d)return;
+  var o=d.classList.toggle('open');
+  btn.textContent=o?'close \u25b4':'details \u25be';
+}
+function toggleDoc(){
+  var body=document.getElementById('dn'),btn=document.getElementById('copy-btn'),tog=document.querySelector('.doc-tog');
+  if(!body)return;
+  var open=body.classList.toggle('open');
+  if(tog)tog.textContent=open?'\u25b2 Documentation Note':'\u25bc Documentation Note';
+  if(btn)btn.classList.toggle('visible',open);
+}
+function copyDoc(){
+  var body=document.getElementById('dn'),btn=document.getElementById('copy-btn');
+  if(!body)return;
+  var text=body.textContent||body.innerText;
+  navigator.clipboard.writeText(text).then(function(){
+    if(btn){btn.textContent='\u2713 Copied';btn.classList.add('copied');setTimeout(function(){btn.textContent='\u238a Copy';btn.classList.remove('copied');},2000);}
+  }).catch(function(){
+    var ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);
+    if(btn){btn.textContent='\u2713 Copied';btn.classList.add('copied');setTimeout(function(){btn.textContent='\u238a Copy';btn.classList.remove('copied');},2000);}
+  });
+}
+function resetAll(){
+  S={aqp4:null,cores:[],mriMet:{},redflags:[],exclusions:[],cur:0};
+  ['a0','a1','a2','a3'].forEach(function(id){var el=document.getElementById(id);if(el)el.classList.remove('show');});
+  var aqpItem=document.getElementById('aqp4-item');if(aqpItem)aqpItem.className='crit';
+  document.querySelectorAll('.abtn').forEach(function(b){b.classList.remove('ay','an','agr','aa');});
+  document.querySelectorAll('.crit-detail').forEach(function(d){d.classList.remove('open');});
+  document.querySelectorAll('.xbtn').forEach(function(b){b.textContent='details \u25be';});
+  document.getElementById('vout').innerHTML='';
+  var dn=document.getElementById('dn');if(dn)dn.classList.remove('open');
+  var cb=document.getElementById('copy-btn');if(cb)cb.classList.remove('visible','copied');
+  var tog=document.querySelector('.doc-tog');if(tog)tog.textContent='\u25bc Documentation Note';
+  document.getElementById('n0').disabled=true;
   go(0);
 }
 
-// ═══════════════════════════════════════════
-// INIT
-// ═══════════════════════════════════════════
 go(0);
 </script>
 </body>
