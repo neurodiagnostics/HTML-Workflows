@@ -376,7 +376,8 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
 <header>
   <div>
     <div class="h-title">Ischemic Stroke Etiology · <span>TOAST+ Classifier</span></div>
-    <div class="h-sub">Adams HP et al. · Stroke 1993;24:35–41 · TOAST criteria with evidence-weighted adjudication<br>For educator use only<br>Designed by Daniel Short, MD</div>
+    <div class="h-sub">Adams HP et al. · Stroke 1993;24:35–41 · TOAST criteria with evidence-weighted adjudication<br>For educator use only</div>
+    <div style="font-family:var(--sans);font-size:11px;font-weight:700;color:var(--teal);margin-top:2px;">Designed by physician Daniel Short, MD</div>
   </div>
   <button class="reset-btn" onclick="resetAll()">↺ Reset</button>
 </header>
@@ -532,7 +533,7 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
       <div class="cnote"><strong>Ref:</strong> Adams HP et al. Stroke. 1993;24:35–41. Lacune definition: &lt;15 mm; Fisher CM original series: 0.5–15 mm diameter. Punctate embolic shower: Kang DW et al. Stroke 2003;34:2599 — multiple small DWI lesions strongly associated with embolic source (CE or hypercoagulable) rather than SVD.</div>
     </div>
     <div class="brow">
-            <button class="abtn" onclick="set('size','punctate')">Punctate — tiny (&lt;5 mm), often multiple; embolic shower pattern</button>
+            <button class="abtn" onclick="set('size','punctate')">Punctate — tiny (&lt;5 mm), suggesting small perforator or distal embolic territory</button>
       <button class="abtn" onclick="set('size','small')">&lt;15 mm — Lacunar / small (not punctate)</button>
       <button class="abtn" onclick="set('size','grey')">15–20 mm — Grey zone</button>
       <button class="abtn" onclick="set('size','large')">&gt;20 mm — Non-lacunar size (territorial)</button>
@@ -1499,7 +1500,25 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
     <strong>Clinical suspicion triggers:</strong> <span class="lr">Young patient (&lt;55y)</span> with cryptogenic multiterritory infarcts and no other explanation + any of: prominent headache at onset, CSF pleocytosis or elevated protein, "beading" / segmental irregularity on catheter angiography or vessel wall MRI, known systemic autoimmune disease (SLE, polyarteritis nodosa, Sjögren, Behçet), or fever/constitutional symptoms without infection. <span class="lt">Note:</span> GCA (giant cell arteritis) is a specific consideration in patients &gt;50y with new headache, jaw claudication, elevated ESR/CRP, and posterior circulation stroke.
   </div>
 
-  <div class="slabel">Clinical suspicion for inflammatory arteriopathy <span class="pill pill-r">SELECT ONE</span></div>
+    <div class="slabel">Vessel Wall MRI (VW-MRI) — If Performed <span class="pill pill-a">Distinguishes ICAD vs. Vasculitis vs. RCVS</span></div>
+  <div class="lbox" style="margin-bottom:8px;">
+    High-resolution black blood vessel wall MRI (VW-MRI) is the key non-invasive discriminator for intracranial stenosis etiology:<br>
+    <strong style="color:var(--red);">Concentric wall enhancement</strong> → vasculitis / PACNS (circumferential inflammatory thickening; also seen in lymphoma, reversible cerebral angiopathy)<br>
+    <strong style="color:var(--amber);">Eccentric wall enhancement</strong> → atherosclerotic ICAD (plaque at one wall; vulnerable plaque with lipid-rich necrotic core; matches stenosis side)<br>
+    <strong style="color:var(--blue);">No wall enhancement</strong> → RCVS (smooth vessel narrowing with no/minimal mural enhancement; vasospasm without wall inflammation)<br>
+    <em style="color:var(--text3);">Ref: Mandell DM et al. Stroke 2017; Obusez EC et al. AJNR 2016; Swartz RH et al. Neurology 2009.</em>
+  </div>
+  <div class="crit" id="vwmri-item">
+    <div class="crit-main"><div class="crit-name">Vessel wall MRI result — if performed</div></div>
+    <div class="brow">
+      <button class="abtn" onclick="setToggle('vwmri','concentric')">Concentric enhancement → favors vasculitis / PACNS</button>
+      <button class="abtn" onclick="setToggle('vwmri','eccentric')">Eccentric enhancement → favors atherosclerotic ICAD (vulnerable plaque)</button>
+      <button class="abtn" onclick="setToggle('vwmri','none')">No wall enhancement → favors RCVS (vasospasm; no mural inflammation)</button>
+      <button class="abtn" onclick="setToggle('vwmri','nd')">Not performed</button>
+    </div>
+  </div>
+
+<div class="slabel">Clinical suspicion for inflammatory arteriopathy <span class="pill pill-r">SELECT ONE</span></div>
 
   <div class="crit" id="oth-vasc-item">
     <div class="crit-main">
@@ -1551,7 +1570,31 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
       <button class="abtn" onclick="setToggle('oth-rcvs','no')">✗ Not suspected</button>
       <button class="abtn" onclick="setToggle('oth-rcvs','nd')">— Cannot assess (no headache history available)</button>
     
+    
+  <div id="rcvs2-panel" style="display:none;margin-top:10px;">
+    <div class="slabel">RCVS2 Score <span class="pill pill-a">Contributes to Verdict</span></div>
+    <div class="lbox" style="margin-bottom:8px;">
+      <strong>RCVS2 Score</strong> (Ducros A et al. Neurology 2019; sens. 90%, spec. 99% for RCVS vs. other intracranial arteriopathies at score ≥5)
+      <table style="margin-top:8px;border-collapse:collapse;width:100%;font-size:11px;">
+        <tr><td style="padding:3px 8px;color:var(--green);font-weight:700;width:50px;">+5</td><td style="padding:3px 8px;color:var(--text2);">Recurrent or single severe/thunderclap headache reaching peak &lt;1 min</td></tr>
+        <tr style="background:rgba(255,255,255,0.03);"><td style="padding:3px 8px;color:var(--red);font-weight:700;">−2</td><td style="padding:3px 8px;color:var(--text2);">Carotid artery involvement (cervical ICA on imaging)</td></tr>
+        <tr><td style="padding:3px 8px;color:var(--green);font-weight:700;">+1</td><td style="padding:3px 8px;color:var(--text2);">Intracranial carotid artery involvement</td></tr>
+        <tr style="background:rgba(255,255,255,0.03);"><td style="padding:3px 8px;color:var(--green);font-weight:700;">+1</td><td style="padding:3px 8px;color:var(--text2);">Female sex</td></tr>
+        <tr><td style="padding:3px 8px;color:var(--green);font-weight:700;">+1</td><td style="padding:3px 8px;color:var(--text2);">Convexity subarachnoid hemorrhage on imaging</td></tr>
+        <tr style="border-top:1px solid var(--border);"><td style="padding:4px 8px;font-weight:700;color:var(--teal);">≥5</td><td style="padding:4px 8px;color:var(--text2);">Strongly favors RCVS &nbsp;·&nbsp; <span style="color:var(--text3)">&lt;2 favors PACNS / other arteriopathy</span></td></tr>
+      </table>
     </div>
+    <div class="crit" id="rcvs2-score-item">
+      <div class="crit-main"><div class="crit-name">RCVS2 Score — enter calculated total</div></div>
+      <div class="brow">
+        <button class="abtn" onclick="setToggle('rcvs2-score','high')">≥5 — Strongly favors RCVS (sens. 90%, spec. 99%)</button>
+        <button class="abtn" onclick="setToggle('rcvs2-score','mod')">3–4 — Indeterminate; RCVS possible</button>
+        <button class="abtn" onclick="setToggle('rcvs2-score','low')">≤2 — Favors PACNS or other arteriopathy</button>
+        <button class="abtn" onclick="setToggle('rcvs2-score','nd')">— Not yet calculated</button>
+      </div>
+    </div>
+  </div>
+</div>
   </div>
 
   <div class="slabel" style="margin-top:14px;">Moya moya Disease / Syndrome <span class="pill pill-a">Other Determined Etiology</span></div>
@@ -1749,7 +1792,10 @@ function setToggle(k, v) {
     }
   });
   ui();
-}
+
+  // Show/hide RCVS2 panel
+  const _r2p = document.getElementById('rcvs2-panel');
+  if (_r2p) _r2p.style.display = (S['oth-rcvs'] === 'yes') ? 'block' : 'none';}
 function setHRP(suffix, v) {
   const k = 'hrp-' + suffix;
   S[k] = v;
@@ -2024,6 +2070,13 @@ function computeScores() {
     other += 8; ev.other.push({txt:'<strong>Inherited thrombophilia not yet tested</strong> — recommend post-discharge testing off anticoagulation for complete HCS workup (Gordo et al. 2025).', w:'LOW', cls:'ev-low'});
   }
 
+  // When vasculitis confirmed/high + severe stenosis, penalise LAA
+  // (vasculitic stenosis ≠ atherosclerotic large vessel disease)
+  if ((S['oth-vasc']==='confirmed'||S['oth-vasc']==='high') &&
+      (S.vessel==='severe'||S.vessel==='moderate'||S.nascet==='severe'||S.nascet==='occ')) {
+    laa = Math.max(0, laa - 25);
+    ev.laa.push({txt:'<strong>Vasculitis / inflammatory arteriopathy with stenosis</strong> — stenosis is inflammatory, not atherosclerotic. LVD score penalised. Vessel wall MRI distinguishes inflammatory wall enhancement (vasculitis) from eccentric atherosclerotic plaque.', w:'NEGATIVE (Vasculitis)', cls:''});
+  }
   if (S['oth-vasc']==='confirmed') {
     other += 70; ev.other.push({txt:'<strong>Inflammatory arteriopathy / CNS vasculitis — confirmed</strong> (biopsy or characteristic vessel wall MRI) — Other Determined Etiology', w:'DEFINITIVE', cls:'ev-high'});
   } else if (S['oth-vasc']==='high') {
@@ -2031,6 +2084,49 @@ function computeScores() {
   } else if (S['oth-vasc']==='low') {
     ev.other.push({txt:'<strong>Inflammatory arteriopathy — low/moderate clinical suspicion</strong>; one or two features without clear confirmation', w:'LOW', cls:''});
   }
+  // ── RCVS scoring ───────────────────────────────────────────────────────
+  // When RCVS is suspected, redirect stenosis-driven LVD score to other
+  // RCVS causes non-atherosclerotic vasospasm — NOT large vessel atherosclerosis
+  if (S['oth-rcvs']==='yes') {
+    other += 40; ev.other.push({txt:'<strong>RCVS suspected (RCVS2 score supported)</strong> — reversible cerebral vasoconstriction syndrome causes non-atherosclerotic vasospasm → hemodynamic watershed ischemia. This is NOT atherosclerotic large vessel disease. (Singhal 2023; Ducros 2019 — RCVS2 score)', w:'HIGH', cls:'ev-high'});
+    // Penalise LAA since stenosis is vasospastic not atherosclerotic
+    if (S.vessel==='severe'||S.vessel==='moderate'||S.nascet==='severe'||S.nascet==='occ') {
+      laa = Math.max(0, laa - 30);
+      ev.laa.push({txt:'<strong>RCVS suspected</strong> — stenosis on parent vessel imaging is likely vasospasm, not atherosclerotic plaque. LVD score penalised. Vessel wall MRI (black blood) can distinguish vasospasm from atherosclerosis.', w:'NEGATIVE (RCVS)', cls:''});
+    }
+    // Watershed infarcts in RCVS context → supports hemodynamic/vasospasm mechanism
+    if (S.topo==='watershed' || (S.topos && S.topos.includes('watershed'))) {
+      other += 15; ev.other.push({txt:'<strong>Watershed infarct pattern in RCVS context</strong> — hemodynamic ischemia from vasospasm-induced hypoperfusion in border-zone territories. Classic RCVS ischemic mechanism.', w:'MOD', cls:'ev-mod'});
+    }
+  // RCVS2 score — boosts other if high, reduces if low
+  if (S['oth-rcvs']==='yes') {
+    if (S['rcvs2-score']==='high') {
+      other += 25; ev.other.push({txt:'<strong>RCVS2 Score ≥5</strong> — sensitivity 90%, specificity 99% for RCVS vs. other intracranial arteriopathies (Ducros 2019). High confidence in RCVS diagnosis.', w:'HIGH', cls:'ev-high'});
+      laa = Math.max(0, laa - 15);
+    } else if (S['rcvs2-score']==='low') {
+      other = Math.max(0, other - 15);
+      ev.other.push({txt:'<strong>RCVS2 Score ≤2</strong> — favors PACNS or other arteriopathy; RCVS less likely.', w:'NEGATIVE', cls:''});
+    }
+  }
+  }
+  // ── VW-MRI scoring ─────────────────────────────────────────────────────
+  if (S.vwmri==='concentric') {
+    other += 35; ev.other.push({txt:'<strong>VW-MRI: Concentric wall enhancement</strong> — strongly favors vasculitis / PACNS (circumferential inflammatory mural thickening). Not consistent with atherosclerotic ICAD. (Mandell DM et al. Stroke 2017)', w:'HIGH', cls:'ev-high'});
+    laa = Math.max(0, laa - 25); ev.laa.push({txt:'<strong>VW-MRI: Concentric enhancement</strong> — inconsistent with eccentric atherosclerotic plaque; LVD score penalised.', w:'NEGATIVE (VW-MRI)', cls:''});
+  } else if (S.vwmri==='eccentric') {
+    laa += 20; ev.laa.push({txt:'<strong>VW-MRI: Eccentric wall enhancement</strong> — favors atherosclerotic ICAD; eccentric plaque at vessel wall with or without lipid-rich necrotic core. (Obusez EC et al. AJNR 2016)', w:'HIGH', cls:'ev-high'});
+  } else if (S.vwmri==='none') {
+    other += 20; ev.other.push({txt:'<strong>VW-MRI: No wall enhancement</strong> — favors RCVS (smooth vasospastic narrowing without mural inflammation). Inconsistent with active vasculitis or ICAD. (Swartz RH et al. Neurology 2009)', w:'MOD', cls:'ev-mod'});
+    laa = Math.max(0, laa - 10); ev.laa.push({txt:'<strong>VW-MRI: No enhancement</strong> — inconsistent with atherosclerotic ICAD or vasculitis; LVD/Other scores adjusted.', w:'NEGATIVE (VW-MRI)', cls:''});
+  }
+ else if (S['oth-rcvs']==='nd') {
+    // RCVS not assessed but thunderclap headache + vasospasm pattern — prompt
+    if (S.vessel==='severe'||S.nascet==='severe') {
+      ev.other.push({txt:'<strong>Severe intracranial stenosis — RCVS not yet assessed</strong>: if patient had thunderclap headache or vasoactive drug exposure, consider RCVS2 score (Step 10) before attributing stenosis to atherosclerosis.', w:'LOW', cls:'ev-low'});
+    }
+  }
+
+
   if (S['oth-genetic']==='yes') {
     other += 60; ev.other.push({txt:'<strong>Genetic arteriopathy</strong> (CADASIL/Fabry/MELAS) — confirmed; Other Determined etiology', w:'HIGH', cls:'ev-high'});
   }
@@ -2078,7 +2174,12 @@ function computeScores() {
     ev.laa.push({txt:'<strong>Mild stenosis &lt;50%</strong> — does NOT meet TOAST LVD criteria; insufficient as causal attribution (PPV 13% in GWTG-Stroke)', w:'NEGATIVE', cls:''});
   }
   if (S.icad==='yes') {
-    laa += 35; ev.laa.push({txt:'<strong>Intracranial atherosclerotic disease (ICAD) ≥50%</strong> — meets TOAST LVD criteria for intracranial atherosclerosis', w:'HIGH', cls:'ev-high'});
+    laa += 35; ev.laa.push({txt:'<strong>Intracranial atherosclerotic disease (ICAD) ≥50%</strong> — meets TOAST LVD criteria for intracranial atherosclerosis. Note: CTA/MRA cannot definitively distinguish atherosclerotic ICAD from vasculitic stenosis (PACNS) or vasospasm (RCVS). VW-MRI is essential if diagnosis is uncertain.', w:'HIGH', cls:'ev-high'});
+    // Mild boost to Other: ICAD-pattern stenosis may represent vasculitis or RCVS
+    // Only applies if no VW-MRI confirms atherosclerosis and vasculitis/RCVS not ruled out
+    if (S.vwmri !== 'eccentric' && (S['oth-vasc'] !== 'no' || S['oth-rcvs'] !== 'no')) {
+      other += 10; ev.other.push({txt:'<strong>ICAD ≥50% — alternative etiology note</strong>: intracranial stenosis on CTA/MRA cannot exclude vasculitis (PACNS) or RCVS on imaging alone. Soft plaque vs. inflammatory thickening vs. vasospasm may be radiographically indistinguishable without VW-MRI. Consider VW-MRI if clinical picture is atypical for atherosclerosis (young patient, thunderclap headache, CSF pleocytosis).', w:'LOW', cls:'ev-low'});
+    }
   }
   if (S.nascet==='severe') {
     laa += 20; ev.laa.push({txt:'<strong>NASCET 70–99%</strong> ICA stenosis — symptomatic risk ~13%/year; asymptomatic pooled 0.88%/year post-2010 (Howard 2021, Lancet Neurol)', w:'HIGH', cls:'ev-high'});
@@ -2479,8 +2580,16 @@ function buildVerdict() {
       mechLabel = 'COVID-19 thromboinflammatory vasculopathy → stroke';
       othMech = ' — <strong>Sub-etiology: COVID-19 Thromboinflammatory Vasculopathy.</strong> Endothelial injury, procoagulant state, and cytokine-driven thrombosis. Anticoagulation/antiplatelet per dominant mechanism; neurology co-management.';
     } else if (S['oth-vasc']==='confirmed') {
-      mechLabel = 'CNS vasculitis → inflammatory small vessel wall injury → ischemia';
-      othMech = ' — <strong>Sub-etiology: CNS Vasculitis / Inflammatory Arteriopathy.</strong> Inflammatory vessel wall injury causing ischemia. Requires tissue or angiographic confirmation; immunosuppression (corticosteroids ± DMARDs); rheumatology/neurology co-management.';
+      mechLabel = 'CNS vasculitis / PACNS → inflammatory vessel wall injury → ischemia';
+      othMech = ' — <strong>Sub-etiology: CNS Vasculitis / Primary Angiitis of the CNS (PACNS).</strong> Inflammatory vessel wall injury causing ischemia. Vessel wall MRI demonstrates circumferential wall enhancement (vs. eccentric atherosclerotic plaque). Confirmed vasculitis: tissue biopsy or angiographic criteria met. Treatment: high-dose corticosteroids; cyclophosphamide for severe/refractory PACNS. Rheumatology/neurology co-management.';
+    } else if (S['oth-vasc']==='high') {
+      mechLabel = 'CNS vasculitis / PACNS — high clinical suspicion → inflammatory ischemia';
+      othMech = ' — <strong>Sub-etiology: CNS Vasculitis / Primary Angiitis of the CNS (PACNS) — High Clinical Suspicion.</strong> Multiple supportive features present but definitive confirmation pending. Vessel wall MRI (circumferential wall enhancement = vasculitis/PACNS; eccentric = atherosclerotic ICAD) is the most useful non-invasive discriminator. CSF pleocytosis supports vasculitis. If severe intracranial stenosis was entered, this is more likely inflammatory than atherosclerotic in this context (see LVD score penalty in evidence table). Empiric corticosteroids pending confirmation; rheumatology/neurology consultation.';
+    } else if (S['oth-rcvs']==='yes') {
+      const rcvs2Val = S['rcvs2-score'];
+      const rcvs2Conf = rcvs2Val==='high' ? 'RCVS2 ≥5 — high confidence (sens. 90%, spec. 99%; Ducros 2019)' : rcvs2Val==='low' ? 'RCVS2 ≤2 — lower confidence; consider PACNS' : rcvs2Val==='mod' ? 'RCVS2 3–4 — indeterminate' : 'RCVS2 not calculated';
+      mechLabel = 'Reversible Cerebral Vasoconstriction Syndrome (RCVS) → non-atherosclerotic vasospasm → hemodynamic or embolic ischemia';
+      othMech = ' — <strong>Sub-etiology: Reversible Cerebral Vasoconstriction Syndrome (RCVS).</strong> Non-atherosclerotic segmental vasospasm of cerebral arteries causes hemodynamic watershed ischemia and/or cortical SAH. RCVS2 score: ' + rcvs2Conf + '. Stenosis seen on CTA/MRA is vasospastic — NOT atherosclerotic; vessel wall MRI (no or minimal wall enhancement) distinguishes RCVS from PACNS or ICAD. Triggers: vasoactive drugs (triptans, SSRIs, cocaine), postpartum, exertion. Treatment: nimodipine; remove triggers; avoid vasoconstrictors. Do NOT use corticosteroids (may worsen; Singhal 2023). Annual stroke rate with conservative management: 3.2–15%; 71% no long-term disability (PMC3020907). Follow-up MRA at 3 months to confirm vasoconstriction resolution.';
     } else if (S['oth-genetic']==='yes') {
       mechLabel = 'Genetic arteriopathy — CADASIL / Fabry disease / MELAS';
       othMech = ' — <strong>Sub-etiology: Genetic Arteriopathy.</strong> Heritable vascular disease. Management targets underlying diagnosis (enzyme replacement for Fabry; L-arginine for MELAS; BP control + antiplatelet for CADASIL); genetic counselling and family screening indicated.';
