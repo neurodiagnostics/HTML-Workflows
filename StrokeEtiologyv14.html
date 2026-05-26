@@ -377,7 +377,7 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
   <div>
     <div class="h-title">Ischemic Stroke Etiology · <span>TOAST+ Classifier</span></div>
     <div class="h-sub">Adams HP et al. · Stroke 1993;24:35–41 · TOAST criteria with evidence-weighted adjudication<br>For educator use only</div>
-    <div style="font-family:var(--sans);font-size:11px;font-weight:700;color:var(--teal);margin-top:2px;">Designed by Daniel Short, MD</div>
+    <div style="font-family:var(--sans);font-size:11px;font-weight:700;color:var(--teal);margin-top:2px;">Designed by physician Daniel Short, MD</div>
   </div>
   <button class="reset-btn" onclick="resetAll()">↺ Reset</button>
 </header>
@@ -623,13 +623,13 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
     </div>
     <div class="crit-detail">
       Select every location where DWI infarcts are present — multiple selections are encouraged and improve classification accuracy. <strong style='color:var(--amber)'>Example: strictly cortical + cerebellar = strongly cardioembolic. Cortical + watershed = suggests proximal stenosis with both embolic and hemodynamic mechanisms.</strong><br><br>
-      Purely cortical: gyral DWI signal, cortical ribbon, wedge-shaped. <strong style='color:var(--amber)'>Cortical infarcts are virtually never SVD.</strong> Cortical + subcortical: large territorial infarcts with both grey and white matter. Striatocapsular / BG / IC / corona radiata: deep perforator territory (SVD/BAD). Watershed: linear "rosary bead" DWI at ACA/MCA or MCA/PCA boundary. Brainstem: anteromedial = basilar perforators (SVD/BAD); lateral = PICA/vertebral (atherosclerosis/dissection).
+      Purely cortical: gyral DWI signal, cortical ribbon, wedge-shaped. <strong style='color:var(--amber)'>Cortical infarcts are virtually never SVD.</strong> Cortical + subcortical: infarcts involving both grey and white matter. Striatocapsular / BG / IC / corona radiata: deep perforator territory (SVD/BAD). Watershed: linear "rosary bead" DWI at ACA/MCA or MCA/PCA boundary. Brainstem: anteromedial = basilar perforators (SVD/BAD); lateral = PICA/vertebral (atherosclerosis/dissection).
       <div class="cnote"><strong>Ref:</strong> Yaghi S et al. Front Neurol 2020;11:606521. Kang DW et al. Stroke 2005;36:2134–2139. Schiphorst AT et al. BMC Neurol 2019 — small cortical cerebellar infarcts associated with CE.</div>
     </div>
     <div class="multi-note">Select all infarct locations present — multiple selections allowed</div>
     <div class="brow">
       <button class="abtn toggle-topo" onclick="toggleTopo(this,'cortical')">Strictly cortical</button>
-      <button class="abtn toggle-topo" onclick="toggleTopo(this,'cortical-sub')">Cortical + subcortical (large territorial)</button>
+      <button class="abtn toggle-topo" onclick="toggleTopo(this,'cortical-sub')">Cortical + subcortical</button>
       <button class="abtn toggle-topo" onclick="toggleTopo(this,'striatocapsular')">Striatocapsular / BG / IC / corona radiata</button>
       <button class="abtn toggle-topo" onclick="toggleTopo(this,'thalamus')">Thalamus</button>
       <button class="abtn toggle-topo" onclick="toggleTopo(this,'brainstem')">Brainstem (pons / medulla / midbrain)</button>
@@ -1889,7 +1889,7 @@ function ui() {
   if (S.topo === 'watershed') {
     a2.className='alrt awn show'; a2.innerHTML='Watershed pattern: radiologic hallmark of hemodynamic ischemia from high-grade carotid stenosis. Evaluate carefully for ≥70% ICA stenosis or occlusion.';
   } else if ((S.topos&&(S.topos.includes('cortical')||S.topos.includes('cortical-sub')))) {
-    a2.className='alrt ainf show'; a2.innerHTML='Cortical or large territorial infarct selected: 2× more frequent in cardioembolic stroke (Yaghi 2020). Does not exclude LVD — assess vascular imaging carefully.';
+    a2.className='alrt ainf show'; a2.innerHTML='Cortical + subcortical infarct selected: 2× more frequent in cardioembolic stroke (Yaghi 2020). Does not exclude LVD — assess vascular imaging carefully.';
   } else if (S.circ === 'both' && S['fetal-pca'] === 'yes-ipsi') {
     a2.className='alrt awn show'; a2.innerHTML='⚠ Ipsilateral fetal PCA confirmed: anterior + posterior infarction may be explained by a SINGLE ipsilateral carotid source (CFP syndrome). This is NOT necessarily a multi-territory cardioembolic event — re-evaluate as a unilateral carotid-territory event before attributing to cardiac embolism.';
   } else if (S.circ === 'both' && (S['fetal-pca'] === 'no' || S['fetal-pca'] === 'yes-contra')) {
@@ -2101,11 +2101,23 @@ function computeScores() {
   // RCVS2 score — boosts other if high, reduces if low
   if (S['oth-rcvs']==='yes') {
     if (S['rcvs2-score']==='high') {
-      other += 25; ev.other.push({txt:'<strong>RCVS2 Score ≥5</strong> — sensitivity 90%, specificity 99% for RCVS vs. other intracranial arteriopathies (Ducros 2019). High confidence in RCVS diagnosis.', w:'HIGH', cls:'ev-high'});
+      // RCVS2 ≥5: 99% specific for RCVS — this overrides vasculitis high suspicion
+      // because RCVS and PACNS can look identical clinically without RCVS2 scoring
+      other += 25; ev.other.push({txt:'<strong>RCVS2 Score ≥5</strong> — sensitivity 90%, specificity 99% for RCVS vs. PACNS and other intracranial arteriopathies (Ducros A et al. Neurology 2019). At this specificity, RCVS is far more likely than vasculitis even when clinical suspicion for PACNS is high.', w:'DEFINITIVE', cls:'ev-high'});
       laa = Math.max(0, laa - 15);
+      // Counter vasculitis high-suspicion contribution: RCVS2 ≥5 is a powerful discriminator
+      if (S['oth-vasc']==='high') {
+        other = Math.max(0, other - 20); // partially offset the vasc high +30
+        ev.other.push({txt:'<strong>RCVS2 ≥5 overrides vasculitis high suspicion</strong> — despite high clinical suspicion for PACNS, RCVS2 ≥5 has 99% specificity for RCVS. The clinical picture is most consistent with RCVS. CSF analysis and vessel wall MRI (no/minimal enhancement in RCVS) can confirm. Do not start immunosuppression without VW-MRI or biopsy confirmation of vasculitis.', w:'HIGH', cls:'ev-high'});
+      }
+    } else if (S['rcvs2-score']==='mod') {
+      // Indeterminate — RCVS possible but vasculitis cannot be excluded
+      if (S['oth-vasc']==='high' || S['oth-vasc']==='confirmed') {
+        ev.other.push({txt:'<strong>RCVS2 3–4 (indeterminate) with vasculitis suspicion</strong> — RCVS and PACNS cannot be reliably distinguished by clinical features alone. VW-MRI is essential: concentric enhancement = PACNS; minimal/no enhancement = RCVS. CSF analysis: pleocytosis supports PACNS.', w:'MOD', cls:'ev-mod'});
+      }
     } else if (S['rcvs2-score']==='low') {
       other = Math.max(0, other - 15);
-      ev.other.push({txt:'<strong>RCVS2 Score ≤2</strong> — favors PACNS or other arteriopathy; RCVS less likely.', w:'NEGATIVE', cls:''});
+      ev.other.push({txt:'<strong>RCVS2 Score ≤2</strong> — favors PACNS or other arteriopathy over RCVS; re-evaluate RCVS diagnosis.', w:'NEGATIVE', cls:''});
     }
   }
   }
@@ -2582,18 +2594,18 @@ function buildVerdict() {
     } else if (S['oth-vasc']==='confirmed') {
       mechLabel = 'CNS vasculitis / PACNS → inflammatory vessel wall injury → ischemia';
       othMech = ' — <strong>Sub-etiology: CNS Vasculitis / Primary Angiitis of the CNS (PACNS).</strong> Inflammatory vessel wall injury causing ischemia. Vessel wall MRI demonstrates circumferential wall enhancement (vs. eccentric atherosclerotic plaque). Confirmed vasculitis: tissue biopsy or angiographic criteria met. Treatment: high-dose corticosteroids; cyclophosphamide for severe/refractory PACNS. Rheumatology/neurology co-management.';
+    } else if (S['oth-rcvs']==='yes' && S['rcvs2-score']==='high') {
+      // RCVS2 ≥5 has 99% specificity — takes precedence over vasculitis high suspicion
+      mechLabel = 'Reversible Cerebral Vasoconstriction Syndrome (RCVS) — RCVS2 ≥5, high confidence';
+      othMech = ' — <strong>Sub-etiology: Reversible Cerebral Vasoconstriction Syndrome (RCVS) — RCVS2 Score ≥5.</strong> RCVS2 ≥5 has 99% specificity for RCVS vs. PACNS and other intracranial arteriopathies (Ducros 2019). This distinguishes RCVS from vasculitis despite overlapping clinical presentations. Intracranial stenosis is vasospastic — NOT atherosclerotic or inflammatory. VW-MRI typically shows no/minimal mural enhancement (vs. circumferential enhancement in PACNS). Treatment: nimodipine; remove vasoactive triggers; avoid corticosteroids (may worsen RCVS; Singhal 2023). Follow-up MRA at 3 months to confirm vasoconstriction resolution. Do not start immunosuppression without VW-MRI or biopsy confirmation of vasculitis.';
     } else if (S['oth-vasc']==='high') {
       mechLabel = 'CNS vasculitis / PACNS — high clinical suspicion → inflammatory ischemia';
       othMech = ' — <strong>Sub-etiology: CNS Vasculitis / Primary Angiitis of the CNS (PACNS) — High Clinical Suspicion.</strong> Multiple supportive features present but definitive confirmation pending. Vessel wall MRI (circumferential wall enhancement = vasculitis/PACNS; eccentric = atherosclerotic ICAD) is the most useful non-invasive discriminator. CSF pleocytosis supports vasculitis. If severe intracranial stenosis was entered, this is more likely inflammatory than atherosclerotic in this context (see LVD score penalty in evidence table). Empiric corticosteroids pending confirmation; rheumatology/neurology consultation.';
     } else if (S['oth-rcvs']==='yes') {
       const rcvs2Val = S['rcvs2-score'];
-      const rcvs2Conf = rcvs2Val==='high' ? 'RCVS2 ≥5 — high confidence (sens. 90%, spec. 99%; Ducros 2019)' : rcvs2Val==='low' ? 'RCVS2 ≤2 — lower confidence; consider PACNS' : rcvs2Val==='mod' ? 'RCVS2 3–4 — indeterminate' : 'RCVS2 not calculated';
+      const rcvs2Conf = rcvs2Val==='high' ? 'RCVS2 ≥5 — high confidence (sens. 90%, spec. 99%; Ducros 2019)' : rcvs2Val==='low' ? 'RCVS2 ≤2 — lower confidence; consider PACNS' : rcvs2Val==='mod' ? 'RCVS2 3–4 — indeterminate; VW-MRI essential' : 'RCVS2 not calculated';
       mechLabel = 'Reversible Cerebral Vasoconstriction Syndrome (RCVS) → non-atherosclerotic vasospasm → hemodynamic or embolic ischemia';
-      othMech = ' — <strong>Sub-etiology: Reversible Cerebral Vasoconstriction Syndrome (RCVS).</strong> Non-atherosclerotic segmental vasospasm of cerebral arteries causes hemodynamic watershed ischemia and/or cortical SAH. RCVS2 score: ' + rcvs2Conf + '. Stenosis seen on CTA/MRA is vasospastic — NOT atherosclerotic; vessel wall MRI (no or minimal wall enhancement) distinguishes RCVS from PACNS or ICAD. Triggers: vasoactive drugs (triptans, SSRIs, cocaine), postpartum, exertion. Treatment: nimodipine; remove triggers; avoid vasoconstrictors. Do NOT use corticosteroids (may worsen; Singhal 2023). Annual stroke rate with conservative management: 3.2–15%; 71% no long-term disability (PMC3020907). Follow-up MRA at 3 months to confirm vasoconstriction resolution.';
-    } else if (S['oth-genetic']==='yes') {
-      mechLabel = 'Genetic arteriopathy — CADASIL / Fabry disease / MELAS';
-      othMech = ' — <strong>Sub-etiology: Genetic Arteriopathy.</strong> Heritable vascular disease. Management targets underlying diagnosis (enzyme replacement for Fabry; L-arginine for MELAS; BP control + antiplatelet for CADASIL); genetic counselling and family screening indicated.';
-    // 2. APLS — highest-specificity hypercoagulable state
+      othMech = ' — <strong>Sub-etiology: Reversible Cerebral Vasoconstriction Syndrome (RCVS).</strong> Non-atherosclerotic segmental vasospasm of cerebral arteries. RCVS2 score: ' + rcvs2Conf + '. Stenosis seen on CTA/MRA is vasospastic — NOT atherosclerotic; vessel wall MRI (no or minimal wall enhancement) distinguishes RCVS from PACNS or ICAD. Treatment: nimodipine; remove triggers; avoid vasoconstrictors and corticosteroids. Follow-up MRA at 3 months to confirm vasoconstriction resolution.';
     } else if (S['esus-apls']==='triple') {
       mechLabel = 'Triple-positive antiphospholipid syndrome (APLS) → arterial thrombosis';
       othMech = ' — <strong>Sub-etiology: Triple-Positive Antiphospholipid Syndrome (APLS).</strong> Lupus anticoagulant + anti-cardiolipin + anti-β2GPI positivity = highest-risk APLS profile (Horbach 1996: LA OR 3.58 for arterial events). DOACs are contraindicated — warfarin is the only guideline-recommended agent for arterial events in triple-positive APLS (Khairani CD et al. JACC 2023: DOACs OR 5.43 vs warfarin; p&lt;0.001). Haematology co-management required. Confirm diagnosis with repeat testing ≥12 weeks apart.';
@@ -3062,7 +3074,7 @@ function buildDoc(type, conf, laa, ce, svd, other, ev, hrpList, ceList) {
   const bpLabel = {severe:'>220 mmHg (severely elevated)',mod:'180–220 mmHg (moderately elevated)',mild:'140–179 mmHg (mildly elevated)',normal:'<140 mmHg (normal/low)',nd:'Not recorded'};
   const sizeLabel = {punctate:'Punctate <5 mm (embolic shower)',small:'<15 mm (lacunar/small)',grey:'15–20 mm (grey zone)',large:'>20 mm (territorial/non-lacunar)',nd:'Not assessed'};
   const countLabel = {single:'Single',['multi-same']:'Multiple — same territory',['multi-diff']:'Multiple — different territories (bilateral/ant+post)',nd:'Not assessed'};
-  const topoLabel = {cortical:'Strictly cortical',['cortical-sub']:'Cortical + subcortical (large territorial)',striatocapsular:'Striatocapsular / basal ganglia / internal capsule',thalamus:'Thalamus',brainstem:'Brainstem',cerebellum:'Cerebellum',watershed:'Watershed / border-zone'};
+  const topoLabel = {cortical:'Strictly cortical',['cortical-sub']:'Cortical + subcortical',striatocapsular:'Striatocapsular / basal ganglia / internal capsule',thalamus:'Thalamus',brainstem:'Brainstem',cerebellum:'Cerebellum',watershed:'Watershed / border-zone'};
   const vesselLabel = {none:'No significant disease',mild:'Mild non-stenotic (<50%)',moderate:'Moderate 50–69%',severe:'Severe >=70%',occlusion:'100% occlusion'};
   const nascetLabel = {none:'<50% (below LVD threshold)',mod:'50–69% (borderline LVD)',severe:'70–99% (meets LVD criteria)',occ:'Occlusion',na:'N/A (posterior circ. or no imaging)'};
   const plaqLabel = {calcified:'Strictly macrocalcified (lower risk)',mixed:'Mixed soft + calcified',soft:'All soft plaque (higher risk)',nopl:'No significant plaque',nd:'Composition not characterized'};
