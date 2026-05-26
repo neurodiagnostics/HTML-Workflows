@@ -377,7 +377,7 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
   <div>
     <div class="h-title">Ischemic Stroke Etiology · <span>TOAST+ Classifier</span></div>
     <div class="h-sub">Adams HP et al. · Stroke 1993;24:35–41 · TOAST criteria with evidence-weighted adjudication<br>For educator use only</div>
-    <div style="font-family:var(--sans);font-size:11px;font-weight:700;color:var(--teal);margin-top:2px;">Designed by Daniel Short, MD</div>
+    <div style="font-family:var(--sans);font-size:11px;font-weight:700;color:var(--teal);margin-top:2px;">Designed by physician Daniel Short, MD</div>
   </div>
   <button class="reset-btn" onclick="resetAll()">↺ Reset</button>
 </header>
@@ -744,6 +744,56 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
     </div>
   </div>
 
+
+  <!-- Bilateral carotid panel: appears when watershed or cortical+sub selected -->
+  <div id="bilateral-carotid-panel" style="display:none;margin-top:12px;">
+    <div class="slabel">Bilateral Carotid / Anterior Circulation Disease <span class="pill pill-a">Watershed / Multi-territory — Hemodynamic vs. Embolic</span></div>
+    <div class="lbox" style="margin-bottom:8px;">
+      <strong>Clinical distinction:</strong> Bilateral watershed or bilateral cortical + subcortical infarcts can arise from two distinct mechanisms that require very different workup and management:<br><br>
+      <span class="lr">• <strong>Hemodynamic collapse</strong> (bilateral severe carotid stenosis / occlusion):</span> Flow failure in the distal perfusion zones of both ACAs and MCAs → bilateral symmetric watershed infarcts. NOT cardioembolic. Key features: bilateral symmetric infarction, severe bilateral ICA disease on CTA/MRA, often perioperative or hypovolemic trigger.<br>
+      <span class="lt">• <strong>Cardioembolism (shower embolism)</strong>:</span> Multiple infarcts in different arterial territories simultaneously → classic CE pattern. Key features: different ages/stages of infarcts, bilateral but asymmetric, cortical branches affected, no hemodynamic trigger.<br><br>
+      <em style="color:var(--text3)">Ref: Caplan LR & Hennerici M, Arch Neurol 1998 — hemodynamic vs embolic stroke mechanisms. NASCET Collaborators, NEJM 1991 — bilateral carotid stenosis outcomes.</em>
+    </div>
+    <div class="crit" id="bilateral-carotid-item">
+      <div class="crit-main"><div class="crit-name">Bilateral significant carotid stenosis / occlusion on CTA or MRA?</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button></div>
+      <div class="crit-detail">
+        Bilateral severe (≥70%) ICA stenosis or one occlusion + contralateral severe stenosis is a rare but important cause of bilateral watershed infarction via hemodynamic failure. This is classified as large vessel disease (bilateral), NOT cardioembolism, despite the bilateral territory involvement. Note: unilateral carotid stenosis with compensatory contralateral flow failure can also cause ipsilateral watershed infarcts without cardiac source.
+      </div>
+      <div class="brow">
+        <button class="abtn" onclick="setToggle('bilateral-carotid','yes')">✓ Bilateral severe carotid stenosis or occlusion — hemodynamic mechanism likely</button>
+        <button class="abtn" onclick="setToggle('bilateral-carotid','unilateral')">~ Unilateral severe stenosis / occlusion only — hemodynamic mechanism possible</button>
+        <button class="abtn" onclick="setToggle('bilateral-carotid','no')">✗ No significant bilateral carotid disease — embolic mechanism more likely</button>
+        <button class="abtn" onclick="setToggle('bilateral-carotid','nd')">— Carotid imaging not reviewed / not performed</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Basilar / posterior circulation panel: appears when brainstem or thalamus selected -->
+  <div id="basilar-hemo-panel" style="display:none;margin-top:12px;">
+    <div class="slabel">Basilar Artery / Posterior Circulation Disease <span class="pill pill-a">Brainstem / Thalamus — Hemodynamic vs. Embolic</span></div>
+    <div class="lbox" style="margin-bottom:8px;">
+      <strong>Clinical distinction:</strong> Brainstem and thalamic infarcts can arise from basilar artery atherosclerotic stenosis or perforator occlusion — clinically and radiographically different from cardioembolism:<br><br>
+      <span class="lr">• <strong>Basilar artery stenosis / hemodynamic</strong>:</span> Anteromedial brainstem / thalamic bilateral infarcts in basilar perforator territory. Crescendo TIAs triggered by standing/exertion (hemodynamic). CTA/MRA shows basilar stenosis or VBD.<br>
+      <span class="lt">• <strong>Top-of-basilar embolism (cardiac or artery-to-artery)</strong>:</span> Simultaneous thalamic + occipital + rostral brainstem infarction in top-of-basilar territory. Abrupt onset. No prior TIAs.<br><br>
+      <em style="color:var(--text3)">Ref: Voetsch B et al. Arch Neurol 2004 — posterior circulation stroke mechanisms. Caplan LR, Posterior Circulation Stroke.</em>
+    </div>
+    <div class="crit" id="basilar-hemo-item">
+      <div class="crit-main"><div class="crit-name">Basilar or vertebral artery disease on CTA/MRA?</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button></div>
+      <div class="crit-detail">
+        Basilar artery stenosis ≥50% is associated with anteromedial brainstem and bilateral thalamic infarction via perforator occlusion or hemodynamic failure. Top-of-basilar embolism typically causes a distinctive syndrome: bilateral thalamic, occipital, and rostral midbrain infarction simultaneously. Vertebral artery disease (stenosis, dissection, dolichoectasia) can cause lateral medullary / PICA territory infarcts via artery-to-artery embolism or local thrombosis.
+      </div>
+      <div class="brow">
+        <button class="abtn" onclick="setToggle('basilar-hemo','severe')">✓ Severe basilar / vertebral stenosis (≥50%) — hemodynamic or perforator mechanism likely</button>
+        <button class="abtn" onclick="setToggle('basilar-hemo','topofbasilar')">~ Top-of-basilar pattern (bilateral thalamus + occipital + midbrain) — embolism likely</button>
+        <button class="abtn" onclick="setToggle('basilar-hemo','mild')">~ Mild basilar / vertebral disease — insufficient for hemodynamic ischemia</button>
+        <button class="abtn" onclick="setToggle('basilar-hemo','no')">✗ No significant basilar / vertebral disease</button>
+        <button class="abtn" onclick="setToggle('basilar-hemo','nd')">— Posterior circulation imaging not reviewed</button>
+      </div>
+    </div>
+  </div>
+
   <div id="a2" class="alrt"></div>
   <div class="nav-row">
     <button class="nbtn ns" onclick="go(1)">← Back</button>
@@ -781,7 +831,7 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
     <div class="brow">
       <button class="abtn" onclick="set('vessel','occlusion')">Occlusion — 100% of relevant parent vessel</button>
       <button class="abtn" onclick="set('vessel','severe')">Severe stenosis — ≥70% or near-occlusion</button>
-      <button class="abtn" onclick="set('vessel','moderate')">Moderate stenosis — 50–69% (NASCET)</button>
+      <button class="abtn" onclick="set('vessel','moderate')">Moderate stenosis — 50–69%</button>
       <button class="abtn" onclick="set('vessel','mild')">Mild non-stenotic disease — plaques, &lt;50% stenosis</button>
       <button class="abtn" onclick="set('vessel','none')">No significant disease on parent vessels</button>
     </div>
@@ -905,7 +955,7 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
     </div>
     <div class="brow">
       <button class="abtn" onclick="set('nascet','occ')">100% — Occlusion</button>
-      <button class="abtn" onclick="set('nascet','severe')">70–99% — Severe (meets LVD criteria)</button>
+      <button class="abtn" onclick="set('nascet','severe')">70–99% — Severe (≥70%)</button>
       <button class="abtn" onclick="set('nascet','mod')">50–69% — Moderate (borderline LVD)</button>
       <button class="abtn" onclick="set('nascet','none')">&lt;50% — Below TOAST LVD threshold</button>
       <button class="abtn" onclick="set('nascet','na')">N/A — Posterior circ. / no carotid imaging</button>
@@ -1095,10 +1145,39 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
       <div class="crit-name">Atrial fibrillation / flutter — paroxysmal or persistent, confirmed on ECG, continuous telemetry, or Holter monitor</div>
     </div>
     <div class="brow">
-            <button class="abtn" onclick="setToggle('ce-afib','yes')">✓ Confirmed AF/flutter</button>
+            <button class="abtn" onclick="setToggle('ce-afib','yes')">✓ Confirmed AF</button>
       <button class="abtn" onclick="setToggle('ce-afib','no')">✗ No AF on monitoring to date</button>
       <button class="abtn" onclick="setToggle('ce-afib','nd')">— Monitoring incomplete / &lt;24h telemetry only</button>
-    
+    </div>
+  </div>
+
+  <div id="afib-ac-panel" style="display:none;">
+    <div class="slabel" style="margin-top:8px;">Anticoagulation Status at Time of Stroke <span class="pill pill-a">Affects CE Probability</span></div>
+    <div class="lbox" style="margin-bottom:8px;">
+      <strong>Clinical context:</strong> Stroke on therapeutic anticoagulation significantly reduces — but does not eliminate — CE risk from AF. Key data:<br>
+      <span class="lt">• On therapeutic warfarin (INR 2–3):</span> Annual stroke rate ~1.5–2.0% vs. ~4.5% off anticoagulation — ~68% relative risk reduction (Hart RG et al. Ann Intern Med 1999; meta-analysis of 5 RCTs).<br>
+      <span class="lt">• On therapeutic DOAC:</span> Annual stroke/SE rate ~1.5% (ARISTOTLE: apixaban 1.27%/yr; ROCKET-AF: rivaroxaban ~1.7%/yr; RE-LY: dabigatran ~1.1%/yr). DOACs reduce stroke by 19% vs warfarin and 64% vs placebo (Ruff CT et al. Lancet 2014, n=71,683).<br>
+      <span class="la">• Subtherapeutic/off anticoagulation:</span> Substantially higher risk — INR &lt;2 provides significantly less protection (Hylek EM et al. NEJM 2003). Stroke on subtherapeutic anticoagulation does NOT argue against AF etiology.<br>
+      <span class="la">• Breakthrough stroke on therapeutic anticoagulation:</span> Still possible (residual ~1.5%/yr); consider competing etiologies but do not exclude AF — check for paroxysmal AF, inadequate dosing, drug interactions.
+    </div>
+    <div class="crit" id="afib-ac-item">
+      <div class="crit-main"><div class="crit-name">Was patient on anticoagulation at time of stroke?</div></div>
+      <div class="brow">
+        <button class="abtn" onclick="setAfibAC('yes')">✓ Yes — on anticoagulation</button>
+        <button class="abtn" onclick="setAfibAC('no')">✗ No — not taking anticoagulation</button>
+        <button class="abtn" onclick="setAfibAC('nd')">— Unknown</button>
+      </div>
+    </div>
+    <div id="afib-ac-level-panel" style="display:none;margin-top:6px;">
+      <div class="crit" id="afib-ac-level-item">
+        <div class="crit-main"><div class="crit-name">Was anticoagulation therapeutic?</div></div>
+        <div class="brow">
+          <button class="abtn" onclick="setToggle('afib-ac-level','inr')">✓ Yes — INR in therapeutic range (2.0–3.0 for AF, or 2.5–3.5 for mechanical valve)</button>
+          <button class="abtn" onclick="setToggle('afib-ac-level','axa')">✓ Yes — anti-Xa level in goal range (DOAC therapeutic)</button>
+          <button class="abtn" onclick="setToggle('afib-ac-level','low')">⚠ Not therapeutic — subtherapeutic INR or DOAC level, missed doses, or low dose (e.g. low-dose apixaban for age/weight)</button>
+          <button class="abtn" onclick="setToggle('afib-ac-level','nd')">— Level not checked / unknown</button>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -1148,7 +1227,7 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
       <strong style="color:var(--amber)">CTA heart morphology (cardiac CT) — second-line when TEE is not an option:</strong> Sensitivity ~96% for LAA thrombus; useful when TEE is not tolerated (patient refusal, esophageal contraindications, procedural risk), or when rapid non-invasive assessment is needed. CT cardiac cannot assess valvular function dynamically and may have artefact in irregular rhythms. Cardiac MRI (delayed gadolinium enhancement) is most sensitive for LV thrombus and myocardial scar.
     </div>
     <div class="brow">
-            <button class="abtn" onclick="setToggle('ce-thrombus','yes')">✓ Intracardiac thrombus confirmed on TEE</button>
+            <button class="abtn" onclick="setToggle('ce-thrombus','yes')">✓ Intracardiac thrombus confirmed on advanced cardiac imaging (TEE / cardiac CT / cardiac MRI)</button>
       <button class="abtn" onclick="setToggle('ce-thrombus','no')">✗ No thrombus on TEE (or cardiac CT if TEE not performed)</button>
       <button class="abtn" onclick="setToggle('ce-thrombus','tte')">~ TEE not yet performed — TTE only so far</button>
       <button class="abtn" onclick="setToggle('ce-thrombus','nd')">— No advanced cardiac imaging performed</button>
@@ -1453,7 +1532,7 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
     <div class="brow">
             <button class="abtn" onclick="setToggle('esus-hcs-other','yes')">✓ Inherited thrombophilia identified (FVL, PTG, protein C/S deficiency, antithrombin)</button>
       <button class="abtn" onclick="setToggle('esus-hcs-other','no')">✗ Tested — negative</button>
-      <button class="abtn" onclick="setToggle('esus-hcs-other','nd')">— Not yet tested (recommend post-discharge off anticoagulation)</button>
+      <button class="abtn" onclick="setToggle('esus-hcs-other','nd')">— Not tested</button>
     
     </div>
   </div>
@@ -1699,6 +1778,18 @@ function toggleTopo(btn, val) {
     S.topo = S.topos.length > 0 ? S.topos[0] : null;
   }
   ui();
+  // Show/hide bilateral carotid panel for watershed/cortical-sub patterns
+  const _bcp = document.getElementById('bilateral-carotid-panel');
+  if (_bcp) {
+    const showBilat = S.topos && (S.topos.includes('watershed') || S.topos.includes('cortical-sub') || S.topos.includes('cortical'));
+    _bcp.style.display = showBilat ? 'block' : 'none';
+  }
+  // Show/hide basilar panel for brainstem/thalamus patterns
+  const _bap = document.getElementById('basilar-hemo-panel');
+  if (_bap) {
+    const showBasilar = S.topos && (S.topos.includes('brainstem') || S.topos.includes('thalamus'));
+    _bap.style.display = showBasilar ? 'block' : 'none';
+  }
 }
 function set(k, v) {
   S[k] = v;
@@ -1747,6 +1838,29 @@ function set(k, v) {
 }
 
 // Toggle/independent select (for rows that can have yes/no/nd independently)
+function setAfibAC(val) {
+  S['afib-ac'] = val;
+  const item = document.getElementById('afib-ac-item');
+  if (item) {
+    item.querySelectorAll('.abtn').forEach(b => {
+      b.classList.remove('ay','an','at','ab','aa','aw','av');
+      b.style.background = ''; b.style.color = ''; b.style.fontWeight = '';
+    });
+    item.querySelectorAll('.abtn').forEach(b => {
+      const oc = b.getAttribute('onclick') || '';
+      if (oc.indexOf("'" + val + "'") !== -1) {
+        if (val === 'yes') { b.style.background='rgba(63,185,80,0.20)'; b.style.color='#3fb950'; b.style.fontWeight='700'; }
+        else if (val === 'no') { b.style.background='rgba(248,81,73,0.20)'; b.style.color='#f85149'; b.style.fontWeight='700'; }
+        else { b.style.background='rgba(227,179,65,0.15)'; b.style.color='#e3b341'; b.style.fontWeight='700'; }
+      }
+    });
+    item.className = val === 'yes' ? 'crit c-yes' : val === 'no' ? 'crit c-yes' : 'crit c-abs';
+  }
+  const levelPanel = document.getElementById('afib-ac-level-panel');
+  if (levelPanel) levelPanel.style.display = (val === 'yes') ? 'block' : 'none';
+  ui();
+}
+
 function setToggle(k, v) {
   S[k] = v;
   const item = document.getElementById(k + '-item');
@@ -1792,6 +1906,9 @@ function setToggle(k, v) {
     }
   });
   ui();
+  // Show/hide AF anticoagulation panel
+  const _afp = document.getElementById('afib-ac-panel');
+  if (_afp) _afp.style.display = (S['ce-afib'] === 'yes') ? 'block' : 'none';
 
   // Show/hide RCVS2 panel
   const _r2p = document.getElementById('rcvs2-panel');
@@ -1971,7 +2088,8 @@ function ui() {
   if (tcdSection) {
     if (!tcdDone) {
       tcdSection.classList.add('section-disabled');
-      if (tcdNote) tcdNote.classList.add('visible');
+      tcdSection.style.display = 'none';
+      if (tcdNote) { tcdNote.classList.add('visible'); tcdNote.style.display = 'block'; }
       // Auto-set all TCD sub-fields to 'nd' when not done
       ['tcd-hits','tcd-bubble','tcd-velocity'].forEach(k => {
         if (S[k] !== 'nd') {
@@ -1988,7 +2106,8 @@ function ui() {
       });
     } else {
       tcdSection.classList.remove('section-disabled');
-      if (tcdNote) tcdNote.classList.remove('visible');
+      tcdSection.style.display = '';
+      if (tcdNote) { tcdNote.classList.remove('visible'); tcdNote.style.display = 'none'; }
     }
   }
 
@@ -2223,6 +2342,22 @@ function computeScores() {
   if (hasTopo('watershed')) {
     laa += 15; ev.laa.push({txt:'<strong>Watershed/border-zone topography</strong> — radiologic hallmark of hemodynamic ischemia from high-grade carotid stenosis', w:'MOD', cls:'ev-mod'});
   }
+  // ── Bilateral carotid / basilar hemodynamic scoring ──────────────────
+  if (S['bilateral-carotid']==='yes') {
+    laa += 40; ev.laa.push({txt:'<strong>Bilateral severe carotid stenosis / occlusion</strong> — bilateral hemodynamic failure causing watershed infarction. This is large vessel disease (bilateral), NOT cardioembolism, despite bilateral territory involvement. (Caplan & Hennerici, Arch Neurol 1998)', w:'HIGH', cls:'ev-high'});
+    ce = Math.max(0, ce - 20); ev.ce.push({txt:'<strong>Bilateral carotid stenosis present</strong> — hemodynamic mechanism explains bilateral watershed infarcts without requiring cardioembolic source. CE score reduced.', w:'NEGATIVE (bilateral LAD)', cls:''});
+  } else if (S['bilateral-carotid']==='unilateral') {
+    laa += 15; ev.laa.push({txt:'<strong>Unilateral severe carotid stenosis / occlusion</strong> — ipsilateral hemodynamic watershed mechanism possible, particularly if contralateral compensation is inadequate.', w:'MOD', cls:'ev-mod'});
+  } else if (S['bilateral-carotid']==='no' && (hasTopo('watershed') || hasTopo('cortical-sub'))) {
+    ce += 10; ev.ce.push({txt:'<strong>No significant bilateral carotid disease</strong> — bilateral watershed or territorial infarcts without hemodynamic explanation increases probability of embolic (cardioembolic) shower mechanism.', w:'MOD', cls:'ev-mod'});
+  }
+  if (S['basilar-hemo']==='severe') {
+    laa += 35; ev.laa.push({txt:'<strong>Severe basilar / vertebral stenosis ≥50%</strong> — hemodynamic or perforator occlusion mechanism for brainstem/thalamic infarction. Large vessel disease of posterior circulation. (Voetsch B et al. Arch Neurol 2004)', w:'HIGH', cls:'ev-high'});
+    ce = Math.max(0, ce - 15); ev.ce.push({txt:'<strong>Severe basilar/vertebral stenosis</strong> — posterior circulation LVD explains infarct without requiring cardioembolic source.', w:'NEGATIVE (posterior LVD)', cls:''});
+  } else if (S['basilar-hemo']==='topofbasilar') {
+    ce += 20; ev.ce.push({txt:'<strong>Top-of-basilar embolism pattern</strong> — simultaneous bilateral thalamic + occipital + rostral midbrain infarction strongly suggests embolic mechanism (cardiac or artery-to-artery). Classic CE territory.', w:'HIGH', cls:'ev-high'});
+  }
+
   if (S.count==='multi-same') {
     laa += 7; ev.laa.push({txt:'<strong>Multiple infarcts in same territory</strong> — consistent with proximal artery-to-artery embolism', w:'MOD', cls:'ev-mod'});
   }
@@ -2237,6 +2372,17 @@ function computeScores() {
   if (S['ce-afib']==='yes') {
     ce += 55; ev.ce.push({txt:'<strong>Atrial fibrillation/flutter</strong> — most common high-risk cardioembolic source per TOAST', w:'HIGH', cls:'ev-high'});
   }
+  // AF anticoagulation context
+  if (S['ce-afib']==='yes') {
+    if (S['afib-ac-level']==='low') {
+      ce += 15; ev.ce.push({txt:'<strong>AF + subtherapeutic anticoagulation at stroke onset</strong> — subtherapeutic INR/DOAC level substantially increases AF-related stroke risk. Stroke on inadequate anticoagulation strongly supports AF as the CE mechanism. (Hylek EM et al. NEJM 2003)', w:'HIGH', cls:'ev-high'});
+    } else if (S['afib-ac-level']==='inr' || S['afib-ac-level']==='axa') {
+      ev.ce.push({txt:'<strong>Breakthrough stroke on therapeutic anticoagulation</strong> — residual AF stroke risk ~1.5%/yr even on optimal therapy (ARISTOTLE, RE-LY, ROCKET-AF). Does not exclude AF as mechanism — consider paroxysmal AF, drug interactions, competing etiology. Stroke on therapeutic anticoagulation may also suggest competing hypercoagulable state or structural source.', w:'MOD', cls:'ev-mod'});
+    } else if (S['afib-ac']!=='yes') {
+      ce += 10; ev.ce.push({txt:'<strong>AF — anticoagulation status unknown or not taken</strong> — unprotected AF carries ~4.5%/yr stroke risk (Hart RG et al. meta-analysis). Strongly supports CE mechanism.', w:'MOD', cls:'ev-mod'});
+    }
+  }
+
   if (S['ce-thrombus']==='yes') {
     ce += 55; ev.ce.push({txt:'<strong>Intracardiac thrombus</strong> (LV/LAA) — high-risk CE source', w:'HIGH', cls:'ev-high'});
   }
@@ -2442,7 +2588,13 @@ function buildMgmt(cat, mechLabel) {
         <strong>CEA perioperative stroke/death:</strong> ~1.85% in non-octogenarians, ~2.04% in octogenarians (meta-analysis, 47 studies, N=107,587; Touzé et al. Stroke 2023). Composite stroke/death 2.5–3.4% (VQI registry 2016–2023).<br>
         <strong>TCAR perioperative stroke/death:</strong> ~2.0% (VQI, Schermerhorn 2023, JAHA); comparable to CEA for symptomatic patients (1-year hazard ratio CEA vs TCAR: 1.30, 95%CI 1.01–1.68 — CEA marginally favoured at 1 year for symptomatic disease in IV-adjusted analysis).<br>
         <strong>TF-CAS:</strong> Higher perioperative stroke/death (3.7%, JAHA 2023) — generally avoided in symptomatic patients.<br>
-        <strong>Timing:</strong> Defer CEA ≥2 weeks if large infarct or recent thrombolysis (↑ ICH risk). Consider urgent CEA/TCAR within 48–72h for crescendo TIA or recurrent events on medical therapy.`);
+        <strong>Timing:</strong> Defer CEA ≥2 weeks if large infarct or recent thrombolysis (↑ ICH risk). Consider urgent CEA/TCAR within 48–72h for crescendo TIA or recurrent events on medical therapy.<br><br>
+        <strong style="color:var(--amber)">Perioperative Antiplatelet Strategy:</strong><br>
+        <strong>CEA — pre-procedure:</strong> DAPT (aspirin 81–325 mg + clopidogrel 75 mg) initiated before surgery. A single 75 mg clopidogrel dose the night before surgery (added to daily aspirin) significantly reduces post-CEA thromboembolism and microembolisation on TCD monitoring, with no significant increase in major bleeding (Payne DA et al. EJVS 2004; Naylor AR et al. EJVS 2010; Clopidogrel 75 mg pre-CEA: Vascular Quality Initiative registry data). Emerging evidence supports DAPT in recently symptomatic patients to reduce recurrent cerebral events while awaiting CEA (PubMed PMID 28818254). DAPT is associated with reduced stroke without significantly increased bleeding at CEA when aspirin is continued throughout the perioperative period (Vascular Quality Initiative, 11,081 patients; Kim DH et al. J Vasc Surg 2016).<br>
+        <strong>CEA — post-procedure:</strong> Aspirin monotherapy (81–325 mg) long-term. DAPT is generally not required beyond the immediate perioperative period for CEA (no stent placed); transition to single-agent aspirin is standard practice after wound healing (ACST-2 survey: 76% of centres use MAPT post-CEA).<br>
+        <strong>TCAR — pre-procedure:</strong> DAPT (aspirin + P2Y12 inhibitor) initiated 3 days preoperatively or as a loading dose on the day of procedure (manufacturer recommendation, supported by TCAR literature). Aspirin-only pre-TCAR is associated with higher stroke/death (RR 1.9, 95% CI 1.2–3.2) vs DAPT in Vascular Quality Initiative analysis (n=25,459 TCAR patients; J Vasc Surg 2023). DAPT is used by 81% of TCAR patients in the VQI registry.<br>
+        <strong>TCAR — post-procedure:</strong> DAPT (aspirin + clopidogrel 75 mg) for a minimum of 30 days post-stenting to promote stent patency, then transition to antiplatelet monotherapy long-term. DAPT maintained post-TCAR has significantly lower in-hospital and 1-year stroke rates vs single antiplatelet in propensity-matched VQI analysis (J Vasc Surg 2023). Ticagrelor is an alternative to clopidogrel for patients with high on-treatment platelet reactivity (HTPR) — present in up to 44% of clopidogrel users (PubMed PMID 32445834).<br>
+        <em style="color:var(--text3)">Note: No RCT has specifically defined the optimal DAPT regimen duration for CEA/TCAR; current practice is largely derived from coronary stenting literature and observational VQI registry data. Vascular surgery and neurology co-management recommended for perioperative antiplatelet decisions.</em>`);
     } else if (isMod && S.circ !== 'post') {
       rows += row('🔪', 'Carotid Revascularization — Symptomatic 50–69% Stenosis (NASCET)',
         `<strong>Indication:</strong> Symptomatic 50–69%: ARR from CEA ~5% at 5 years (NNT ~20) — marginal benefit; decision should be individualized based on patient risk, plaque features, and surgical risk.<br>
@@ -2562,12 +2714,29 @@ function buildMgmt(cat, mechLabel) {
 
 function buildVerdict() {
   // ── CVST pre-check: venous infarction is a separate pathology ──
+  // IMPORTANT: CVST verdict only fires when there are NO strong competing arterial signals.
+  // Strong arterial signals (confirmed cardiac thrombus, AFib, APLS, mechanical valve) override
+  // CVST even if venous topography is present — posterior temporal infarcts can be either arterial
+  // (MCA/PCA territory) OR venous (vein of Labbé). Clinical adjudication is required.
   const cvstSignals = [
     S['topo-venous'] && S['topo-venous'] !== 'no' && S['topo-venous'] !== null,
     S['cvst-imaging'] === 'yes' || S['cvst-imaging'] === 'mrv',
     S['cvst-rf'] === 'yes'
   ].filter(Boolean).length;
-  const cvstActive = cvstSignals >= 2;
+
+  // Gate CVST verdict: blocked if strong arterial/cardiac signals present
+  const strongCEsignals = (
+    S['ce-afib'] === 'yes' ||
+    S['ce-thrombus'] === 'yes' ||
+    S['ce-valve'] === 'yes' ||
+    ['ef','mi','rwma'].includes(S['ce-cmp']) ||
+    S['esus-apls'] === 'triple' ||
+    S['esus-apls'] === 'single'
+  );
+  // CVST active ONLY when ≥2 venous signals AND no strong competing arterial etiology
+  const cvstActive = cvstSignals >= 2 && !strongCEsignals;
+  // Track for use in arterial verdict when CVST signals exist but CE/APLS overrides
+  const cvstPossibleButOverridden = cvstSignals >= 2 && strongCEsignals;
 
   // Compute scores for all four TOAST categories
   const { laa, ce, svd, other, ev } = computeScores();
@@ -2578,7 +2747,7 @@ function buildVerdict() {
   const ceHigh = ['ce-afib','ce-thrombus','ce-valve'].filter(k=>S[k]==='yes').length>0 || ['ef','mi','rwma'].includes(S['ce-cmp']);
   const lvdHigh = S.vessel==='severe'||S.nascet==='severe'||S.nascet==='occ'||S.ilt==='yes'||S.icad==='yes'; // note: 'occlusion' alone removed — could be embolic, not definitively LAA
 
-  if (other >= 60) {
+  if (other >= 60 && other === maxScore) {
     let othMech = '';
     // Priority order: most specific / highest-scoring signals first
     // 1. Definitive structural/infectious etiologies
@@ -2808,7 +2977,8 @@ function buildVerdict() {
       else if (['ef','mi'].includes(S['ce-cmp'])) { mechLabel='Reduced EF / recent MI → mural thrombus → cardioembolic occlusion'; ceMech='Reduced EF / recent MI — mural thrombus or stasis cardiomyopathy promoting embolism.'; }
       else if (S['ce-pfo']==='yes') { mechLabel='PFO → paradoxical embolism (venous thrombus crossing to arterial circulation)'; ceMech='PFO — paradoxical embolism via right-to-left shunt. Attribution requires RoPE score and exclusion of other causes.'; }
       else { mechLabel='Cardioembolic source → embolism from cardiac chamber or valve'; ceMech='Cardioembolic source identified — mechanism consistent with embolism from cardiac chamber or valvular source.'; }
-      desc = '<strong>CE — Proposed mechanism:</strong> ' + ceMech;
+      desc = '<strong>CE — Proposed mechanism:</strong> ' + ceMech +
+        (cvstPossibleButOverridden ? '<br><br><strong style="color:var(--amber)">⚠ Venous territory note:</strong> Posterior temporal / near-sinus infarct location was flagged as a possible venous territory. In this patient with confirmed cardiac source and/or APLS, the infarct is most likely arterial embolic into a region that anatomically overlaps with venous drainage (posterior temporal lobe is supplied by MCA/PCA but drains near the transverse sinus / vein of Labbé). <strong>MRV should still be obtained</strong> to formally exclude concurrent CVST — APLS and malignancy can cause both arterial and venous thrombosis simultaneously.' : '');
       mgmtHTML = buildMgmt('ce', mechLabel);
       if (isClose) { type='Undetermined — Equally Competing Etiologies'; cls='vmult'; conf='TIED'; confCls='conf-t'; desc=tiedDesc('ce', runner[0]); mechLabel='Two etiologies equally supported — ancillary testing required to differentiate'; mgmtHTML=''; }
 
