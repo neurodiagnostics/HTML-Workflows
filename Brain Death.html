@@ -58,7 +58,7 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
 /* STEP TABS */
 .steps { display: grid; grid-template-columns: repeat(6, 1fr); border: 1px solid var(--border); border-radius: 8px; margin-bottom: 20px; overflow: hidden; background: var(--card); }
 .stab { padding: 9px 4px 10px; text-align: center; font-family: var(--sans); font-size: 10px; color: var(--text3); border-right: 1px solid var(--border); transition: all 0.2s; line-height: 1.3; cursor: pointer; background: var(--card); }
-.stab:nth-child(6n) { border-right: none; }
+.stab:nth-child(7n) { border-right: none; }
 .stab .sn { display: flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 50%; background: var(--card2); border: 1px solid var(--border); font-size: 11px; font-weight: 700; margin: 0 auto 4px; transition: all 0.2s; }
 .stab .slbl { display: block; font-size: 9px; font-weight: 600; letter-spacing: 0; line-height: 1.3; }
 .stab.active { color: var(--teal); background: rgba(57,208,176,0.06); }
@@ -232,13 +232,14 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
 
 <div class="prog-track"><div class="prog-fill" id="pf" style="width:0%"></div></div>
 
-<div class="steps">
+<div class="steps" style="grid-template-columns: repeat(7, 1fr);">
   <div class="stab active" id="st0" onclick="goTab(0)" title="Go to step 1"><span class="sn">1</span><span class="slbl">Prerequisites</span></div>
   <div class="stab" id="st1" onclick="goTab(1)" title="Go to step 2"><span class="sn">2</span><span class="slbl">Confounders</span></div>
   <div class="stab" id="st2" onclick="goTab(2)" title="Go to step 3"><span class="sn">3</span><span class="slbl">Neuro Exam</span></div>
   <div class="stab" id="st3" onclick="goTab(3)" title="Go to step 4"><span class="sn">4</span><span class="slbl">Apnea Test</span></div>
   <div class="stab" id="st4" onclick="goTab(4)" title="Go to step 5"><span class="sn">5</span><span class="slbl">Ancillary</span></div>
-  <div class="stab" id="st5" onclick="goTab(5)" title="Go to step 6"><span class="sn">6</span><span class="slbl">Verdict</span></div>
+  <div class="stab" id="st5" onclick="goTab(5)" title="Go to step 6"><span class="sn">6</span><span class="slbl">Institution</span></div>
+  <div class="stab" id="st6" onclick="goTab(6)" title="Go to step 7"><span class="sn">7</span><span class="slbl">Verdict</span></div>
 </div>
 
 <!-- ══ SCREEN 0: PREREQUISITES ══ -->
@@ -760,13 +761,58 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
   <div id="a4" class="alrt"></div>
   <div class="nav-row">
     <button class="nbtn ns" onclick="go(3)">← Back</button>
-    <button class="nbtn np" onclick="go(5)">Next: Verdict →</button>
+    <button class="nbtn np" onclick="go(5)">Next: Institution →</button>
   </div>
 </div>
 </div>
 
-<!-- ══ SCREEN 5: VERDICT ══ -->
+<!-- ══ SCREEN 5: INSTITUTION ══ -->
 <div class="screen" id="s5">
+<div class="card">
+  <div class="ctitle" style="color:var(--amber);">Step 6 · Institutional Protocol Verification</div>
+  <div class="csub">Before a verdict can be generated, you must confirm that you have reviewed and followed your institution's specific protocol for brain death / death by neurologic criteria determination.</div>
+
+  <div class="lbox">
+    <strong>Why this step matters:</strong> The 2023 AAN/AAP/CNS/SCCM guideline (Greer DM et al., Neurology 2023) establishes a national standard, but individual hospitals may have additional or differing requirements — including mandatory waiting periods, required number of examinations, specific examiner credentialing rules, family notification steps, or ancillary testing thresholds mandated by state law. The AAN guideline explicitly states that all determinations must comply with applicable local institutional policy and state law. This tool reflects the national guideline only.
+  </div>
+
+  <div class="slabel">Institutional Protocol Acknowledgement <span class="pill pill-a">REQUIRED TO PROCEED</span></div>
+
+  <div class="crit" id="instit-item">
+    <div class="crit-main">
+      <div class="crit-name">I have reviewed and followed my institution's specific brain death / DNC protocol in addition to the steps completed in this tool</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      Institutional protocols for BD/DNC may include requirements not captured in this tool, such as:
+      <br><br>
+      <strong>Examiner requirements:</strong> Some institutions require two independent examinations by two separate credentialed physicians; others require neurology or neurosurgery involvement regardless of primary service.
+      <br><br>
+      <strong>Waiting periods:</strong> Some state laws or institutional policies mandate a minimum observation period (e.g., 6–24 hours) between onset of clinical findings and formal evaluation, or between two separate examinations.
+      <br><br>
+      <strong>Ancillary testing:</strong> Some institutions require ancillary testing in all cases, not only when clinically indicated per the AAN guideline.
+      <br><br>
+      <strong>Family notification:</strong> Many institutions require a formal family notification step prior to or concurrent with BD/DNC evaluation.
+      <br><br>
+      <strong>Documentation:</strong> Institutional templates, attestation forms, and time-of-death documentation requirements vary. Ensure your declaration note complies with your institution's requirements.
+      <div class="cnote cnote-warn">If you are unsure of your institution's protocol, contact your neurology or neurocritical care service, your medical director, or consult your hospital's policy database before proceeding.</div>
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="iset('instit','confirmed')" id="instit-confirmed">✓ Confirmed — I have followed my institution's BD/DNC protocol</button>
+      <button class="abtn" onclick="iset('instit','not_done')" id="instit-not_done">✗ Not yet — I have not verified my institutional protocol</button>
+    </div>
+  </div>
+
+  <div id="a5" class="alrt"></div>
+  <div class="nav-row">
+    <button class="nbtn ns" onclick="go(4)">← Back</button>
+    <button class="nbtn np" id="n5" onclick="go(6)" disabled>Next: Verdict →</button>
+  </div>
+</div>
+</div>
+
+<!-- ══ SCREEN 6: VERDICT ══ -->
+<div class="screen" id="s6">
 <div id="vout"></div>
 
 <div class="sum-grid" id="sout"></div>
@@ -778,7 +824,7 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
 <div class="doc-body" id="dn"></div>
 
 <div class="nav-row">
-  <button class="nbtn ns" onclick="go(4)">← Back</button>
+  <button class="nbtn ns" onclick="go(5)">← Back</button>
   <button class="nbtn np" onclick="resetAll()">↺ Start Over</button>
 </div>
 </div>
@@ -798,12 +844,15 @@ const S = {
   apnea: null, co2: null,
   // Ancillary
   ancind: null, anc4v: null, ancspect: null, anctcd: null, anceeg: null,
+  // Institution
+  instit: null,
 };
 
 let cur = 0;
 
 function ui() {
   document.getElementById('n0').disabled = true;
+  document.getElementById('n5').disabled = true;
 }
 
 function pset(k, v) {
@@ -938,6 +987,34 @@ function ancset(k, v) {
   }
 }
 
+function iset(k, v) {
+  S[k] = v;
+  const item = document.getElementById(k+'-item');
+  ['confirmed','not_done'].forEach(val => {
+    const b = document.getElementById(k+'-'+val);
+    if (b) b.classList.remove('ay','an');
+  });
+  const chosen = document.getElementById(k+'-'+v);
+  if (chosen) chosen.classList.add(v === 'confirmed' ? 'ay' : 'an');
+  if (item) item.className = 'crit ' + (v === 'confirmed' ? 'c-yes' : 'c-no');
+  checkInstit();
+}
+
+function checkInstit() {
+  const a = document.getElementById('a5');
+  a.className = 'alrt';
+  if (S.instit === null) { a.classList.remove('show'); document.getElementById('n5').disabled = true; return; }
+  if (S.instit === 'confirmed') {
+    a.classList.add('show','aok');
+    a.innerHTML = '✓ Institutional protocol confirmed. Proceed to verdict.';
+    document.getElementById('n5').disabled = false;
+  } else {
+    a.classList.add('show','aerr');
+    a.innerHTML = '⛔ Institutional protocol not yet verified. No verdict can be generated until you have confirmed compliance with your institution\'s BD/DNC protocol.';
+    document.getElementById('n5').disabled = true;
+  }
+}
+
 function checkPrereqs() {
   const a = document.getElementById('a0');
   const allSet = S.etiol !== null && S.neuroimg !== null && S.obs !== null && S.exam !== null;
@@ -1054,7 +1131,9 @@ function rv() {
   const apneaRequirementMet = apneaPos || (apneaAbort && ancillaryConsistent);
 
   let v;
-  if (!prereqsMet) {
+  if (S.instit !== 'confirmed') {
+    v = { cls:'va', t:'Institutional Protocol Not Verified', d:'No verdict can be generated until you have confirmed that your institution\'s specific brain death / DNC protocol has been followed. Return to Step 6 and verify your institutional workflow before proceeding.' };
+  } else if (!prereqsMet) {
     v = { cls:'vn', t:'Prerequisites Not Met', d:'One or more mandatory prerequisites were not satisfied. BD/DNC evaluation should not have been initiated or cannot be completed as described. Address barriers and reassess.' };
   } else if (!confsMet) {
     v = { cls:'vn', t:'Confounders Not Excluded', d:'One or more confounders were identified and not fully corrected. The neurologic examination and apnea test cannot be considered reliable. Correct all confounders, then repeat the evaluation.' };
@@ -1148,6 +1227,15 @@ function rv() {
   });
   shtml += `</div>`;
 
+  // Institution block
+  const institOk = S.instit === 'confirmed';
+  const institCls = S.instit === null ? 'dgr' : institOk ? 'dg' : 'dr';
+  const institTag = S.instit === null ? 'tgr' : institOk ? 'tg' : 'tr';
+  const institLbl = S.instit === null ? 'NOT ASSESSED' : institOk ? 'CONFIRMED' : 'NOT VERIFIED';
+  shtml += `<div class="sblock" style="grid-column: 1 / -1;"><div class="sbtitle">Institutional Protocol</div>`;
+  shtml += `<div class="srow"><div class="dot ${institCls}"></div><div class="sname">Institution-specific BD/DNC protocol followed</div><div class="stag ${institTag}">${institLbl}</div></div>`;
+  shtml += `</div>`;
+
   document.getElementById('sout').innerHTML = shtml;
 
   // Documentation note
@@ -1183,6 +1271,8 @@ function rv() {
   note += `  Radionuclide scintigraphy: ${S.ancspect === 'consistent' ? 'Consistent with BD/DNC (no tracer uptake)' : S.ancspect === 'uptake' ? 'Inconsistent — uptake present' : 'Not performed'}\n`;
   note += `  TCD ultrasonography: ${S.anctcd === 'consistent' ? 'Consistent with BD/DNC (reverberating/absent flow)' : S.anctcd === 'flow' ? 'Inconsistent — diastolic flow present' : 'Not performed'}\n`;
   note += `  Note: EEG, AEP, SEP are NOT recommended as ancillary tests per 2023 AAN guideline (Level B).\n\n`;
+  note += `INSTITUTIONAL PROTOCOL\n`;
+  note += `  Institution-specific BD/DNC protocol verified: ${S.instit === 'confirmed' ? 'YES — confirmed by examiner' : S.instit === 'not_done' ? 'NO — not yet verified' : 'Not assessed'}\n\n`;
   note += `OVERALL DETERMINATION\n${v.t}\n${v.d}\n\n`;
   note += `IMPORTANT CAVEATS\n`;
   note += `  - Time of death: time of final confirmatory test (apnea test if ancillary not required; final ancillary test if required)\n`;
@@ -1201,15 +1291,15 @@ function goTab(n) {
 function go(n) {
   document.getElementById('s'+cur).classList.remove('active');
   document.getElementById('s'+n).classList.add('active');
-  for (let i=0; i<6; i++) {
+  for (let i=0; i<7; i++) {
     const d = document.getElementById('st'+i);
     d.classList.remove('active','done');
     if (i < n) d.classList.add('done');
     else if (i === n) d.classList.add('active');
   }
   cur = n;
-  document.getElementById('pf').style.width = ((n/5)*100)+'%';
-  if (n === 5) rv();
+  document.getElementById('pf').style.width = ((n/6)*100)+'%';
+  if (n === 6) rv();
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
@@ -1253,7 +1343,7 @@ function resetAll() {
   document.querySelectorAll('.abtn').forEach(b => b.classList.remove('ay','an','at','aw','ab'));
   document.querySelectorAll('.crit-detail').forEach(d => d.classList.remove('open'));
   document.querySelectorAll('.xbtn').forEach(b => b.textContent = 'details ▾');
-  ['a0','a1','a2','a3','a4'].forEach(id => { const el=document.getElementById(id); if(el) el.classList.remove('show'); });
+  ['a0','a1','a2','a3','a4','a5'].forEach(id => { const el=document.getElementById(id); if(el) el.classList.remove('show'); });
   const dn=document.getElementById('dn'); if(dn) { dn.classList.remove('open'); dn.textContent=''; }
   const cb=document.getElementById('copy-btn'); if(cb) cb.classList.remove('visible','copied');
   const tog=document.querySelector('.doc-tog'); if(tog) tog.textContent='▼ Documentation Note';
@@ -1263,6 +1353,7 @@ function resetAll() {
   const epn=document.getElementById('epn'); if(epn) epn.textContent='0';
   go(0);
   document.getElementById('n0').disabled = true;
+  document.getElementById('n5').disabled = true;
 }
 
 ui();
