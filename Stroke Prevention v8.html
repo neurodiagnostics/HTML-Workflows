@@ -28,9 +28,9 @@
   --purple:    #bc8cff;
   --purple-bg: rgba(188,140,255,0.10);
   --purple-bd: rgba(188,140,255,0.35);
-  --teal:      #39d0b0;
-  --teal-bg:   rgba(57,208,176,0.10);
-  --teal-bd:   rgba(57,208,176,0.35);
+  --teal:      #f97316;
+  --teal-bg:   rgba(249,115,22,0.10);
+  --teal-bd:   rgba(249,115,22,0.35);
   --text:      #e6edf3;
   --text2:     #aab4c0;
   --text3:     #6e7f94;
@@ -40,8 +40,9 @@
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
-body { background: var(--bg); color: var(--text); font-family: var(--sans); font-size: 14px; line-height: 1.5; min-height: 100vh; }
-.app { max-width: 960px; margin: 0 auto; padding: 0 20px 80px; }
+html { overflow-x: hidden; }
+body { background: var(--bg); color: var(--text); font-family: var(--sans); font-size: 14px; line-height: 1.5; min-height: 100vh; overflow-x: hidden; }
+.app { width: min(960px, 100%); margin: 0 auto; padding: 0 20px 80px; overflow-x: hidden; box-sizing: border-box; }
 
 header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
 .h-title { font-size: 19px; font-weight: 700; }
@@ -51,7 +52,7 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
 .reset-btn:hover { border-color: var(--teal); color: var(--teal); }
 
 .prog-track { height: 3px; background: var(--border); margin-bottom: 20px; border-radius: 2px; }
-.prog-fill { height: 100%; background: linear-gradient(90deg, var(--teal), #58efd4); border-radius: 2px; transition: width 0.4s ease; box-shadow: 0 0 6px rgba(57,208,176,0.4); }
+.prog-fill { height: 100%; background: linear-gradient(90deg, var(--teal), #fdba74); border-radius: 2px; transition: width 0.4s ease; box-shadow: 0 0 6px rgba(249,115,22,0.4); }
 
 table.steps { width: 100%; border-collapse: collapse; border: 1px solid var(--border); border-radius: 8px; margin-bottom: 20px; table-layout: fixed; background: var(--card); overflow: hidden; }
 .steps .stab { display: table-cell !important; width: 33.333%; padding: 7px 4px 8px; text-align: center; font-family: var(--sans); font-size: 9px; color: var(--text3); cursor: pointer; background: var(--card); line-height: 1.2; border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); transition: background 0.15s, color 0.15s; vertical-align: middle; }
@@ -59,13 +60,13 @@ table.steps { width: 100%; border-collapse: collapse; border: 1px solid var(--bo
 .steps .steps-row .stab:last-child { border-right: none !important; }
 .steps .stab .sn { display: block; width: 18px; height: 18px; line-height: 18px; border-radius: 50%; background: var(--card2); border: 1px solid var(--border); font-size: 9px; font-weight: 700; margin: 0 auto 3px; transition: all 0.2s; text-align: center; }
 .steps .stab .slbl { display: block; font-size: 9px; font-weight: 600; letter-spacing: 0; line-height: 1.2; }
-.steps .stab.active { color: var(--teal) !important; background: rgba(57,208,176,0.10) !important; }
+.steps .stab.active { color: var(--teal) !important; background: rgba(249,115,22,0.10) !important; }
 .steps .stab.active .sn { background: var(--teal) !important; color: #0d1117 !important; border-color: var(--teal) !important; }
 .steps .stab.done { color: var(--green) !important; }
 .steps .stab.done .sn { background: var(--green) !important; color: #0d1117 !important; border-color: var(--green) !important; }
 .steps .stab:hover:not(.active) { background: var(--card2) !important; }
 
-.card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 22px; margin-bottom: 12px; }
+.card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 22px; margin-bottom: 12px; overflow: hidden; box-sizing: border-box; width: 100%; }
 .ctitle { font-size: 13px; font-weight: 700; font-family: var(--sans); letter-spacing: 0; text-transform: none; margin-bottom: 3px; }
 .csub { font-size: 12px; color: var(--text2); margin-bottom: 16px; line-height: 1.5; }
 
@@ -77,7 +78,7 @@ table.steps { width: 100%; border-collapse: collapse; border: 1px solid var(--bo
 .pill-g { border-color: var(--green);  color: var(--green);  background: var(--green-bg); }
 .pill-b { border-color: var(--blue);   color: var(--blue);   background: var(--blue-bg); }
 
-.crit { border: 1px solid var(--border); border-radius: 6px; margin-bottom: 5px; overflow: hidden; transition: border-color 0.15s, background 0.15s; }
+.crit { border: 1px solid var(--border); border-radius: 6px; margin-bottom: 5px; overflow: hidden; width: 100%; box-sizing: border-box; min-width: 0; transition: border-color 0.15s, background 0.15s; }
 .crit.c-yes  { border-color: var(--green-bd);  background: var(--green-bg); }
 .crit.c-no   { border-color: var(--red-bd);    background: var(--red-bg); }
 .crit.c-pres { border-color: var(--teal-bd);   background: var(--teal-bg); }
@@ -90,13 +91,13 @@ table.steps { width: 100%; border-collapse: collapse; border: 1px solid var(--bo
 .crit-name { flex: 1; font-size: 13px; font-weight: 500; color: var(--text); line-height: 1.3; }
 .xbtn { background: var(--purple-bg); border: 1px solid var(--purple-bd); color: var(--purple); font-size: 11px; cursor: pointer; padding: 2px 8px; font-family: var(--sans); white-space: nowrap; transition: all 0.15s; flex-shrink: 0; border-radius: 3px; font-weight: 500; }
 .xbtn:hover { background: var(--purple); color: #0d1117; border-color: var(--purple); }
-.crit-detail { display: none; padding: 10px 13px 12px; font-size: 12px; color: var(--text); line-height: 1.65; border-top: 1px solid var(--border); }
+.crit-detail { display: none; padding: 10px 13px 12px; font-size: 12px; color: var(--text); line-height: 1.65; border-top: 1px solid var(--border); overflow-wrap: break-word; word-break: break-word; }
 .crit-detail.open { display: block; }
-.cnote { margin-top: 8px; padding: 8px 11px; background: var(--card2); border-left: 3px solid var(--border2); font-family: var(--sans); font-size: 11px; color: var(--text2); line-height: 1.75; border-radius: 0 3px 3px 0; }
+.cnote { margin-top: 8px; padding: 8px 11px; background: var(--card2); border-left: 3px solid var(--border2); font-family: var(--sans); font-size: 11px; color: var(--text2); line-height: 1.75; border-radius: 0 3px 3px 0; overflow-wrap: break-word; word-break: break-word; }
 .cnote strong { color: var(--text); }
 
-.brow { display: flex; border-top: 1px solid var(--border); flex-wrap: wrap; }
-.abtn { flex: 1; min-width: 120px; padding: 9px 10px; background: none; border: none; border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); color: var(--text2); font-family: var(--sans); font-size: 12px; cursor: pointer; transition: all 0.12s; text-transform: none; letter-spacing: 0; font-weight: 400; line-height: 1.4; text-align: left; }
+.brow { display: flex; border-top: 1px solid var(--border); flex-wrap: wrap; width: 100%; min-width: 0; overflow: hidden; box-sizing: border-box; }
+.abtn { flex: 1 1 0; min-width: 0; padding: 9px 10px; background: none; border: none; border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); color: var(--text2); font-family: var(--sans); font-size: 12px; cursor: pointer; transition: all 0.12s; text-transform: none; letter-spacing: 0; font-weight: 400; line-height: 1.4; text-align: left; word-break: break-word; overflow-wrap: break-word; }
 .abtn:last-child { border-right: none; }
 .abtn:hover { background: var(--card2); color: var(--text); }
 .abtn.ay  { background: var(--green-bg) !important;  color: var(--green) !important;  font-weight: 700 !important; }
@@ -109,7 +110,7 @@ table.steps { width: 100%; border-collapse: collapse; border: 1px solid var(--bo
 
 .multi-note { font-family: var(--sans); font-size: 11px; color: var(--text3); padding: 6px 13px; border-top: 1px solid var(--border); background: var(--card2); }
 
-.lbox { background: var(--card2); border: 1px solid var(--border); border-radius: 5px; padding: 12px 15px; font-size: 12px; color: var(--text2); line-height: 1.75; margin-bottom: 14px; }
+.lbox { background: var(--card2); border: 1px solid var(--border); border-radius: 5px; padding: 12px 15px; font-size: 12px; color: var(--text2); line-height: 1.75; margin-bottom: 14px; overflow-wrap: break-word; word-break: break-word; }
 .lbox strong { color: var(--text); }
 .lt { color: var(--teal);   font-weight: 600; }
 .lg { color: var(--green);  font-weight: 600; }
@@ -129,13 +130,13 @@ table.steps { width: 100%; border-collapse: collapse; border: 1px solid var(--bo
 .nav-row { display: flex; justify-content: space-between; align-items: center; margin-top: 20px; gap: 10px; }
 .nbtn { padding: 9px 22px; border-radius: 5px; font-family: var(--sans); font-size: 13px; letter-spacing: 0; text-transform: none; border: 1px solid; cursor: pointer; font-weight: 600; transition: all 0.15s; }
 .np { background: var(--teal); border-color: var(--teal); color: #0d1117; font-weight: 700; }
-.np:hover { background: #58efd4; border-color: #58efd4; }
+.np:hover { background: #fdba74; border-color: #fdba74; }
 .np:disabled { opacity: 0.3; cursor: not-allowed; }
 .ns { background: transparent; border-color: var(--border2); color: var(--text2); }
 .ns:hover { border-color: var(--text); color: var(--text); }
 
-.screen { display: none; }
-.screen.active { display: block; animation: fu 0.25s ease; }
+.screen { display: none; width: 100%; box-sizing: border-box; }
+.screen.active { display: block; width: 100%; overflow: hidden; animation: fu 0.25s ease; }
 @keyframes fu { from { opacity:0; transform:translateY(5px); } to { opacity:1; transform:translateY(0); } }
 
 .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; }
@@ -248,12 +249,11 @@ table.steps { width: 100%; border-collapse: collapse; border: 1px solid var(--bo
       <strong>POINT/CHANCE TNK exclusion:</strong> Both trials excluded patients who received thrombolysis. The demonstrated benefit of immediate DAPT applies only to thrombolysis-naive patients. This is not a minor technicality &mdash; early antithrombotic after TNK causes measurable harm.
       <div class="cnote"><strong>Ref:</strong> Powers WJ et al. AHA/ASA Acute Ischemic Stroke Guidelines. <em>Stroke</em> 2019;50:e344&ndash;e418. Johnston SC et al. POINT. <em>N Engl J Med</em> 2018;379:215&ndash;225 (TNK exclusion criterion). Wang Y et al. CHANCE. <em>N Engl J Med</em> 2013;369:11&ndash;19 (TNK exclusion criterion).</div>
     </div>
-    <div class="brow" style="flex-direction:column;">
-      <button class="abtn" style="border-right:none;border-bottom:1px solid var(--border);padding:12px 16px;font-size:13px;" onclick="setTreatment('tnk_only')">IV TNK given &mdash; no EVT (24h antithrombotic hold; initiate after 24h neuroimaging)</button>
-      <button class="abtn" style="border-right:none;border-bottom:1px solid var(--border);padding:12px 16px;font-size:13px;" onclick="setTreatment('tnk_and_evt')">IV TNK + EVT (bridging) &mdash; 24h TNK hold applies; post-EVT imaging at 24h</button>
-      <button class="abtn" style="border-right:none;border-bottom:1px solid var(--border);padding:12px 16px;font-size:13px;" onclick="setTreatment('evt_only')">EVT only &mdash; no IV TNK (no 24h hold; await 24h post-EVT imaging before antithrombotic)</button>
-      <button class="abtn" style="border-right:none;border-bottom:1px solid var(--border);padding:12px 16px;font-size:13px;" onclick="setTreatment('neither')">Neither IV TNK nor EVT &mdash; medical management only (no 24h hold)</button>
-      <button class="abtn" style="border-right:none;padding:12px 16px;font-size:13px;" onclick="setTreatment('nd')">Unknown / documentation not yet reviewed</button>
+    <div class="brow">
+      <button class="abtn" onclick="setTreatment('tnk_only')">IV TNK only</button>
+      <button class="abtn" onclick="setTreatment('tnk_and_evt')">IV TNK + EVT</button>
+      <button class="abtn" onclick="setTreatment('evt_only')">EVT only</button>
+      <button class="abtn" onclick="setTreatment('neither')">No IV TNK or EVT</button>
     </div>
   </div>
 
@@ -273,9 +273,9 @@ table.steps { width: 100%; border-collapse: collapse; border: 1px solid var(--bo
     
   </div>
 
-  <div class="slabel" style="margin-top:14px;">Intracranial stenting <span class="pill pill-r">CRITICAL — immediate antiplatelet protocol required</span></div>
+  <div class="slabel" id="stent-slabel" style="margin-top:14px;transition:opacity 0.2s;">Intracranial stenting <span class="pill pill-a" id="stent-pill">ENABLED ONLY IF EVT PERFORMED ABOVE</span></div>
 
-  <div class="crit" id="icstent-item">
+  <div id="stent-crit-outer" style="transition:opacity 0.2s;"><div class="crit" id="icstent-item">
     <div class="crit-main">
       <div class="crit-name">Did the patient undergo intracranial stenting (e.g., Wingspan, Neuroform, Enterprise, or flow diverter) for this stroke?</div>
       <button class="xbtn" onclick="xp(this)">evidence &#9662;</button>
@@ -284,7 +284,7 @@ table.steps { width: 100%; border-collapse: collapse; border: 1px solid var(--bo
       Intracranial stent placement requires immediate and potent antiplatelet therapy to prevent in-stent thrombosis — a catastrophic early complication. Unlike extracranial carotid stenting, intracranial stenting demands more aggressive perioperative antiplatelet protocols due to the high thrombogenic risk of the stent surface in small, tortuous vessels at high flow.<br><br>
       <strong>Ticagrelor (P2Y12 inhibitor — preferred for intracranial stenting):</strong><br>
       &bull; Loading dose: Ticagrelor 180 mg PO at the time of stent placement (or as soon as patient can swallow post-procedure)<br>
-      &bull; Maintenance: Ticagrelor 90 mg BID + aspirin 81 mg/day (DAPT). Ticagrelor is preferred over clopidogrel for intracranial stenting due to more predictable pharmacokinetics and greater platelet inhibition — critical given the high-flow intracranial environment.<br>
+      &bull; Maintenance: Ticagrelor 90 mg BID + aspirin 81 mg daily (DAPT). Ticagrelor is preferred over clopidogrel for intracranial stenting due to more predictable pharmacokinetics and greater platelet inhibition — critical given the high-flow intracranial environment.<br>
       &bull; Duration: DAPT for at least 3–6 months post-stenting, then reassess based on stent type, vessel patency, and bleeding risk. For elective Wingspan stenting for ICAD, SAMMPRIS-era practice used aspirin + clopidogrel ×90 days; ticagrelor is increasingly preferred in contemporary practice.<br><br>
       <strong>Cangrelor (IV P2Y12 inhibitor):</strong><br>
       &bull; Cangrelor is an IV P2Y12 inhibitor with immediate onset (&lt;2 min), linear dose response, and rapid offset (~60 min after stopping infusion). It is used when oral antiplatelet loading is not feasible (e.g., patient unable to swallow, severe altered consciousness, emergent stenting before oral medications can be given).<br>
@@ -292,13 +292,19 @@ table.steps { width: 100%; border-collapse: collapse; border: 1px solid var(--bo
       <strong>Aspirin pre-loading:</strong> For planned procedures, aspirin 325 mg should be given 24h before stenting when possible. For emergency procedures, aspirin 325 mg IV or rectal at the time of stent placement.
       <div class="cnote"><strong>Refs:</strong> Chimowitz MI et al. SAMMPRIS. NEJM 2011 — stenting protocol used aspirin 325 mg + clopidogrel ×90 days. Contemporary intracranial stenting often uses ticagrelor based on extrapolation from coronary stenting pharmacology and higher platelet inhibition reliability. Stenting for stroke in acute setting (RESCUE-Japan, DIRECT-MT) used individualized antiplatelet protocols. Cangrelor: Bhatt DL et al. CHAMPION PHOENIX (coronary). NEJM 2013 — IV P2Y12 with immediate-onset antiplatelet effect.</div>
     </div>
-    <div class="brow">
-      <button class="abtn" onclick="set('ic_stent','yes_ticag')">&#10003; Intracranial stenting performed — ticagrelor 180 mg load given / planned</button>
-      <button class="abtn" onclick="set('ic_stent','yes_clopi')">&#10003; Intracranial stenting performed — clopidogrel 300–600 mg load given (alternative)</button>
-      <button class="abtn" onclick="set('ic_stent','yes_cangrelor')">&#10003; Intracranial stenting — cangrelor infusion being used (oral route unavailable)</button>
-      <button class="abtn" onclick="set('ic_stent','no')">&#10007; No intracranial stenting performed</button>
+    <div id="stent-brow-wrapper">
+      <div id="stent-locked-msg" style="display:none;padding:9px 13px;background:var(--card2);border-top:1px solid var(--border);font-size:12px;color:var(--text3);font-style:italic;">
+        Intracranial stenting options are not applicable — no EVT was performed. Select an EVT option above to enable.
+      </div>
+      <div id="stent-brow" class="brow">
+        <button class="abtn" id="stent-btn-ticag" onclick="setStent('yes_ticag')">Ticagrelor 180 mg load given / planned at time of stenting</button>
+        <button class="abtn" id="stent-btn-clopi" onclick="setStent('yes_clopi')">Clopidogrel 300–600 mg load given (alternative to ticagrelor)</button>
+        <button class="abtn" id="stent-btn-cangrelor" onclick="setStent('yes_cangrelor')">Cangrelor infusion — oral route unavailable at time of stenting</button>
+        <button class="abtn" id="stent-btn-none" onclick="setStent('none_evt')">No stenting performed during EVT</button>
+      </div>
     </div>
   </div>
+  </div><!-- /stent-crit-outer -->
 
   <div id="a0" class="alrt"></div>
   <div class="nav-row">
@@ -476,26 +482,35 @@ table.steps { width: 100%; border-collapse: collapse; border: 1px solid var(--bo
       <strong>Cryptogenic / ESUS:</strong> No source identified after standard workup. Antiplatelet therapy is standard (RE-SPECT ESUS, NAVIGATE ESUS both failed to show benefit for anticoagulation in unselected ESUS). ARCADIA showed apixaban = aspirin in atrial cardiopathy ESUS (HR 1.00, 95% CI 0.64–1.55).<br><br>
       <strong>Arterial dissection:</strong> Antiplatelet preferred over anticoagulation based on CADISS trial equipoise and lower bleeding risk. Anticoagulation considered if intraluminal thrombus is present at the dissection site.<br><br>
       <strong>Carotid web:</strong> A shelf-like intraluminal protrusion on the posterior wall of the carotid bulb, representing an intimal variant of fibromuscular dysplasia. It causes stasis-related thrombus formation and downstream embolism — particularly in young patients (especially young Black women) with cryptogenic or ESUS-pattern stroke and no conventional risk factors. Diagnosis by CTA or DSA. Treatment: antiplatelet therapy as initial management, with CEA (webectomy) or CAS for recurrent ischemic events or symptomatic carotid web without other identified source. ESVS 2023 guidelines recommend CEA/CAS for symptomatic patients with no other identified etiology.<br><br>
+      <strong>Primary Angiitis of the CNS (PACNS) / CNS Vasculitis:</strong> PACNS is a rare inflammatory vasculopathy of cerebral blood vessels without evidence of systemic vasculitis. Presents as recurrent ischemic stroke, encephalopathy, headache, or cognitive decline. Key distinction from RCVS: PACNS onset is subacute/gradual (weeks–months), CSF is typically inflammatory, vessel wall MRI shows gadolinium enhancement of vessel walls (not seen in RCVS), and steroids are beneficial (worsen RCVS). Treatment is immunosuppression, not antithrombotics. No antiplatelet or anticoagulation benefit has been demonstrated in PACNS. Requires tissue diagnosis (leptomeningeal biopsy) for definitive confirmation. RCVS must be excluded before diagnosis.<br><br>
+      <strong>Cerebral Venous Sinus Thrombosis (CVST):</strong> CVST is a venous (not arterial) occlusive disease causing ischemic stroke through venous hypertension, cortical vein thrombosis, and impaired CSF reabsorption. It is NOT an arterial pathology. Treatment is anticoagulation (UFH or LMWH acutely, then warfarin or DOAC), even in the presence of hemorrhagic infarction — the hemorrhage in CVST is from venous congestion and improves with anticoagulation. Risk factors: OCP use, pregnancy/postpartum, thrombophilia, malignancy, infection, dehydration. Antiplatelet therapy is NOT the primary treatment. Diagnosis by MRV or CTV.<br><br>
       <strong>Reversible Cerebral Vasoconstriction Syndrome (RCVS):</strong> Characterized by recurrent thunderclap headache and reversible multifocal vasoconstriction of cerebral arteries ("string of beads" on angiography). RCVS is a distinct non-atherosclerotic, non-inflammatory vasculopathy. <em>Antiplatelet and anticoagulation therapies are NOT indicated</em> — the mechanism is vasoconstriction, not thromboembolism. Steroids are contraindicated (worsen vasoconstriction). Treatment: calcium channel blockers (verapamil SR or nimodipine), trigger removal, BP management, and supportive care.<br><br>
+      <strong>Infective Endocarditis (IE):</strong> Stroke occurs in 20–60% of IE cases, often as the presenting feature. Anticoagulation is generally <em>contraindicated</em> in active IE due to risk of hemorrhagic transformation and mycotic aneurysm rupture. The most effective stroke prevention in IE is prompt antibiotic therapy, which reduces embolic risk to 1–3% within the first week. Screen for mycotic aneurysms with cerebral angiography (CT angiography may miss 80% of small mycotic aneurysms). No antithrombotic therapy is indicated for stroke prevention from IE itself. If patient was previously on warfarin (e.g., for mechanical valve), switch to UFH for perioperative flexibility.<br><br>
+      <strong>NBTE / Non-Bacterial Thrombotic Endocarditis (Marantic / Libman-Sacks):</strong> Sterile vegetations formed in hypercoagulable states (advanced malignancy, antiphospholipid syndrome, SLE). Treatment is <em>anticoagulation</em> — UFH acutely, then warfarin or LMWH long-term. DOACs may be used off-label. Treat underlying cause (malignancy, APS immunosuppression). Libman-Sacks (SLE/APS): warfarin for stroke; hydroxychloroquine + immunosuppression for underlying disease.<br><br>
       <strong>Intraluminal arterial thrombus (ILT):</strong> High-urgency finding — mobile or mural thrombus in a major artery with very high short-term embolic risk. Inpatient UFH infusion is the preferred initial treatment; allows titration and immediate reversal. ILT on carotid vessel wall MRI: OR 103.6 for carotid-source stroke (Balu et al., Stroke 2014). After imaging stability confirmed, transition to DOAC at discharge.
       <div class="cnote"><strong>Ref:</strong> Kamel H et al. ARCADIA. <em>JAMA</em> 2024. NAVIGATE ESUS (Hart RG, NEJM 2018). RE-SPECT ESUS (Diener HC, NEJM 2019). CADISS (Markus HS, Lancet Neurol 2015).</div>
     </div>
-    <div class="brow" style="flex-direction:column;">
-      <div style="padding:6px 13px 4px;font-size:10px;font-weight:700;color:var(--text3);letter-spacing:0.08em;text-transform:uppercase;border-bottom:1px solid var(--border);background:var(--card2);">Cardioembolic</div>
-      <button class="abtn" style="border-right:none;border-bottom:1px solid var(--border);padding:12px 16px;font-size:13px;min-height:44px;" onclick="set('etiology','af')">Atrial fibrillation / flutter</button>
-      <button class="abtn" style="border-right:none;border-bottom:1px solid var(--border);padding:12px 16px;font-size:13px;min-height:44px;" onclick="set('etiology','lvt')">LV thrombus &mdash; post-MI, dilated cardiomyopathy, Takotsubo</button>
-      <button class="abtn" style="border-right:none;border-bottom:1px solid var(--border);padding:12px 16px;font-size:13px;min-height:44px;" onclick="set('etiology','other-ce')">Other cardioembolic &mdash; valvular disease, intracardiac mass, severe LV dysfunction (EF &lt;30%)</button>
-      <div style="padding:6px 13px 4px;font-size:10px;font-weight:700;color:var(--text3);letter-spacing:0.08em;text-transform:uppercase;border-bottom:1px solid var(--border);background:var(--card2);">Large Vessel Disease</div>
-      <button class="abtn" style="border-right:none;border-bottom:1px solid var(--border);padding:12px 16px;font-size:13px;min-height:44px;" onclick="set('etiology','icad')">Intracranial atherosclerotic disease (ICAD) &mdash; 70&ndash;99% intracranial stenosis</button>
-      <button class="abtn" style="border-right:none;border-bottom:1px solid var(--border);padding:12px 16px;font-size:13px;min-height:44px;" onclick="set('etiology','lvd')">Large vessel disease (LVD) &mdash; extracranial carotid or vertebral atherosclerosis &ge;50%</button>
-      <button class="abtn" style="border-right:none;border-bottom:1px solid var(--border);padding:12px 16px;font-size:13px;min-height:44px;" onclick="set('etiology','ilt')">Intraluminal arterial thrombus &mdash; major artery (carotid, MCA, basilar)</button>
-      <div style="padding:6px 13px 4px;font-size:10px;font-weight:700;color:var(--text3);letter-spacing:0.08em;text-transform:uppercase;border-bottom:1px solid var(--border);background:var(--card2);">Small Vessel / Other</div>
-      <button class="abtn" style="border-right:none;border-bottom:1px solid var(--border);padding:12px 16px;font-size:13px;min-height:44px;" onclick="set('etiology','svd')">Small vessel disease / lacunar infarction</button>
-      <button class="abtn" style="border-right:none;border-bottom:1px solid var(--border);padding:12px 16px;font-size:13px;min-height:44px;" onclick="set('etiology','dissection')">Arterial dissection &mdash; cervical (carotid or vertebral) or intracranial</button>
-      <button class="abtn" style="border-right:none;border-bottom:1px solid var(--border);padding:12px 16px;font-size:13px;min-height:44px;" onclick="set('etiology','cw')">Carotid web &mdash; fibromuscular dysplasia variant</button>
-      <button class="abtn" style="border-right:none;border-bottom:1px solid var(--border);padding:12px 16px;font-size:13px;min-height:44px;" onclick="set('etiology','rcvs')">RCVS &mdash; Reversible Cerebral Vasoconstriction Syndrome</button>
-      <button class="abtn" style="border-right:none;padding:12px 16px;font-size:13px;min-height:44px;" onclick="set('etiology','esus')">Cryptogenic / ESUS &mdash; no source identified after standard workup</button>
-    </div> </div>
+    <div class="brow">
+      <div style="flex-basis:100%;padding:6px 13px 4px;font-size:10px;font-weight:700;color:var(--text3);letter-spacing:0.08em;text-transform:uppercase;border-bottom:1px solid var(--border);background:var(--card2);">Cardioembolic</div>
+      <button class="abtn" onclick="set('etiology','af')">Atrial fibrillation / flutter</button>
+      <button class="abtn" onclick="set('etiology','lvt')">LV thrombus &mdash; post-MI, dilated cardiomyopathy, Takotsubo</button>
+      <button class="abtn" onclick="set('etiology','other-ce')">Other cardioembolic &mdash; valvular disease, intracardiac mass, severe LV dysfunction (EF &lt;30%)</button>
+      <button class="abtn" onclick="set('etiology','endo_ie')">Infective Endocarditis (IE) &mdash; embolic stroke from infected vegetation</button>
+      <button class="abtn" onclick="set('etiology','endo_nbte')">NBTE / Marantic / Libman-Sacks Endocarditis &mdash; sterile vegetation (malignancy, APS, SLE)</button>
+      <div style="flex-basis:100%;padding:6px 13px 4px;font-size:10px;font-weight:700;color:var(--text3);letter-spacing:0.08em;text-transform:uppercase;border-bottom:1px solid var(--border);background:var(--card2);">Large Vessel Disease</div>
+      <button class="abtn" onclick="set('etiology','icad')">Intracranial atherosclerotic disease (ICAD) &mdash; 70&ndash;99% intracranial stenosis</button>
+      <button class="abtn" onclick="set('etiology','lvd')">Large vessel disease (LVD) &mdash; extracranial carotid or vertebral atherosclerosis &ge;50%</button>
+      <button class="abtn" onclick="set('etiology','ilt')">Intraluminal arterial thrombus &mdash; major artery (carotid, MCA, basilar)</button>
+      <div style="flex-basis:100%;padding:6px 13px 4px;font-size:10px;font-weight:700;color:var(--text3);letter-spacing:0.08em;text-transform:uppercase;border-bottom:1px solid var(--border);background:var(--card2);">Small Vessel Disease</div>
+      <button class="abtn" onclick="set('etiology','svd')">Small vessel disease / lacunar infarction</button>
+      <div style="flex-basis:100%;padding:6px 13px 4px;font-size:10px;font-weight:700;color:var(--text3);letter-spacing:0.08em;text-transform:uppercase;border-bottom:1px solid var(--border);background:var(--card2);">Other Etiologies</div>
+      <button class="abtn" onclick="set('etiology','dissection')">Arterial dissection &mdash; cervical (carotid or vertebral) or intracranial</button>
+      <button class="abtn" onclick="set('etiology','cw')">Carotid web &mdash; fibromuscular dysplasia variant</button>
+      <button class="abtn" onclick="set('etiology','rcvs')">RCVS &mdash; Reversible Cerebral Vasoconstriction Syndrome</button>
+      <button class="abtn" onclick="set('etiology','pacns')">PACNS &mdash; Primary Angiitis of the CNS (CNS vasculitis)</button>
+      <button class="abtn" onclick="set('etiology','cvst')">CVST &mdash; Cerebral Venous Sinus Thrombosis</button>
+      <button class="abtn" onclick="set('etiology','esus')">Cryptogenic / ESUS &mdash; no source identified after standard workup</button>
+    </div>
   </div>
 
   <div id="a2" class="alrt"></div>
@@ -605,8 +620,8 @@ table.steps { width: 100%; border-collapse: collapse; border: 1px solid var(--bo
     Trial stopped early — 30-day rates of stroke or death: <span class="lr">14.7% PTAS vs. 5.8% AMM</span> (p=0.002). 1-year rates: 20.0% PTAS vs. 12.2% AMM. <strong>Stenting was inferior to medical therapy alone.</strong><br><br>
     <strong>AMM protocol (SAMMPRIS):</strong>
     <ul style="margin: 6px 0 0 16px; line-height: 2;">
-      <li>Aspirin 325 mg/day (indefinite)</li>
-      <li>Clopidogrel 75 mg/day × 90 days (then aspirin monotherapy)</li>
+      <li>Aspirin 325 mg daily (indefinite)</li>
+      <li>Clopidogrel 75 mg daily × 90 days (then aspirin monotherapy)</li>
       <li>Rosuvastatin — target LDL &lt;70 mg/dL</li>
       <li>SBP target &lt;140 mmHg (&lt;130 if diabetic)</li>
       <li>Intensive lifestyle modification</li>
@@ -632,18 +647,18 @@ table.steps { width: 100%; border-collapse: collapse; border: 1px solid var(--bo
       The presence of ≥1 high-risk plaque feature should prompt vascular surgery / interventional neuroradiology consultation regardless of degree of stenosis, with DAPT maintained as bridge therapy until revascularization.
       <div class="cnote"><strong>Key point on anticoagulation for ICAD:</strong> Warfarin (WASID, NEJM 2005) was NOT superior to aspirin and had HR 1.28 for intracranial bleeding. Anticoagulation is not recommended for ICAD unless a concurrent cardioembolic source is present. High-risk plaque features → DAPT + surgical referral, not anticoagulation.</div>
     </div>
-    <div style="border-top:1px solid var(--border);padding:7px 13px 4px;font-size:10px;font-weight:700;color:var(--text3);letter-spacing:0.08em;text-transform:uppercase;background:var(--card2);">Intracranial stenosis (select one or leave blank)</div>
+    <div style="flex-basis:100%;border-top:1px solid var(--border);padding:7px 13px 4px;font-size:10px;font-weight:700;color:var(--text3);letter-spacing:0.08em;text-transform:uppercase;background:var(--card2);">Intracranial stenosis (select one or leave blank)</div>
     <div class="brow">
-      <button class="abtn" style="flex:1 1 220px;border-bottom:1px solid var(--border);" onclick="set('icad_intrac','severe')">Severe ICAD — 70–99% intracranial stenosis (SAMMPRIS)</button>
-      <button class="abtn" style="flex:1 1 220px;border-bottom:1px solid var(--border);" onclick="set('icad_intrac','moderate')">Moderate ICAD — 50–69% intracranial stenosis</button>
+      <button class="abtn" onclick="set('icad_intrac','severe')">Severe ICAD — 70–99% intracranial stenosis (SAMMPRIS)</button>
+      <button class="abtn" onclick="set('icad_intrac','moderate')">Moderate ICAD — 50–69% intracranial stenosis</button>
       <button class="abtn" style="flex:1 1 180px;border-bottom:1px solid var(--border);" onclick="set('icad_intrac','none')">No significant intracranial stenosis</button>
     </div>
-    <div style="border-top:1px solid var(--border);padding:7px 13px 4px;font-size:10px;font-weight:700;color:var(--text3);letter-spacing:0.08em;text-transform:uppercase;background:var(--card2);">Extracranial carotid / vertebral (select one or leave blank)</div>
+    <div style="flex-basis:100%;border-top:1px solid var(--border);padding:7px 13px 4px;font-size:10px;font-weight:700;color:var(--text3);letter-spacing:0.08em;text-transform:uppercase;background:var(--card2);">Extracranial carotid / vertebral (select one or leave blank)</div>
     <div class="brow">
-      <button class="abtn" style="flex:1 1 220px;" onclick="set('icad_extrac','ext_severe')">Symptomatic extracranial carotid ≥70% — CEA / CAS candidate</button>
-      <button class="abtn" style="flex:1 1 220px;" onclick="set('icad_extrac','ext_moderate')">Symptomatic extracranial carotid 50–69% — medical vs. procedural</button>
-      <button class="abtn" style="flex:1 1 220px;" onclick="set('icad_extrac','ext_hrp')">High-risk plaque features — &lt;70% stenosis, IPH / LRNC / ILT / ulceration on vessel wall MRI</button>
-      <button class="abtn" style="flex:1 1 160px;" onclick="set('icad_extrac','none')">No significant extracranial disease</button>
+      <button class="abtn" onclick="set('icad_extrac','ext_severe')">Symptomatic extracranial carotid ≥70% — CEA / CAS candidate</button>
+      <button class="abtn" onclick="set('icad_extrac','ext_moderate')">Symptomatic extracranial carotid 50–69% — medical vs. procedural</button>
+      <button class="abtn" onclick="set('icad_extrac','ext_hrp')">High-risk plaque features — &lt;70% stenosis, IPH / LRNC / ILT / ulceration on vessel wall MRI</button>
+      <button class="abtn" onclick="set('icad_extrac','none')">No significant extracranial disease</button>
     </div>
   </div>
 
@@ -701,7 +716,7 @@ table.steps { width: 100%; border-collapse: collapse; border: 1px solid var(--bo
     <div class="crit-detail">
       CHANCE and POINT enrolled patients with minor stroke (NIHSS ≤3) or high-risk TIA (ABCD2 ≥4 or DWI positive). DAPT benefit in these trials was strongest in the first 21 days. For moderate-to-severe non-cardioembolic stroke (NIHSS &gt;3), antiplatelet therapy is still initiated but DAPT duration benefit is less well defined.<br><br>
       <strong>For NIHSS ≤3 (minor stroke) or TIA:</strong> DAPT (aspirin + clopidogrel) × 21 days is supported by CHANCE/POINT (Class I, Level A in AHA/ASA 2021 guidelines). Then transition to antiplatelet monotherapy.<br><br>
-      <strong>For NIHSS 4–15 (moderate stroke):</strong> Antiplatelet monotherapy (aspirin or clopidogrel) is standard. Some clinicians extend DAPT based on individual risk/benefit. Aspirin 325 mg loading then 81 mg/day if no ICAD context.
+      <strong>For NIHSS 4–15 (moderate stroke):</strong> Antiplatelet monotherapy (aspirin or clopidogrel) is standard. Some clinicians extend DAPT based on individual risk/benefit. Aspirin 325 mg loading then 81 mg daily if no ICAD context.
       <div class="cnote">Pooled CHANCE + POINT analysis (Johnston et al., JAMA Neurol 2019): clopidogrel-aspirin vs. aspirin — major ischemic events 5.3% vs. 7.0% (HR 0.74, 95% CI 0.62–0.89). Benefit confined to first 21 days; benefit-to-harm ratio turns unfavorable after 21 days of DAPT.</div>
     </div>
     <div class="brow">
@@ -817,8 +832,8 @@ table.steps { width: 100%; border-collapse: collapse; border: 1px solid var(--bo
     </div>
     <div class="brow">
       <button class="abtn" onclick="set('htn','defer_24h')">Acute phase (&lt;24h): defer BP lowering (permissive HTN protocol)</button>
-      <button class="abtn" onclick="set('htn','resume_home')">24–72h: resume home antihypertensives (allow permissive HTN inpatient; SBP 160–180 is acceptable; target &lt;130/80 at discharge)</button>
-      <button class="abtn" onclick="set('htn','initiate')">24–72h: initiate antihypertensive if SBP &gt;180 (permissive HTN inpatient; target &lt;130/80 after discharge)</button>
+      <button class="abtn" onclick="set('htn','resume_home')">24–72h: resume home antihypertensives (allow higher BPs for heightened perfusion (SBP 160–180 acceptable inpatient); target &lt;130/80 long-term)</button>
+      <button class="abtn" onclick="set('htn','initiate')">24–72h: initiate antihypertensive if SBP &gt;180 (higher BPs for heightened perfusion inpatient; target &lt;130/80 long-term)</button>
       <button class="abtn" onclick="set('htn','normotensive')">Normotensive — no antihypertensive indicated</button>
     </div>
   </div>
@@ -835,9 +850,8 @@ table.steps { width: 100%; border-collapse: collapse; border: 1px solid var(--bo
      SCREEN 7 — VERDICT
 ══════════════════════════════════════════════════════ -->
 <div class="screen" id="s8">
-<div class="card">
-  <div class="ctitle" style="color:var(--teal);">Step 9 · Secondary Prevention Verdict</div>
-  <div class="csub">Synthesizing all inputs to determine optimal antithrombotic agent, initiation timing, and key treatment targets. This verdict is generated from the clinical data entered above.</div>
+<div class="card" style="padding-top:14px;">
+  <div class="ctitle" style="color:var(--teal);margin-bottom:4px;">Step 9 · Secondary Prevention Verdict</div>
 
   <div id="vout"></div>
 
@@ -855,6 +869,7 @@ table.steps { width: 100%; border-collapse: collapse; border: 1px solid var(--bo
   </div>
 </div>
 </div>
+</div><!-- close .app -->
 
 <script>
 const TOTAL = 9;
@@ -874,8 +889,8 @@ function go(n) {
     else if (i < n) t.classList.add('done');
   });
   document.getElementById('pf').style.width = Math.round((n / (TOTAL - 1)) * 100) + '%';
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-  if (n === 7) buildVerdict();
+  window.scrollTo({ top: 0, behavior: 'instant' });
+  if (n === 8) buildVerdict();
 }
 
 function goTab(n) { go(n); }
@@ -924,7 +939,7 @@ function updateAlerts() {
     if (S.ic_stent === 'yes_cangrelor') {
       showAlert(a0, 'awn', '⚠ Cangrelor infusion active: Transition to oral ticagrelor 90 mg BID (180 mg load) + aspirin 81 mg as soon as oral route is available. Cangrelor offset is ~60 min after stopping infusion — overlap with oral agent before discontinuing infusion to prevent platelet rebound.');
     } else if (S.ic_stent === 'yes_ticag' || S.ic_stent === 'yes_clopi') {
-      showAlert(a0, 'aerr', '⛔ Intracranial stent placed: DAPT (ticagrelor 90 mg BID + aspirin 81 mg/day) is mandatory. Do NOT give anticoagulation concurrently unless there is an additional compelling indication (e.g., AF + IC stent) — this requires neurology + hematology consensus. In-stent thrombosis is catastrophic in the intracranial circulation.');
+      showAlert(a0, 'aerr', '⛔ Intracranial stent placed: DAPT (ticagrelor 90 mg BID + aspirin 81 mg daily) is mandatory. Do NOT give anticoagulation concurrently unless there is an additional compelling indication (e.g., AF + IC stent) — this requires neurology + hematology consensus. In-stent thrombosis is catastrophic in the intracranial circulation.');
     }
   }
 
@@ -956,6 +971,10 @@ function updateAlerts() {
     showAlert(a2, 'ainf', 'ℹ Cryptogenic / ESUS: ARCADIA (JAMA 2024) showed apixaban = aspirin (HR 1.00) in atrial cardiopathy ESUS. NAVIGATE ESUS and RE-SPECT ESUS also failed to show anticoagulation benefit. Antiplatelet therapy is the evidence-based choice for ESUS. Order prolonged cardiac monitoring (ILR preferred — CRYSTAL-AF) to detect paroxysmal AF.');
   } else if (S.etiology === 'cw') {
     showAlert(a2, 'ateal', '⬡ Carotid web: Antiplatelet monotherapy is initial management for a first ischemic event. For recurrent events or if carotid web is the confirmed sole etiology, refer for CEA (webectomy) or CAS. DAPT as bridge to revascularization. ESVS 2023 recommends CEA/CAS if no other source identified in symptomatic patients.');
+  } else if (S.etiology === 'pacns') {
+    showAlert(a2, 'aerr', '⛔ PACNS / CNS Vasculitis: Do NOT use antiplatelets or anticoagulation — no demonstrated benefit and may cause harm. Treatment is immunosuppression: high-dose glucocorticoids + cyclophosphamide for induction, then maintenance with azathioprine/MMF/methotrexate. Exclude RCVS first (steroids worsen RCVS). Brain/leptomeningeal biopsy may be required for definitive diagnosis.');
+  } else if (S.etiology === 'cvst') {
+    showAlert(a2, 'ateal', '⬡ CVST: Anticoagulation is the treatment (even with hemorrhagic infarction — ISCVT and EUSI guidelines). Antiplatelets are NOT the primary treatment. UFH or LMWH acutely, then warfarin (INR 3–4 for high thrombophilia risk) or DOAC (apixaban/rivaroxaban per RESPECT-CVST trial). Investigate for underlying thrombophilia, malignancy, OCP use. This is a VENOUS process, not arterial.');
   } else if (S.etiology === 'rcvs') {
     showAlert(a2, 'aerr', '⛔ RCVS: NO antiplatelet or anticoagulation — these are not indicated and anticoagulation may cause harm (cortical SAH / ICH risk). Avoid steroids (worsen vasoconstriction). Initiate calcium channel blocker (verapamil SR or nimodipine) and remove identified triggers immediately.');
   } else if (S.etiology === 'svd') {
@@ -994,16 +1013,185 @@ function hideAlert(el) {
   el.innerHTML = '';
 }
 
+function renderAgent(agentStr) {
+  // Split the agent string on " PLUS " to separate primary from additive agents
+  // Also detect IC stent prefix "Ticagrelor..." which is its own primary agent line
+  if (!agentStr) return '<div style="font-size:14px;color:var(--text3);">— Not yet determined</div>';
+
+  // Normalize: split on " PLUS "
+  const parts = agentStr.split(' PLUS ');
+  let html = '';
+
+  parts.forEach((part, i) => {
+    part = part.trim();
+    if (!part) return;
+
+    // Detect the primary keyword for bolding
+    let boldWord = '';
+    let rest = part;
+
+    // Match patterns: "DAPT — ...", "DOAC (—...)", "Ticagrelor...", "Antiplatelet monotherapy...",
+    //   "Aspirin...", "LMWH...", "UFH...", "Warfarin...", "Calcium channel...", "DOAC..."
+    const boldPatterns = [
+      /^(DAPT)(\s*[—\-]\s*|\s+)/,
+      /^(DOAC)(\s*[—\-\(]\s*|\s+)/,
+      /^(Ticagrelor)(\s+)/,
+      /^(LMWH)(\s*[—\-]\s*|\s+)/,
+      /^(UFH)(\s+|,)/,
+      /^(Warfarin)(\s+)/,
+      /^(Aspirin)(\s+)/,
+      /^(Antiplatelet monotherapy)(\s*[—\-]\s*|\s+)/,
+      /^(Anticoagulation)(\s+)/,
+      /^(Calcium channel blocker)(\s+)/,
+      /^(anticoagulation mandatory)/i,
+    ];
+
+    let matched = false;
+    for (const pat of boldPatterns) {
+      const m = part.match(pat);
+      if (m) {
+        boldWord = m[1];
+        rest = part.slice(m[0].length);
+        matched = true;
+        break;
+      }
+    }
+
+    // For the "DOAC — anticoagulation mandatory for..." appended by AF override
+    // The AF override appends "PLUS DOAC (anticoagulation mandatory for...)"
+    // After split on PLUS: "DOAC (anticoagulation mandatory for known AF..., independent of... etiology)"
+    // Strip outer parentheses if present
+    // For DOAC segments: always consider Watchman nudge when DOAC is alongside other antithrombotic
+    if (boldWord === 'DOAC') {
+      // Strip outer parens if wrapping the whole content (AF override format)
+      if (rest.startsWith('(anticoagulation mandatory') || rest.startsWith('(doac')) {
+        rest = rest.replace(/^\(/, '').replace(/\)$/, '');
+      }
+      // Add Watchman nudge if not already there and this is a multi-agent scenario
+      // (i.e., there are other parts — meaning DAPT or antiplatelet is also present)
+      if (parts.length > 1 && !rest.includes('Watchman') && !rest.includes('LAAC')) {
+        rest = rest + ' — consider Watchman / LAAC device long-term to eliminate anticoagulation need (PROTECT-AF; PREVAIL; PRAGUE-17)';
+      } else if (!rest.includes('Watchman') && !rest.includes('LAAC')) {
+        rest = rest + ' (consider Watchman / LAAC device for patients with bleeding concerns — see rationale notes)';
+      }
+    }
+
+    // Also handle "PLUS anticoagulation as indicated..." (triple therapy case)
+    if (!matched && part.toLowerCase().startsWith('anticoagulation as indicated')) {
+      boldWord = 'DOAC / anticoagulation';
+      rest = part.replace(/^anticoagulation as indicated by etiology\s*/i, '').replace(/^\[TRIPLE THERAPY.*?\]/, '').trim();
+      if (!rest) rest = 'as indicated by etiology — see triple therapy note above';
+    }
+
+    // Inject "DOAC" prefix if the override appended agent without DOAC label
+    const lineStyle = i > 0
+      ? 'margin-top:10px;padding-top:8px;border-top:1px solid var(--border);'
+      : '';
+
+    if (matched || boldWord) {
+      // For "Ticagrelor ... + aspirin ..." split aspirin out for inline bolding
+      let innerHtml = '';
+      if (boldWord === 'Ticagrelor' && rest.includes('+ aspirin')) {
+        const aspIdx = rest.indexOf('+ aspirin');
+        const beforeAsp = rest.slice(0, aspIdx).trim();
+        const aspRest = rest.slice(aspIdx + 2).trim(); // "aspirin 81 mg daily ..."
+        const aspDoseEnd = aspRest.indexOf(' ', aspRest.indexOf(' ') + 1);
+        // aspRest: "aspirin 81 mg daily (mandatory post-IC stent DAPT)"
+        // bold "aspirin", then rest unbolded
+        const aspLabel = 'aspirin';
+        const aspBody = aspRest.slice(aspLabel.length).trim();
+        innerHtml = `<span style="font-weight:700;">${boldWord}</span><span style="font-weight:400;color:var(--text2);"> ${beforeAsp} + </span><span style="font-weight:700;">${aspLabel}</span><span style="font-weight:400;color:var(--text2);"> ${aspBody}</span>`;
+      } else {
+        innerHtml = `<span style="font-weight:700;">${boldWord}</span><span style="font-weight:400;color:var(--text2);"> — ${rest}</span>`;
+      }
+      html += `<div style="${lineStyle}font-size:14px;line-height:1.6;color:var(--text);">${innerHtml}</div>`;
+    } else {
+      // No pattern matched — render full text lightly styled
+      // Try to split on first em-dash or colon
+      const dashIdx = part.indexOf(' — ');
+      const colonIdx = part.indexOf(': ');
+      let label = '', body = part;
+      if (dashIdx > 0 && dashIdx < 40) { label = part.slice(0, dashIdx); body = part.slice(dashIdx + 3); }
+      else if (colonIdx > 0 && colonIdx < 30) { label = part.slice(0, colonIdx); body = part.slice(colonIdx + 2); }
+
+      if (label) {
+        html += `<div style="${lineStyle}font-size:14px;line-height:1.6;color:var(--text);">
+          <span style="font-weight:700;">${label}</span><span style="font-weight:400;color:var(--text2);"> — ${body}</span>
+        </div>`;
+      } else {
+        html += `<div style="${lineStyle}font-size:13px;line-height:1.6;color:var(--text2);">${part}</div>`;
+      }
+    }
+  });
+
+  return html || `<div style="font-size:14px;color:var(--text);">${agentStr}</div>`;
+}
+
+function bleedingRisk(agentStr) {
+  // Returns {label, value, color} based on the antithrombotic regimen
+  if (!agentStr) return { label: 'Not calculated', value: '', color: 'var(--text3)' };
+  const a = agentStr.toLowerCase();
+
+  // Early returns for non-antithrombotic regimens (PACNS, RCVS)
+  if (a.startsWith('iv antibiotics') || a.includes('no de novo anticoagulation for ie')) {
+    return { label: 'N/A — anticoagulation contraindicated in active IE', value: 'Primary treatment is IV antibiotics. No antithrombotic hemorrhagic risk from the recommended regimen. Mycotic aneurysm rupture and hemorrhagic transformation are the predominant hemorrhagic risks in IE — both worsened by anticoagulation.', color: 'var(--green)' };
+  }
+  if (a.startsWith('immunosuppression') || a.includes('no antithrombotic') || a.includes('no antiplatelet, no anticoagulation')) {
+    return { label: 'N/A — no antithrombotic therapy', value: 'Immunosuppression only. Antithrombotic hemorrhagic risk does not apply. Monitor for steroid and immunosuppressant adverse effects (infection, hyperglycemia, GI bleed with steroids).', color: 'var(--green)' };
+  }
+  if (a.startsWith('calcium channel blocker') || (a.includes('calcium channel') && a.includes('no antiplatelet') && a.includes('no anticoagulation'))) {
+    return { label: 'MINIMAL — no antithrombotic agent', value: 'Calcium channel blocker only (verapamil SR / nimodipine). No antithrombotic hemorrhagic risk. Monitor BP; fall risk with vasodilators.', color: 'var(--green)' };
+  }
+
+  const hasAC = a.includes('doac') || a.includes('anticoagulation') || a.includes('warfarin') || a.includes('lmwh') || a.includes('ufh') || a.includes('triple therapy');
+  const isTriple = hasAC && (a.includes('dapt') || (a.includes('aspirin') && (a.includes('clopidogrel') || a.includes('ticagrelor'))));
+  const isDAPT_plus_DOAC = hasAC && (a.includes('dapt') || (a.includes('aspirin') && (a.includes('clopidogrel') || a.includes('ticagrelor')))) && !isTriple;
+  const isDOAC_plus_single_AP = a.includes('doac') && (a.includes('aspirin') || a.includes('antiplatelet monotherapy')) && !isDAPT_plus_DOAC;
+  const isACalone = hasAC && !a.includes('aspirin') && !a.includes('dapt') && !a.includes('clopidogrel') && !a.includes('ticagrelor');
+  const isDAPTalone = a.includes('dapt') || (a.includes('clopidogrel') && a.includes('aspirin')) || (a.includes('ticagrelor') && a.includes('aspirin'));
+  const isAPmono = (a.includes('antiplatelet monotherapy') || (a.includes('aspirin') && !a.includes('clopidogrel') && !a.includes('ticagrelor'))) && !a.includes('doac') && !a.includes('warfarin');
+  const isLMWH = a.includes('lmwh') && !a.includes('aspirin');
+  const isCCB = a.includes('calcium channel') || a.includes('verapamil') || a.includes('nimodipine');
+
+  if (isTriple || isDAPT_plus_DOAC) {
+    return { label: 'HIGH — Triple Therapy', value: '~3–4× baseline; annual major bleed ~10–15% (AUGUSTUS: 10.9% vs 6.7% DAPT)', color: 'var(--red)' };
+  } else if (isDOAC_plus_single_AP) {
+    return { label: 'ELEVATED — OAC + Antiplatelet', value: '~2× vs OAC alone; ~4–5% annual major bleed (WOEST trial: HR 1.96 for major bleeding OAC+ASA)', color: 'var(--amber)' };
+  } else if (isACalone) {
+    return { label: 'MODERATE — Anticoagulation alone', value: '~2–3% annual major bleed (ARISTOTLE/RE-LY/ROCKET-AF for DOACs); ICH ~0.3–0.5%/year', color: 'var(--amber)' };
+  } else if (isDAPTalone) {
+    const is21day = a.includes('21 day') || a.includes('21-day');
+    if (is21day) {
+      return { label: 'LOW — Short DAPT ×21 days', value: '~0.9% major bleed over 21 days (POINT: 0.9% DAPT vs 0.4% aspirin); limited by short duration', color: 'var(--green)' };
+    }
+    return { label: 'MODERATE — DAPT ×90 days', value: '~1–2% major bleed over 90 days (SAMMPRIS: 1.3% any bleed in AMM arm)', color: 'var(--amber)' };
+  } else if (isAPmono) {
+    return { label: 'LOW — Antiplatelet monotherapy', value: '~1–2% annual major bleed (SPARCL aspirin arm); GI bleed ~0.5–1%/year', color: 'var(--green)' };
+  } else if (isLMWH) {
+    return { label: 'MODERATE — LMWH', value: '~2–3% major bleed; enoxaparin: major bleed 1.3% in ESUS-cancer (varies by dose and renal function)', color: 'var(--amber)' };
+  } else if (isCCB) {
+    return { label: 'MINIMAL — CCB only (no antithrombotic)', value: 'No antithrombotic hemorrhagic risk from medication class; monitor BP for falls', color: 'var(--green)' };
+  } else {
+    return { label: 'See notes', value: 'Individualize based on regimen and patient risk factors (HAS-BLED, ORBIT score)', color: 'var(--text3)' };
+  }
+}
+
 function buildVerdict() {
   const vout = document.getElementById('vout');
 
   // Determine primary recommendation
-  let agent = '', timing = '', color = 'vban', timingClass = '', notes = [], refs = [];
+  let agent = '', timing = '', timingAC = '', color = 'vban', timingClass = '', timingACClass = '', notes = [], refs = [];
 
   const eto = S.etiology;
   const sz = S.size;
   const ht = S.ht;
   const ht_type = S.ht_type;
+
+  // ─── AF confirmation — hoisted to top to prevent TDZ errors in all etiology blocks ───
+  const af_confirmed = S.af_type && S.af_type !== 'na';
+  const primary_already_af = (eto === 'af');
+  const needs_ac_from_af = af_confirmed && !primary_already_af;
+  const has_any_ac_indication = (eto === 'af' || eto === 'lvt' || eto === 'other-ce') || needs_ac_from_af;
   const doac_elig = S.doac_elig;
 
   // ─── CARDIOEMBOLIC: AF ───
@@ -1043,10 +1231,32 @@ function buildVerdict() {
       notes.push('MRI DWI not yet performed. Presumptive early initiation is reasonable if CT shows no large territorial infarct and no hemorrhagic transformation. Obtain MRI urgently to confirm ELAN-based timing.');
     }
 
+    // ICAD / HRP coexisting with AF — aspirin add-on consideration
+    const hasICRAD = S.icad_intrac && S.icad_intrac !== 'none';
+    const hasExtracDisease = S.icad_extrac && S.icad_extrac !== 'none';
+    if (hasICRAD || hasExtracDisease) {
+      let icadDesc = [];
+      if (hasICRAD) icadDesc.push(S.icad_intrac === 'severe' ? 'severe ICAD (70–99% intracranial stenosis)' : 'moderate ICAD (50–69%)');
+      if (hasExtracDisease) {
+        if (S.icad_extrac === 'ext_severe') icadDesc.push('symptomatic extracranial carotid ≥70%');
+        else if (S.icad_extrac === 'ext_moderate') icadDesc.push('symptomatic extracranial carotid 50–69%');
+        else if (S.icad_extrac === 'ext_hrp') icadDesc.push('high-risk carotid plaque features (IPH/LRNC/ILT)');
+      }
+      notes.push('Coexisting large vessel / atherosclerotic disease identified (' + icadDesc.join('; ') + '): Consider adding aspirin 81 mg daily to anticoagulation (DOAC or warfarin) for this patient. The cardioembolic source (AF) is the primary driver of stroke in this scenario, and anticoagulation remains the mainstay. However, the concurrent atherosclerotic lesion represents an independent ongoing embolic risk that anticoagulation alone may not fully address. Aspirin monotherapy alongside DOAC is a reasonable approach — consult with the attending team and document bleeding risk. This combination carries ~40–60% higher annual major bleeding risk vs. anticoagulation alone (HAS-BLED, ORBIT scores should be calculated). If bleeding risk is prohibitive, prioritize DOAC monotherapy; consider aspirin only if the atherosclerotic burden is severe (e.g., ICAD 70–99% with breakthrough stroke on DOAC). For high-risk carotid plaque: pursue revascularization (CEA/CAS) if feasible — this may ultimately allow removal of the aspirin once the embolic source is treated surgically.');
+    }
+
     refs.push('[1] Fischer U et al. (ELAN). Early versus later anticoagulation for stroke with AF. N Engl J Med 2023;388:2411–2421.');
     refs.push('[2] Rohner R et al. ELAN-HT subanalysis. Circulation 2024 (DOI: 10.1161/CIRCULATIONAHA.124.069324).');
     refs.push('[3] Werring DJ et al. OPTIMAS. Lancet 2024;404 — early DOAC noninferior to delayed (3.3% vs. 3.3%).');
     if (doac_elig === 'mech_valve') refs.push('[4] Eikelboom JW et al. RE-ALIGN trial — dabigatran inferior for mechanical valves. N Engl J Med 2013;369:1206.');
+
+    // ─── Watchman / LAAC device consideration for AF ───
+    const needsAC_and_antiplatelet = (hasICRAD || hasExtracDisease);
+    const icStentAF = S.ic_stent && S.ic_stent !== 'no';
+    notes.push('Watchman / LAAC device consideration: For patients with NVAF who cannot safely tolerate long-term anticoagulation (high bleeding risk, prior major bleeding event, intracranial hemorrhage history, recurrent stroke despite adequate anticoagulation, or prohibitive bleeding risk from concurrent antiplatelet requirements) — left atrial appendage closure (LAAC) with the Watchman FLX (Boston Scientific, FDA-approved 2020) or Amulet (Abbott) is a guideline-supported alternative. AHA/ACC/HRS 2023 and SCAI/HRS 2025: Class IIb recommendation for LAAC when OAC is contraindicated. PROTECT-AF: Watchman noninferior to warfarin for NVAF. PREVAIL: confirmed noninferiority. PRAGUE-17 (n=402): LAAC (Watchman/Amulet) noninferior to DOAC (95.5% apixaban; mean CHA₂DS₂-VASc 4.7) for stroke/SE/CV death/major bleeding composite. EWOLUTION registry: 83% reduction in observed stroke vs. predicted risk at 2 years; 46% reduction in non-procedural major bleeding. After successful LAAC, patients are transitioned from DOAC to DAPT (aspirin + clopidogrel) × 6 months, then aspirin monotherapy — eliminating long-term anticoagulation.' + (needsAC_and_antiplatelet ? ' This patient has coexisting atherosclerotic disease requiring antiplatelet therapy — the elimination of long-term anticoagulation after Watchman implantation is particularly attractive, as it avoids triple therapy bleeding risk.' : '') + (icStentAF ? ' An intracranial stent has also been placed, which independently requires ticagrelor DAPT — Watchman may offer a path to eventually discontinuing anticoagulation if the stent stabilizes and anticoagulation can be safely stopped.' : '') + ' Refer to structural cardiology / electrophysiology for evaluation.');
+    refs.push('[W1] PROTECT-AF (Holmes DR et al., JAMA 2014): Watchman noninferior to warfarin. PREVAIL (Holmes DR et al., JACC 2014): confirmed noninferiority; reduced procedural complications.');
+    refs.push('[W2] PRAGUE-17 (Osmancik P et al., JACC 2020): LAAC noninferior to DOAC for combined stroke/SE/CV death/major bleeding (HR 0.84, 95% CI 0.53–1.31). Mean CHA₂DS₂-VASc 4.7.');
+    refs.push('[W3] SCAI/HRS 2025 LAAC Guidelines: LAAO suggested in NVAF with OAC contraindications. AHA/ACC/HRS 2023 AF Guidelines: Class IIb for LAAC when OAC contraindicated.');
   }
 
   // ─── CARDIOEMBOLIC: LV THROMBUS ───
@@ -1067,6 +1277,12 @@ function buildVerdict() {
     }
     notes.push('LVT anticoagulation: AHA/ASA 2021 (Level B) recommends warfarin × ≥3 months. Repeat echo at 3 months to confirm thrombus resolution.');
     notes.push('DOAC use for LVT is off-label but emerging. No large RCT to date. Observational data (Dalia et al., 2022; Camaj et al., JACC 2022) suggest comparable thrombus resolution, but guideline default remains warfarin.');
+    // ICAD coexisting with LVT — same aspirin consideration
+    const hasICRAD_lvt = S.icad_intrac && S.icad_intrac !== 'none';
+    const hasExtrac_lvt = S.icad_extrac && S.icad_extrac !== 'none';
+    if (hasICRAD_lvt || hasExtrac_lvt) {
+      notes.push('Coexisting atherosclerotic lesion identified: Consider aspirin 81 mg daily alongside anticoagulation (warfarin or DOAC). The LV thrombus is the primary embolic source requiring anticoagulation. Concurrent significant ICAD or high-risk carotid plaque represents an independent atherosclerotic embolic mechanism that anticoagulation alone may not address. Aspirin add-on is reasonable if bleeding risk permits (calculate HAS-BLED/ORBIT). Prioritize revascularization of the carotid lesion if feasible.');
+    }
     refs.push('[1] AHA/ASA Stroke Guidelines 2021. LVT: VKA anticoagulation ≥3 months, Class I Level B.');
     refs.push('[2] Camaj A et al. Left Ventricular Thrombus: JACC State-of-the-Art. JACC 2022;79:2592.');
   }
@@ -1082,11 +1298,11 @@ function buildVerdict() {
 
   // ─── ICAD ───
   else if (eto === 'icad') {
-    agent = 'DAPT — aspirin 325 mg/day + clopidogrel 75 mg/day ×90 days (SAMMPRIS protocol), then aspirin 81 mg monotherapy';
+    agent = 'DAPT — aspirin 325 mg daily + clopidogrel 75 mg daily ×90 days (SAMMPRIS protocol), then aspirin 81 mg monotherapy';
     timing = 'Within 24–48 hours of symptom onset (SAMMPRIS AMM protocol)';
     timingClass = 'conf-g';
     notes.push('SAMMPRIS (NEJM 2011): AMM (DAPT + statin + BP control) achieved 12.2% 1-year stroke/death rate vs. 20.0% with stenting (stopped early at 30d: 5.8% vs. 14.7%, p=0.002).');
-    notes.push('Antiplatelet specifics: DAPT — aspirin 325 mg/day + clopidogrel 75 mg/day for 90 days (SAMMPRIS AMM protocol). After day 90: transition to aspirin 81 mg monotherapy (per SAMMPRIS trial protocol). Do NOT continue DAPT beyond 90 days without specific justification — no RCT supports prolonged DAPT for ICAD and bleeding risk increases.');
+    notes.push('Antiplatelet specifics: DAPT — aspirin 325 mg daily + clopidogrel 75 mg daily for 90 days (SAMMPRIS AMM protocol). After day 90: transition to aspirin 81 mg monotherapy (per SAMMPRIS trial protocol). Do NOT continue DAPT beyond 90 days without specific justification — no RCT supports prolonged DAPT for ICAD and bleeding risk increases.');
     notes.push('CYP2C19 LOF genotype: if positive, substitute ticagrelor 90 mg BID for clopidogrel (CHANCE-2, NEJM 2021). Common in East Asian populations (~60% carry at least one LOF allele).');
     notes.push('LDL target <70 mg/dL (rosuvastatin used in SAMMPRIS). SBP <140 mmHg (<130 if diabetic). Anticoagulation (warfarin) was NOT superior to aspirin and caused excess bleeding in WASID (Chimowitz, NEJM 2005).');
     if (S.icad_extrac === 'ext_hrp') {
@@ -1104,10 +1320,10 @@ function buildVerdict() {
     const icad_extrac_val = S.icad_extrac;
     const isRevascCandidate = (icad_extrac_val === 'ext_severe' || icad_extrac_val === 'ext_moderate' || icad_extrac_val === 'ext_hrp');
     if (isRevascCandidate) {
-      agent = 'DAPT — aspirin 81 mg/day + clopidogrel 75 mg/day from time of stroke until carotid revascularization (CEA or CAS), then antiplatelet monotherapy post-procedure';
+      agent = 'DAPT — aspirin 81 mg daily + clopidogrel 75 mg daily from time of stroke until carotid revascularization (CEA or CAS), then antiplatelet monotherapy post-procedure';
       timing = 'DAPT initiated immediately (within 24–48h); CEA/CAS referred urgently — within 2 weeks for symptomatic ≥70% stenosis';
     } else {
-      agent = 'Antiplatelet monotherapy — aspirin 81 mg/day OR clopidogrel 75 mg/day';
+      agent = 'Antiplatelet monotherapy — aspirin 81 mg daily OR clopidogrel 75 mg daily';
       timing = 'Within 24–48 hours of stroke onset';
     }
 
@@ -1118,10 +1334,12 @@ function buildVerdict() {
     } else {
       notes.push('Antiplatelet specifics: Antiplatelet monotherapy (aspirin 81 mg or clopidogrel 75 mg) is standard for LVD/extracranial disease without a clear revascularization target. If stroke severity and infarct are minor (NIHSS ≤3), DAPT ×21 days per CHANCE/POINT criteria can be considered as for any minor non-CE stroke.');
     }
-    notes.push('Carotid revascularization evidence: Symptomatic ≥70% stenosis — CEA within 2 weeks (NASCET NNT ≈ 6 over 5 years to prevent one stroke; Class I Level A). CAS is acceptable for high surgical risk. Symptomatic 50–69% — benefit is smaller but real; CEA generally recommended if surgical risk is low. For high-risk plaque features (IPH, LRNC, ILT) with <70% stenosis, refer to vascular surgery/IR for individualized assessment. Medical management alone for ≥70% symptomatic stenosis is clearly inferior to revascularization.');
+    notes.push('Carotid revascularization evidence — three options for symptomatic carotid stenosis: <strong style=\"color:#fff;\">CEA</strong> (Carotid Endarterectomy): gold standard; within 2 weeks for symptomatic ≥70% (NASCET NNT ≈6 over 5 years, Class I Level A). CEA is preferred for standard surgical risk patients. <strong style=\"color:#fff;\">TCAR</strong> (Transcarotid Artery Revascularization): combines surgical carotid access with dynamic flow reversal for cerebral neuroprotection — reduces embolic risk compared to TF-CAS by protecting the brain from arch/aortic embolism during the procedure. ROADSTER 2 (Kashyap, J Vasc Surg 2022): 30-day stroke rate 0.6% in high-surgical-risk patients; no ipsilateral strokes at 1 year. VQI registry matched analysis (Schermerhorn, Stroke 2024): TCAR comparable to CEA for stroke/mortality; significantly lower cranial nerve injury and wound complications vs CEA. Preferred for patients at high risk for CEA (prior neck surgery, radiation, hostile anatomy, contralateral occlusion) where TF approach embolic risk is also unacceptable. <strong style=\"color:#fff;\">TF-CAS</strong> (Transfemoral Carotid Artery Stenting): minimally invasive alternative for high surgical risk; evidence shows higher periprocedural stroke rates vs. CEA concentrated on \"day zero\" from aortic arch approach — reserve for patients unsuitable for both CEA and TCAR. Symptomatic 50–69%: benefit is smaller but real; CEA generally recommended if surgical risk is low. Medical management alone for ≥70% symptomatic stenosis is clearly inferior to revascularization');
     notes.push('Perioperative antiplatelet: aspirin must be continued through CEA (ACAS/NASCET evidence). Do not stop prior to endarterectomy.');
     refs.push('[1] NASCET Investigators. Beneficial effect of CEA in symptomatic patients with high-grade carotid stenosis. N Engl J Med 1991;325:445–453.');
     refs.push('[2] AHA/ASA Guidelines 2021. CEA within 2 weeks for symptomatic ≥70%: Class I Level A.');
+    refs.push('[3] TCAR — ROADSTER 2 (Kashyap VS et al., J Vasc Surg 2022): 0% ipsilateral stroke at 1 year in 155 high-risk patients. 30-day stroke rate 0.6%.');
+    refs.push('[4] VQI TCAR vs CEA/CAS (Schermerhorn, Stroke 2024): TCAR comparable to CEA for stroke/mortality; lower cranial nerve injury and wound complications than CEA.');
   }
 
   // ─── SVD / LACUNAR ───
@@ -1129,18 +1347,19 @@ function buildVerdict() {
     let aptAgent = '';
     const ncs = S.nonce_sev;
     if (ncs === 'minor' || ncs === 'tia') {
-      aptAgent = 'DAPT (aspirin 50–325 mg + clopidogrel 75 mg) × 21 days, then antiplatelet monotherapy';
+      aptAgent = 'DAPT — aspirin 81 mg daily + clopidogrel 75 mg daily × 21–30 days (CHANCE/POINT), then antiplatelet monotherapy (aspirin 81 mg or clopidogrel 75 mg)';
       timing = 'Within 12–24 hours of symptom onset (CHANCE/POINT eligibility window: within 12h for maximum CHANCE effect; POINT enrolled within 12h)';
       timingClass = 'conf-g';
       notes.push('CHANCE + POINT pooled (JAMA Neurol 2019): DAPT vs. aspirin — major ischemic events 5.3% vs. 7.0% (HR 0.74, 95% CI 0.62–0.89). Benefit confined to first 21 days.');
-      notes.push('SPS3 trial showed DAPT was NOT better than aspirin for lacunar stroke specifically (HR 0.92, 95% CI 0.72–1.16) with more bleeding. CHANCE/POINT enrolled broad minor stroke including lacunar — the benefit is likely driven by non-lacunar strokes in the cohort. Clinical judgment on DAPT vs. monotherapy in pure lacunar stroke.');
+      notes.push('SPS3 clarification — acute vs. chronic distinction: SPS3 enrolled patients a median of 62 days AFTER lacunar stroke (not in the acute period) and studied CHRONIC DAPT (mean follow-up 3.4 years). SPS3 data are NOT applicable to acute DAPT initiation within 24h of minor lacunar stroke. CHANCE and POINT enrolled patients within 12–24h and demonstrated clear benefit. AHA/ASA 2021 guidelines recommend DAPT ×21 days for ANY minor ischemic stroke (NIHSS ≤3) including lacunar, regardless of SVD subtype. Optimal duration is 21–30 days based on pooled analysis showing benefit concentrated in first 30 days (ACC 2021 review).');
+      notes.push('DAPT duration for minor lacunar stroke in clinical practice: many centers use 30 days (within POINT trial benefit window) rather than 21 days. Both 21 and 30 days are evidence-consistent. Do not extend beyond 30 days for SVD/lacunar — SPS3 confirms harm at chronic DAPT. Transition to antiplatelet monotherapy (aspirin 81 mg or clopidogrel 75 mg) after the 21–30 day DAPT window.');
     } else {
-      aptAgent = 'Antiplatelet monotherapy — aspirin 81 mg/day OR clopidogrel 75 mg/day (single agent; DAPT not indicated for moderate/severe non-CE stroke)';
+      aptAgent = 'Antiplatelet monotherapy — aspirin 81 mg daily OR clopidogrel 75 mg daily (single agent; DAPT not indicated for moderate/severe non-CE stroke)';
       timing = 'Within 24–48 hours of stroke onset';
       timingClass = 'conf-g';
     }
     agent = aptAgent || 'Antiplatelet therapy — agent per severity above';
-    notes.push('Antiplatelet specifics for SVD: For minor stroke (NIHSS ≤3) or TIA — DAPT (aspirin + clopidogrel) for exactly 21 days per pooled CHANCE+POINT analysis, then transition to single-agent antiplatelet (aspirin 81 mg or clopidogrel 75 mg). Do NOT continue DAPT beyond 21 days — benefit turns to harm after 21 days (excess bleeding without additional stroke reduction). For NIHSS &gt;3: antiplatelet monotherapy only.');
+    notes.push('Antiplatelet specifics for SVD/lacunar: For minor stroke (NIHSS ≤3) or TIA — DAPT (aspirin 81 mg + clopidogrel 75 mg) for 21–30 days per CHANCE/POINT, then antiplatelet monotherapy. SPS3 DAPT harm does NOT apply to acute DAPT initiation (SPS3 enrolled at median 62 days post-stroke). For moderate/severe stroke (NIHSS >3): antiplatelet monotherapy only (aspirin 81 mg or clopidogrel 75 mg).');
     notes.push('Hypertension management is the single most important modifiable target for SVD recurrence. SBP <130 mmHg is the evidence-based target (SPS3: SBP <130 significantly reduced lacunar stroke recurrence vs. 130–149, HR 0.81, 95% CI 0.64–1.03 — trend).');
     refs.push('[1] Wang Y et al. CHANCE. N Engl J Med 2013;369:11–19.');
     refs.push('[2] Johnston SC et al. POINT. N Engl J Med 2018;379:215–225.');
@@ -1179,7 +1398,7 @@ function buildVerdict() {
   // ─── CRYPTOGENIC / ESUS ───
   else if (eto === 'esus') {
     const dd = S.ddimer;
-    let agent_base = 'Antiplatelet monotherapy — aspirin 81 mg/day OR clopidogrel 75 mg/day (ARCADIA: anticoagulation = aspirin for ESUS; NAVIGATE/RE-SPECT ESUS: anticoagulation not superior)';
+    let agent_base = 'Antiplatelet monotherapy — aspirin 81 mg daily OR clopidogrel 75 mg daily (ARCADIA: anticoagulation = aspirin for ESUS; NAVIGATE/RE-SPECT ESUS: anticoagulation not superior)';
     if (dd === 'high' || dd === 'very_high') {
       agent_base = 'LMWH (enoxaparin 1 mg/kg BID or dalteparin 200 IU/kg QD) — D-dimer suggests cancer-associated hypercoagulability; evaluate for occult malignancy';
     }
@@ -1231,7 +1450,7 @@ function buildVerdict() {
 
   // ─── RCVS ───
   else if (eto === 'rcvs') {
-    agent = 'Calcium channel blocker (verapamil SR 120–480 mg/day or nimodipine 60 mg q4–6h) — NO antiplatelet or anticoagulation';
+    agent = 'Calcium channel blocker (verapamil SR 120–480 mg daily or nimodipine 60 mg q4–6h) — NO antiplatelet or anticoagulation';
     timing = 'Immediate calcium channel blocker initiation; remove triggers urgently';
     timingClass = 'conf-a';
     notes.push('RCVS is a non-thrombotic, non-inflammatory vasculopathy. The mechanism is diffuse cerebral arterial vasoconstriction, not embolism or thrombosis. Antiplatelet and anticoagulation therapies have no established benefit and anticoagulation carries additional hemorrhagic risk in the setting of possible cortical SAH or ICH. Neither aspirin nor DOAC is recommended for secondary prevention of RCVS-associated stroke (EMCrit IBCC; Treatment-Related RCVS, PMC 2024).');
@@ -1255,7 +1474,7 @@ function buildVerdict() {
     if (ncs2 === 'minor' || ncs2 === 'tia') {
       agent = 'DAPT — aspirin + clopidogrel ×21 days (bridge to CEA/webectomy or CAS), then antiplatelet monotherapy';
     } else {
-      agent = 'Antiplatelet monotherapy — aspirin 81 mg/day or clopidogrel 75 mg/day (first event); DAPT + CEA referral for recurrent events';
+      agent = 'Antiplatelet monotherapy — aspirin 81 mg daily or clopidogrel 75 mg daily (first event); DAPT + CEA referral for recurrent events';
     }
     timing = 'Immediately (within 24–48 hours) — no mandatory hold absent TNK';
     timingClass = 'conf-g';
@@ -1269,6 +1488,78 @@ function buildVerdict() {
     refs.push('[3] Coutinho JM et al. Carotid web in young cryptogenic stroke. Stroke 2019.');
   }
 
+  // ─── PACNS / CNS VASCULITIS ───
+  else if (eto === 'pacns') {
+    agent = 'Immunosuppression — NO antithrombotic therapy (no antiplatelet, no anticoagulation)';
+    timing = 'Immediately upon suspected diagnosis — begin high-dose glucocorticoids while completing workup; do not wait for biopsy confirmation in severe/rapidly progressive disease';
+    timingClass = 'conf-r';
+    notes.push('PACNS is an inflammatory vasculopathy — NOT a thrombotic or embolic process. Antiplatelets and anticoagulation have no demonstrated benefit in PACNS (evidence review: Salvarani 2007; Hajj-Ali 2013; Salvarani 2015). The primary treatment target is vascular inflammation, not thrombosis.');
+    notes.push('Critical first step — EXCLUDE RCVS: RCVS and PACNS can be virtually indistinguishable on conventional angiography ("string of beads"). Key distinguishing features: PACNS — subacute onset over weeks/months, CSF inflammatory (elevated protein/pleocytosis in ~50%), vessel wall MRI shows T1+Gd enhancement, responds to steroids. RCVS — abrupt onset thunderclap headache, normal CSF, vessel wall MRI no enhancement, steroids worsen vasoconstriction. Giving steroids to RCVS accelerates clinical deterioration — always attempt to differentiate before treating.');
+    notes.push('Induction immunosuppression: (1) HIGH-DOSE GLUCOCORTICOIDS — IV methylprednisolone 1 g/day ×3–5 days (pulse), then oral prednisone 1 mg/kg/day (max 80 mg/day). (2) CYCLOPHOSPHAMIDE — oral 2 mg/kg/day or IV pulse 750 mg/m² monthly for 4–6 months. Combination GC + CYC is associated with remission in 68–95% of patients (Salvarani cohort, 163 patients). (3) RITUXIMAB ALTERNATIVE — rituximab 375 mg/m² IV weekly ×4 doses (or 1g ×2 doses every 2 weeks) as an alternative to cyclophosphamide, particularly for refractory PACNS or when CYC toxicity is a concern.');
+    notes.push('Maintenance immunosuppression (after remission, typically 1 month after last CYC/RTX): Azathioprine 2 mg/kg/day (not exceeding 150 mg/day in 2 divided doses) — most commonly used. Alternatives: mycophenolate mofetil 1–3 g/day, or methotrexate 10–25 mg weekly. Maintain for ≥12–24 months before considering withdrawal. Monitoring at 1–2 month intervals with clinical exam + MRI brain with vessel wall sequences.');
+    notes.push('If cyclophosphamide or rituximab fail or patient is refractory: Consider TNF-α inhibitors (infliximab, etanercept) or tocilizumab (anti-IL-6 receptor). Refractory PACNS should prompt re-evaluation of the diagnosis — CNS lymphoma can present with vasculitic pattern on histopathology (reported in literature). Consider rebiopsy.');
+    notes.push('Biopsy: Leptomeningeal + cortical brain biopsy remains the gold standard for PACNS diagnosis. Sensitivity ~75% (higher if MRI-guided to a lesion site). Granulomatous inflammation, lymphocytic infiltration, necrotizing vasculitis. Tissue diagnosis is strongly recommended before committing to long-term immunosuppression, especially in mild/subacute cases. In severe/rapidly progressive disease, treatment can begin empirically while workup is completed.');
+    notes.push('Prognosis: Favorable response to treatment in ~68–95% with GC+CYC (induction). Relapse occurs in up to 25% of cases. Absence of remission should trigger diagnostic re-evaluation. Mortality in the untreated era was high; with treatment, outcomes have improved substantially.');
+    refs.push('[1] Salvarani C et al. Primary CNS vasculitis. Lancet Neurol 2012;11:906–919. Induction with GC+CYC: remission in 68–95%.');
+    refs.push('[2] Hajj-Ali RA, Calabrese LH. Primary angiitis of the central nervous system. Autoimmun Rev 2013;12:463–466.');
+    refs.push('[3] Cyclophosphamide induction: oral 2 mg/kg/day or IV 750 mg/m² monthly ×4–6 months. Emedicine/Medscape PACNS Treatment.');
+    refs.push('[4] Rituximab for refractory PACNS: 375 mg/m² ×4 weekly doses. Practical Neurology 2025; case series with radiologic improvement.');
+    refs.push('[5] Azathioprine maintenance: 2 mg/kg/day (not >150 mg/day). Frontiers in Neurology 2025; maintenance ≥2 years recommended.');
+    refs.push('[6] RCVS vs PACNS: Calabrese LH et al. AHA/ASA Scientific Statement. Stroke 2022;53:e295. Vessel wall MRI key differentiator.');
+  }
+
+  // ─── INFECTIVE ENDOCARDITIS ───
+  else if (eto === 'endo_ie') {
+    agent = 'IV Antibiotics (targeted per organism/sensitivities) — NO de novo anticoagulation for IE stroke';
+    timing = 'Antibiotics immediately (this is the primary stroke prevention intervention in IE); antithrombotic decisions individualized';
+    timingClass = 'conf-r';
+    notes.push('Anticoagulation is generally contraindicated in active infective endocarditis due to two specific risks: (1) Mycotic aneurysm rupture — IE causes septic arteritis with aneurysm formation; anticoagulation substantially increases rupture risk. These lesions are present in <2% of clinical series but 5–10% of autopsy specimens. CT angiography misses 80% of mycotic aneurysms vs. catheter angiography. (2) Hemorrhagic transformation — IE emboli cause ischemic stroke that transforms to hemorrhagic in a significant proportion. Anticoagulation accelerates this transformation. JACC Advances meta-analysis (2023): antithrombotic therapy in IE remains challenging with no clear RCT evidence for benefit outweighing risk.');
+    notes.push('Primary stroke prevention in IE = antibiotics: Prompt initiation of appropriate IV antibiotic therapy reduces embolic risk from ~40% to 1–3% within the first week (Stroke 2011). This is the single most important intervention. Antibiotic choice is organism-directed — empirical treatment while cultures pending, then definitive therapy per sensitivities and ID consultation.');
+    notes.push('Antiplatelet agents: In native valve IE, antiplatelet agents (aspirin) are generally continued if the patient was already taking them, and may modestly reduce embolic events (not proven in RCT). De novo antiplatelet initiation is not routinely recommended for IE-related stroke. In S. aureus IE — the most virulent form — both anticoagulation and antiplatelets carry higher risk; extreme caution required.');
+    notes.push('If patient was on warfarin pre-admission (e.g., for atrial fibrillation or mechanical valve): Do NOT abruptly discontinue — switch to UFH infusion (IV heparin), which allows immediate reversal if neurological deterioration or cerebral hemorrhage occurs, and provides perioperative flexibility for valve surgery. The switch from warfarin to UFH is standard practice for IE patients on pre-existing anticoagulation.');
+    notes.push('Mycotic aneurysm screening: Cerebral angiography is the gold standard for mycotic aneurysm detection. CTA/MRA may miss up to 80% of small lesions. Any intracranial hemorrhage in IE should prompt urgent angiography and neurosurgery/neurointerventional consultation. Unruptured mycotic aneurysms can be treated endovascularly or followed with serial imaging while on antibiotics (many resolve with antibiotic therapy alone).');
+    notes.push('Cardiac surgery timing after stroke in IE: Traditionally delayed ≥2 weeks after major stroke to reduce hemorrhagic conversion. However, for ongoing hemodynamic compromise or uncontrolled infection, earlier surgery may be necessary despite neurological risk. Decision requires cardiology + neurology + neurosurgery consensus. Recent series suggest earlier surgery (within 2 weeks for minor/moderate stroke) does not significantly worsen neurological outcome in carefully selected patients.');
+    refs.push('[1] Stroke 2011 editorial: Anticoagulation should not be used in most patients with stroke with IE. Reduction in embolic risk with antibiotics to 1–3% within 1 week.');
+    refs.push('[2] JACC Advances 2023 (meta-analysis): Antithrombotic therapy in IE — challenging; no clear RCT evidence. Anticoagulation may increase ICH risk in IE stroke.');
+    refs.push('[3] PMC 2023 case series: IE represents contraindication to thrombolysis and therapeutic anticoagulation due to high hemorrhagic transformation risk.');
+  }
+
+  // ─── NBTE / MARANTIC / LIBMAN-SACKS ENDOCARDITIS ───
+  else if (eto === 'endo_nbte') {
+    agent = 'Anticoagulation — UFH acutely (inpatient), then warfarin (INR 2–3) or LMWH long-term; treat underlying disease';
+    timing = 'Anticoagulation initiated promptly once NBTE confirmed and active IE excluded; UFH preferred acutely for rapid titration';
+    timingClass = 'conf-g';
+    notes.push('NBTE (Non-Bacterial Thrombotic Endocarditis) = marantic endocarditis = sterile vegetations of fibrin and platelets on heart valves in a hypercoagulable state. Associated with: advanced malignancy (pancreatic, lung, GI cancers — 6× higher incidence), antiphospholipid syndrome (APS), SLE (Libman-Sacks endocarditis), and other hypercoagulable states. Must distinguish from infective endocarditis — NBTE vegetations are sterile by definition (negative blood cultures mandatory). Best diagnosed by TEE.');
+    notes.push('Treatment: Anticoagulation is the primary antithrombotic strategy in NBTE. UFH (intravenous, therapeutic) is preferred acutely because: (1) immediate anticoagulant effect, (2) reversible if hemorrhagic complications develop, (3) established evidence in case series for reduction of embolic events. Recent guidelines recommend UFH or LMWH for NBTE with evidence of emboli (ScienceDirect Topics 2023). Warfarin is appropriate for long-term maintenance if the underlying hypercoagulable state persists. DOACs are used off-label with limited evidence — avoid dabigatran in APS due to inferior outcomes (TRAPS trial).');
+    notes.push('Treat the underlying cause: (1) Malignancy-associated NBTE: treat the underlying cancer (chemotherapy, immunotherapy). LMWH is preferred over warfarin in cancer-associated hypercoagulability (CLOT trial: dalteparin superior to warfarin for cancer VTE, HR 0.48). Consider enoxaparin 1 mg/kg BID or dalteparin 200 IU/kg QD. (2) APS: warfarin INR 2–3 for arterial thrombosis (WARFARIN-APS evidence); hydroxychloroquine for all SLE/APS patients. (3) Libman-Sacks/SLE: immunosuppression with hydroxychloroquine ± corticosteroids; warfarin for stroke.');
+    notes.push('Valve intervention: Patients with severe symptomatic valvular dysfunction from NBTE, recurrent embolism on anticoagulation, or large vegetations >1 cm may require valve repair or replacement. Surgical risk must be weighed against ongoing embolic risk. Prognosis is generally poor due to the severity of the underlying disease; decisions must involve palliative care discussion if terminal malignancy is the underlying cause.');
+    refs.push('[1] ScienceDirect Topics NBTE: Recent guidelines recommend UFH or LMWH for NBTE with evidence of emboli. Warfarin for long-term maintenance.');
+    refs.push('[2] Libman-Sacks/APS: Warfarin for ischemic stroke; hydroxychloroquine + immunosuppression for SLE. DOACs inferior in APS (TRAPS trial: rivaroxaban vs. warfarin, higher event rate with DOAC in triple-positive APS).');
+    refs.push('[3] Cancer-associated NBTE: LMWH preferred (CLOT trial: dalteparin HR 0.48 vs. warfarin for cancer VTE recurrence).');
+    refs.push('[4] PMC case series (2020): Recurrent NBTE and stroke despite anticoagulation documented; surgical valve replacement may be required in refractory cases.');
+  }
+
+  // ─── CVST — CEREBRAL VENOUS SINUS THROMBOSIS ───
+  else if (eto === 'cvst') {
+    agent = 'Anticoagulation — UFH (IV, therapeutic PTT 60–80) or LMWH (enoxaparin 1 mg/kg BID) acutely, then warfarin (INR 2–3) or DOAC long-term';
+    timing = 'Immediately — anticoagulation initiated as soon as CVST diagnosis confirmed (even with hemorrhagic infarction)';
+    timingClass = 'conf-g';
+    notes.push('CVST is a VENOUS, not arterial, occlusive disease. The ischemic injury in CVST results from venous hypertension and impaired drainage — NOT thromboembolism. Anticoagulation reduces extension of thrombus and allows venous collateral drainage to develop. Hemorrhagic infarcts in CVST are a consequence of venous congestion, NOT arterial hemorrhagic transformation, and are NOT a contraindication to anticoagulation. This is the key paradigm distinction from arterial stroke management.');
+    notes.push('Acute anticoagulation: UFH infusion (target PTT 60–80 seconds) or LMWH (enoxaparin 1 mg/kg BID). Heparin is preferred acutely because of reversibility and monitored dosing. The landmark ISCVT study (n=624) and EUSI guidelines support anticoagulation even in the presence of hemorrhagic infarction. Note: this applies to venous hemorrhagic infarcts — NOT to large space-occupying hemorrhage with herniation, which may require neurosurgery.');
+    notes.push('Long-term anticoagulation: Transition to warfarin (INR 2–3) or DOAC after the acute phase. Duration: (1) provoked CVST (transient risk factor such as OCP, pregnancy, dehydration, infection) — 3–6 months. (2) Unprovoked CVST — 6–12 months. (3) Recurrent CVST or persistent thrombophilia (homozygous Factor V Leiden, antiphospholipid syndrome, malignancy) — indefinite anticoagulation. RESPECT-CVST trial (2021, NEJM Evidence): dabigatran noninferior to warfarin for CVST recurrence; DOAC is an acceptable alternative to warfarin. Apixaban and rivaroxaban are also used off-label.');
+    notes.push('Antiplatelet therapy is NOT the primary treatment for CVST. The mechanism is venous thrombosis, not platelet-mediated arterial occlusion. Aspirin or clopidogrel have no role in acute CVST management. This is a critical distinction from all arterial stroke etiologies in this workflow.');
+    notes.push('Investigate for underlying cause: (1) OCP or hormonal therapy — discontinue immediately. (2) Pregnancy/postpartum — peripartum CVST requires careful anticoagulation management with obstetrics; LMWH preferred. (3) Thrombophilia workup — Factor V Leiden, prothrombin gene mutation, Protein C/S deficiency, antithrombin III, antiphospholipid antibodies. (4) Malignancy — CT CAP if no other cause found. (5) Infection (mastoiditis, sinusitis, meningitis) — treat primary infection plus anticoagulation. (6) Inflammatory conditions — IBD, Behcet disease, SLE.');
+    notes.push('Intracranial hypertension management: If papilledema or severe headache from elevated ICP, consider acetazolamide (500–1000 mg BID) or serial LP if tonsillar herniation risk is low. Decompressive craniectomy for malignant CVST with impending herniation. Endovascular thrombectomy/thrombolysis reserved for refractory cases despite systemic anticoagulation.');
+    refs.push('[1] Ferro JM et al. ISCVT study. Stroke 2004;35:664–670. Anticoagulation even with hemorrhagic infarction: standard of care.');
+    refs.push('[2] EUSI/EFNS Guidelines for CVST. Cerebrovascular Dis 2010. Heparin anticoagulation: Class I, Level A.');
+    refs.push('[3] Ferro JM et al. RESPECT-CVST (2021, NEJM Evidence): dabigatran noninferior to warfarin for CVST. First RCT comparing DOAC to VKA in CVST.');
+    refs.push('[4] AHA/ASA Guidelines 2011 and Updated Recommendations: anticoagulation for CVST even with hemorrhagic infarction.');
+    // If TNK was given, add a special note about this unusual scenario
+    if (S.tpa === 'yes') {
+      notes.push('IV TNK administered before CVST diagnosis: This is a rare clinical scenario. The standard 24h TNK hold recommendation is for ARTERIAL stroke antithrombotics (to prevent hemorrhagic transformation of arterial infarcts). For CVST, the pathophysiology is different and the urgency of anticoagulation is high. In practice, if TNK was given empirically before CVST was identified, anticoagulation should be initiated as soon as clinically safe — the 24h window may be shortened given the CVST mechanism. This decision requires neurology attending consensus and depends on whether any hemorrhagic infarct was present pre-TNK and the overall clinical trajectory.');
+    }
+  }
+
   // ─── NOT SET ───
   else {
     vout.innerHTML = `<div class="lbox" style="border-left: 3px solid var(--amber);">
@@ -1280,15 +1571,85 @@ function buildVerdict() {
   // ─── IC STENT OVERRIDE: always mandate ticagrelor regardless of etiology ───
   const icStent = S.ic_stent;
   if (icStent && icStent !== 'no') {
-    const isAC_etiology = (eto === 'af' || eto === 'lvt' || eto === 'other-ce');
+    const isAC_etiology = has_any_ac_indication;  // includes AF confirmed in step 5 regardless of primary etiology
     if (isAC_etiology) {
-      agent = 'Ticagrelor 90 mg BID + aspirin 81 mg/day (mandatory post-IC stent DAPT) PLUS anticoagulation as indicated by etiology [TRIPLE THERAPY — see note]';
+      // Build AC label from etiology
+    const acLabel_triple = eto === 'af' ? 'atrial fibrillation' :
+                           eto === 'lvt' ? 'LV thrombus' :
+                           eto === 'other-ce' ? 'cardioembolic source' :
+                           has_any_ac_indication ? (S.af_type === 'known_off' ? 'atrial fibrillation (known, not anticoagulated)' : S.af_type === 'known_on' ? 'atrial fibrillation (breakthrough)' : S.af_type === 'new' ? 'newly detected atrial fibrillation' : 'cardioembolic indication') : 'cardioembolic indication';
+    agent = 'Ticagrelor 90 mg BID + aspirin 81 mg daily (mandatory post-IC stent DAPT) PLUS DOAC — anticoagulation for ' + acLabel_triple + ' [TRIPLE THERAPY — see note]';
     } else {
-      agent = 'Ticagrelor 90 mg BID + aspirin 81 mg/day — mandatory DAPT after intracranial stent placement';
+      agent = 'Ticagrelor 90 mg BID + aspirin 81 mg daily — mandatory DAPT after intracranial stent placement';
     }
-    notes.unshift('INTRACRANIAL STENT PLACED — Ticagrelor DAPT mandatory: Ticagrelor 90 mg BID (180 mg loading dose at time of stenting) + aspirin 81 mg/day is required regardless of underlying etiology. Ticagrelor is preferred over clopidogrel because it provides more reliable and potent P2Y12 inhibition — critical in the intracranial circulation where stent thrombosis causes catastrophic ischemia. Clopidogrel resistance (CYP2C19 LOF) affects ~20–30% of patients and cannot be assumed absent without genotyping. Duration: ≥3–6 months minimum, then reassess based on stent type and vessel patency.');
+    notes.unshift('INTRACRANIAL STENT PLACED — Ticagrelor DAPT mandatory: Ticagrelor 90 mg BID (180 mg loading dose at time of stenting) + aspirin 81 mg daily is required regardless of underlying etiology. Ticagrelor is preferred over clopidogrel because it provides more reliable and potent P2Y12 inhibition — critical in the intracranial circulation where stent thrombosis causes catastrophic ischemia. Clopidogrel resistance (CYP2C19 LOF) affects ~20–30% of patients and cannot be assumed absent without genotyping. Duration: ≥3–6 months minimum, then reassess based on stent type and vessel patency.');
     if (isAC_etiology) {
-      notes.unshift('TRIPLE THERAPY WARNING (IC stent + anticoagulation + antiplatelet): This patient has both an indication for anticoagulation (cardioembolic stroke etiology) and an intracranial stent requiring DAPT. Triple therapy (oral anticoagulation + two antiplatelets) carries substantially elevated bleeding risk. Published data from AUGUSTUS (AF + PCI): major bleeding 6.7% vs. 10.9% for triple vs. DAPT alone at 6 months. Intracranial stenting data specifically are limited. Annual major bleeding risk estimates for triple therapy range from ~10–15% depending on agent combination. Risk-benefit must be individually assessed. Management options: (A) DAPT alone for stent stabilization period (3–6 months), then anticoagulation monotherapy; (B) Triple therapy with shortest possible DAPT duration (e.g., ticagrelor + aspirin + apixaban for 1–3 months); (C) Anticoagulation + ticagrelor monotherapy (dropping aspirin). Neurology + neurosurgery + hematology/cardiology consensus required before proceeding.');
+      notes.unshift('TRIPLE THERAPY WARNING (IC stent + anticoagulation + antiplatelet): This patient has both an indication for anticoagulation (cardioembolic stroke etiology) and an intracranial stent requiring DAPT. Triple therapy (oral anticoagulation + two antiplatelets) carries substantially elevated bleeding risk. Published data from AUGUSTUS (AF + PCI): major bleeding 6.7% vs. 10.9% for triple vs. DAPT alone at 6 months. Intracranial stenting data specifically are limited. Annual major bleeding risk estimates for triple therapy range from ~10–15% depending on agent combination. Risk-benefit must be individually assessed. Management options: (A) DAPT alone for stent stabilization period (3–6 months), then anticoagulation monotherapy; (B) Triple therapy with shortest possible DAPT duration (e.g., ticagrelor + aspirin + apixaban for 1–3 months); (C) Anticoagulation + ticagrelor monotherapy (dropping aspirin). Neurology + neurosurgery + hematology/cardiology consensus required before proceeding. (D) If NVAF etiology: Watchman/LAAC device evaluation offers a path to eliminating long-term anticoagulation — converting to DAPT only and eventually aspirin monotherapy, directly avoiding the triple therapy problem. SCAI/HRS 2025 supports LAAC when OAC is contraindicated in NVAF. Refer to structural cardiology.');
+    }
+  }
+
+  // ─── AF OVERRIDE: if AF confirmed in Step 5, anticoagulation MUST be added regardless of primary etiology ───
+  if (needs_ac_from_af) {  // AF confirmed in step 5 but not the primary classified etiology
+    // AF is confirmed in step 5 but the primary etiology was classified differently
+    // (e.g., ICAD, SVD, carotid web, cryptogenic — but AF coexists)
+    // Anticoagulation is MANDATORY for AF regardless of coexisting etiology
+    const af_label = S.af_type === 'known_off' ? 'known AF (not previously anticoagulated)' :
+                     S.af_type === 'known_on'  ? 'known AF (breakthrough/non-compliance)' :
+                                                 'newly detected AF';
+    const baseAgent = agent;
+    // Only append PLUS DOAC if the IC stent override hasn't already embedded anticoag
+    if (!baseAgent.includes('TRIPLE THERAPY') && !baseAgent.includes('anticoagulation as indicated')) {
+      agent = baseAgent + ' PLUS DOAC — anticoagulation for ' + af_label + ' (independent of primary stroke mechanism)';
+    } else {
+      agent = baseAgent;  // IC stent override already included anticoag notation
+    }
+
+    notes.unshift('ATRIAL FIBRILLATION DETECTED (Step 5): ' + af_label.charAt(0).toUpperCase() + af_label.slice(1) + ' was identified. AF carries an independent, additive stroke risk (CHA₂DS₂-VASc ≥2 in any post-stroke patient). Anticoagulation with a DOAC (apixaban, rivaroxaban, dabigatran, or edoxaban) is MANDATORY for AF regardless of the primary classified stroke etiology. Even if the treating team attributes the index stroke primarily to ICAD, SVD, or another mechanism, the presence of AF mandates long-term anticoagulation to prevent AF-mediated cardioembolic recurrence. Start DOAC timing per ELAN framework (infarct size and HT type — see Steps 2–3). If the primary etiology requires antiplatelet therapy (e.g., ICAD, SVD), this antiplatelet therapy should CONTINUE alongside the DOAC (with appropriate bleeding risk assessment — HAS-BLED/ORBIT scores recommended). Do not assume the DOAC alone covers the atherosclerotic mechanism or vice versa.');
+
+    notes.unshift('Watchman / LAAC device consideration (AF confirmed): Because this patient has AF requiring long-term anticoagulation AND a primary stroke mechanism that independently warrants antiplatelet therapy, the combination creates ongoing dual antithrombotic therapy with elevated bleeding risk. Left atrial appendage closure (Watchman FLX or Amulet) offers a path to eventually eliminating the long-term anticoagulation requirement — converting to DAPT (aspirin + clopidogrel × 6 months) then aspirin monotherapy, and allowing the antiplatelet therapy for the primary lesion to be the sole long-term agent. AHA/ACC/HRS 2023 and SCAI/HRS 2025: Class IIb recommendation for LAAC when OAC is contraindicated or carries prohibitive risk. PRAGUE-17: LAAC noninferior to DOAC (apixaban) for combined stroke/SE/CV death/major bleeding (HR 0.84). EWOLUTION registry: 83% reduction in observed stroke vs. predicted risk at 2 years. Refer to structural cardiology / electrophysiology for evaluation.');
+
+    refs.push('[AF-OVR] AF anticoagulation mandate: all post-stroke patients with AF (CHA₂DS₂-VASc ≥2) require long-term anticoagulation regardless of primary stroke mechanism. AHA/ASA Secondary Stroke Prevention 2021. ELAN (Fischer, NEJM 2023) for DOAC timing.');
+    refs.push('[W-OVR] Watchman (PROTECT-AF; PREVAIL; PRAGUE-17; EWOLUTION): LAAC noninferior to OAC, superior long-term bleeding profile. SCAI/HRS 2025 LAAC Guidelines. Watchman FLX FDA-approved 2020.');
+  }
+
+  // ─── MULTI-AGENT TIMING: compute separate AC initiation timing when DAPT + AC are both present ───
+  // This fires whenever there's both an antiplatelet regimen AND an anticoagulation requirement
+  const agentHasAC = agent.toLowerCase().includes('doac') ||
+    agent.toLowerCase().includes('anticoagulation') ||
+    agent.toLowerCase().includes('warfarin') ||
+    agent.toLowerCase().includes('lmwh') ||
+    agent.toLowerCase().includes('plus');
+  const agentHasDAPT = agent.toLowerCase().includes('dapt') ||
+    (agent.toLowerCase().includes('aspirin') && (agent.toLowerCase().includes('clopidogrel') || agent.toLowerCase().includes('ticagrelor')));
+
+  if (agentHasAC && agentHasDAPT && eto !== 'cvst') {
+    // There are separate initiation targets — derive AC timing from HT and infarct size
+    if (ht === 'yes' && ht_type === 'ph2') {
+      timingAC = 'Anticoagulation: DELAY ≥2–4 weeks (PH-2 — serial neuroimaging required; neurology + neurosurgery consensus)';
+      timingACClass = 'conf-r';
+    } else if (ht === 'yes' && ht_type === 'ph1') {
+      timingAC = 'Anticoagulation: Day 7–10 after repeat imaging confirms hematoma stability (PH-1)';
+      timingACClass = 'conf-a';
+    } else if (sz === 'major' || sz === 'ct_large') {
+      timingAC = 'Anticoagulation: Day 6–7 (ELAN major stroke protocol — per infarct size)';
+      timingACClass = 'conf-a';
+    } else if (ht === 'yes' && (ht_type === 'hi1' || ht_type === 'hi2')) {
+      timingAC = 'Anticoagulation: Within 48 hours (HI-type HT — ELAN-HT subanalysis supports early AC)';
+      timingACClass = 'conf-g';
+    } else if (sz === 'minor' || sz === 'moderate' || sz === 'ct_small') {
+      timingAC = 'Anticoagulation: Within 48 hours (ELAN minor/moderate infarct protocol)';
+      timingACClass = 'conf-g';
+    } else {
+      timingAC = 'Anticoagulation: Per ELAN framework (obtain MRI to confirm infarct size and HT status)';
+      timingACClass = 'conf-a';
+    }
+
+    // Triple therapy note: if bleeding risk is very high, consider ticagrelor monotherapy + DOAC
+    const agentHasTicag = agent.toLowerCase().includes('ticagrelor');
+    if (agentHasTicag) {
+      notes.push('Triple therapy bleeding risk consideration: If the combination of ticagrelor + aspirin + anticoagulation carries unacceptably high bleeding risk (e.g., recent major bleeding, severe thrombocytopenia, very high HAS-BLED score, large PH-type hemorrhagic transformation), consider ticagrelor monotherapy (without aspirin) plus DOAC as a reduced-intensity dual antithrombotic strategy. This drops from triple to dual therapy while maintaining potent P2Y12 inhibition for stent protection. This approach requires neurology + neurosurgery consensus and is not supported by dedicated RCT data in the intracranial stenting context — decisions must be individualized. Document the risk-benefit discussion explicitly.');
+    } else {
+      notes.push('Dual antithrombotic therapy (antiplatelet + anticoagulation) note: If the combination carries unacceptably high bleeding risk (severe thrombocytopenia, recent major bleed, PH-type HT), consider sequential rather than concurrent initiation — antiplatelet first (immediately or per stent protocol), then anticoagulation after the high-risk hemorrhagic period has passed. Involves neurology + cardiology consensus.');
     }
   }
 
@@ -1304,7 +1665,7 @@ function buildVerdict() {
     // Stent placed, no TNK — immediate
     timing = 'Immediately at time of stent placement — ticagrelor DAPT initiated without delay';
     timingClass = 'conf-g';
-  } else if (globalTNK && eto !== 'rcvs') {
+  } else if (globalTNK && eto !== 'rcvs' && eto !== 'cvst') {
     // TNK was given and timing hasn't already been set to an explicit 24h/hold/delayed message
     const timingAlreadyHandled = timing.toLowerCase().includes('24h') ||
       timing.toLowerCase().includes('day 6') ||
@@ -1318,6 +1679,18 @@ function buildVerdict() {
     }
   }
 
+  // Apply TNK hold to timingAC (AC also held ×24h post-TNK)
+  if (globalTNK && timingAC) {
+    const timingACAlreadyDelayed = timingAC.toLowerCase().includes('24h') ||
+      timingAC.toLowerCase().includes('delay') ||
+      timingAC.toLowerCase().includes('day 6') ||
+      timingAC.toLowerCase().includes('day 7') ||
+      timingAC.toLowerCase().includes('week');
+    if (!timingACAlreadyDelayed) {
+      timingAC = timingAC + ' — also held ×24h post-TNK; reassess after 24h neuroimaging';
+    }
+  }
+
   // IV TNK override banner
   let tpaMsg = '';
   if (S.tpa === 'yes') {
@@ -1326,9 +1699,13 @@ function buildVerdict() {
     </div>`;
   }
 
-  // HT timing override message
+  // HT timing override message — does NOT apply to CVST (HT is expected and NOT a contraindication)
   let htMsg = '';
-  if (ht === 'yes' && ht_type === 'ph2') {
+  if (eto === 'cvst') {
+    htMsg = `<div style="margin-bottom:12px;padding:10px 14px;background:var(--teal-bg);border:1px solid var(--teal-bd);border-radius:6px;font-size:12px;color:var(--teal);line-height:1.7;">
+      <strong>ℹ CVST — Hemorrhagic Infarction Does NOT Delay Anticoagulation:</strong> Hemorrhagic venous infarcts in CVST result from venous congestion and hypertension — they are fundamentally different from arterial hemorrhagic transformation. AHA/ASA, EUSI, and ISCVT guidelines all support immediate anticoagulation even in the presence of venous hemorrhagic infarction. PH-type grading (ECASS criteria for arterial stroke) does not apply to CVST hemorrhagic infarcts. Initiate UFH or LMWH immediately upon diagnosis.
+    </div>`;
+  } else if (ht === 'yes' && ht_type === 'ph2') {
     htMsg = `<div style="margin-bottom:12px;padding:10px 14px;background:var(--red-bg);border:1px solid var(--red-bd);border-radius:6px;font-size:12px;color:var(--red);line-height:1.7;">
       <strong>⛔ PH-2 Override:</strong> Hemorrhagic transformation type PH-2 mandates significant anticoagulation delay regardless of etiology. Minimum 2–4 weeks. Serial neuroimaging every 5–7 days. Neurology + neurosurgery consensus required. OPTIMAS excluded PH2 patients from early initiation.
     </div>`;
@@ -1349,7 +1726,11 @@ function buildVerdict() {
     dissection: 'Arterial Dissection',
     esus: 'Cryptogenic / ESUS',
     ilt: 'Intraluminal Arterial Thrombus — UFH indicated',
+    endo_ie: 'Infective Endocarditis — embolic stroke',
+    endo_nbte: 'NBTE / Marantic / Libman-Sacks Endocarditis',
     rcvs: 'RCVS — Reversible Cerebral Vasoconstriction Syndrome',
+    cvst: 'CVST — Cerebral Venous Sinus Thrombosis',
+    pacns: 'PACNS — Primary Angiitis of the CNS',
     cw: 'Carotid Web — fibromuscular dysplasia variant'
   };
 
@@ -1357,7 +1738,7 @@ function buildVerdict() {
   const htLbl = { no:'None', yes:'Present', nd:'Not yet assessed' };
   const htTypeLbl = { hi1:'HI-1 (marginal petechiae)', hi2:'HI-2 (confluent petechiae)', ph1:'PH-1 (hematoma ≤30%)', ph2:'PH-2 (hematoma >30%)' };
 
-  const noteHtml = notes.map(n => `<div style="display:flex;gap:8px;align-items:flex-start;margin-bottom:7px;"><span style="color:var(--teal);flex-shrink:0;margin-top:1px;">▸</span><span>${n}</span></div>`).join('');
+  const noteHtml = notes.map(n => `<div style="display:flex;gap:7px;align-items:flex-start;margin-bottom:5px;"><span style="color:var(--teal);flex-shrink:0;margin-top:2px;font-size:10px;">▸</span><span style="font-size:11.5px;">${n}</span></div>`).join('');
   const refHtml = refs.map(r => `<div>${r}</div>`).join('');
 
   // IC stent banner HTML
@@ -1366,18 +1747,23 @@ function buildVerdict() {
     const isAC_eto = (eto === 'af' || eto === 'lvt' || eto === 'other-ce');
     if (isAC_eto) {
       icStentMsg = `<div style="margin-bottom:12px;padding:11px 14px;background:var(--red-bg);border:2px solid var(--red-bd);border-radius:6px;font-size:12px;color:#ff7b72;line-height:1.75;">
-        <strong>⛔ INTRACRANIAL STENT + ANTICOAGULATION (Triple Therapy):</strong> Ticagrelor 90 mg BID + aspirin 81 mg/day mandatory for stent protection. Concurrent anticoagulation creates triple therapy — estimated annual major bleeding risk ~10–15%. Requires neurology + neurosurgery + hematology consensus before proceeding.
+        <strong>⛔ INTRACRANIAL STENT + ANTICOAGULATION (Triple Therapy):</strong> Ticagrelor 90 mg BID + aspirin 81 mg daily mandatory for stent protection. Concurrent anticoagulation creates triple therapy — estimated annual major bleeding risk ~10–15%. Requires neurology + neurosurgery + hematology consensus before proceeding.
       </div>`;
     } else {
       icStentMsg = `<div style="margin-bottom:12px;padding:11px 14px;background:var(--amber-bg);border:1px solid var(--amber-bd);border-radius:6px;font-size:12px;color:var(--amber);line-height:1.75;">
-        <strong>⚠ Intracranial Stent Placed:</strong> Ticagrelor 90 mg BID + aspirin 81 mg/day (DAPT) — mandatory. Do NOT use clopidogrel without CYP2C19 genotyping. Duration ≥3–6 months minimum.
+        <strong>⚠ Intracranial Stent Placed:</strong> Ticagrelor 90 mg BID + aspirin 81 mg daily (DAPT) — mandatory. Do NOT use clopidogrel without CYP2C19 genotyping. Duration ≥3–6 months minimum.
       </div>`;
     }
   }
 
+  // Pre-compute bleeding risk for the chip display
+  const brData = bleedingRisk(agent);
+  const brLabel = brData.label;
+  const brValue = brData.value;
+  const brColor = brData.color;
+
   vout.innerHTML = `
     ${icStentMsg}
-    ${tpaMsg}
     ${htMsg}
     <div class="vban" style="border-color:var(--teal);background:var(--teal-bg);margin-bottom:14px;">
       <div class="vban-head">
@@ -1387,37 +1773,40 @@ function buildVerdict() {
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px;">
         <div style="background:var(--card2);border:1px solid var(--border);border-radius:6px;padding:12px 14px;">
-          <div style="font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--text3);margin-bottom:5px;">Primary Agent</div>
-          <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:4px;">${agent}</div>
+          <div style="font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--text3);margin-bottom:5px;">Primary Agent(s)</div>
+          ${renderAgent(agent)}
         </div>
         <div style="background:var(--card2);border:1px solid var(--border);border-radius:6px;padding:12px 14px;">
-          <div style="font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--text3);margin-bottom:5px;">Initiation Target</div>
-          <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:4px;">${timing}</div>
+          <div style="font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--text3);margin-bottom:5px;">Initiation Target${timingAC ? ' — per agent' : ''}</div>
+          <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:${timingAC ? '6px' : '4px'};">${timing}</div>
+          ${timingAC ? `<div style="margin-top:6px;padding-top:6px;border-top:1px solid var(--border);font-size:12px;font-weight:600;color:${timingACClass === 'conf-r' ? 'var(--red)' : timingACClass === 'conf-g' ? 'var(--green)' : 'var(--amber)'};">${timingAC}</div>` : ''}
         </div>
       </div>
       <div style="margin-top:10px;display:grid;grid-template-columns:repeat(4,1fr);gap:8px;">
         <div style="background:var(--card2);border:1px solid var(--border);border-radius:5px;padding:8px 10px;">
           <div style="font-size:9px;text-transform:uppercase;letter-spacing:0.1em;color:var(--text3);margin-bottom:3px;">Infarct Size</div>
-          <div style="font-size:11px;font-weight:600;color:${S.size==='major'?'var(--red)':S.size==='moderate'?'var(--amber)':'var(--green)'};">${sizeLbl[S.size]||'—'}</div>
+          <div style="font-size:11px;font-weight:600;color:${S.size==='major'||S.size==='ct_large'?'var(--red)':S.size==='moderate'||S.size==='ct_small'?'var(--amber)':'var(--green)'};">${sizeLbl[S.size]||'—'}</div>
         </div>
         <div style="background:var(--card2);border:1px solid var(--border);border-radius:5px;padding:8px 10px;">
-          <div style="font-size:9px;text-transform:uppercase;letter-spacing:0.1em;color:var(--text3);margin-bottom:3px;">HT Present</div>
-          <div style="font-size:11px;font-weight:600;color:${S.ht==='yes'?'var(--amber)':'var(--green)'};">${htLbl[S.ht]||'—'}</div>
-        </div>
-        <div style="background:var(--card2);border:1px solid var(--border);border-radius:5px;padding:8px 10px;">
-          <div style="font-size:9px;text-transform:uppercase;letter-spacing:0.1em;color:var(--text3);margin-bottom:3px;">HT Type</div>
-          <div style="font-size:11px;font-weight:600;color:${S.ht_type==='ph2'?'var(--red)':S.ht_type==='ph1'?'var(--amber)':'var(--green)'};">${S.ht==='yes'?(htTypeLbl[S.ht_type]||'—'):'N/A'}</div>
+          <div style="font-size:9px;text-transform:uppercase;letter-spacing:0.1em;color:var(--text3);margin-bottom:3px;">Hemorrhagic Transformation</div>
+          <div style="font-size:11px;font-weight:600;color:${S.ht_type==='ph2'?'var(--red)':S.ht_type==='ph1'||S.ht==='yes'?'var(--amber)':'var(--green)'};">
+            ${S.ht==='yes' ? (htTypeLbl[S.ht_type]||'Present — type TBD') : (htLbl[S.ht]||'—')}
+          </div>
         </div>
         <div style="background:var(--card2);border:1px solid var(--border);border-radius:5px;padding:8px 10px;">
           <div style="font-size:9px;text-transform:uppercase;letter-spacing:0.1em;color:var(--text3);margin-bottom:3px;">Etiology</div>
           <div style="font-size:11px;font-weight:600;color:var(--teal);">${etoLabels[S.etiology]||'—'}</div>
         </div>
+        <div style="background:var(--card2);border:1px solid var(--border);border-radius:5px;padding:8px 10px;">
+          <div style="font-size:9px;text-transform:uppercase;letter-spacing:0.1em;color:var(--text3);margin-bottom:3px;">Bleeding Risk</div>
+          <div style="font-size:10px;font-weight:700;color:${brColor};">${brLabel}</div><div style="font-size:9px;color:var(--text3);margin-top:2px;line-height:1.4;">${brValue}</div>
+        </div>
       </div>
     </div>
 
-    <div class="card" style="padding:16px 18px;margin-bottom:10px;">
-      <div class="slabel" style="margin-bottom:10px;">Clinical Rationale &amp; Key Evidence</div>
-      <div style="font-size:12px;color:var(--text2);line-height:1.75;">${noteHtml}</div>
+    <div class="card" style="padding:14px 18px;margin-bottom:10px;">
+      <div class="slabel" style="margin-bottom:8px;">Clinical Rationale &amp; Key Evidence</div>
+      <div id="rationale-body" style="font-size:11.5px;color:var(--text2);line-height:1.65;">${noteHtml}</div>
     </div>
 
     <div class="card" style="padding:16px 18px;margin-bottom:10px;">
@@ -1495,7 +1884,7 @@ ${refText||'  (none specified)'}
 ADJUNCT PREVENTION TARGETS (ALL PATIENTS)
 ===========================================================
   LDL target: <70 mg/dL (high-intensity statin)
-  BP target: permissive HTN inpatient (SBP 160–180 acceptable during acute hospitalization); target <130/80 mmHg at discharge and outpatient
+  BP target: allow higher BPs for heightened perfusion inpatient (SBP 160–180 acceptable acutely); target <130/80 mmHg long-term
   Glucose: maintain euglycemia; long-term HbA1c <7%
   Cardiac monitoring: ILR for ESUS/cryptogenic (CRYSTAL-AF)
   Lifestyle: smoking cessation, Mediterranean diet, exercise
@@ -1531,7 +1920,18 @@ function resetAll() {
   document.querySelectorAll('.crit').forEach(el => el.className = 'crit');
   document.querySelectorAll('.abtn').forEach(b => { b.classList.remove('ay','an','at','ab','aa','aw','av'); });
   // Reset treatment scenario selection
-  S.tpa = null; S.evt = null;
+  S.tpa = null; S.evt = null; S.ic_stent = null;
+  // Reset stent brow to disabled state (no EVT selected yet)
+  const stentBrowR = document.getElementById('stent-brow');
+  const stentLockedR = document.getElementById('stent-locked-msg');
+  if (stentBrowR) {
+    stentBrowR.querySelectorAll('.abtn').forEach(b => {
+      b.disabled = true; b.style.opacity = '0.35';
+      b.style.cursor = 'not-allowed'; b.style.pointerEvents = 'none';
+      b.classList.remove('ay','an','at','ab','aa','aw','av');
+    });
+    if (stentLockedR) stentLockedR.style.display = 'block';
+  }
   document.querySelectorAll('.crit-detail').forEach(d => d.classList.remove('open'));
   document.querySelectorAll('.xbtn').forEach(b => { if (!b.textContent.includes('▾')) b.textContent = b.textContent.replace('▴','▾'); });
   document.querySelectorAll('.alrt').forEach(el => { el.className = 'alrt'; el.innerHTML = ''; });
@@ -1564,10 +1964,79 @@ function setTreatment(scenario) {
   } else {
     S.tpa = 'nd'; S.evt = null;
   }
+
+  // Enable or disable the intracranial stenting section based on whether EVT was performed
+  const evtPerformed = (scenario === 'tnk_and_evt' || scenario === 'evt_only');
+  const stentBrow = document.getElementById('stent-brow');
+  const stentLocked = document.getElementById('stent-locked-msg');
+  if (stentBrow) {
+    if (evtPerformed) {
+      // Enable stent buttons
+      stentBrow.style.display = '';
+      stentBrow.querySelectorAll('.abtn').forEach(b => {
+        b.disabled = false;
+        b.style.opacity = '';
+        b.style.cursor = '';
+        b.style.pointerEvents = '';
+      });
+      if (stentLocked) stentLocked.style.display = 'none';
+      // Un-gray the slabel and crit
+      const sl = document.getElementById('stent-slabel');
+      const co = document.getElementById('stent-crit-outer');
+      if (sl) sl.style.opacity = '';
+      if (co) { co.style.opacity = ''; co.style.pointerEvents = ''; }
+    } else {
+      // Disable / grey stent buttons
+      stentBrow.style.display = '';
+      stentBrow.querySelectorAll('.abtn').forEach(b => {
+        b.disabled = true;
+        b.style.opacity = '0.35';
+        b.style.cursor = 'not-allowed';
+        b.style.pointerEvents = 'none';
+        b.classList.remove('ay','an','at','ab','aa','aw','av');
+      });
+      if (stentLocked) stentLocked.style.display = 'block';
+      // Gray the slabel and crit-outer
+      const sl2 = document.getElementById('stent-slabel');
+      const co2 = document.getElementById('stent-crit-outer');
+      if (sl2) sl2.style.opacity = '0.35';
+      if (co2) { co2.style.opacity = '0.35'; co2.style.pointerEvents = 'none'; }
+      // Clear stent selection when EVT not performed
+      S.ic_stent = 'no';
+    }
+  }
+
+  updateAlerts();
+}
+
+function setStent(val) {
+  // Mutually exclusive stent selection within the stent brow
+  const stentBrow = document.getElementById('stent-brow');
+  if (!stentBrow) return;
+  stentBrow.querySelectorAll('.abtn').forEach(b => b.classList.remove('ay','an','at','ab','aa','aw','av'));
+  const btn = document.getElementById('stent-btn-' + (val === 'yes_ticag' ? 'ticag' : val === 'yes_clopi' ? 'clopi' : val === 'yes_cangrelor' ? 'cangrelor' : 'none'));
+  if (btn) btn.classList.add('ay');
+  S.ic_stent = (val === 'none_evt') ? 'no' : val;
   updateAlerts();
 }
 
 ui();
+// Initialize stent brow as disabled on page load (no EVT selected yet)
+(function() {
+  const sb = document.getElementById('stent-brow');
+  const sl = document.getElementById('stent-locked-msg');
+  if (sb) {
+    sb.querySelectorAll('.abtn').forEach(b => {
+      b.disabled = true; b.style.opacity = '0.35';
+      b.style.cursor = 'not-allowed'; b.style.pointerEvents = 'none';
+    });
+    if (sl) sl.style.display = 'block';
+    const stentSlabelInit = document.getElementById('stent-slabel');
+    const stentCritInit = document.getElementById('stent-crit-outer');
+    if (stentSlabelInit) stentSlabelInit.style.opacity = '0.35';
+    if (stentCritInit) { stentCritInit.style.opacity = '0.35'; stentCritInit.style.pointerEvents = 'none'; }
+  }
+})();
 </script>
 </body>
 </html>
