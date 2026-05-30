@@ -253,7 +253,8 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
 @media (max-width: 600px) { .two-col { grid-template-columns: 1fr; } }
 
 /* VERDICT BANNER */
-.vban { border-radius: 8px; padding: 22px 26px; margin-bottom: 16px; border: 2px solid; }
+.vban { border-radius: 8px; padding: 22px 26px; margin-bottom: 16px; border: 2px solid; box-sizing: border-box; }
+#vout { box-sizing: border-box; }
 .vlaa   { border-color: var(--blue);   background: var(--blue-bg); }
 .vce    { border-color: var(--purple); background: var(--purple-bg); }
 .vsvd   { border-color: var(--green);  background: var(--green-bg); }
@@ -429,7 +430,7 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
     </div>
     <div class="crit-detail">
       Age is one of the most powerful pre-test probability modifiers in stroke etiology classification. In <strong>young patients (&lt;50y)</strong>, the prior probability of cardioembolic, large vessel atherosclerotic, and SVD etiologies is substantially lower — uncommon causes (dissection, APLS, PFO-paradoxical embolism, genetic arteriopathy, vasculitis, hypercoagulable state) account for a disproportionately large share. Atrial fibrillation as the underlying mechanism is also less common in young patients, though not impossible.<br><br>
-      In <strong>older patients (≥65y)</strong>, atrial fibrillation, large vessel atherosclerosis, and small vessel disease together account for the majority of strokes. Cryptogenic stroke in this group should prompt especially aggressive prolonged cardiac monitoring — paroxysmal AF detection rates increase substantially with longer monitoring duration (CRYSTAL-AF: 12.4% at 30 days vs. 2% with standard monitoring).<br><br>
+      In <strong>older patients (≥65y)</strong>, atrial fibrillation, large vessel atherosclerosis, and small vessel disease together account for the majority of strokes. Cryptogenic stroke in this group should prompt especially aggressive prolonged cardiac monitoring — paroxysmal AF detection rates increase substantially with longer monitoring duration (CRYSTAL-AF, Sanna T et al. NEJM 2014: 8.9% AF detected at 6 months and 12.4% at 12 months with ICM vs. 2% with standard monitoring).<br><br>
       The <strong>45–65y range</strong> is transitional — all mechanisms are common, and the clinical picture must guide the workup. SVD from hypertension becomes increasingly prevalent in this group.
       <div class="cnote">Age &lt;50y with cryptogenic stroke: dissection is the single most common etiology (consider CTA/MRA neck + vessel wall MRI). APLS: typically diagnosed &lt;50y, often with prior thrombotic events. PFO-paradoxical embolism: RoPE score strongly favors attribution in younger patients (age &lt;45y, no vascular risk factors).</div>
     </div>
@@ -714,7 +715,7 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
     <div class="brow">
       <button class="abtn" onclick="setToggle('topo-venous','para')">⚠ Parasagittal / bilateral cortical — near SSS (strongest venous signal)</button>
       <button class="abtn" onclick="setToggle('topo-venous','temporal')">⚠ Posterior temporal / inferior temporal — near transverse sinus / vein of Labbé</button>
-      <button class="abtn" onclick="setToggle('topo-venous','thalamic')">⚠ Bilateral thalamic — internal cerebral vein / vein of Galen thrombosis</button>
+      <button class="abtn" onclick="setToggle('topo-venous','thalamic')">⚠ Bilateral thalamic — internal cerebral vein / vein of Galen thrombosis (all thalamic infarcts are posterior circulation — see notes)</button>
       <button class="abtn" onclick="setToggle('topo-venous','cortical')">~ Isolated cortical infarct without clear arterial source — consider cortical vein thrombosis</button>
       <button class="abtn" onclick="setToggle('topo-venous','no')">✗ Arterial territory — no venous territory involvement</button>
     </div>
@@ -773,10 +774,16 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
   <div id="basilar-hemo-panel" style="display:none;margin-top:12px;">
     <div class="slabel">Basilar Artery / Posterior Circulation Disease <span class="pill pill-a">Brainstem / Thalamus — Hemodynamic vs. Embolic</span></div>
     <div class="lbox" style="margin-bottom:8px;">
-      <strong>Clinical distinction:</strong> Brainstem and thalamic infarcts can arise from basilar artery atherosclerotic stenosis or perforator occlusion — clinically and radiographically different from cardioembolism:<br><br>
-      <span class="lr">• <strong>Basilar artery stenosis / hemodynamic</strong>:</span> Anteromedial brainstem / thalamic bilateral infarcts in basilar perforator territory. Crescendo TIAs triggered by standing/exertion (hemodynamic). CTA/MRA shows basilar stenosis or VBD.<br>
-      <span class="lt">• <strong>Top-of-basilar embolism (cardiac or artery-to-artery)</strong>:</span> Simultaneous thalamic + occipital + rostral brainstem infarction in top-of-basilar territory. Abrupt onset. No prior TIAs.<br><br>
-      <em style="color:var(--text3)">Ref: Voetsch B et al. Arch Neurol 2004 — posterior circulation stroke mechanisms. Caplan LR, Posterior Circulation Stroke.</em>
+      <strong>Clinical distinction:</strong> Brainstem and thalamic infarcts arise almost exclusively from the posterior circulation — basilar artery atherosclerosis or perforator occlusion:<br><br>
+      <strong style="color:var(--amber)">Thalamic blood supply — important anatomy:</strong> All four thalamic arterial territories arise from the posterior circulation:<br>
+      • <strong>Anterior thalamus</strong> → tuberothalamic (polar) artery from PComA (absent in 30–60% of individuals; when absent, territory supplied by paramedian artery from same side)<br>
+      • <strong>Paramedian / posterior thalamus</strong> → thalamoperforating arteries from P1 segment of PCA<br>
+      • <strong>Inferolateral thalamus</strong> → thalamogeniculate arteries from P2-PCA<br>
+      • <strong>Posterior thalamus / pulvinar</strong> → posteromedial choroidal artery from PCA<br>
+      <span class="lr">⚠ Common misconception:</span> The <strong>recurrent artery of Heubner</strong> (from A1-A2 ACA junction) supplies the caudate head, anterior putamen, and anteroinferior internal capsule — <em>NOT the thalamus</em>. Anterior thalamic infarcts are PComA-territory (posterior circulation), not ACA territory.<br><br>
+      <span class="lr">• <strong>Basilar artery stenosis / hemodynamic</strong>:</span> Anteromedial brainstem / paramedian thalamic bilateral infarcts in basilar perforator territory. Crescendo TIAs with standing/exertion (hemodynamic). CTA/MRA shows basilar stenosis or VBD.<br>
+      <span class="lt">• <strong>Top-of-basilar embolism</strong>:</span> Simultaneous bilateral thalamic + occipital + rostral midbrain infarction. Abrupt onset. Bilateral "butterfly" thalamic infarcts = top-of-basilar embolism until proven otherwise.<br><br>
+      <em style="color:var(--text3)">Ref: Voetsch B et al. Arch Neurol 2004. Caplan LR, Posterior Circulation Stroke. EPOS ECR 2019 (thalamic vascular territories). StatPearls — Neuroanatomy, Cerebral Blood Supply 2023.</em>
     </div>
     <div class="crit" id="basilar-hemo-item">
       <div class="crit-main"><div class="crit-name">Basilar or vertebral artery disease on CTA/MRA?</div>
@@ -817,19 +824,19 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
     <span class="lt">ICAD (intracranial atherosclerotic disease):</span> Stenosis of intracranial parent artery (MCA M1, basilar, intracranial ICA) — a distinct and common mechanism in Asian populations; mechanism may be thromboembolism or hemodynamic.
   </div>
 
-  <div class="slabel">Degree of disease on parent vessel <span class="pill pill-r">REQUIRED</span></div>
+  <div class="slabel">Degree of stenosis on parent vessel <span class="pill pill-r">REQUIRED</span></div>
 
   <div class="crit" id="vessel-item">
     <div class="crit-main">
-      <div class="crit-name">Atherosclerotic stenosis on the vessel supplying the infarct territory (CTA/MRA)</div>
+      <div class="crit-name">Stenosis on the vessel supplying the infarct territory (CTA/MRA) — may be atherosclerotic or inflammatory</div>
       <button class="xbtn" onclick="xp(this)">details ▾</button>
     </div>
     <div class="crit-detail">
       Relevant parent vessels: ipsilateral ICA (for anterior circulation), ipsilateral vertebral or basilar (for posterior circulation), MCA M1/M2, PCA, ACA. Stenosis graded by NASCET criteria for extracranial ICA (see Step 5). Intracranial vessels graded by WASID criteria. Occlusion of a large artery ipsilateral to the infarct territory may represent either embolic occlusion (thrombus from another source) or in-situ thrombosis on atherosclerotic plaque — CTA appearance and collateral pattern help differentiate.
-      <div class="cnote"><strong>Ref:</strong> Prabhakaran S et al. TOAST stroke subtype classification in clinical practice: GWTG-Stroke. Front Neurol 2024. LVD sensitivity 33%, PPV 13% — suboptimal due to over-attribution of mild stenosis.</div>
+      <div class="cnote"><strong>Ref:</strong> Prabhakaran S et al. TOAST stroke subtype classification in clinical practice: GWTG-Stroke. Front Neurol 2024. Mild stenosis (<50%) does not meet TOAST criteria for LVD attribution; non-stenotic plaques carry ~2.9 events/100 person-years (AJNR 2020 meta-analysis).</div>
     </div>
     <div class="brow">
-      <button class="abtn" onclick="set('vessel','occlusion')">Occlusion — 100% of relevant parent vessel</button>
+      <button class="abtn" onclick="set('vessel','occlusion')">Occlusion — 100% stenosis of relevant parent vessel</button>
       <button class="abtn" onclick="set('vessel','severe')">Severe stenosis — ≥70% or near-occlusion</button>
       <button class="abtn" onclick="set('vessel','moderate')">Moderate stenosis — 50–69%</button>
       <button class="abtn" onclick="set('vessel','mild')">Mild non-stenotic disease — plaques, &lt;50% stenosis</button>
@@ -862,7 +869,7 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
     </div>
     <div class="brow">
             <button class="abtn" onclick="setToggle('icad','yes')">✓ ICAD — ≥50% intracranial stenosis (meets LVD criteria)</button>
-      <button class="abtn" onclick="setToggle('icad','no')">✗ No significant intracranial stenosis / mild ICAD &lt;50% (not causal, same as no stenosis)</button>
+      <button class="abtn" onclick="setToggle('icad','no')">✗ No significant parent vessel ICAD / mild ICAD &lt;50%</button>
       <button class="abtn" onclick="setToggle('icad','nd')">— Not assessed / CTA not available</button>
     
     </div>
@@ -919,7 +926,28 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
   </div>
 
   <div id="a3" class="alrt"></div>
-  <div class="nav-row">
+  
+
+
+  <div class="slabel" style="margin-top:16px;">Moya moya Disease / Syndrome (MMD/MMS) <span class="pill pill-a">Other Determined Etiology</span></div>
+  <div class="crit" id="oth-moya moya-item">
+    <div class="crit-main"><div class="crit-name">Moya moya disease / syndrome — bilateral or unilateral ICA/MCA occlusion with "puff of smoke" collaterals</div>
+    <button class="xbtn" onclick="xp(this)">details ▾</button></div>
+    <div class="crit-detail">
+      <strong>Moya moya disease (MMD)</strong>: idiopathic, progressive bilateral steno-occlusion of terminal ICA + proximal MCA/ACA with compensatory "puff of smoke" basal collaterals. More common in East Asians; RNF213 gene variant. Annual stroke risk 3.2–15% without revascularization; post-STA-MCA bypass: 0–1.6%. Both ischemic (hemodynamic hypoperfusion) and hemorrhagic (fragile collateral rupture) presentations. 2021 Japanese guidelines: diagnosis requires bilateral findings or unilateral + contralateral evidence.<br>
+      <strong>Moya moya syndrome (MMS)</strong>: same radiologic pattern but associated with identifiable condition — Takayasu arteritis, Down syndrome, NF-1, sickle cell anemia, cranial irradiation, APLS, atherosclerosis. Treat underlying condition first.<br>
+      <strong>VW-MRI in Moya moya</strong>: No/minimal vessel wall enhancement in idiopathic MMD (quiescent). Active inflammatory MMS (e.g. Takayasu) may show concentric enhancement in affected large vessels.<br>
+      Ref: Suzuki 1969 (coined term); PMC5965184 (annual stroke risk); ScienceDirect Moya moya vasculopathy 2022 (MMS associations).
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setToggle('oth-moya moya','yes')">✓ Moya moya disease — idiopathic progressive ICA/MCA steno-occlusion with puff-of-smoke collaterals (bilateral typical; unilateral early/asymmetric also diagnostic)</button>
+      <button class="abtn" onclick="setToggle('oth-moya moya','syndrome')">⚠ Moya moya syndrome — Moya moya pattern associated with identified condition (Takayasu arteritis, Down syndrome, intracranial atherosclerosis, cranial irradiation, NF-1, APLS)</button>
+      <button class="abtn" onclick="setToggle('oth-moya moya','no')">✗ No Moya moya features on imaging</button>
+      <button class="abtn" onclick="setToggle('oth-moya moya','nd')">— Vascular imaging not reviewed for Moya moya pattern</button>
+    </div>
+  </div>
+
+<div class="nav-row">
     <button class="nbtn ns" onclick="go(2)">← Back</button>
     <button class="nbtn np" onclick="go(4)">Next: NASCET Carotid Stenosis →</button>
   </div>
@@ -936,7 +964,7 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
 
   <div class="lbox">
     <strong>NASCET risk data:</strong><br>
-    <span class="lr">Symptomatic ≥70% stenosis:</span> ~13%/year ipsilateral stroke risk on medical therapy alone. NASCET trial: absolute risk reduction from CEA = 16% at 5 years (NNT ~6). CEA benefit requires surgical risk &lt;6% perioperative mortality/stroke.<br>
+    <span class="lr">Symptomatic ≥70% stenosis:</span> 26% 2-year ipsilateral stroke risk on medical therapy (NASCET trial). Absolute risk reduction from CEA = 16% at 5 years (NNT ~6). CEA benefit requires surgical risk &lt;6% perioperative mortality/stroke.<br>
     <span class="la">Symptomatic 50–69%:</span> Absolute benefit from CEA ~5% at 5 years (NNT ~20) — marginal; not universally recommended.<br>
     <span class="lg">Asymptomatic 70–99%:</span> Modern pooled annual ipsilateral stroke rate = <strong>0.88%</strong> (95% CI 0.62–1.02) after 2010 with intensive medical therapy (Howard DPJ et al., Lancet Neurol 2021). 70–99% carries 2–3× higher risk than 50–69% in all decades studied (OR 2.1, 95% CI 1.7–2.5).<br><br>
     <span class="lt">Key principle:</span> Symptomatic stenosis is defined as prior ipsilateral TIA or stroke — this is the current presentation, so the question is whether the stenosis is ipsilateral and plausibly causal.
@@ -1026,7 +1054,7 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
         <span style="color:var(--teal)">Vessel wall MRI (most sensitive — dedicated plaque sequences):</span> T1-hyperintense "bright halo" or crescent within the plaque on MPRAGE or T1-weighted fat-saturated sequences. Signal brighter than adjacent sternocleidomastoid muscle. The MPRAGE sequence (magnetization-prepared rapid gradient echo) is the most validated technique for IPH detection at 1.5T and 3T.<br>
         <span style="color:var(--amber)">CTA (neck CTA / CT angiography):</span> Intraplaque hemorrhage itself is not directly visible on standard CTA. However, its indirect sign is a heterogeneous or irregular plaque with a low-density (soft tissue) core adjacent to the lumen — sometimes described as a "napkin ring sign" of the plaque. CTA underestimates IPH burden compared to vessel wall MRI.<br>
         <span style="color:var(--blue)">Carotid ultrasound (duplex):</span> Hypoechoic (dark/echolucent) plaque core, particularly when large and central, correlates with IPH/LRNC on histology. "Gray-scale median" analysis can help quantify echogenicity.
-        <div class="cnote"><strong>OR 25.2</strong> for carotid-source stroke (Balu N et al. Stroke 2014). HR 5.7 for future events (meta-analysis, Gupta A et al. Stroke 2013). Intraplaque hemorrhage is the best-established single biomarker of plaque vulnerability.</div>
+        <div class="cnote"><strong>OR 25.2</strong> for carotid-source stroke (Balu N et al. Stroke 2014). associated with significantly increased ipsilateral stroke/TIA recurrence in multiple studies (Gupta A et al. Stroke 2013). Intraplaque hemorrhage is the best-established single biomarker of plaque vulnerability.</div>
       </div>
       <div class="brow">
               <button class="abtn" onclick="setHRP('iph','yes')">✓ Intraplaque hemorrhage — confirmed on vessel wall MRI or inferred from imaging</button>
@@ -1348,8 +1376,7 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
     </div>
     <div class="brow">
             <button class="abtn" onclick="set('tcd-done','yes')">✓ Yes — TCD performed (enter findings below)</button>
-      <button class="abtn" onclick="set('tcd-done','no')">✗ TCD not performed</button>
-      <button class="abtn" onclick="set('tcd-done','nd')">— Not yet done / pending</button>
+      <button class="abtn" onclick="set('tcd-done','no')">✗ TCD not performed / not yet done</button>
     
     </div>
   </div>
@@ -1537,24 +1564,6 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
     </div>
   </div>
 
-  <div class="slabel" style="margin-top:14px;">Hypercoagulable State — Summary <span class="pill pill-a">ESUS / CRYPTOGENIC STROKE</span></div>
-  <div class="crit" id="oth-hypercog-item">
-    <div class="crit-main">
-      <div class="crit-name">Hypercoagulable state — overall assessment (APLS, FVL, PTG, protein C/S deficiency, malignancy-associated coagulopathy)</div>
-      <button class="xbtn" onclick="xp(this)">details ▾</button>
-    </div>
-    <div class="crit-detail">
-      Hypercoagulable testing is not routine for all stroke patients — most indicated in: young patients (&lt;55y) with cryptogenic stroke, history of recurrent venous/arterial thrombosis, known autoimmune disease, prior miscarriages (consider APLS), or active malignancy. Testing ideally done off anticoagulation. Antiphospholipid antibodies require confirmation on repeat testing ≥12 weeks apart. Post-discharge testing increases HCS diagnosis 3-fold (Gordo et al. Front Neurol 2025). If labs ordered but pending, select "Pending."
-    </div>
-    <div class="brow">
-            <button class="abtn" onclick="setToggle('oth-hypercog','yes')">✓ Hypercoagulable state confirmed (APLS, FVL, protein C/S, or other)</button>
-      <button class="abtn" onclick="setToggle('oth-hypercog','no')">✗ Tested — negative</button>
-      <button class="abtn" onclick="setToggle('oth-hypercog','pending')">⏳ Testing ordered — results pending (recommend repeat post-discharge off anticoagulation)</button>
-      <button class="abtn" onclick="setToggle('oth-hypercog','nd')">— Not suspected / not tested</button>
-    
-    </div>
-  </div>
-
   <div id="a8" class="alrt"></div>
   <div class="nav-row">
     <button class="nbtn ns" onclick="go(7)">← Back: TCD</button>
@@ -1572,17 +1581,14 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
 <div class="screen" id="s9">
 <div class="card">
   <div class="ctitle" style="color:var(--teal);">Step 10 · Vasculopathy</div>
-  <div class="csub">CNS vasculitis and inflammatory arteriopathies are rare and almost never confirmed in the acute inpatient setting — this step captures clinical suspicion level and supporting features, which feeds directly into the verdict and workup recommendations.</div>
+  <div class="csub">Step 10 captures the full spectrum of <strong>vasculopathy, inflammatory arteriopathy, and SVD burden</strong> — etiologies that require specific clinical context beyond vessel imaging alone. This includes: RCVS (non-atherosclerotic vasospasm), CNS vasculitis / PACNS (small-medium vessel inflammatory disease), Takayasu arteritis (large-vessel granulomatous vasculitis), Moya moya disease/syndrome (progressive ICA/MCA occlusion with collaterals), and chronic SVD burden markers (WMH, lacunes, microbleeds, metabolic risk factors). <strong>Vessel-size distinction:</strong> PACNS = small-to-medium intracranial vessels; Takayasu = large vessels (ICA, aortic arch); these should not be conflated — this step captures clinical suspicion level and supporting features, which feeds directly into the verdict and workup recommendations.</div>
 
-  <div class="lbox">
-    <strong>Why this is its own step:</strong> CNS vasculitis rarely gets confirmed acutely because definitive diagnosis requires brain biopsy (sensitivity ~75%, often deferred or never performed), or a highly specific pattern on vessel wall MRI + clinical context. In practice, the clinician almost never presses "confirmed" — but clinical suspicion level is still a meaningful input that changes the classification and triggers appropriate workup recommendations.<br><br>
-    <strong>Clinical suspicion triggers:</strong> <span class="lr">Young patient (&lt;55y)</span> with cryptogenic multiterritory infarcts and no other explanation + any of: prominent headache at onset, CSF pleocytosis or elevated protein, "beading" / segmental irregularity on catheter angiography or vessel wall MRI, known systemic autoimmune disease (SLE, polyarteritis nodosa, Sjögren, Behçet), or fever/constitutional symptoms without infection. <span class="lt">Note:</span> GCA (giant cell arteritis) is a specific consideration in patients &gt;50y with new headache, jaw claudication, elevated ESR/CRP, and posterior circulation stroke.
-  </div>
+  
 
-    <div class="slabel">Vessel Wall MRI (VW-MRI) — If Performed <span class="pill pill-a">Distinguishes ICAD vs. Vasculitis vs. RCVS</span></div>
+    <div class="slabel">Vessel Wall MRI (VW-MRI) <span class="pill pill-a">Distinguishes ICAD vs. Vasculitis vs. RCVS</span></div>
   <div class="lbox" style="margin-bottom:8px;">
     High-resolution black blood vessel wall MRI (VW-MRI) is the key non-invasive discriminator for intracranial stenosis etiology:<br>
-    <strong style="color:var(--red);">Concentric wall enhancement</strong> → vasculitis / PACNS (circumferential inflammatory thickening; also seen in lymphoma, reversible cerebral angiopathy)<br>
+    <strong style="color:var(--red);">Concentric wall enhancement</strong> → vasculitis / PACNS or Takayasu arteritis (circumferential inflammatory mural thickening). Distinguish: Takayasu = long-segment, large vessels (carotid/aorta/vertebral), extracranial predominant; PACNS = short-segment, medium/small intracranial vessels. Both show concentric enhancement. Also seen in: lymphoma, reversible cerebral angiopathy<br>
     <strong style="color:var(--amber);">Eccentric wall enhancement</strong> → atherosclerotic ICAD (plaque at one wall; vulnerable plaque with lipid-rich necrotic core; matches stenosis side)<br>
     <strong style="color:var(--blue);">No wall enhancement</strong> → RCVS (smooth vessel narrowing with no/minimal mural enhancement; vasospasm without wall inflammation)<br>
     <em style="color:var(--text3);">Ref: Mandell DM et al. Stroke 2017; Obusez EC et al. AJNR 2016; Swartz RH et al. Neurology 2009.</em>
@@ -1597,7 +1603,48 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
     </div>
   </div>
 
-<div class="slabel">Clinical suspicion for inflammatory arteriopathy <span class="pill pill-r">SELECT ONE</span></div>
+<div class="slabel" style="margin-top:14px;">Reversible Cerebral Vasoconstriction Syndrome (RCVS) <span class="pill pill-a">Other Determined Etiology</span></div>
+  
+  <div class="crit" id="oth-rcvs-item">
+    <div class="crit-main"><div class="crit-name">RCVS — thunderclap headache at onset, postpartum or vasoactive drug trigger, watershed ischemia</div><button class="xbtn" onclick="xp(this)">details ▾</button></div>
+    <div class="crit-detail">RCVS is a rare but important cause of ischemic stroke, particularly in young adults (predominantly women). Characterized by <strong>recurrent thunderclap headaches</strong> (reaching peak intensity within ≤1 minute) with multifocal segmental vasoconstriction resolving within 3 months. Accounts for a significant proportion of cryptogenic stroke with thunderclap headache history.<br><br>
+    <strong>Ischemic mechanism:</strong> Hypoperfusion in watershed territories during severe vasoconstriction; "string of beads" or "sausage on a string" appearance on angiography.<br>
+    <strong>Complications:</strong> ~30–50% develop complications — convexity subarachnoid hemorrhage, lobar hemorrhage, ischemic stroke (watershed), PRES (7–38% overlap). (Singhal AB. Int J Stroke 2023; StatPearls RCVS 2024)<br>
+    <strong>RCVS2 score:</strong> High accuracy distinguishing RCVS from PACNS — recurrent thunderclap headache (+3), carotid artery involvement (−2), intracranial carotid involvement (+1), sex (female +1), subarachnoid hemorrhage (+1). Score ≥5 strongly favors RCVS (Neurology 2019).<br>
+    <strong>Triggers:</strong> Vasoactive drugs (triptans, SSRIs, cocaine, amphetamines), postpartum/eclampsia, surgical procedures.<br>
+    <strong>Treatment:</strong> Nimodipine (vasodilation); remove triggers; avoid vasoconstrictors. Long-term prognosis favorable — 71% no disability (PMC systematic review). ICD-10: I67.841.</div>
+    <div class="brow">
+      <button class="abtn" onclick="setToggle('oth-rcvs','yes')">✓ RCVS suspected — thunderclap headache, trigger exposure, segmental vasoconstriction on imaging</button>
+      <button class="abtn" onclick="setToggle('oth-rcvs','no')">✗ Not suspected</button>
+      <button class="abtn" onclick="setToggle('oth-rcvs','nd')">— Cannot assess (no headache history available)</button>
+    </div>
+  </div>
+
+  <div id="rcvs2-panel" style="display:none;margin-top:10px;">
+    <div class="slabel">RCVS2 Score <span class="pill pill-a">Contributes to Verdict</span></div>
+    <div class="lbox" style="margin-bottom:8px;">
+      <strong>RCVS2 Score</strong> (Ducros A et al. Neurology 2019; sens. 90%, spec. 99% for RCVS vs. other intracranial arteriopathies at score ≥5)
+      <table style="margin-top:8px;border-collapse:collapse;width:100%;font-size:11px;">
+        <tr><td style="padding:3px 8px;color:var(--green);font-weight:700;width:50px;">+5</td><td style="padding:3px 8px;color:var(--text2);">Recurrent or single severe/thunderclap headache reaching peak &lt;1 min</td></tr>
+        <tr style="background:rgba(255,255,255,0.03);"><td style="padding:3px 8px;color:var(--red);font-weight:700;">−2</td><td style="padding:3px 8px;color:var(--text2);">Carotid artery involvement (cervical ICA on imaging)</td></tr>
+        <tr><td style="padding:3px 8px;color:var(--green);font-weight:700;">+1</td><td style="padding:3px 8px;color:var(--text2);">Intracranial carotid artery involvement</td></tr>
+        <tr style="background:rgba(255,255,255,0.03);"><td style="padding:3px 8px;color:var(--green);font-weight:700;">+1</td><td style="padding:3px 8px;color:var(--text2);">Female sex</td></tr>
+        <tr><td style="padding:3px 8px;color:var(--green);font-weight:700;">+1</td><td style="padding:3px 8px;color:var(--text2);">Convexity subarachnoid hemorrhage on imaging</td></tr>
+        <tr style="border-top:1px solid var(--border);"><td style="padding:4px 8px;font-weight:700;color:var(--teal);">≥5</td><td style="padding:4px 8px;color:var(--text2);">Strongly favors RCVS &nbsp;·&nbsp; <span style="color:var(--text3)">&lt;2 favors PACNS / other arteriopathy</span></td></tr>
+      </table>
+    </div>
+    <div class="crit" id="rcvs2-score-item">
+      <div class="crit-main"><div class="crit-name">RCVS2 Score — enter calculated total</div></div>
+      <div class="brow">
+        <button class="abtn" onclick="setToggle('rcvs2-score','high')">≥5 — Strongly favors RCVS (sens. 90%, spec. 99%)</button>
+        <button class="abtn" onclick="setToggle('rcvs2-score','mod')">3–4 — Indeterminate; RCVS possible</button>
+        <button class="abtn" onclick="setToggle('rcvs2-score','low')">≤2 — Favors PACNS or other arteriopathy</button>
+        <button class="abtn" onclick="setToggle('rcvs2-score','nd')">— Not yet calculated</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="slabel">Clinical suspicion for inflammatory arteriopathy <span class="pill pill-r">SELECT ONE</span></div>
 
   <div class="crit" id="oth-vasc-item">
     <div class="crit-main">
@@ -1623,89 +1670,128 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
   </div>
 
 
-  <div class="slabel" style="margin-top:14px;">RCVS — Reversible Cerebral Vasoconstriction Syndrome <span class="pill pill-a">Other Determined Etiology</span></div>
-  <div class="lbox">
-    RCVS is a rare but important cause of ischemic stroke, particularly in young adults (predominantly women). Characterized by <strong>recurrent thunderclap headaches</strong> (reaching peak intensity within ≤1 minute) with multifocal segmental vasoconstriction resolving within 3 months. Accounts for a significant proportion of cryptogenic stroke with thunderclap headache history.<br><br>
-    <strong>Ischemic mechanism:</strong> Hypoperfusion in watershed territories during severe vasoconstriction; "string of beads" or "sausage on a string" appearance on angiography.<br>
-    <strong>Complications:</strong> ~30–50% develop complications — convexity subarachnoid hemorrhage, lobar hemorrhage, ischemic stroke (watershed), PRES (7–38% overlap). (Singhal AB. Int J Stroke 2023; StatPearls RCVS 2024)<br>
-    <strong>RCVS2 score:</strong> High accuracy distinguishing RCVS from PACNS — recurrent thunderclap headache (+3), carotid artery involvement (−2), intracranial carotid involvement (+1), sex (female +1), subarachnoid hemorrhage (+1). Score ≥5 strongly favors RCVS (Neurology 2019).<br>
-    <strong>Triggers:</strong> Vasoactive drugs (triptans, SSRIs, cocaine, amphetamines), postpartum/eclampsia, surgical procedures.<br>
-    <strong>Treatment:</strong> Nimodipine (vasodilation); remove triggers; avoid vasoconstrictors. Long-term prognosis favorable — 71% no disability (PMC systematic review). ICD-10: I67.841.
-  </div>
-  <div class="crit" id="oth-rcvs-item">
-    <div class="crit-main"><div class="crit-name">RCVS — thunderclap headache at onset, postpartum or vasoactive drug trigger, watershed ischemia</div><button class="xbtn" onclick="xp(this)">details ▾</button></div>
+  
+
+  <div class="slabel" style="margin-top:14px;">Takayasu Arteritis (TA) <span class="pill pill-a">Large-Vessel Vasculitis — Stroke in Young</span></div>
+  <div class="crit" id="oth-takayasu-item">
+    <div class="crit-main"><div class="crit-name">Takayasu arteritis — known diagnosis or features strongly suggestive (young patient, aortic arch / branch vessel involvement, constitutional symptoms)</div>
+    <button class="xbtn" onclick="xp(this)">details ▾</button></div>
     <div class="crit-detail">
-      <strong>Diagnostic criteria (Calabrese et al.):</strong> (1) Recurrent severe/thunderclap headaches reaching peak intensity within 1 minute over 1–3 weeks; (2) Cerebral vasoconstriction on angiography in ≥2 arteries ("string of beads" or "sausage on a string"); (3) Resolution of vasoconstriction by 3 months; (4) Absence of PACNS or aneurysmal SAH; (5) Normal or near-normal CSF.<br><br>
-      <strong>Imaging evolution:</strong> Vasoconstriction begins distally (small pial/cortical arteries) and progresses centripetally to proximal vessels. Early CTA/MRA may be normal — maximum vasoconstriction typically at 2 weeks. Catheter DSA is gold standard but has procedural risk; MRA or TCD monitoring preferred for serial assessment (TCD can detect early vasospasm non-invasively even when MRA is normal).<br><br>
-      <strong>RCVS2 Score</strong> (Ducros A et al. Neurology 2019; sensitivity 90%, specificity 99% for RCVS vs. other intracranial arteriopathies at score ≥5):<br>
-      +5: recurrent thunderclap headache · +3: carotid artery involvement (−2) · +1: intracranial carotid involvement · +1: female sex · +1: convexity SAH<br><br>
-      <strong>Epidemiology:</strong> Predominantly women (≈ 2:1 F:M); mean age 42y. Triggers in 70% of patients. PRES overlap in 7–38% (shared pathophysiology: endothelial dysfunction + loss of cerebrovascular autoregulation).<br><br>
-      <strong>Treatment evidence:</strong> Nimodipine reduces headache recurrence (observational data only; no RCT). Remove triggers. Avoid vasoconstrictors (triptans, ergotamines, decongestants, sympathomimetics, SSRIs in some cases). Glucocorticoids should be AVOIDED — retrospective data suggest possible harm (Singhal 2023). 71% no long-term disability; 29% minor disability (systematic review, PMC3020907).<br><br>
-      <strong>vs. PACNS:</strong> PACNS typically has CSF pleocytosis/elevated protein, more diffuse vessel involvement, no thunderclap headache, more severe cognitive decline — tissue diagnosis often required.
-      <div class="cnote"><strong>Ref:</strong> Singhal AB et al. Int J Stroke 2023;18(10):1151–1160. Ducros A et al. Neurology 2019 (RCVS2 score; n=110 PACNS vs 173 RCVS). StatPearls RCVS 2024. PMC3020907 (systematic review). PMC11478140 (pathogenesis 2024).</div>
+      <strong>Takayasu arteritis (TA)</strong> is a chronic granulomatous large-vessel vasculitis predominantly affecting the aorta and its major branches. Primarily young women (&lt;40). Stroke affects 10–20% of TA patients (7× general population risk; Duarte 2016 meta-analysis). Infarct patterns: large lobar (33%), cortical border-zone (29%). Mechanisms: (1) hemodynamic hypoperfusion from ICA/subclavian/aortic stenosis; (2) artery-to-artery embolism; (3) inflammatory intracranial vessel involvement.<br><br>
+      <strong>TA + Moya moya syndrome:</strong> TA can cause progressive inflammatory ICA/MCA occlusion → secondary Moya moya syndrome (acquired, not idiopathic). Treat underlying TA first.<br><br>
+      <strong>Diagnosis:</strong> ESR/CRP elevated in active disease; "macaroni sign" on carotid US (mural thickening); PET-CT detects active inflammation. ACR 1990 criteria: age ≤40, claudication, decreased brachial pulse, BP difference &gt;10 mmHg, subclavian/aortic bruit, angiographic abnormality.<br><br>
+      <strong>VW-MRI in Takayasu:</strong> Concentric long-segment mural enhancement in large vessels (carotid, aortic branches) — same pattern as vasculitis but in large not small vessels. Distinguishes from atherosclerosis (eccentric) and RCVS (no enhancement).<br><br>
+      <strong>Treatment:</strong> Corticosteroids (prednisone 1 mg/kg/day); MTX/azathioprine/MMF for maintenance; tocilizumab for refractory disease. Antiplatelet for stroke prevention. Revascularization during remission.<br>
+      Ref: Duarte MM et al. J Stroke Cerebrovasc Dis 2016;25:781. Uchiyama S et al. AJNR 2017;38:766.
     </div>
     <div class="brow">
-            <button class="abtn" onclick="setToggle('oth-rcvs','yes')">✓ RCVS suspected — thunderclap headache, trigger exposure, segmental vasoconstriction on imaging</button>
-      <button class="abtn" onclick="setToggle('oth-rcvs','no')">✗ Not suspected</button>
-      <button class="abtn" onclick="setToggle('oth-rcvs','nd')">— Cannot assess (no headache history available)</button>
-    
-    
-  <div id="rcvs2-panel" style="display:none;margin-top:10px;">
-    <div class="slabel">RCVS2 Score <span class="pill pill-a">Contributes to Verdict</span></div>
-    <div class="lbox" style="margin-bottom:8px;">
-      <strong>RCVS2 Score</strong> (Ducros A et al. Neurology 2019; sens. 90%, spec. 99% for RCVS vs. other intracranial arteriopathies at score ≥5)
-      <table style="margin-top:8px;border-collapse:collapse;width:100%;font-size:11px;">
-        <tr><td style="padding:3px 8px;color:var(--green);font-weight:700;width:50px;">+5</td><td style="padding:3px 8px;color:var(--text2);">Recurrent or single severe/thunderclap headache reaching peak &lt;1 min</td></tr>
-        <tr style="background:rgba(255,255,255,0.03);"><td style="padding:3px 8px;color:var(--red);font-weight:700;">−2</td><td style="padding:3px 8px;color:var(--text2);">Carotid artery involvement (cervical ICA on imaging)</td></tr>
-        <tr><td style="padding:3px 8px;color:var(--green);font-weight:700;">+1</td><td style="padding:3px 8px;color:var(--text2);">Intracranial carotid artery involvement</td></tr>
-        <tr style="background:rgba(255,255,255,0.03);"><td style="padding:3px 8px;color:var(--green);font-weight:700;">+1</td><td style="padding:3px 8px;color:var(--text2);">Female sex</td></tr>
-        <tr><td style="padding:3px 8px;color:var(--green);font-weight:700;">+1</td><td style="padding:3px 8px;color:var(--text2);">Convexity subarachnoid hemorrhage on imaging</td></tr>
-        <tr style="border-top:1px solid var(--border);"><td style="padding:4px 8px;font-weight:700;color:var(--teal);">≥5</td><td style="padding:4px 8px;color:var(--text2);">Strongly favors RCVS &nbsp;·&nbsp; <span style="color:var(--text3)">&lt;2 favors PACNS / other arteriopathy</span></td></tr>
-      </table>
+      <button class="abtn" onclick="setToggle('oth-takayasu','confirmed')">✓ Takayasu arteritis confirmed — known diagnosis or meets ACR 1990 criteria</button>
+      <button class="abtn" onclick="setToggle('oth-takayasu','suspected')">⚠ Takayasu arteritis suspected — young patient, aortic arch disease, BP asymmetry, elevated ESR</button>
+      <button class="abtn" onclick="setToggle('oth-takayasu','ta-moya')">⚠ Takayasu arteritis + Moya moya syndrome — inflammatory Moya moya-like lesions in TA context</button>
+      <button class="abtn" onclick="setToggle('oth-takayasu','no')">✗ Not suspected — no features of Takayasu arteritis</button>
+      <button class="abtn" onclick="setToggle('oth-takayasu','nd')">— Not assessed</button>
     </div>
-    <div class="crit" id="rcvs2-score-item">
-      <div class="crit-main"><div class="crit-name">RCVS2 Score — enter calculated total</div></div>
-      <div class="brow">
-        <button class="abtn" onclick="setToggle('rcvs2-score','high')">≥5 — Strongly favors RCVS (sens. 90%, spec. 99%)</button>
-        <button class="abtn" onclick="setToggle('rcvs2-score','mod')">3–4 — Indeterminate; RCVS possible</button>
-        <button class="abtn" onclick="setToggle('rcvs2-score','low')">≤2 — Favors PACNS or other arteriopathy</button>
-        <button class="abtn" onclick="setToggle('rcvs2-score','nd')">— Not yet calculated</button>
-      </div>
-    </div>
-  </div>
-</div>
   </div>
 
-  <div class="slabel" style="margin-top:14px;">Moya moya Disease / Syndrome <span class="pill pill-a">Other Determined Etiology</span></div>
-  <div class="lbox">
-    Moya moya is a progressive steno-occlusive cerebrovascular disease affecting the terminal ICA and proximal MCA/ACA bilaterally, with compensatory "puff of smoke" collateral formation at the base of the brain. Important cause of stroke in young adults and children — accounts for ~6–10% of non-perinatal pediatric strokes (Practical Neurology 2024).<br><br>
-    <strong>Epidemiology:</strong> Prevalence 0.1/100,000 in North America; 0.5–1.5/100,000 in East Asia. Asian Americans: 4.6× higher risk than Caucasians (Medscape 2024). Female predominance.<br>
-    <strong>Genetics:</strong> RNF213 Arg4810Lys is the major susceptibility variant in East Asians (penetrance &lt;1% — synergistic with other factors; Lancet 2022).<br>
-    <strong>Clinical:</strong> Children predominantly ischemic (TIA/stroke triggered by hyperventilation or dehydration); adults — hemorrhagic more common. Conservative management: annual stroke rate 3.2–15%; post-surgical direct bypass revascularization: 0–1.6% annually (Praktische 2024, PMC5965184).<br>
-    <strong>Diagnosis:</strong> Gold standard — catheter angiography (stenosis/occlusion at carotid fork + "puff of smoke" collaterals). MRA correlates 83% with DSA (Stroke 1994). When moya moya is identified, family history screening and genetic counseling warranted (familial cases ~10–15%).
-  </div>
-  <div class="crit" id="oth-moya moya-item">
-    <div class="crit-main"><div class="crit-name">Moya moya — bilateral ICA stenosis/occlusion, "puff of smoke" collaterals on angiography</div><button class="xbtn" onclick="xp(this)">details ▾</button></div>
+
+  <div class="slabel" style="margin-top:8px;">White Matter Hyperintensities — Fazekas Scale</div>
+  <div class="crit" id="svd-wmh-item">
+    <div class="crit-main"><div class="crit-name">Leukoaraiosis / WMH severity on FLAIR (Fazekas scale)</div>
+    <button class="xbtn" onclick="xp(this)">details ▾</button></div>
     <div class="crit-detail">
-      <strong>Moya moya disease</strong> = idiopathic, bilateral steno-occlusion of terminal ICA/proximal MCA-ACA. <strong>Moya moya syndrome</strong> = same radiographic appearance but associated with an identifiable condition: sickle cell disease (most common in North America), neurofibromatosis type 1, Down syndrome, cranial radiation, thyroid disease, PHACE syndrome.<br><br>
-      <strong>Suspect when:</strong> Young patient with ischemic stroke/TIA — especially triggered by hyperventilation, crying, or exertion (hyperventilation → CO₂ loss → vasoconstriction → ischemia in compromised vessels). Bilateral anterior circulation ischemia without cardiac/atherosclerotic source. Recurrent border-zone/watershed infarcts. Children: ischemic predominant. Adults: hemorrhagic more common (rupture of fragile collaterals).<br><br>
-      <strong>Diagnostic approach:</strong> MRA/CTA first — "puff of smoke" collaterals + ICA stenosis. MRA correlates 83% with catheter angiography at the carotid fork (Stroke 1994;25:2159). Catheter DSA remains gold standard for treatment planning. MRI: multiple bilateral chronic infarcts, ivy sign (leptomeningeal enhancement on FLAIR). Consider thyroid antibodies (elevated in significant % of pediatric patients — Medscape).<br><br>
-      <strong>Treatment:</strong> Surgical revascularization — direct bypass (STA-MCA) reduces annual stroke rate from 3.2–15% → 0–1.6% (PMC5965184). Indirect revascularization (EDAS, encephalomyosynangiosis) used in children. Antiplatelet agents used as bridge but do not prevent progression. Anticoagulation generally NOT used for moya moya (risk of hemorrhage from fragile collaterals).<br><br>
-      <strong>Genetics:</strong> RNF213 Arg4810Lys — major susceptibility variant in East Asians; penetrance &lt;1% (synergistic environmental/genetic factors required). Familial moya moya ~10–15% of cases — screen first-degree relatives. Genetic counseling if familial form identified (Lancet 2022).
-      <div class="cnote"><strong>Ref:</strong> Practical Neurology 2024. Lancet 2022 (moya moya pathogenesis; RNF213). PMC5965184 (stroke rates, revascularization). Stroke 1994;25:2159 (MRA accuracy). Medscape moya moya 2024.</div>
+      <strong>Fazekas scale (periventricular + deep WMH):</strong><br>
+      0 = absent · 1 = punctate foci · 2 = confluent foci (early/moderate) · 3 = large confluent areas<br>
+      Fazekas ≥2 deep <em>or</em> Fazekas 3 periventricular = significant WMH = 1 SVD burden point. Leukoaraiosis was present in 88% of all corona radiata infarct patients and was significantly more frequent in those with bilateral multiple infarcts (Prat-Vigué et al. J Stroke Cerebrovasc Dis 2003).
     </div>
     <div class="brow">
-            <button class="abtn" onclick="setToggle('oth-moya moya','yes')">✓ Moya moya identified — bilateral ICA/MCA-ACA stenosis, puff of smoke collaterals</button>
-      <button class="abtn" onclick="setToggle('oth-moya moya','syndrome')">~ Moya moya syndrome — unilateral or associated with known condition</button>
-      <button class="abtn" onclick="setToggle('oth-moya moya','no')">✗ Not identified on imaging</button>
-      <button class="abtn" onclick="setToggle('oth-moya moya','nd')">— Not assessed (MRA/DSA not yet performed)</button>
-    
+      <button class="abtn" onclick="setToggle('svd-wmh','severe')">Severe — Fazekas 3 (large confluent periventricular or deep WMH)</button>
+      <button class="abtn" onclick="setToggle('svd-wmh','mod')">Moderate — Fazekas 2 (early confluence, deep WMH)</button>
+      <button class="abtn" onclick="setToggle('svd-wmh','mild')">Mild — Fazekas 1 (punctate foci only)</button>
+      <button class="abtn" onclick="setToggle('svd-wmh','none')">Absent — Fazekas 0</button>
+      <button class="abtn" onclick="setToggle('svd-wmh','nd')">— Not assessed / no FLAIR available</button>
     </div>
   </div>
 
+  <div class="slabel" style="margin-top:8px;">Chronic Lacunes on MRI</div>
+  <div class="crit" id="svd-lacunes-item">
+    <div class="crit-main"><div class="crit-name">Prior lacunar infarcts (chronic, non-DWI-bright) in deep gray/white matter</div></div>
+    <div class="brow">
+      <button class="abtn" onclick="setToggle('svd-lacunes','yes')">✓ Chronic lacunes present (basal ganglia, internal capsule, corona radiata, brainstem)</button>
+      <button class="abtn" onclick="setToggle('svd-lacunes','no')">✗ No chronic lacunes</button>
+      <button class="abtn" onclick="setToggle('svd-lacunes','nd')">— Not assessed</button>
+    </div>
+  </div>
 
+  <div class="slabel" style="margin-top:8px;">Cerebral Microbleeds — Location</div>
+  <div class="crit" id="svd-cmb-item">
+    <div class="crit-main"><div class="crit-name">Cerebral microbleeds on SWI/GRE — location determines SVD type</div>
+    <button class="xbtn" onclick="xp(this)">details ▾</button></div>
+    <div class="crit-detail">
+      Deep microbleeds (basal ganglia, thalamus, internal/external capsule, brainstem) → hypertensive angiopathy (HA), strongly supports SVD mechanism. Lobar microbleeds (cortical, subcortical white matter) → CAA, does not specifically support hypertensive SVD. Mixed = consider both.
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setToggle('svd-cmb','deep')">⚠ Deep microbleeds (BG / thalamus / brainstem) — hypertensive angiopathy, strongly supports SVD</button>
+      <button class="abtn" onclick="setToggle('svd-cmb','lobar')">~ Lobar microbleeds (cortical / subcortical WM) — CAA pattern, not specific for hypertensive SVD</button>
+      <button class="abtn" onclick="setToggle('svd-cmb','mixed')">~ Mixed deep + lobar — both HA and CAA possible</button>
+      <button class="abtn" onclick="setToggle('svd-cmb','none')">✗ No microbleeds</button>
+      <button class="abtn" onclick="setToggle('svd-cmb','nd')">— SWI/GRE not performed</button>
+    </div>
+  </div>
 
-  <div id="a7" class="alrt"></div>
+  <div class="slabel" style="margin-top:8px;">Vascular Risk Factor Burden for SVD</div>
+  <div class="crit" id="svd-rfbx-item">
+    <div class="crit-main"><div class="crit-name">Known hypertension, diabetes mellitus, hyperlipidemia — establishes SVD risk profile</div>
+    <button class="xbtn" onclick="xp(this)">details ▾</button></div>
+    <div class="crit-detail">
+      Hypertension is by far the strongest modifiable risk factor for SVD (OR 1.50 for higher SVD burden score; Wardlaw 2013). Diabetes contributes via microvascular endothelial dysfunction. Hyperlipidemia contributes via arteriolosclerosis. Hypertension was the most frequent risk factor in corona radiata infarct patients at 62% (Prat-Vigué 2003). The combination of severe acute hypertension (>180 mmHg) + bilateral small infarcts + high WMH burden + deep lacunes strongly supports SVD over ESUS in the absence of a confirmed embolic source.
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setToggle('svd-rfbx','multi')">✓ Multiple SVD risk factors — HTN + DM and/or HLD (strong SVD risk profile)</button>
+      <button class="abtn" onclick="setToggle('svd-rfbx','htn')">✓ Hypertension alone — primary SVD risk factor</button>
+      <button class="abtn" onclick="setToggle('svd-rfbx','none')">✗ No significant SVD risk factors — reduces SVD probability, favors ESUS</button>
+      <button class="abtn" onclick="setToggle('svd-rfbx','nd')">— Risk factor history not documented</button>
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:8px;">Metabolic Biomarkers — HbA1c and LDL <span class="pill pill-a">Differentiates SVD vs. LVD Atherosclerotic Drivers</span></div>
+  <div class="lbox" style="margin-bottom:8px;">
+    HbA1c and LDL have distinct but overlapping contributions to stroke etiology:<br><br>
+    <span class="lr"><strong>HbA1c (glycemic control):</strong></span> Severe hyperglycemia drives microvascular endothelial dysfunction and lipohyalinosis → preferentially promotes <strong>SVD</strong>. HbA1c >9% is associated with accelerated SVD burden and lacunar infarction (Shah AD et al. BMJ 2015, n=1.9M patients: HR for lacunar stroke 1.54 per 1% HbA1c increase). Poorly controlled diabetes also accelerates macrovascular atherosclerosis contributing to LAA, but its primary microvascular effect is SVD.<br><br>
+    <span class="lt"><strong>LDL cholesterol:</strong></span> Markedly elevated LDL preferentially drives <strong>large vessel atherosclerosis (LAA)</strong>. LDL >160 mg/dL is independently associated with LAA stroke (OR 2.1 in INTERSTROKE study, n=26,919; O&#39;Donnell MJ et al. Lancet 2016). High-intensity statin therapy reduces LAA stroke recurrence by 16–36% (SPARCL trial: atorvastatin 80mg; HR 0.84 for any stroke). Note: LDL <70 mg/dL on high-intensity statins does not eliminate atherosclerotic plaque burden — calcified plaques persist. Conversely, low LDL with well-controlled diabetes shifts away from atherosclerotic mechanisms.<br><br>
+    <em style="color:var(--text3);">Refs: Shah AD et al. BMJ 2015;351:h4244. O&#39;Donnell MJ et al. Lancet 2016;388:761. SPARCL Investigators NEJM 2006;355:549. Emerging Risk Factors Collaboration, JAMA 2014;311:1337.</em>
+  </div>
+
+  <div class="slabel" style="margin-top:4px;">HbA1c — Glycemic Control</div>
+  <div class="crit" id="svd-hba1c-item">
+    <div class="crit-main"><div class="crit-name">HbA1c level — reflects chronic glycemic burden and microvascular/macrovascular risk</div>
+    <button class="xbtn" onclick="xp(this)">details ▾</button></div>
+    <div class="crit-detail">
+      Each 1% increase in HbA1c is associated with HR 1.54 for lacunar stroke (Shah BMJ 2015). HbA1c >9% = severely uncontrolled diabetes → high SVD risk via lipohyalinosis and endothelial dysfunction. HbA1c 7–9% = suboptimally controlled → moderate microvascular risk. HbA1c &lt;7% on treatment = adequate control; reduces but does not eliminate SVD risk if diabetes is longstanding. Note: acute stroke raises blood glucose transiently — HbA1c reflects chronic control better than admission glucose.
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setToggle('svd-hba1c','high')">HbA1c ≥9% — severely uncontrolled (strong SVD driver; also accelerates macrovascular disease)</button>
+      <button class="abtn" onclick="setToggle('svd-hba1c','mod')">HbA1c 7–8.9% — suboptimally controlled diabetes</button>
+      <button class="abtn" onclick="setToggle('svd-hba1c','controlled')">HbA1c &lt;7% — adequately controlled or no diabetes</button>
+      <button class="abtn" onclick="setToggle('svd-hba1c','nd')">— HbA1c not checked / no known diabetes</button>
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:8px;">LDL Cholesterol</div>
+  <div class="crit" id="svd-ldl-item">
+    <div class="crit-main"><div class="crit-name">LDL — reflects atherosclerotic plaque burden; primarily drives large vessel disease</div>
+    <button class="xbtn" onclick="xp(this)">details ▾</button></div>
+    <div class="crit-detail">
+      LDL >160 mg/dL: markedly elevated — independently associated with large vessel atherosclerotic stroke (INTERSTROKE, Lancet 2016; OR ~2.1). Drives carotid and intracranial atherosclerotic plaque formation. LDL 100–159 mg/dL: moderately elevated — additive risk. LDL &lt;70 mg/dL: at or below guideline target for high-risk patients — atherosclerosis less likely to be the dominant mechanism if well-controlled; however, existing calcified plaques persist. Note: patients already on high-intensity statins may have low LDL on presentation despite significant plaque burden — assess history, not just admission value.
+    </div>
+    <div class="brow">
+      <button class="abtn" onclick="setToggle('svd-ldl','high')">LDL ≥160 mg/dL — markedly elevated; strong LAA driver (INTERSTROKE OR ~2.1)</button>
+      <button class="abtn" onclick="setToggle('svd-ldl','mod')">LDL 100–159 mg/dL — moderately elevated; additive atherosclerotic risk</button>
+      <button class="abtn" onclick="setToggle('svd-ldl','controlled')">LDL &lt;100 mg/dL — at or near target (on statin or diet-controlled)</button>
+      <button class="abtn" onclick="setToggle('svd-ldl','statin')">LDL &lt;70 mg/dL on high-intensity statin — at target; evaluate for residual plaque burden</button>
+      <button class="abtn" onclick="setToggle('svd-ldl','nd')">— LDL not checked / unknown</button>
+    </div>
+  </div>
+<div id="a7" class="alrt"></div>
   <div class="nav-row">
     <button class="nbtn ns" onclick="go(8)">← Back: ESUS</button>
     <button class="nbtn np" onclick="go(10)">Generate Classification →</button>
@@ -1717,6 +1803,7 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
      SCREEN 9 — VERDICT
 ══════════════════════════════════════════════════════ -->
 <div class="screen" id="s10">
+<div class="card" style="max-width:100%;">
   <div id="vout"></div>
   <div class="doc-header">
     <button class="doc-tog" onclick="toggleDoc()">▼ Documentation Note</button>
@@ -1727,6 +1814,7 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
     <button class="nbtn ns" onclick="go(7)">← Back</button>
     <button class="nbtn np" onclick="resetAll()">↺ New Classification</button>
   </div>
+</div>
 </div>
 
 </div><!-- /app -->
@@ -2006,7 +2094,7 @@ function ui() {
   if (S.topo === 'watershed') {
     a2.className='alrt awn show'; a2.innerHTML='Watershed pattern: radiologic hallmark of hemodynamic ischemia from high-grade carotid stenosis. Evaluate carefully for ≥70% ICA stenosis or occlusion.';
   } else if ((S.topos&&(S.topos.includes('cortical')||S.topos.includes('cortical-sub')))) {
-    a2.className='alrt ainf show'; a2.innerHTML='Cortical + subcortical infarct selected: 2× more frequent in cardioembolic stroke (Yaghi 2020). Does not exclude LVD — assess vascular imaging carefully.';
+    a2.className='alrt ainf show'; a2.innerHTML='Cortical + subcortical infarct selected: 2× associated with cardioembolic mechanism. Cortical infarcts 2× more common in CE vs. non-CE in some series; however anterior circulation cortical infarcts do not show a statistically significant predilection for CE in meta-analysis (Frontiers Neurology 2020 meta-analysis, n=4,873; OR 1.45, p=0.19). Does not exclude LVD — assess vascular imaging carefully.';
   } else if (S.circ === 'both' && S['fetal-pca'] === 'yes-ipsi') {
     a2.className='alrt awn show'; a2.innerHTML='⚠ Ipsilateral fetal PCA confirmed: anterior + posterior infarction may be explained by a SINGLE ipsilateral carotid source (CFP syndrome). This is NOT necessarily a multi-territory cardioembolic event — re-evaluate as a unilateral carotid-territory event before attributing to cardiac embolism.';
   } else if (S.circ === 'both' && (S['fetal-pca'] === 'no' || S['fetal-pca'] === 'yes-contra')) {
@@ -2030,7 +2118,7 @@ function ui() {
   // Step 4 — NASCET
   const a4 = document.getElementById('a4');
   if (S.nascet === 'severe') {
-    a4.className='alrt aerr show'; a4.innerHTML='NASCET 70–99%: symptomatic ~13%/year untreated. Annual asymptomatic risk now 0.88% (95%CI 0.62–1.02) post-2010 with intensive medical therapy (Howard 2021, Lancet Neurol).';
+    a4.className='alrt aerr show'; a4.innerHTML='NASCET 70–99%: symptomatic 2-year ipsilateral stroke risk 26% on medical therapy (NASCET). Annual asymptomatic risk now 0.88% (95%CI 0.62–1.02) post-2010 with intensive medical therapy (Howard 2021, Lancet Neurol).';
   } else if (S.nascet === 'mod') {
     a4.className='alrt awn show'; a4.innerHTML='NASCET 50–69%: meets minimum TOAST LVD threshold. CEA benefit marginal at this degree — individualize. Annual symptomatic stroke risk lower than ≥70%.';
   } else if (S.nascet === 'none') {
@@ -2069,7 +2157,7 @@ function ui() {
   const a5 = document.getElementById('a5');
   const hrpCount = ['hrp-iph','hrp-lrnc','hrp-ulcer','hrp-cap'].filter(k => S[k]==='yes').length;
   if (S['hrp-iph'] === 'yes') {
-    a5.className='alrt aerr show'; a5.innerHTML='⚠ Intraplaque hemorrhage confirmed: OR 25.2 for carotid-source stroke; HR 5.7 for future cerebrovascular events. High-risk plaque regardless of stenosis degree.';
+    a5.className='alrt aerr show'; a5.innerHTML='⚠ Intraplaque hemorrhage confirmed: OR 25.2 for carotid-source stroke; associated with significantly increased future cerebrovascular event risk (Gupta A et al. Stroke 2013 meta-analysis). High-risk plaque regardless of stenosis degree.';
   } else if (hrpCount >= 2) {
     a5.className='alrt awn show'; a5.innerHTML=hrpCount + ' high-risk plaque features identified — strongly supports carotid atherothrombotic mechanism.';
   } else { a5.className='alrt'; a5.innerHTML=''; }
@@ -2199,7 +2287,12 @@ function computeScores() {
   if (S['oth-vasc']==='confirmed') {
     other += 70; ev.other.push({txt:'<strong>Inflammatory arteriopathy / CNS vasculitis — confirmed</strong> (biopsy or characteristic vessel wall MRI) — Other Determined Etiology', w:'DEFINITIVE', cls:'ev-high'});
   } else if (S['oth-vasc']==='high') {
-    other += 30; ev.other.push({txt:'<strong>Inflammatory arteriopathy — high clinical suspicion</strong> (multiple supportive features); definitive confirmation pending', w:'POSSIBLE', cls:'ev-mod'});
+    const taActiveHigh = ['confirmed','suspected','ta-moya'].includes(S['oth-takayasu']);
+    if (taActiveHigh) {
+      ev.other.push({txt:'<strong>Vasculitis high suspicion noted but Takayasu features present</strong> — large-vessel ICA/aortic involvement is more consistent with Takayasu arteritis than PACNS. PACNS primarily affects small-to-medium intracranial vessels (Calabrese criteria; Pathology Outlines 2025). Takayasu scoring applied instead.', w:'MOD', cls:'ev-mod'});
+    } else {
+      other += 30; ev.other.push({txt:'<strong>Inflammatory arteriopathy — high clinical suspicion</strong> (multiple supportive features without Takayasu features); definitive confirmation pending', w:'POSSIBLE', cls:'ev-mod'});
+    }
   } else if (S['oth-vasc']==='low') {
     ev.other.push({txt:'<strong>Inflammatory arteriopathy — low/moderate clinical suspicion</strong>; one or two features without clear confirmation', w:'LOW', cls:''});
   }
@@ -2242,7 +2335,13 @@ function computeScores() {
   }
   // ── VW-MRI scoring ─────────────────────────────────────────────────────
   if (S.vwmri==='concentric') {
-    other += 35; ev.other.push({txt:'<strong>VW-MRI: Concentric wall enhancement</strong> — strongly favors vasculitis / PACNS (circumferential inflammatory mural thickening). Not consistent with atherosclerotic ICAD. (Mandell DM et al. Stroke 2017)', w:'HIGH', cls:'ev-high'});
+    const taConc = ['confirmed','suspected','ta-moya'].includes(S['oth-takayasu']);
+    other += 35;
+    if (taConc) {
+      ev.other.push({txt:'<strong>VW-MRI: Concentric wall enhancement — consistent with Takayasu arteritis</strong>. Takayasu shows long-segment circumferential mural thickening in large vessels (carotid, vertebral, aortic branches). This is the expected VW-MRI finding in active Takayasu arteritis. Distinguishes from atherosclerotic ICAD (eccentric) and RCVS (no/minimal enhancement). (Mandell DM et al. Stroke 2017; Uchiyama AJNR 2017)', w:'HIGH', cls:'ev-high'});
+    } else {
+      ev.other.push({txt:'<strong>VW-MRI: Concentric wall enhancement</strong> — strongly favors vasculitis / PACNS (circumferential inflammatory mural thickening of medium/small intracranial vessels). Not consistent with atherosclerotic ICAD. (Mandell DM et al. Stroke 2017)', w:'HIGH', cls:'ev-high'});
+    }
     laa = Math.max(0, laa - 25); ev.laa.push({txt:'<strong>VW-MRI: Concentric enhancement</strong> — inconsistent with eccentric atherosclerotic plaque; LVD score penalised.', w:'NEGATIVE (VW-MRI)', cls:''});
   } else if (S.vwmri==='eccentric') {
     laa += 20; ev.laa.push({txt:'<strong>VW-MRI: Eccentric wall enhancement</strong> — favors atherosclerotic ICAD; eccentric plaque at vessel wall with or without lipid-rich necrotic core. (Obusez EC et al. AJNR 2016)', w:'HIGH', cls:'ev-high'});
@@ -2302,7 +2401,7 @@ function computeScores() {
     laa += 18; ev.laa.push({txt:'<strong>Moderate stenosis 50–69%</strong> — meets minimum TOAST LVD threshold', w:'MOD', cls:'ev-mod'});
   }
   if (S.vessel==='mild') {
-    ev.laa.push({txt:'<strong>Mild stenosis &lt;50%</strong> — does NOT meet TOAST LVD criteria; insufficient as causal attribution (PPV 13% in GWTG-Stroke)', w:'NEGATIVE', cls:''});
+    ev.laa.push({txt:'<strong>Mild stenosis &lt;50%</strong> — does NOT meet TOAST LVD criteria; insufficient as causal attribution; non-stenotic plaques carry ~2.9 events/100 person-years (AJNR 2020 meta-analysis)', w:'NEGATIVE', cls:''});
   }
   if (S.icad==='yes') {
     laa += 35; ev.laa.push({txt:'<strong>Intracranial atherosclerotic disease (ICAD) ≥50%</strong> — meets TOAST LVD criteria for intracranial atherosclerosis. Note: CTA/MRA cannot definitively distinguish atherosclerotic ICAD from vasculitic stenosis (PACNS) or vasospasm (RCVS). VW-MRI is essential if diagnosis is uncertain.', w:'HIGH', cls:'ev-high'});
@@ -2319,7 +2418,7 @@ function computeScores() {
     laa += 25; ev.laa.push({txt:'<strong>ICA occlusion</strong> ipsilateral to infarct — hemodynamic or artery-to-artery mechanism', w:'HIGH', cls:'ev-high'});
   }
   if (S.nascet==='mod') {
-    laa += 10; ev.laa.push({txt:'<strong>NASCET 50–69%</strong> ICA stenosis — borderline LVD; annual stroke risk ~0.5–1.5% on modern medical therapy', w:'MOD', cls:'ev-mod'});
+    laa += 10; ev.laa.push({txt:'<strong>NASCET 50–69%</strong> ICA stenosis — borderline LVD; symptomatic 50–69%: ~5% ARR from CEA at 5 years (NNT ~20, NASCET)', w:'MOD', cls:'ev-mod'});
   }
   if (S['hrp-lrnc']==='yes') {
     laa += 10; ev.laa.push({txt:'<strong>Lipid-rich necrotic core (LRNC)</strong> — OR 1.30 for ipsilateral acute cerebral infarction (CARE-II study)', w:'MOD', cls:'ev-mod'});
@@ -2361,6 +2460,94 @@ function computeScores() {
   if (S.count==='multi-same') {
     laa += 7; ev.laa.push({txt:'<strong>Multiple infarcts in same territory</strong> — consistent with proximal artery-to-artery embolism', w:'MOD', cls:'ev-mod'});
   }
+  // ── SVD Burden scoring (STRIVE criteria; Wardlaw 2013; Jokinen 2014) ─────
+  let svdBurden = 0; // 0-4 score
+  // WMH (Fazekas)
+  if (S['svd-wmh']==='severe' || S['svd-wmh']==='mod') {
+    svdBurden++;
+    svd += 20; ev.svd.push({txt:'<strong>Significant leukoaraiosis (Fazekas ≥2)</strong> — substantial WMH burden supports chronic hypertensive small vessel disease as the dominant substrate. Present in 88% of corona radiata infarct patients; more frequent with bilateral infarcts (Prat-Vigué 2003).', w:'HIGH', cls:'ev-high'});
+  } else if (S['svd-wmh']==='mild') {
+    svdBurden += 0.5;
+    svd += 8; ev.svd.push({txt:'<strong>Mild leukoaraiosis (Fazekas 1)</strong> — minor WMH; some SVD substrate but insufficient alone to confirm.', w:'MOD', cls:'ev-mod'});
+  } else if (S['svd-wmh']==='none') {
+    svd = Math.max(0, svd - 10); ev.svd.push({txt:'<strong>No leukoaraiosis (Fazekas 0)</strong> — absence of WMH reduces probability of established hypertensive SVD as the dominant mechanism.', w:'NEGATIVE', cls:''});
+  }
+  // Chronic lacunes
+  if (S['svd-lacunes']==='yes') {
+    svdBurden++;
+    svd += 18; ev.svd.push({txt:'<strong>Chronic lacunes present</strong> — prior lacunar infarcts confirm established SVD pathology with repeated perforator occlusions. Independent predictor of further SVD events (Sci Rep 2024;14:3402).', w:'HIGH', cls:'ev-high'});
+    ce = Math.max(0, ce - 8); ev.ce.push({txt:'<strong>Chronic lacunes (SVD pattern)</strong> — prior lacunar disease reduces likelihood that acute infarct represents a new cardioembolic event.', w:'NEGATIVE (SVD pattern)', cls:''});
+  } else if (S['svd-lacunes']==='no') {
+    svd = Math.max(0, svd - 5); ev.svd.push({txt:'<strong>No chronic lacunes</strong> — absence of prior lacunar lesions slightly reduces SVD burden evidence.', w:'LOW', cls:'ev-low'});
+  }
+  // Cerebral microbleeds
+  if (S['svd-cmb']==='deep') {
+    svdBurden++;
+    svd += 20; ev.svd.push({txt:'<strong>Deep cerebral microbleeds (BG/thalamus/brainstem)</strong> — hypertensive angiopathy pattern. Deep CMBs are strongly associated with hypertensive SVD (HA-CSVD). Independent predictor of sICH and further SVD events (OR 6.08; Sci Rep 2024). Confirms hypertensive small vessel pathology.', w:'HIGH', cls:'ev-high'});
+  } else if (S['svd-cmb']==='lobar') {
+    ev.other.push({txt:'<strong>Lobar cerebral microbleeds</strong> — CAA pattern (cortical/subcortical WM location). Does not support hypertensive SVD specifically. Consider CAA and possible lobar ICH risk. CAA can coexist with ischemic stroke.', w:'MOD', cls:'ev-mod'});
+  } else if (S['svd-cmb']==='mixed') {
+    svdBurden += 0.5;
+    svd += 8; ev.svd.push({txt:'<strong>Mixed deep + lobar microbleeds</strong> — both hypertensive angiopathy and CAA present. Some SVD substrate confirmed.', w:'MOD', cls:'ev-mod'});
+  }
+  // Vascular risk factor burden
+  if (S['svd-rfbx']==='multi') {
+    svdBurden++;
+    svd += 15; ev.svd.push({txt:'<strong>Multiple SVD risk factors (HTN + DM/HLD)</strong> — strong vascular risk profile for hypertensive small vessel disease. Hypertension is the dominant modifiable risk factor for SVD (OR 1.50 for higher SVD burden; Wardlaw et al. Stroke 2013, n=461).', w:'HIGH', cls:'ev-high'});
+  } else if (S['svd-rfbx']==='htn') {
+    svdBurden += 0.5;
+    svd += 10; ev.svd.push({txt:'<strong>Hypertension as primary SVD risk factor</strong> — present in 62% of corona radiata infarct patients; most common single risk factor for SVD (Prat-Vigué 2003).', w:'MOD', cls:'ev-mod'});
+  } else if (S['svd-rfbx']==='none') {
+    svd = Math.max(0, svd - 12); ev.svd.push({txt:'<strong>No significant SVD risk factors</strong> — absence of HTN/DM/HLD reduces hypertensive SVD probability; favors ESUS or other mechanism.', w:'NEGATIVE', cls:''});
+    other += 8; ev.other.push({txt:'<strong>No SVD risk factors with bilateral small infarcts</strong> — without hypertension/diabetes, embolic/ESUS mechanism becomes more likely despite lacunar-size infarcts.', w:'MOD', cls:'ev-mod'});
+  }
+  // ── Takayasu arteritis scoring ──────────────────────────────────────
+  if (S['oth-takayasu']==='confirmed' || S['oth-takayasu']==='suspected') {
+    other += 50; ev.other.push({txt:'<strong>Takayasu arteritis — confirmed or suspected</strong>: Large-vessel granulomatous vasculitis causing stroke via hemodynamic hypoperfusion, artery-to-artery embolism, or inflammatory intracranial vessel involvement. Stroke affects 10–20% of TA patients (7× general population risk; Duarte 2016 meta-analysis). Infarct patterns: large lobar (33%) and cortical border-zone (29%) most common. (Uchiyama S et al. AJNR 2017)', w:'HIGH', cls:'ev-high'});
+    laa = Math.max(0, laa - 15); ev.laa.push({txt:'<strong>Takayasu arteritis present</strong> — vascular stenosis in TA is inflammatory, not atherosclerotic. LVD score reduced; consider Takayasu as the primary large-vessel pathology.', w:'NEGATIVE (TA, not atherosclerosis)', cls:''});
+  } else if (S['oth-takayasu']==='ta-moya') {
+    other += 60; ev.other.push({txt:'<strong>Takayasu arteritis + Moya moya syndrome (secondary Moya moya)</strong>: TA-associated progressive inflammatory ICA/MCA occlusion with compensatory puff-of-smoke collateral formation = secondary Moya moya syndrome. Concurrent TA + Moya moya has been reported (Udayakumar 2013; Liu 2011). Classified as Moya moya syndrome (acquired, not idiopathic). Revascularization outcomes may differ from idiopathic Moya moya disease. (ScienceDirect Moya moya vasculopathy 2022)', w:'DEFINITIVE', cls:'ev-high'});
+    laa = Math.max(0, laa - 20);
+  }
+
+
+  // SVD burden summary: high burden (≥3) strongly supports SVD in bilateral small infarcts
+  if (svdBurden >= 3 && S.count==='multi-diff' && (S.size==='small'||S.size==='punctate')) {
+    svd += 20; ev.svd.push({txt:'<strong>High total SVD burden (≥3/4 STRIVE markers)</strong> — in the context of bilateral small infarcts, high SVD burden strongly supports hypertensive SVD as the dominant mechanism over ESUS/CE. Validated 0–4 SVD burden score (Wardlaw 2013; Jokinen 2014): WMH + lacunes + deep CMBs + BG enlarged PVS. Score ≥3 is associated with lacunar stroke subtype (OR 2.45, 95% CI 1.70–3.54; Wardlaw 2013).', w:'HIGH', cls:'ev-high'});
+    ce = Math.max(0, ce - 15); ev.ce.push({txt:'<strong>High SVD burden with bilateral small infarcts</strong> — established SVD substrate makes bilateral perforator occlusion the more parsimonious explanation. CE score reduced.', w:'NEGATIVE (high SVD burden)', cls:''});
+  } else if (svdBurden <= 1 && S.count==='multi-diff' && (S.size==='small'||S.size==='punctate')) {
+    other += 12; ev.other.push({txt:'<strong>Low SVD burden (≤1/4 STRIVE markers) with bilateral small infarcts</strong> — limited imaging evidence of chronic SVD substrate; bilateral distribution without SVD burden favors ESUS or occult CE over hypertensive SVD. Extended cardiac monitoring indicated.', w:'MOD', cls:'ev-mod'});
+  }
+  // ── HbA1c / LDL metabolic scoring ─────────────────────────────────────
+  // HbA1c → primarily SVD (microvascular), also accelerates LAA
+  if (S['svd-hba1c']==='high') {
+    svd += 18; ev.svd.push({txt:'<strong>HbA1c ≥9% — severely uncontrolled diabetes</strong>: Strongly promotes SVD via lipohyalinosis and microvascular endothelial dysfunction. Each 1% HbA1c increase: HR 1.54 for lacunar stroke (Shah AD et al. BMJ 2015, n=1.9M). At HbA1c ≥9%, microvascular injury is the dominant mechanism.', w:'HIGH', cls:'ev-high'});
+    laa += 8; ev.laa.push({txt:'<strong>Severely uncontrolled diabetes (HbA1c ≥9%)</strong> also accelerates macrovascular atherosclerosis — secondary contribution to LAA risk.', w:'MOD', cls:'ev-mod'});
+  } else if (S['svd-hba1c']==='mod') {
+    svd += 10; ev.svd.push({txt:'<strong>HbA1c 7–8.9% — suboptimally controlled diabetes</strong>: Moderate microvascular injury; meaningful SVD contribution. HR for lacunar stroke ~1.3–1.5 per 1% HbA1c above 7% (Shah BMJ 2015).', w:'MOD', cls:'ev-mod'});
+    laa += 4; ev.laa.push({txt:'<strong>Suboptimally controlled diabetes</strong> — mild additional macrovascular/atherosclerotic risk.', w:'LOW', cls:'ev-low'});
+  } else if (S['svd-hba1c']==='controlled') {
+    ev.svd.push({txt:'<strong>HbA1c &lt;7% — adequate glycemic control</strong>: Diabetes contribution to SVD is limited when well-controlled; does not exclude SVD but reduces this driver.', w:'LOW', cls:'ev-low'});
+  }
+
+  // LDL → primarily LAA (large vessel atherosclerosis), minor SVD contribution
+  if (S['svd-ldl']==='high') {
+    laa += 20; ev.laa.push({txt:'<strong>LDL ≥160 mg/dL — markedly elevated</strong>: Independently associated with large vessel atherosclerotic stroke (INTERSTROKE study, n=26,919; O&#39;Donnell MJ et al. Lancet 2016). Drives carotid and intracranial atherosclerotic plaque formation. Strong LAA risk factor.', w:'HIGH', cls:'ev-high'});
+    svd += 6; ev.svd.push({txt:'<strong>Markedly elevated LDL</strong>: Secondary contribution to SVD via accelerated arteriosclerosis of small perforating vessels.', w:'LOW', cls:'ev-low'});
+  } else if (S['svd-ldl']==='mod') {
+    laa += 10; ev.laa.push({txt:'<strong>LDL 100–159 mg/dL — moderately elevated</strong>: Additive atherosclerotic risk; supports LAA mechanism as a contributing factor.', w:'MOD', cls:'ev-mod'});
+    svd += 4; ev.svd.push({txt:'<strong>Moderately elevated LDL</strong>: Minor additional SVD contribution via arteriosclerosis.', w:'LOW', cls:'ev-low'});
+  } else if (S['svd-ldl']==='controlled' || S['svd-ldl']==='statin') {
+    laa = Math.max(0, laa - 5); ev.laa.push({txt:'<strong>LDL at or near target (' + (S['svd-ldl']==='statin' ? '&lt;70 on high-intensity statin' : '&lt;100') + ')</strong>: Well-controlled lipids reduce — but do not eliminate — atherosclerotic plaque burden. Calcified plaques persist; evaluate imaging directly.', w:'LOW', cls:'ev-low'});
+  }
+
+  // Combined severely uncontrolled DM + high LDL → potent combined atherosclerotic driver
+  if (S['svd-hba1c']==='high' && S['svd-ldl']==='high') {
+    laa += 10; svd += 10;
+    ev.laa.push({txt:'<strong>Combined severely uncontrolled diabetes + markedly elevated LDL</strong>: Synergistic atherosclerotic risk — both macrovascular (LAA) and microvascular (SVD) disease are strongly promoted. This metabolic profile is a major independent driver of atherosclerotic stroke of both types.', w:'HIGH', cls:'ev-high'});
+  }
+
+
   if (S.count==='multi-diff' && !fetalPcaIpsi) {
     laa = Math.max(0, laa - 20);
     ev.laa.push({txt:'<strong>Multiple infarcts in different vascular territories</strong> — by definition inconsistent with a single large vessel source (one stenosed vessel cannot cause bilateral or multi-territory infarcts). LVD score penalised. Exception: if an ipsilateral fetal PCA is present, anterior + posterior infarction may still be a single carotid-territory event — enter fetal PCA status in Step 3.', w:'NEGATIVE', cls:''});
@@ -2436,7 +2623,7 @@ function computeScores() {
     }
   }
   if (hasTopo('cortical')) {
-    ce += 8; ev.ce.push({txt:'<strong>Purely cortical infarct</strong> — cortical infarcts 2× more frequent in CE (Yaghi 2020, Front Neurol)', w:'MOD', cls:'ev-mod'});
+    ce += 8; ev.ce.push({txt:'<strong>Purely cortical infarct</strong> — cortical infarcts 2× more frequent in CE; anterior circulation cortical infarcts do not show significant CE predilection in meta-analysis (OR 1.45, p=0.19; Frontiers Neurology 2020, n=4,873)', w:'MOD', cls:'ev-mod'});
   }
   if (hasTopo('cortical-sub')) {
     ce += 8; ev.ce.push({txt:'<strong>Large territorial infarct (cortical + subcortical)</strong> — consistent with large-vessel cardioembolic occlusion', w:'MOD', cls:'ev-mod'});
@@ -2480,10 +2667,16 @@ function computeScores() {
   }
   // TCD velocity findings: support LVD/hemodynamic
   if (S['tcd-velocity']==='elevated') {
-    laa += 12; ev.laa.push({txt:'<strong>Focal intracranial velocity elevation on TCD</strong> — suggests ICAD / intracranial stenosis in symptomatic vessel. Corroborates LVD (ICAD) etiology.', w:'MOD', cls:'ev-mod'});
+    laa += 15; ev.laa.push({txt:'<strong>Focal intracranial velocity elevation on TCD</strong> — suggests intracranial stenosis in symptomatic vessel. Consistent with ICAD (atherosclerotic) but also inflammatory stenosis in PACNS (medium vessel) or Takayasu intracranial involvement. Vessel wall MRI required to distinguish.', w:'MOD', cls:'ev-mod'});
+    if (S['oth-vasc']==='confirmed' || S['oth-vasc']==='high' || ['confirmed','suspected','ta-moya'].includes(S['oth-takayasu'])) {
+      other += 10; ev.other.push({txt:'<strong>TCD velocity elevation in inflammatory vasculopathy context</strong>: focal MCA/ICA velocity elevation may represent inflammatory stenosis (PACNS or Takayasu intracranial involvement). TCD sensitivity ~70–90% for medium-vessel stenosis >50%. (Razumovsky AY et al. Neurology 1999)', w:'MOD', cls:'ev-mod'});
+    }
   }
   if (S['tcd-velocity']==='reduced') {
-    laa += 10; ev.laa.push({txt:'<strong>Reduced ipsilateral MCA velocity / reversed ophthalmic artery on TCD</strong> — hemodynamic compromise from ICA stenosis; supports watershed/hemodynamic mechanism.', w:'MOD', cls:'ev-mod'});
+    laa += 12; ev.laa.push({txt:'<strong>Reduced ipsilateral MCA velocity / reversed ophthalmic artery on TCD</strong> — hemodynamic compromise from proximal ICA/carotid stenosis; supports flow-failure watershed mechanism. In Takayasu arteritis, absent or severely reduced carotid velocities are a hallmark finding of severe inflammatory carotid/aortic stenosis. (Baumgartner RW et al. Stroke 1997)', w:'MOD', cls:'ev-mod'});
+    if (['confirmed','suspected','ta-moya'].includes(S['oth-takayasu'])) {
+      other += 12; ev.other.push({txt:'<strong>Reduced/absent carotid velocity on TCD — Takayasu arteritis</strong>: absent or severely reduced MCA/ICA velocities are a hallmark of Takayasu arteritis with severe carotid/subclavian inflammatory stenosis. Subclavian steal (reversed vertebral flow) may also be seen. (Tanaka H et al. Int Angiol 2000)', w:'HIGH', cls:'ev-high'});
+    }
   }
   if (S['tcd-velocity']==='collateral') {
     laa += 8; ev.laa.push({txt:'<strong>Collateral flow pattern on TCD</strong> (increased cross-filling via AComm/PComm) — indicates severe proximal ICA stenosis or occlusion.', w:'MOD', cls:'ev-mod'});
@@ -2549,9 +2742,31 @@ function computeScores() {
     ce += 8; ev.ce.push({txt:'<strong>Mixed cortical/territorial + deep/perforator infarcts</strong>: simultaneous involvement of cortical/territorial AND perforator territory argues for an embolic mechanism that can reach multiple locations — favours CE or proximal artery-to-artery source over isolated SVD.', w:'MOD', cls:'ev-mod'});
   }
   // Multi-territory reduces SVD unless all infarcts are small (<15mm) — in that case vasculitis-mediated SVD is possible
-  if (S.count==='multi-diff' && S.size !== 'small' && S.size !== 'punctate') {
-    svd = Math.max(0, svd - 25);
-    ev.svd.push({txt:'<strong>Multiple infarcts in different territories (non-small)</strong> — hypertensive SVD (lipohyalinosis) does not cause multi-territory infarcts. SVD score penalised. Exception: if all infarcts &lt;15mm in multi-territory, consider vasculitis-mediated small vessel disease (see Step 9).', w:'NEGATIVE', cls:''});
+  if (S.count==='multi-diff') {
+    if (S.size === 'small' || S.size === 'punctate') {
+      // Bilateral SMALL infarcts in different territories — nuanced scenario
+      // Corona radiata and small deep white matter: SVD is the plurality etiology (59%)
+      // but bilateral distribution raises CE concern significantly (OR 3.41 vs CE source)
+      // Key differentiator: was cardiac workup negative?
+      const cardiacNegative = ['ce-afib','ce-thrombus','ce-valve'].filter(k=>S[k]==='yes').length===0 &&
+                              !['ef','mi','rwma'].includes(S['ce-cmp']) &&
+                              S['ce-afib']==='no';
+      if (cardiacNegative) {
+        // Negative cardiac workup + small bilateral infarcts + hypertension → SVD still most likely
+        // but add a meaningful ESUS advisory (bilateral raises CE 3.41× even when small)
+        ev.svd.push({txt:'<strong>Bilateral small infarcts with negative cardiac workup</strong> — corona radiata/deep white matter: SVD (lipohyalinosis) accounts for ~59% of corona radiata infarcts, LAD 19%, CE 12% (Prat-Vigué JR et al. J Stroke Cerebrovasc Dis 2003;12(5):234, n=68). Hypertension is the dominant risk factor for this pattern. Bilateral distribution raises cardioembolism concern (OR 3.41 for CE source with bilateral infarcts; Frontiers in Neurology 2020 meta-analysis, n=4,873). However, SVD can produce bilateral infarcts via: (1) sequential perforator occlusions driven by hypertensive response to first infarct, or (2) simultaneous bilateral lipohyalinotic changes in the setting of severe hypertension. With negative cardiac workup and severe hypertension, SVD remains the plurality etiology. Recommend extended cardiac monitoring (30-day event monitor) to exclude paroxysmal AF before attributing definitively to SVD.', w:'NUANCED', cls:'ev-mod'});
+        // Small additional CE advisory without penalising SVD
+        ce += 8; ev.ce.push({txt:'<strong>Bilateral distribution raises CE concern</strong> (OR 3.41; Frontiers Neurology 2020) even for small infarcts. Cardiac workup negative — but recommend 30-day cardiac event monitor to exclude paroxysmal AF (detected in 16% of cryptogenic stroke patients on extended monitoring; CRYSTAL-AF, NEJM 2014).', w:'MOD', cls:'ev-mod'});
+      } else {
+        // Positive cardiac findings + bilateral small infarcts → CE wins
+        svd = Math.max(0, svd - 15);
+        ev.svd.push({txt:'<strong>Bilateral small infarcts with cardiac source identified</strong> — despite small size, bilateral distribution with confirmed cardiac pathology strongly favors cardioembolism. SVD score moderately penalised.', w:'NEGATIVE', cls:''});
+      }
+    } else {
+      // Non-small bilateral infarcts — SVD cannot explain, penalise strongly
+      svd = Math.max(0, svd - 25);
+      ev.svd.push({txt:'<strong>Multiple infarcts in different territories (non-small)</strong> — hypertensive SVD (lipohyalinosis) does not cause multi-territory non-small infarcts. SVD score penalised. Exception: if all infarcts &lt;15mm in multi-territory, consider vasculitis-mediated small vessel disease (see Step 10).', w:'NEGATIVE', cls:''});
+    }
   }
 
   return { laa, ce, svd, other, ev };
@@ -2686,7 +2901,17 @@ function buildMgmt(cat, mechLabel) {
       `High-intensity statin: Class I for all ischemic stroke (AHA/ASA 2021). Glycaemic control: HbA1c &lt;7% target (diabetes is an independent driver of lacunar/SVD stroke). Lifestyle: smoking cessation, weight reduction, aerobic exercise.`);
 
   } else if (cat==='other') {
-    if (S.dissection==='yes') {
+    // Takayasu arteritis — check first (structural/autoimmune, well-defined)
+    if (S['oth-takayasu']==='ta-moya') {
+      mechLabel = 'Takayasu arteritis + secondary Moya moya syndrome → inflammatory progressive ICA/MCA occlusion';
+      othMech = ' — <strong>Sub-etiology: Takayasu Arteritis with Secondary Moya moya Syndrome.</strong> Progressive inflammatory occlusion of terminal ICA/MCA by Takayasu arteritis with compensatory puff-of-smoke collateral formation = Moya moya syndrome (acquired). Distinct from idiopathic Moya moya disease — TA is the underlying cause. Requires active immunosuppression (corticosteroids ± steroid-sparing agents) AND consideration of revascularization during disease remission. Rheumatology co-management essential.';
+    } else if (S['oth-takayasu']==='confirmed') {
+      mechLabel = 'Takayasu arteritis → large-vessel inflammatory stenosis/occlusion → hemodynamic or embolic stroke';
+      othMech = ' — <strong>Sub-etiology: Takayasu Arteritis.</strong> Granulomatous large-vessel vasculitis causing stroke via hemodynamic hypoperfusion (severe aortic arch/carotid stenosis) and/or artery-to-artery embolism from inflamed stenotic lesions. Treatment: high-dose glucocorticoids; steroid-sparing immunosuppression for maintenance; antiplatelet for stroke prevention; revascularization for critical ischemic lesions during remission. Rheumatology co-management essential.';
+    } else if (S['oth-takayasu']==='suspected') {
+      mechLabel = 'Suspected Takayasu arteritis → large-vessel inflammatory vasculopathy';
+      othMech = ' — <strong>Sub-etiology: Takayasu Arteritis — Suspected.</strong> Features consistent with Takayasu arteritis in a young patient. Urgent rheumatology consultation; complete vascular imaging (CTA aorta + branches, PET-CT for active inflammation); ESR/CRP. Initiate corticosteroids if diagnosis is confirmed. Stroke risk 7× general population; antiplatelet while awaiting definitive diagnosis.';
+    } else if (S.dissection==='yes') {
       rows += row('💊', 'Antithrombotic for Cervical Artery Dissection',
         `Anticoagulation (heparin bridge → warfarin or DOAC) vs. antiplatelet: CADISS trial (N=250, dissection) found no significant difference between anticoagulation and antiplatelet at 3 months (3 vs. 1 recurrent strokes; p=0.63) — either is acceptable. Most guidelines recommend anticoagulation for 3–6 months (until arterial remodelling confirmed on follow-up MRA), then antiplatelet.<br>
         Follow-up vascular imaging at 3–6 months to document healing (resolution of pseudoaneurysm/stenosis).`);
@@ -2760,14 +2985,15 @@ function buildVerdict() {
     } else if (S['oth-postinfect']==='covid') {
       mechLabel = 'COVID-19 thromboinflammatory vasculopathy → stroke';
       othMech = ' — <strong>Sub-etiology: COVID-19 Thromboinflammatory Vasculopathy.</strong> Endothelial injury, procoagulant state, and cytokine-driven thrombosis. Anticoagulation/antiplatelet per dominant mechanism; neurology co-management.';
-    } else if (S['oth-vasc']==='confirmed') {
+    } else if (S['oth-vasc']==='confirmed' && !['confirmed','suspected','ta-moya'].includes(S['oth-takayasu'])) {
       mechLabel = 'CNS vasculitis / PACNS → inflammatory vessel wall injury → ischemia';
       othMech = ' — <strong>Sub-etiology: CNS Vasculitis / Primary Angiitis of the CNS (PACNS).</strong> Inflammatory vessel wall injury causing ischemia. Vessel wall MRI demonstrates circumferential wall enhancement (vs. eccentric atherosclerotic plaque). Confirmed vasculitis: tissue biopsy or angiographic criteria met. Treatment: high-dose corticosteroids; cyclophosphamide for severe/refractory PACNS. Rheumatology/neurology co-management.';
     } else if (S['oth-rcvs']==='yes' && S['rcvs2-score']==='high') {
       // RCVS2 ≥5 has 99% specificity — takes precedence over vasculitis high suspicion
       mechLabel = 'Reversible Cerebral Vasoconstriction Syndrome (RCVS) — RCVS2 ≥5, high confidence';
       othMech = ' — <strong>Sub-etiology: Reversible Cerebral Vasoconstriction Syndrome (RCVS) — RCVS2 Score ≥5.</strong> RCVS2 ≥5 has 99% specificity for RCVS vs. PACNS and other intracranial arteriopathies (Ducros 2019). This distinguishes RCVS from vasculitis despite overlapping clinical presentations. Intracranial stenosis is vasospastic — NOT atherosclerotic or inflammatory. VW-MRI typically shows no/minimal mural enhancement (vs. circumferential enhancement in PACNS). Treatment: nimodipine; remove vasoactive triggers; avoid corticosteroids (may worsen RCVS; Singhal 2023). Follow-up MRA at 3 months to confirm vasoconstriction resolution. Do not start immunosuppression without VW-MRI or biopsy confirmation of vasculitis.';
-    } else if (S['oth-vasc']==='high') {
+    } else if (S['oth-vasc']==='high' && !['confirmed','suspected','ta-moya'].includes(S['oth-takayasu'])) {
+      // Only show PACNS if Takayasu is NOT selected — large-vessel ICA involvement = Takayasu, not PACNS
       mechLabel = 'CNS vasculitis / PACNS — high clinical suspicion → inflammatory ischemia';
       othMech = ' — <strong>Sub-etiology: CNS Vasculitis / Primary Angiitis of the CNS (PACNS) — High Clinical Suspicion.</strong> Multiple supportive features present but definitive confirmation pending. Vessel wall MRI (circumferential wall enhancement = vasculitis/PACNS; eccentric = atherosclerotic ICAD) is the most useful non-invasive discriminator. CSF pleocytosis supports vasculitis. If severe intracranial stenosis was entered, this is more likely inflammatory than atherosclerotic in this context (see LVD score penalty in evidence table). Empiric corticosteroids pending confirmation; rheumatology/neurology consultation.';
     } else if (S['oth-rcvs']==='yes') {
@@ -2836,7 +3062,7 @@ function buildVerdict() {
         diffTests = `<strong>Recommended ancillary testing to differentiate LVD vs. CE:</strong><ul style="margin:8px 0 0 16px;line-height:1.9;font-size:11px;color:var(--text2);">
           <li><strong>TCD spontaneous emboli monitoring (30–60 min):</strong> Bilateral/multiterritory HITS → CE. Unilateral ipsilateral HITS → LVD (carotid/ICAD).</li>
           <li><strong>TEE or cardiac CT:</strong> If TTE was non-diagnostic — evaluate for LAA thrombus (TTE sensitivity ~40–60% only), PFO anatomy and shunt size.</li>
-          <li><strong>Prolonged cardiac monitoring (≥30 days):</strong> Paroxysmal AF detection rate increases substantially over time (CRYSTAL-AF: 12.4% at 30 days vs. 2% with standard monitoring).</li>
+          <li><strong>Prolonged cardiac monitoring (≥30 days):</strong> Paroxysmal AF detection rate increases substantially over time (CRYSTAL-AF, Sanna T et al. NEJM 2014: 8.9% AF detected at 6 months and 12.4% at 12 months with ICM vs. 2% with standard monitoring).</li>
           <li><strong>Vessel wall MRI:</strong> Characterise plaque vulnerability (intraplaque hemorrhage, LRNC, fibrous cap status) — high-risk features shift balance toward LVD as the active source.</li>
           <li><strong>CTA plaque analysis / carotid web review:</strong> Ensure CTA has been specifically reviewed for carotid web at the ICA bulb (shelf-like defect, posterior wall).</li>
           <li><strong>CT perfusion or TCD vasomotor reactivity:</strong> Impaired hemodynamic reserve on ipsilateral side supports LVD hemodynamic mechanism over CE.</li>
@@ -2995,7 +3221,12 @@ function buildVerdict() {
         mechLabel = 'CNS vasculitis → inflammatory small vessel wall injury → lacunar-pattern infarct';
         svdMech = '<strong style="color:var(--amber)">⚠ CNS Vasculitis (confirmed)</strong> — inflammatory arteriopathy rather than hypertensive lipohyalinosis. Mechanism: inflammatory cell infiltration → perforating artery occlusion → lacunar infarction.';
       } else if (S['oth-vasc']==='high') {
-        type = 'Small Vessel Disease (SVD) — Vasculitis Highly Suspected';
+        // If Takayasu selected: lacunar infarct from Takayasu hemodynamic ischemia → Other, not SVD
+        if (['confirmed','suspected','ta-moya'].includes(S['oth-takayasu'])) {
+          type = 'Other Determined Etiology'; cls = 'voth';
+        } else {
+          type = 'Small Vessel Disease (SVD) — Vasculitis Highly Suspected';
+        }
         mechLabel = 'Inflammatory arteriopathy highly suspected → SVD-pattern infarct (not typical hypertensive lipohyalinosis)';
         svdMech = '<strong style="color:var(--amber)">⚠ Inflammatory arteriopathy highly suspected</strong> as the mechanism. Workup: vessel wall MRI, catheter angiography, CSF, inflammatory serology, rheumatology referral.';
       } else if (S['oth-vasc']==='low') {
@@ -3008,7 +3239,10 @@ function buildVerdict() {
         mechLabel = 'Small vessel occlusive disease → perforating artery occlusion → lacunar infarct';
         svdMech = 'Small vessel occlusive disease — perforating artery occlusion consistent with TOAST SVD criteria.';
       }
-      desc = (S['oth-vasc']==='confirmed' || vascHigh) ? svdMech : 'TOAST: Small Vessel Disease (SVD). <strong>Proposed mechanism:</strong> ' + svdMech;
+      desc = (S['oth-vasc']==='confirmed' || vascHigh) ? svdMech :
+        'TOAST: Small Vessel Disease (SVD). <strong>Proposed mechanism:</strong> ' + svdMech +
+        ((S.count==='multi-diff' && (S.size==='small'||S.size==='punctate')) ?
+          '<br><br><strong style="color:var(--amber)">⚠ Bilateral small infarcts — important caveat:</strong> SVD is the plurality etiology for bilateral small deep white matter / corona radiata infarcts in hypertensive patients (~59% SVD, 12% CE; Prat-Vigué JR et al. J Stroke Cerebrovasc Dis 2003;12(5):234). However, bilateral distribution is associated with OR 3.41 for a cardioembolic source (Frontiers Neurology 2020 meta-analysis, n=4,873). <strong>This verdict remains SVD given negative cardiac workup and hypertension, but extended cardiac monitoring is strongly recommended</strong> to exclude paroxysmal AF. AF was detected in 12.4% of cryptogenic stroke patients at 12 months and 30% at 36 months with continuous ICM monitoring (CRYSTAL-AF, Sanna T et al. NEJM 2014). 30-day wearable monitoring detected AF in ~16% at 90 days vs. 3.2% with standard monitoring (EMBRACE, Gladstone DJ et al. NEJM 2014). If AF is detected on extended monitoring, reclassify as CE and initiate anticoagulation.' : '');
       mgmtHTML = buildMgmt('svd', mechLabel);
       if (isClose && !vascHigh) { type='Undetermined — Equally Competing Etiologies'; cls='vmult'; conf='TIED'; confCls='conf-t'; desc=tiedDesc('svd', runner[0]); mechLabel='Two etiologies equally supported — ancillary testing required to differentiate'; mgmtHTML=''; }
 
@@ -3047,7 +3281,7 @@ function buildVerdict() {
   if ((S['oth-vasc']==='nd' || S['oth-vasc']==='low') && (S.count==='multi-diff' || (toposRec.includes('cortical') && !ceHigh)) && !largeVesselTerritory) {
     recs.push('🔬 <strong>Inflammatory arteriopathy evaluation recommended:</strong> Multiterritory cryptogenic infarcts without a cardioembolic or clear large vessel source, in a distribution consistent with medium/small vessel vasculitis — consider vessel wall MRI (concentric enhancement pattern), CSF analysis, ESR/CRP/ANA/ANCA, and rheumatology referral if clinically indicated. Note: inflammatory arteriopathies predominantly affect medium and small vessels; large territorial infarcts (MCA M1, ICA) are less typical for vasculitis.');
   }
-  if (S['ce-afib']==='nd') recs.push('📡 <strong>Prolonged cardiac monitoring recommended:</strong> AF detection with ≤24h telemetry is inadequate — outpatient event monitoring for ≥30 days recommended for cryptogenic stroke (CRYSTAL-AF trial: 30-day monitoring detected AF in 12.4% vs. 2% with standard monitoring).');
+  if (S['ce-afib']==='nd') recs.push('📡 <strong>Prolonged cardiac monitoring recommended:</strong> AF detection with ≤24h telemetry is inadequate — outpatient event monitoring for ≥30 days recommended for cryptogenic stroke (CRYSTAL-AF trial: ICM detected AF in 8.9% at 6 months, 12.4% at 12 months, and 30% at 36 months vs. 2–3% with standard monitoring; Sanna T et al. NEJM 2014).');
   // Age-specific recommendations
   if (S.age==='young') {
     recs.push('🧬 <strong>Young patient (&lt;45y):</strong> Uncommon etiologies must be actively excluded — ensure dissection workup (vessel wall MRI/CTA neck), hypercoagulable panel (APLS, protein C/S, factor V Leiden), PFO evaluation (bubble study + RoPE score), and consideration of genetic arteriopathy (NOTCH3/CADASIL if white matter changes present; Fabry if appropriate demographics).');
@@ -3144,6 +3378,40 @@ function buildVerdict() {
 
 
   // Ensure cls/conf/confCls/desc have fallback values
+  // ── Takayasu post-processing override ─────────────────────────────────
+  const taVal = S['oth-takayasu'];
+  if (taVal === 'ta-moya' || taVal === 'confirmed' || taVal === 'suspected') {
+    const taMechMap = {
+      'ta-moya': {
+        label: 'Takayasu arteritis + secondary Moya moya syndrome → inflammatory progressive ICA/MCA occlusion',
+        detail: '<strong>Sub-etiology: Takayasu Arteritis with Secondary Moya moya Syndrome.</strong> Progressive inflammatory occlusion of terminal ICA/MCA by Takayasu arteritis with compensatory "puff of smoke" collateral formation. This is Moya moya syndrome (secondary/acquired), not idiopathic Moya moya disease. The underlying cause is active large-vessel vasculitis — requires immunosuppression AND revascularization during remission. Rheumatology essential.'
+      },
+      'confirmed': {
+        label: 'Takayasu arteritis → inflammatory large-vessel stenosis → hemodynamic and/or embolic stroke',
+        detail: '<strong>Sub-etiology: Takayasu Arteritis (confirmed).</strong> Granulomatous large-vessel vasculitis (aorta + branches) causing stroke. Stroke affects 10–20% of TA patients (7× population risk; Duarte 2016). Any apparent "large vessel stenosis" is inflammatory — not atherosclerotic plaque. Vessel wall MRI: diffuse circumferential mural thickening ("macaroni sign"). Treatment: corticosteroids (prednisone 1 mg/kg/day); steroid-sparing immunosuppressants (MTX/azathioprine/MMF) for maintenance; tocilizumab for refractory disease. Antiplatelet for stroke prevention. Revascularization for critical ischemic lesions during remission.'
+      },
+      'suspected': {
+        label: 'Suspected Takayasu arteritis → large-vessel inflammatory vasculopathy',
+        detail: '<strong>Sub-etiology: Takayasu Arteritis — Suspected.</strong> Large-vessel stenosis in a young patient with features consistent with TA (BP asymmetry, elevated ESR, constitutional symptoms, aortic arch involvement). Urgent rheumatology consultation. CTA aorta + branches; PET-CT for active inflammation. Do not attribute stenosis to atherosclerosis without excluding TA. Antiplatelet while awaiting diagnosis.'
+      }
+    };
+    const taInfo = taMechMap[taVal];
+    mechLabel = taInfo.label;
+    if (!desc || desc.includes('see evidence table')) {
+      desc = 'A specific non-atherosclerotic etiology has been identified. ' + taInfo.detail;
+      type = 'Other Determined Etiology — Takayasu Arteritis'; cls = 'voth'; conf = 'HIGH'; confCls = 'conf-h';
+    } else {
+      desc = desc + '<br><br><strong style="color:var(--amber)">⚠ Takayasu Arteritis:</strong> ' + taInfo.detail;
+    }
+    mgmtHTML = '<div class="sblock"><div class="sbtitle">Takayasu Arteritis Management</div>'
+      + '<div class="srow"><div class="dot dt"></div><div class="sname"><strong>Acute:</strong> High-dose corticosteroids (prednisone 1 mg/kg/day); antiplatelet therapy (aspirin)</div></div>'
+      + '<div class="srow"><div class="dot dt"></div><div class="sname"><strong>Maintenance immunosuppression:</strong> MTX, azathioprine, or mycophenolate mofetil; tocilizumab (IL-6 inhibitor) for refractory/steroid-dependent disease</div></div>'
+      + '<div class="srow"><div class="dot dt"></div><div class="sname"><strong>Revascularization:</strong> CEA/bypass for critical ischemic lesions — perform during immunologic remission to reduce risk</div></div>'
+      + (taVal === 'ta-moya' ? '<div class="srow"><div class="dot dt"></div><div class="sname"><strong>Moya moya syndrome:</strong> STA-MCA bypass or indirect revascularization during remission; treat TA first</div></div>' : '')
+      + '<div class="srow"><div class="dot da"></div><div class="sname"><strong>Co-management:</strong> Rheumatology + Neurology + Vascular Surgery; ophthalmology (Takayasu retinopathy); cardiology (aortic regurgitation, LV function)</div></div>'
+      + '</div>';
+  }
+
   if (!type) type = 'undetermined';
   if (!cls) cls = 'vund';
   if (!conf) conf = 'Undetermined';
