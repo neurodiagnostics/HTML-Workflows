@@ -137,7 +137,7 @@ table.steps {
 
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
-body { background: var(--bg); color: var(--text); font-family: var(--sans); font-size: 14px; line-height: 1.5; min-height: 100vh; }
+body { background: var(--bg); color: var(--teal); font-family: var(--sans); font-size: 14px; line-height: 1.5; min-height: 100vh; }
 .app { max-width: 960px; margin: 0 auto; padding: 0 20px 80px; }
 
 /* HEADER */
@@ -163,7 +163,7 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
 .csub { font-size: 12px; color: var(--text2); margin-bottom: 16px; line-height: 1.5; }
 
 /* SECTION LABEL */
-.slabel { display: flex; align-items: center; gap: 8px; font-family: var(--sans); font-size: 11px; font-weight: 600; color: var(--text); letter-spacing: 0; text-transform: none; margin-bottom: 9px; padding-bottom: 6px; border-bottom: 1px solid var(--border); }
+.slabel { display: flex; align-items: center; gap: 8px; font-family: var(--sans); font-size: 11px; font-weight: 600; color: var(--teal); letter-spacing: 0; text-transform: none; margin-bottom: 9px; padding-bottom: 6px; border-bottom: 1px solid var(--border2); }
 .pill { font-size: 9px; padding: 1px 7px; border-radius: 20px; border: 1px solid; margin-left: auto; flex-shrink: 0; font-family: var(--sans); letter-spacing: 0.04em; text-transform: uppercase; }
 .pill-r { border-color: var(--red);    color: var(--red);    background: var(--red-bg); }
 .pill-a { border-color: var(--amber);  color: var(--amber);  background: var(--amber-bg); }
@@ -1296,54 +1296,56 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
     </div>
   </div>
 
-  <div class="slabel" style="margin-top:14px;">Genetic Arteriopathy <span class="pill pill-a">CONSIDER IN YOUNG CRYPTOGENIC STROKE</span></div>
-
-  <div class="crit" id="oth-genetic-item">
-    <div class="crit-main">
-      <div class="crit-name">Genetic arteriopathy — CADASIL (NOTCH3), Fabry disease (GLA gene), MELAS (mtDNA)</div>
-      <button class="xbtn" onclick="xp(this)">details ▾</button>
-    </div>
+  <div class="slabel" style="margin-top:14px;">Periprocedural Stroke <span class="pill pill-a">If Stroke Occurred Within 30 Days of Procedure</span></div>
+  <div class="lbox">
+    Periprocedural stroke is stroke temporally related to a cardiac or vascular procedure — a distinct mechanism that changes secondary prevention strategy. Dominant mechanism: <strong>aortic plaque embolism</strong> (scraping of atherosclerotic debris by catheters/devices) and <strong>air/particulate embolism</strong> from cardiac surgery. Hemodynamic failure (hypoperfusion) and new atrial fibrillation are secondary mechanisms.<br><br>
+    <strong>Procedure-specific stroke rates (verified data):</strong><br>
+    • <strong>Diagnostic cardiac catheterization / coronary angiography:</strong> 0.07–0.40% (JAHA 2014); PCI: 0.26–0.39% (JSCAI 2024). ~50% affect posterior circulation. In-hospital mortality 25–30% (Circulation 2009)<br>
+    • <strong>CABG:</strong> 1–5% at 30 days; 1.9% in isolated CABG (STS data, JAHA 2019); higher with on-pump vs. off-pump technique<br>
+    • <strong>CABG + valve surgery:</strong> up to 7.4%; multiple valve surgery: 9.7% (REFLECT trial protocol 2019)<br>
+    • <strong>Isolated aortic valve replacement (SAVR):</strong> 1.5%; isolated mitral valve replacement: 2.1%; mitral valve repair: 1.4% (JACC 2018)<br>
+    • <strong>TAVR/TAVI:</strong> 2–4% at 30 days (clustering range; SwissTAVI Registry, JACC Cardiovasc Interv 2023); peak within 48–72h post-procedure<br>
+    • <strong>Open aortic surgery:</strong> variable by extent; ascending aorta/arch 2–10%; endovascular aortic repair (EVAR/TEVAR) 1–4%<br><br>
+    <strong>Secondary prevention implications:</strong> Mechanism drives management — aortic emboli → statin intensification + antiplatelet (not anticoagulation unless AF develops); new peri-op AF → anticoagulation; hemodynamic → BP optimization; air/particulate emboli → usually self-limited. <em>Periprocedural stroke does NOT automatically indicate new need for anticoagulation.</em>
+  </div>
+  <div class="crit" id="periprocedural-item">
+    <div class="crit-main"><div class="crit-name">Did stroke occur within 30 days of a cardiac or vascular procedure?</div>
+    <button class="xbtn" onclick="xp(this)">details ▾</button></div>
     <div class="crit-detail">
-      Genetic arteriopathies are rare but important in young cryptogenic stroke. Consider when no other etiology is identified:<br><br>
-      <strong>CADASIL (NOTCH3 mutation)</strong> — most common hereditary stroke disease in adults. Characteristic MRI: T2/FLAIR white matter hyperintensities in anterior temporal poles and external capsule (Dichgans M et al. Lancet Neurol 2019). Recurrent lacunar strokes + migraine with aura + cognitive decline. Prevalence ~4–5/100,000; diagnosis by NOTCH3 gene testing or skin biopsy (GOM deposits). No proven treatment; BP control, antiplatelet for stroke prevention.<br><br>
-      <strong>Fabry Disease (GLA gene, X-linked)</strong> — α-galactosidase A deficiency. Stroke in young adults (mean age ~38y in males). Posterior circulation strokes common (vertebrobasilar dolichoectasia is frequent). Associated features: neuropathic pain, angiokeratoma, cornea verticillata, renal/cardiac involvement. Prevalence in cryptogenic stroke: ~1–4% (Rolfs A et al. Lancet 2005). Diagnosed by enzyme assay (males) or GLA gene testing (females). Treatment: enzyme replacement therapy.<br><br>
-      <strong>MELAS (Mitochondrial Encephalomyopathy, Lactic Acidosis, Stroke-like episodes)</strong> — maternally inherited mitochondrial DNA mutation (most commonly m.3243A>G in MT-TL1, ~80% of cases). Stroke-like episodes typically posterior > anterior; do NOT follow vascular territories (crossing vascular boundaries on DWI is a key imaging clue). Associated with: elevated serum/CSF lactate, hearing loss, migraine, seizures, short stature, ophthalmoplegia, diabetes. Mean onset of stroke-like episodes ~35y. MRI: diffusion-positive lesions in cortex and subcortical regions NOT conforming to arterial territories — key distinguishing feature from arterial ischemic stroke. Diagnosis: mitochondrial genetic panel, muscle biopsy (ragged red fibers). Treatment: L-arginine infusion acutely, supplementation; no proven disease-modifying therapy (Yamamoto et al. Neurology 2021).
+      <strong>Periprocedural stroke risk by procedure (verified data):</strong><br><br>
+      <strong>Diagnostic cardiac catheterization / coronary angiography:</strong> 0.07–0.40% overall; highest incidence (0.39%) with PCI (n=24,052). ~50% affect posterior circulation. In-hospital mortality 25–30% (Circulation 2009;119:1349; JSCAI 2024).<br><br>
+      <strong>PCI / coronary stenting:</strong> 0.26–0.39%. Strongly associated with prior stroke (OR 15.09, 95% CI 8.x), cardiogenic shock, aspiration thrombectomy, and mechanical ventricular support. Cerebral microembolism is the dominant mechanism — aortic plaque scraping occurs in &gt;50% of PCI cases (Keeley &amp; Grines, JACC 1998). (JSCAI 2024; Circulation 2009)<br><br>
+      <strong>CABG:</strong> 1–5% at 30 days; 1.9% (95% CI 1.4–2.5) in isolated CABG (n=2,313; PMC 2013). 74% of CABG strokes occur within 6 days. Off-pump CABG ("anaortic technique") reduces embolic risk by eliminating aortic cross-clamping. (JAHA 2019;8:e013032; PMC3657438)<br><br>
+      <strong>Combined CABG + valve surgery:</strong> Up to 7.4%; multiple valve surgery: 9.7%. Each additional procedure adds embolic risk from aortic manipulation and intracardiac air. (REFLECT trial protocol 2019; JACC 2018;71:1788)<br><br>
+      <strong>Isolated aortic valve replacement (SAVR):</strong> 1.5%. Isolated mitral valve replacement: 2.1%. Mitral valve repair: 1.4%. Bicuspid AVR: 0.27%; ascending aorta + root replacement: 1.4%; complex arch with circulatory arrest: 0.8%. Air embolism from intracardiac de-airing is a unique additional mechanism. (JACC 2018;71:1788)<br><br>
+      <strong>TAVR / TAVI:</strong> 2–4% at 30 days (clustering range across registries); procedural stroke &lt;24h: 1.5±1.4% (meta-analysis n=10,037; EuroIntervention 2012). Peak incidence within 48–72h post-procedure. STS/ACC TVT Registry: in-hospital stroke declined from 2.1% (2011) to 1.6% (2019). Mechanism: disruption of aortic/valvular calcium → cerebral embolism; diffusion MRI abnormalities in 40–84% of procedures. (SwissTAVI Registry, JACC Cardiovasc Interv 2023; EuroIntervention 2012)<br><br>
+      <strong>Open aortic surgery (ascending/arch/descending):</strong> Variable by extent. Isolated ascending: ~1–3%; complex arch repair: 5–10%. High risk from aortic cross-clamping, atheromatous embolism, prolonged cardiopulmonary bypass, and circulatory arrest (deep hypothermic circulatory arrest strokes cluster in first 24h). (JACC 2018; STS database)<br><br>
+      <strong>CEA / TCAR / carotid stenting:</strong> CEA 30-day stroke/death: ~1.85% non-octogenarians, ~2.04% octogenarians (meta-analysis 47 studies, N=107,587; Touzé et al. Stroke 2023). TCAR: ~2.0% (VQI; Schermerhorn 2023). TF-CAS: ~3.7% in symptomatic patients (JAHA 2023). Mechanism: plaque embolism from carotid manipulation; watershed from clamping hypoperfusion.<br><br>
+      <strong>Cardiac ablation / cardioversion / EP study:</strong> Ablation stroke: 0.1–0.5% (varies by type; AF ablation 0.2–0.5%). Cardioversion: &lt;0.1% when properly anticoagulated. Mechanism: thrombus formation on catheter, air embolism, pre-existing LAA thrombus mobilization.<br><br>
+      <strong>When to classify as periprocedural:</strong> Stroke temporally related to procedure (strongest within 72h; defined as ≤30 days) AND infarct pattern consistent with embolic mechanism (multiple territories, posterior circulation bias) or hemodynamic watershed. If independent etiology is more parsimonious (e.g. confirmed LAA thrombus pre-existing AFib), prioritize that.
     </div>
     <div class="brow">
-            <button class="abtn" onclick="setToggle('oth-genetic','yes')">✓ Confirmed — genetic testing positive</button>
-      <button class="abtn" onclick="setToggle('oth-genetic','low')">~ Low clinical suspicion — features present, testing pending</button>
-      <button class="abtn" onclick="setToggle('oth-genetic','no')">✗ Tested — negative</button>
-      <button class="abtn" onclick="setToggle('oth-genetic','nd')">— Not suspected / not tested</button>
-    
+      <button class="abtn" onclick="setToggle('periprocedural','yes')">✓ Yes — stroke occurred within 30 days of qualifying procedure</button>
+      <button class="abtn" onclick="setToggle('periprocedural','no')">✗ No — stroke not temporally related to any procedure</button>
+      <button class="abtn" onclick="setToggle('periprocedural','nd')">— Unknown / not applicable</button>
+    </div>
+  </div>
+  <div id="periprocedural-type-panel" style="display:none;margin-top:6px;">
+    <div class="crit" id="periprocedural-type-item">
+      <div class="crit-main"><div class="crit-name">Which procedure?</div></div>
+      <div class="brow">
+        <button class="abtn" onclick="setToggle('periprocedural-type','cath')">Cardiac catheterization / coronary angiography (diagnostic)</button>
+        <button class="abtn" onclick="setToggle('periprocedural-type','pci')">PCI / coronary stenting</button>
+        <button class="abtn" onclick="setToggle('periprocedural-type','cabg')">CABG (coronary artery bypass graft)</button>
+        <button class="abtn" onclick="setToggle('periprocedural-type','valve')">Valve surgery — SAVR / TAVR / TAVI / mitral repair</button>
+        <button class="abtn" onclick="setToggle('periprocedural-type','aortic')">Aortic surgery — open (ascending/arch/descending) or EVAR/TEVAR</button>
+        <button class="abtn" onclick="setToggle('periprocedural-type','carotid')">Carotid procedure — CEA / TCAR / carotid stenting</button>
+        <button class="abtn" onclick="setToggle('periprocedural-type','other')">Other cardiac/vascular procedure (ablation, cardioversion, EP study)</button>
+      </div>
     </div>
   </div>
 
-  <div class="slabel" style="margin-top:14px;">Post-infectious vasculopathy <span class="pill pill-a">RECENT INFECTION HISTORY</span></div>
-
-  <div class="crit" id="oth-postinfect-item">
-    <div class="crit-main">
-      <div class="crit-name">Post-infectious vasculopathy — VZV/HSV (zoster, herpes simplex), COVID-19, other preceding infection within 6 months</div>
-      <button class="xbtn" onclick="xp(this)">details ▾</button>
-    </div>
-    <div class="crit-detail">
-      <strong>Mechanism:</strong> Several infections can trigger inflammatory vasculopathy as a delayed or concurrent complication — distinct from direct septic embolism. The vessel wall is injured by direct viral invasion, immune-mediated inflammation, or hypercoagulable state induced by infection.<br><br>
-      <span style="color:var(--red)"><strong>Varicella Zoster Virus (VZV) / HSV (herpes simplex/zoster virus):</strong></span> Most well-established post-infectious vasculopathy. VZV travels transaxonally from cranial ganglia (especially trigeminal) to cerebral artery adventitia, causing transmural granulomatous inflammation → intimal hyperplasia, thrombosis, and arterial stenosis/occlusion. Stroke risk is 1.3–4× higher after HSV (herpes simplex/zoster virus), peaking in the first 6 months (Gilden et al.; Langan 2014). Risk is highest in HSV (herpes simplex/zoster virus) ophthalmicus (ophthalmic division → ipsilateral anterior circulation). Can affect both large and small vessels. Treat with IV acyclovir + corticosteroids.<br><br>
-      <span style="color:var(--amber)"><strong>COVID-19 (SARS-CoV-2):</strong></span> Associated with stroke through several mechanisms: hypercoagulable state (elevated D-dimer, antiphospholipid antibodies in ~50% of severe COVID-19), endothelial injury and ACE-2-mediated vascular inflammation, cardioembolism from COVID-19 myocarditis/cardiomyopathy, and direct CNS vasculitis (rare). Thromboinflammatory pathway predominates (Romero et al. 2021).<br><br>
-      <span style="color:var(--blue)"><strong>Other:</strong></span> Bacterial meningitis (septic vasculitis), Lyme disease, HIV vasculopathy, rickettsia, mycoplasma, influenza (rare). Consider in appropriate clinical and geographic context.
-      <div class="cnote"><strong>Key refs:</strong> Gilden DH et al. VZV vasculopathy. Neurology 2019. Langan SM et al. Lancet 2014 — 1.3× stroke risk after zoster, highest 1st year. Romero JR et al. J Neurol Sci 2021 — COVID-19 thromboinflammatory stroke mechanisms. VZV stroke risk in &lt;40y: OR up to 4× in first 6 months post-zoster.</div>
-    </div>
-    <div class="brow">
-            <button class="abtn" onclick="setToggle('oth-postinfect','vzv')">✓ VZV / HSV (herpes simplex/zoster virus) — within 6 months, particularly ophthalmic zoster</button>
-      <button class="abtn" onclick="setToggle('oth-postinfect','covid')">✓ COVID-19 — confirmed SARS-CoV-2 infection within 6 months</button>
-      <button class="abtn" onclick="setToggle('oth-postinfect','other')">✓ Other preceding infection — bacterial meningitis, HIV, Lyme, other</button>
-      <button class="abtn" onclick="setToggle('oth-postinfect','no')">✗ No relevant preceding infection identified</button>
-      <button class="abtn" onclick="setToggle('oth-postinfect','nd')">— Not assessed / history not available</button>
-    
-    </div>
-  </div>
-
-  <div id="a6" class="alrt"></div>
-  <div class="nav-row">
+<div class="nav-row">
     <button class="nbtn ns" onclick="go(5)">← Back: Plaque</button>
     <button class="nbtn np" onclick="go(7)">Next: TCD Assessment →</button>
   </div>
@@ -1594,7 +1596,17 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
     <em style="color:var(--text3);">Ref: Mandell DM et al. Stroke 2017; Obusez EC et al. AJNR 2016; Swartz RH et al. Neurology 2009.</em>
   </div>
   <div class="crit" id="vwmri-item">
-    <div class="crit-main"><div class="crit-name">Vessel wall MRI result — if performed</div></div>
+    <div class="crit-main"><div class="crit-name">Vessel wall MRI result — if performed</div>
+    <button class="xbtn" onclick="xp(this)">details ▾</button></div>
+    <div class="crit-detail">
+      <strong>VW-MRI sensitivity and specificity for intracranial vasculopathies:</strong><br><br>
+      <strong>CNS vasculitis (PACNS / secondary including VZV):</strong> Concentric wall enhancement identifies medium-vessel CNS vasculitis with <strong>sensitivity 94%, specificity 95%</strong> (Frontiers in Stroke 2022;1:973517). Enhancement is intense and concentric in 92.3% of CNS vasculitis cases (both PACNS and secondary vasculitis; MDPI Diagnostics 2024;14:927). Enhancement patterns are similar between PACNS and infectious vasculitis (VZV, bacterial, fungal) — <em>VW-MRI cannot reliably distinguish VZV vasculopathy from PACNS</em>; CSF analysis (VZV PCR or anti-VZV IgG) is required for this differentiation (AJNR case collection 2023).<br><br>
+      <strong>VZV/HSV vasculopathy specifically:</strong> Shows concentric mural enhancement, preferentially involving terminal ICA and M1 MCA. Eccentric enhancement can occur in a minority. Enhancement resolves on follow-up VW-MRI at 3–21 months after antiviral treatment (ScienceDirect 2018). Vessel wall thickening may precede stenosis — VW-MRI detects early disease before luminal compromise appears on MRA.<br><br>
+      <strong>Atherosclerotic ICAD:</strong> Eccentric enhancement — plaque at one vessel wall with fibrous cap (T2 hyperintense, enhancing) and lipid core (T2 hypointense, non-enhancing). Distinguishable from vasculitis in most cases by asymmetry and layered plaque architecture (Mandell DM et al. Stroke 2017).<br><br>
+      <strong>RCVS:</strong> No or minimal wall enhancement despite severe segmental vasoconstriction. The "string of beads" appearance on MRA with absent VW-MRI enhancement distinguishes RCVS from vasculitis. Absence of enhancement on VW-MRI in the context of vasoconstriction is highly suggestive of RCVS (Swartz RH et al. Neurology 2009).<br><br>
+      <strong>Takayasu arteritis:</strong> Long-segment concentric mural thickening and enhancement in large vessels (carotid, vertebral, aortic branches) — same pattern as PACNS but at a larger vessel scale and distribution (Uchiyama S et al. AJNR 2017).<br><br>
+      <strong>Limitations:</strong> VW-MRI requires 3T scanner, gadolinium contrast, and experienced neuroradiologist interpretation. Small vessel vasculitis (&lt;1mm) is below VW-MRI spatial resolution. A normal VW-MRI does not exclude vasculitis — small-vessel PACNS may not be detectable.
+    </div>
     <div class="brow">
       <button class="abtn" onclick="setToggle('vwmri','concentric')">Concentric enhancement → favors vasculitis / PACNS</button>
       <button class="abtn" onclick="setToggle('vwmri','eccentric')">Eccentric enhancement → favors atherosclerotic ICAD (vulnerable plaque)</button>
@@ -1694,7 +1706,86 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
   </div>
 
 
-  <div class="slabel" style="margin-top:8px;">White Matter Hyperintensities — Fazekas Scale</div>
+  <div class="slabel" style="margin-top:14px;">Genetic Arteriopathy <span class="pill pill-a">CONSIDER IN YOUNG CRYPTOGENIC STROKE</span></div>
+
+  <div class="crit" id="oth-genetic-item">
+    <div class="crit-main">
+      <div class="crit-name">Genetic arteriopathy — CADASIL (NOTCH3), Fabry disease (GLA gene), MELAS (mtDNA)</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      Genetic arteriopathies are rare but important in young cryptogenic stroke. Consider when no other etiology is identified:<br><br>
+      <strong>CADASIL (NOTCH3 mutation)</strong> — most common hereditary stroke disease in adults. Characteristic MRI: T2/FLAIR white matter hyperintensities in anterior temporal poles and external capsule (Dichgans M et al. Lancet Neurol 2019). Recurrent lacunar strokes + migraine with aura + cognitive decline. Prevalence ~4–5/100,000; diagnosis by NOTCH3 gene testing or skin biopsy (GOM deposits). No proven treatment; BP control, antiplatelet for stroke prevention.<br><br>
+      <strong>Fabry Disease (GLA gene, X-linked)</strong> — α-galactosidase A deficiency. Stroke in young adults (mean age ~38y in males). Posterior circulation strokes common (vertebrobasilar dolichoectasia is frequent). Associated features: neuropathic pain, angiokeratoma, cornea verticillata, renal/cardiac involvement. Prevalence in cryptogenic stroke: ~1–4% (Rolfs A et al. Lancet 2005). Diagnosed by enzyme assay (males) or GLA gene testing (females). Treatment: enzyme replacement therapy.<br><br>
+      <strong>MELAS (Mitochondrial Encephalomyopathy, Lactic Acidosis, Stroke-like episodes)</strong> — maternally inherited mitochondrial DNA mutation (most commonly m.3243A>G in MT-TL1, ~80% of cases). Stroke-like episodes typically posterior > anterior; do NOT follow vascular territories (crossing vascular boundaries on DWI is a key imaging clue). Associated with: elevated serum/CSF lactate, hearing loss, migraine, seizures, short stature, ophthalmoplegia, diabetes. Mean onset of stroke-like episodes ~35y. MRI: diffusion-positive lesions in cortex and subcortical regions NOT conforming to arterial territories — key distinguishing feature from arterial ischemic stroke. Diagnosis: mitochondrial genetic panel, muscle biopsy (ragged red fibers). Treatment: L-arginine infusion acutely, supplementation; no proven disease-modifying therapy (Yamamoto et al. Neurology 2021).
+    </div>
+    <div class="brow">
+            <button class="abtn" onclick="setToggle('oth-genetic','yes')">✓ Confirmed — genetic testing positive</button>
+      <button class="abtn" onclick="setToggle('oth-genetic','low')">~ Low clinical suspicion — features present, testing pending</button>
+      <button class="abtn" onclick="setToggle('oth-genetic','no')">✗ Tested — negative</button>
+      <button class="abtn" onclick="setToggle('oth-genetic','nd')">— Not suspected / not tested</button>
+    
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:14px;">Post-infectious vasculopathy <span class="pill pill-a">RECENT INFECTION HISTORY</span></div>
+
+  <div class="crit" id="oth-postinfect-item">
+    <div class="crit-main">
+      <div class="crit-name">Post-infectious vasculopathy — VZV/HSV (zoster, herpes simplex), COVID-19, other preceding infection within 6 months</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button>
+    </div>
+    <div class="crit-detail">
+      <strong>Mechanism:</strong> Several infections can trigger inflammatory vasculopathy as a delayed or concurrent complication — distinct from direct septic embolism. The vessel wall is injured by direct viral invasion, immune-mediated inflammation, or hypercoagulable state induced by infection.<br><br>
+      <span style="color:var(--red)"><strong>Varicella Zoster Virus (VZV) / HSV (herpes simplex/zoster virus):</strong></span> Most well-established post-infectious vasculopathy. VZV travels transaxonally from cranial ganglia (especially trigeminal) to cerebral artery adventitia, causing transmural granulomatous inflammation → intimal hyperplasia, thrombosis, and arterial stenosis/occlusion. Stroke risk is 1.3–4× higher after HSV (herpes simplex/zoster virus), peaking in the first 6 months (Gilden et al.; Langan 2014). Risk is highest in HSV (herpes simplex/zoster virus) ophthalmicus (ophthalmic division → ipsilateral anterior circulation). Can affect both large and small vessels. Treat with IV acyclovir + corticosteroids.<br><br>
+      <span style="color:var(--amber)"><strong>COVID-19 (SARS-CoV-2):</strong></span> Associated with stroke through several mechanisms: hypercoagulable state (elevated D-dimer, antiphospholipid antibodies in ~50% of severe COVID-19), endothelial injury and ACE-2-mediated vascular inflammation, cardioembolism from COVID-19 myocarditis/cardiomyopathy, and direct CNS vasculitis (rare). Thromboinflammatory pathway predominates (Romero et al. 2021).<br><br>
+      <span style="color:var(--blue)"><strong>Other:</strong></span> Bacterial meningitis (septic vasculitis), Lyme disease, HIV vasculopathy, rickettsia, mycoplasma, influenza (rare). Consider in appropriate clinical and geographic context.
+      <div class="cnote"><strong>Key refs:</strong> Gilden DH et al. VZV vasculopathy. Neurology 2019. Langan SM et al. Lancet 2014 — 1.3× stroke risk after zoster, highest 1st year. Romero JR et al. J Neurol Sci 2021 — COVID-19 thromboinflammatory stroke mechanisms. VZV stroke risk in &lt;40y: OR up to 4× in first 6 months post-zoster.</div>
+    </div>
+    <div class="brow">
+            <button class="abtn" onclick="setToggle('oth-postinfect','vzv')">✓ VZV / HSV (herpes simplex/zoster virus) — within 6 months, particularly ophthalmic zoster</button>
+      <button class="abtn" onclick="setToggle('oth-postinfect','covid')">✓ COVID-19 — confirmed SARS-CoV-2 infection within 6 months</button>
+      <button class="abtn" onclick="setToggle('oth-postinfect','other')">✓ Other preceding infection — bacterial meningitis, HIV, Lyme, other</button>
+      <button class="abtn" onclick="setToggle('oth-postinfect','no')">✗ No relevant preceding infection identified</button>
+      <button class="abtn" onclick="setToggle('oth-postinfect','nd')">— Not assessed / history not available</button>
+    
+    </div>
+  </div>
+
+  <div id="postinfect-lp-panel" style="display:none;margin-top:6px;">
+    <div class="slabel" style="margin-top:6px;">CSF Analysis — VZV/HSV Workup <span class="pill pill-a">Critical to Distinguish VZV/HSV Vasculopathy from PACNS</span></div>
+    <div class="lbox" style="margin-bottom:8px;">
+      <strong>Why CSF testing is essential:</strong> VZV/HSV vasculopathy and PACNS are clinically and radiologically nearly identical (both cause concentric VW-MRI enhancement, similar infarct patterns, and CSF pleocytosis in ~67% of VZV cases). The <em>only</em> way to definitively confirm or exclude VZV vasculopathy is virologic CSF analysis.<br><br>
+      <strong>Test performance (Nagel MA et al. Neurology 2007; PMC2938740 — 30 cases of VZV vasculopathy):</strong><br>
+      • <strong>Anti-VZV IgG antibody in CSF: 93% sensitive</strong> (28/30 patients positive). Requires intrathecal synthesis confirmation: serum/CSF VZV IgG ratio ≤10.4. This is the primary diagnostic test.<br>
+      • <strong>VZV DNA by PCR in CSF: 30% sensitive</strong> (9/30 patients positive). Useful if positive (specific for VZV), but a negative PCR does NOT exclude VZV vasculopathy.<br>
+      • <strong>Both VZV DNA and VZV IgG negative: excludes VZV vasculopathy</strong> — shifts diagnosis toward PACNS or other CNS vasculitis.<br>
+      • Note: 37% of VZV vasculopathy patients have <em>no rash history</em>; 33% have no CSF pleocytosis. Do not require rash to test CSF.<br>
+      • Intrathecal IgG appears 1–2 weeks after infection onset and persists; sensitivity is higher when LP is performed >2 weeks after symptom onset.<br><br>
+      <strong>HSV vasculopathy:</strong> CSF HSV PCR and HSV IgG (both HSV-1 and HSV-2) should be tested. HSV PCR has ~95% sensitivity in acute herpetic encephalitis but data specific to HSV-related vasculopathy (rare) is limited — negative PCR does not exclude HSV vasculopathy.<br><br>
+      <em style="color:var(--text3);">Ref: Nagel MA et al. Neurology 2007;68:1031 (n=14); Nagel MA et al. J Neurol Sci 2008;272:39 (n=30). Gilden D et al. PMC2938740.</em>
+    </div>
+    <div class="crit" id="postinfect-lp-item">
+      <div class="crit-main"><div class="crit-name">Was lumbar puncture (LP) performed with VZV/HSV CSF analysis?</div>
+      <button class="xbtn" onclick="xp(this)">details ▾</button></div>
+      <div class="crit-detail">
+        Test anti-VZV IgG antibody (most sensitive: 93%) AND VZV DNA by PCR (specific but only 30% sensitive). For HSV: test HSV PCR (HSV-1 and HSV-2). Also note CSF WBC count — pleocytosis supports but is not required (absent in 33% of VZV vasculopathy cases). Confirm intrathecal synthesis of VZV IgG by calculating serum/CSF ratio (≤10.4 confirms intrathecal synthesis). A single positive test (IgG or PCR) confirms; both negative excludes VZV vasculopathy.
+      </div>
+      <div class="brow">
+        <button class="abtn" onclick="setToggle('postinfect-lp','vzv-igg-pos')">✓ Anti-VZV IgG positive in CSF (with reduced serum/CSF ratio — intrathecal synthesis confirmed)</button>
+        <button class="abtn" onclick="setToggle('postinfect-lp','vzv-pcr-pos')">✓ VZV DNA positive by PCR in CSF — confirms VZV vasculopathy</button>
+        <button class="abtn" onclick="setToggle('postinfect-lp','hsv-pos')">✓ HSV PCR positive in CSF (HSV-1 or HSV-2)</button>
+        <button class="abtn" onclick="setToggle('postinfect-lp','both-neg')">✗ Both VZV DNA (PCR) and VZV IgG negative — VZV vasculopathy excluded; consider PACNS</button>
+        <button class="abtn" onclick="setToggle('postinfect-lp','pleocytosis')">~ LP performed — CSF pleocytosis only, VZV/HSV tests not yet sent or pending</button>
+        <button class="abtn" onclick="setToggle('postinfect-lp','nd')">— LP not yet performed</button>
+      </div>
+    </div>
+  </div>
+
+
+  <div id="a6" class="alrt"></div>
+  
+  <div class="slabel" style="margin-top:14px;">White Matter Hyperintensities — Fazekas Scale</div>
   <div class="crit" id="svd-wmh-item">
     <div class="crit-main"><div class="crit-name">Leukoaraiosis / WMH severity on FLAIR (Fazekas scale)</div>
     <button class="xbtn" onclick="xp(this)">details ▾</button></div>
@@ -1811,7 +1902,7 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
   </div>
   <div class="doc-body" id="dn"></div>
   <div class="nav-row">
-    <button class="nbtn ns" onclick="go(7)">← Back</button>
+    <button class="nbtn ns" onclick="go(9)">← Back: Vasculopathy</button>
     <button class="nbtn np" onclick="resetAll()">↺ New Classification</button>
   </div>
 </div>
@@ -1996,6 +2087,11 @@ function setToggle(k, v) {
     }
   });
   ui();
+  // Show/hide post-infectious LP panel
+  const _pilp = document.getElementById('postinfect-lp-panel');
+  if (_pilp) _pilp.style.display = (S['oth-postinfect'] === 'vzv') ? 'block' : 'none';
+  const _ptp = document.getElementById('periprocedural-type-panel');
+  if (_ptp) _ptp.style.display = (S['periprocedural'] === 'yes') ? 'block' : 'none';
   // Show/hide AF anticoagulation panel
   const _afp = document.getElementById('afib-ac-panel');
   if (_afp) _afp.style.display = (S['ce-afib'] === 'yes') ? 'block' : 'none';
@@ -2250,6 +2346,28 @@ function computeScores() {
       other += 25; ev.other.push({txt:'<strong>Hypercoagulable workup pending/not tested</strong> — infarct pattern (multi-territory, cortical, no CE/LVD source) is clinically suspicious for hypercoagulable state (e.g., APLS, thrombophilia). Score reflects suspicion pending result.', w:'POSSIBLE (pending)', cls:'ev-mod'});
     }
   }
+
+  // ── Periprocedural stroke scoring ────────────────────────────────────
+  if (S.periprocedural === 'yes') {
+    const pt = S['periprocedural-type'];
+    other += 55; // Periprocedural = Other Determined Etiology
+    const ptLab = {
+      'cath': 'cardiac catheterization / coronary angiography',
+      'pci': 'PCI / coronary stenting',
+      'cabg': 'CABG (coronary artery bypass graft)',
+      'valve': 'valve surgery (SAVR/TAVR/TAVI/mitral repair)',
+      'aortic': 'aortic surgery (open or EVAR/TEVAR)',
+      'carotid': 'carotid procedure (CEA/TCAR)',
+      'other': 'other cardiac/vascular procedure'
+    }[pt] || 'cardiac/vascular procedure';
+    ev.other.push({txt:'<strong>Periprocedural stroke — ' + ptLab + '</strong>: Stroke temporally related to invasive procedure. Primary mechanism: aortic plaque embolism or air/particulate embolism from device manipulation; secondary mechanisms: peri-op AF and hemodynamic hypoperfusion. Procedure-specific rates: diagnostic cath 0.07–0.40%; PCI 0.26–0.39%; CABG 1–5%; SAVR 1.5%; TAVR 2–4% at 30 days; combined CABG+valve up to 7.4%. (JAHA 2019; JACC 2018; Circulation 2009; SwissTAVI 2023)', w:'HIGH', cls:'ev-high'});
+    // Secondary prevention: aortic embolism mechanism does not require anticoagulation
+    // unless new AF develops. This is distinct from AFib-driven CE.
+    if (!['ce-afib'].includes('yes')) {
+      laa = Math.max(0, laa - 10);
+      ce = Math.max(0, ce - 10);
+    }
+  }
   // ── ESUS / Hypercoagulability step scoring ──────────────────────────────
   // D-dimer
   if (S['esus-ddimer']==='high') {
@@ -2347,6 +2465,10 @@ function computeScores() {
     laa = Math.max(0, laa - 25); ev.laa.push({txt:'<strong>VW-MRI: Concentric enhancement</strong> — inconsistent with eccentric atherosclerotic plaque; LVD score penalised.', w:'NEGATIVE (VW-MRI)', cls:''});
   } else if (S.vwmri==='eccentric') {
     laa += 20; ev.laa.push({txt:'<strong>VW-MRI: Eccentric wall enhancement</strong> — favors atherosclerotic ICAD; eccentric plaque at vessel wall with or without lipid-rich necrotic core. (Obusez EC et al. AJNR 2016)', w:'HIGH', cls:'ev-high'});
+    // If post-infectious vasculopathy is also suspected, note that eccentric is atypical
+    if (S['oth-postinfect']==='vzv' || S['oth-postinfect']==='covid') {
+      other = Math.max(0, other - 10); ev.other.push({txt:'<strong>VW-MRI eccentric enhancement — atypical for post-infectious vasculopathy</strong>: VZV/HSV and other infectious CNS vasculitis typically shows concentric enhancement (92% of cases; MDPI 2024). Eccentric enhancement favors ICAD. Consider whether atherosclerosis is the more likely explanation, even with infectious history.', w:'NEGATIVE (VW-MRI)', cls:''});
+    }
   } else if (S.vwmri==='none') {
     other += 20; ev.other.push({txt:'<strong>VW-MRI: No wall enhancement</strong> — favors RCVS (smooth vasospastic narrowing without mural inflammation). Inconsistent with active vasculitis or ICAD. (Swartz RH et al. Neurology 2009)', w:'MOD', cls:'ev-mod'});
     laa = Math.max(0, laa - 10); ev.laa.push({txt:'<strong>VW-MRI: No enhancement</strong> — inconsistent with atherosclerotic ICAD or vasculitis; LVD/Other scores adjusted.', w:'NEGATIVE (VW-MRI)', cls:''});
@@ -2366,8 +2488,8 @@ function computeScores() {
     other += 15; ev.other.push({txt:'<strong>Genetic arteriopathy — low clinical suspicion</strong>; features present but testing pending', w:'POSSIBLE', cls:'ev-mod'});
   }
   // Post-infectious vasculopathy scoring
-  if (S['oth-postinfect']==='vzv') {
-    other += 50; ev.other.push({txt:'<strong>VZV / HSV (herpes simplex/zoster virus) vasculopathy</strong> — zoster within 6 months; stroke risk 1.3–4× higher post-zoster (Langan 2014, Lancet); direct viral arterial invasion → granulomatous transmural inflammation. Treat with IV acyclovir + corticosteroids.', w:'HIGH', cls:'ev-high'});
+  if (S['oth-postinfect']==='vzv' && S['postinfect-lp'] !== 'both-neg') {
+    other += 62; ev.other.push({txt:'<strong>VZV / HSV (herpes simplex/zoster virus) vasculopathy</strong> — zoster within 6 months; stroke risk 1.3–4× higher post-zoster (Langan 2014, Lancet); direct viral arterial invasion → granulomatous transmural inflammation. Treat with IV acyclovir + corticosteroids.', w:'HIGH', cls:'ev-high'});
   }
   if (S['oth-postinfect']==='covid') {
     other += 35; ev.other.push({txt:'<strong>COVID-19 / SARS-CoV-2 vasculopathy</strong> — infection within 6 months; thromboinflammatory mechanism, antiphospholipid antibodies, endothelial injury (Romero 2021). May overlap with hypercoagulable state.', w:'MOD', cls:'ev-mod'});
@@ -2375,6 +2497,31 @@ function computeScores() {
   if (S['oth-postinfect']==='other') {
     other += 30; ev.other.push({txt:'<strong>Other post-infectious vasculopathy</strong> — preceding infection identified; consider bacterial meningitis septic vasculitis, HIV, Lyme, rickettsia, mycoplasma.', w:'MOD', cls:'ev-mod'});
   }
+  // ── CSF VZV/HSV LP analysis scoring ──────────────────────────────────
+  if (S['oth-postinfect'] === 'vzv') {
+    const lp = S['postinfect-lp'];
+    if (lp === 'vzv-igg-pos') {
+      // Anti-VZV IgG in CSF: 93% sensitive — strongly confirms VZV vasculopathy
+      other += 30; ev.other.push({txt:'<strong>Anti-VZV IgG positive in CSF (intrathecal synthesis confirmed)</strong>: Sensitivity 93% for VZV vasculopathy (Nagel MA et al. J Neurol Sci 2008, n=30). Positive anti-VZV IgG with reduced serum/CSF ratio confirms intrathecal VZV-specific antibody synthesis. This is the primary virologic confirmatory test. VZV vasculopathy is confirmed; PACNS is effectively excluded as the primary diagnosis.', w:'DEFINITIVE', cls:'ev-high'});
+    } else if (lp === 'vzv-pcr-pos') {
+      other += 35; ev.other.push({txt:'<strong>VZV DNA positive by PCR in CSF</strong>: Highly specific for VZV vasculopathy. PCR sensitivity is only ~30% (Nagel 2008) but when positive, VZV infection of cerebral arteries is confirmed. PACNS excluded.', w:'DEFINITIVE', cls:'ev-high'});
+    } else if (lp === 'hsv-pos') {
+      other += 35; ev.other.push({txt:'<strong>HSV PCR positive in CSF</strong>: Confirms HSV-related CNS vasculopathy. Rare but well-documented cause of stroke in young adults via arterial inflammation. PACNS excluded.', w:'DEFINITIVE', cls:'ev-high'});
+    } else if (lp === 'both-neg') {
+      // Both VZV DNA and VZV IgG negative — VZV vasculopathy excluded; shift to PACNS
+      other = Math.max(0, other - 30);
+      ev.other.push({txt:'<strong>Both VZV DNA (PCR) and anti-VZV IgG negative in CSF</strong>: Excludes VZV vasculopathy (Nagel 2008: "only when CSF is negative for both can VZV vasculopathy be excluded"). If VZV/HSV is excluded and CNS vasculitis is still suspected, PACNS becomes the primary diagnosis. Consider brain biopsy for definitive PACNS confirmation.', w:'NEGATIVE (VZV excluded)', cls:''});
+      // Boost PACNS probability if vasculitis is also suspected
+      if (S['oth-vasc'] === 'high' || S['oth-vasc'] === 'confirmed') {
+        other += 15; ev.other.push({txt:'<strong>VZV excluded + vasculitis suspected</strong>: With VZV/HSV virologically excluded and clinical features of vasculitis, PACNS is now the most likely diagnosis. Rheumatology/neurology consultation; consider brain biopsy if diagnosis uncertain.', w:'HIGH', cls:'ev-high'});
+      }
+    } else if (lp === 'pleocytosis') {
+      ev.other.push({txt:'<strong>CSF pleocytosis noted but VZV/HSV tests pending</strong>: Pleocytosis supports inflammatory CNS process but is present in only 67% of VZV vasculopathy cases and is also seen in PACNS. Await VZV PCR and anti-VZV IgG results before finalizing etiology.', w:'MOD', cls:'ev-mod'});
+    } else if (lp === 'nd') {
+      ev.other.push({txt:'<strong>LP not yet performed — VZV/HSV workup incomplete</strong>: CSF VZV analysis is essential to confirm or exclude VZV vasculopathy. Anti-VZV IgG antibody in CSF has 93% sensitivity (Nagel 2008). Without LP, VZV vasculopathy cannot be definitively confirmed or distinguished from PACNS.', w:'INCOMPLETE', cls:'ev-low'});
+    }
+  }
+
 
   // ── LAA ──
   // Carotid web scoring
@@ -2938,6 +3085,21 @@ function buildMgmt(cat, mechLabel) {
     <div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--border);font-family:var(--mono);font-size:10px;color:var(--text3);">⚠ Decision support only — does not replace specialist consultation. Risk percentages reflect population-level data; individual risk may vary significantly based on surgical expertise, comorbidities, and institutional protocols.</div>
   </div>`;
 }
+    // Periprocedural stroke — highest priority
+    if (S.periprocedural === 'yes') {
+      const pt = S['periprocedural-type'];
+      const ptLabV = {
+        'cath': 'Diagnostic cardiac catheterization / coronary angiography',
+        'pci': 'PCI / percutaneous coronary intervention',
+        'cabg': 'CABG (coronary artery bypass graft)',
+        'valve': 'Valve surgery (SAVR / TAVR / TAVI / mitral repair)',
+        'aortic': 'Aortic surgery (open or EVAR/TEVAR)',
+        'carotid': 'Carotid procedure (CEA / TCAR)',
+        'other': 'Other cardiac/vascular procedure'
+      }[pt] || 'Cardiac/vascular procedure';
+      mechLabel = 'Periprocedural stroke — ' + ptLabV;
+      othMech = ' — <strong>Sub-etiology: Periprocedural Stroke.</strong> Stroke temporally related to invasive procedure. Primary mechanism: cerebral embolism from aortic plaque debris, air, or device particulate. Peri-op AF and hemodynamic hypoperfusion are secondary mechanisms.<br><br><strong>Secondary prevention:</strong> Embolic debris → statin + antiplatelet (not anticoagulation unless AF). New peri-op AF → DOAC. Hemodynamic → optimize BP/cardiac output.<br>Rates: cath 0.07–0.40%; PCI 0.26–0.39%; CABG 1–5%; SAVR 1.5%; TAVR 2–4%; CABG+valve up to 7.4%.';
+    }
 
 function buildVerdict() {
   // ── CVST pre-check: venous infarction is a separate pathology ──
@@ -2977,13 +3139,60 @@ function buildVerdict() {
   if (other >= 60 && other === maxScore) {
     let othMech = '';
     // Priority order: most specific / highest-scoring signals first
-    // 1. Definitive structural/infectious etiologies
-    if (S.dissection==='yes') {
+    // 0. Periprocedural stroke — highest priority
+    if (S.periprocedural === 'yes') {
+      const pt = S['periprocedural-type'];
+      const ptLabV = {
+        'cath': 'Diagnostic cardiac catheterization / coronary angiography',
+        'pci': 'PCI / percutaneous coronary intervention',
+        'cabg': 'CABG (coronary artery bypass graft)',
+        'valve': 'Valve surgery (SAVR / TAVR / TAVI / mitral repair)',
+        'aortic': 'Aortic surgery (open or EVAR/TEVAR)',
+        'carotid': 'Carotid procedure (CEA / TCAR)',
+        'other': 'Other cardiac/vascular procedure'
+      }[pt] || 'Cardiac/vascular procedure';
+      mechLabel = 'Periprocedural stroke — ' + ptLabV;
+      othMech = ' — <strong>Sub-etiology: Periprocedural Stroke.</strong> Stroke temporally related to invasive procedure. Primary mechanism: cerebral embolism from aortic plaque debris, air, or device particulate. Peri-op AF and hemodynamic hypoperfusion are secondary mechanisms.<br><br><strong>Secondary prevention:</strong> Embolic debris → statin + antiplatelet (not anticoagulation unless AF). New peri-op AF → DOAC. Hemodynamic → optimize BP/cardiac output.<br>Rates: cath 0.07–0.40%; PCI 0.26–0.39%; CABG 1–5%; SAVR 1.5%; TAVR 2–4%; CABG+valve up to 7.4%.';
+    } else if (S.dissection==='yes') {
       mechLabel = 'Cervical artery dissection → artery-to-artery thromboembolism';
       othMech = ' — <strong>Sub-etiology: Cervical Artery Dissection.</strong> Artery-to-artery thromboembolism from dissected intimal flap. Secondary prevention: anticoagulation or antiplatelet (equivalent efficacy, CADISS trial); CTA/MRA follow-up at 3–6 months to confirm recanalization.';
-    } else if (S['oth-postinfect']==='vzv') {
-      mechLabel = 'VZV vasculopathy → granulomatous arterial inflammation → thrombosis/stenosis';
-      othMech = ' — <strong>Sub-etiology: VZV Post-herpetic Vasculopathy.</strong> Granulomatous inflammation of vessel walls following herpes zoster reactivation → stenosis/thrombosis. Antiviral therapy (IV acyclovir) + corticosteroids; neurology/ID co-management.';
+    } else if (S['oth-postinfect']==='vzv' && S['postinfect-lp'] !== 'both-neg') {
+      // LP both-neg excludes VZV — handled below as PACNS redirect
+      const lpConfirmed = ['vzv-igg-pos','vzv-pcr-pos','hsv-pos'].includes(S['postinfect-lp']);
+      const lpPending   = !S['postinfect-lp'] || S['postinfect-lp'] === 'nd' || S['postinfect-lp'] === 'pleocytosis';
+      const vascSuspected = S['oth-vasc'] === 'high' || S['oth-vasc'] === 'confirmed';
+
+      if (lpPending && vascSuspected) {
+        // Competing etiologies: VZV/HSV vasculopathy vs PACNS — LP pending differentiates
+        mechLabel = 'Competing etiologies: VZV/HSV post-infectious vasculopathy vs. PACNS — CSF analysis required to differentiate';
+        othMech = ' — <strong>Competing Sub-etiologies: VZV/HSV Post-infectious Vasculopathy vs. Primary Angiitis of the CNS (PACNS).</strong> Both are equally plausible given the current clinical information. These conditions are clinically and radiologically indistinguishable without CSF virologic analysis:<br><br>' +
+          '• <strong>If anti-VZV IgG or VZV PCR positive in CSF</strong> → VZV vasculopathy confirmed (IgG: 93% sensitive; PCR: 30% sensitive). Treat with IV acyclovir + corticosteroids.<br>' +
+          '• <strong>If both VZV DNA (PCR) and VZV IgG negative in CSF</strong> → VZV excluded; PACNS is the diagnosis. Immunosuppression (corticosteroids ± cyclophosphamide); consider brain biopsy for confirmation.<br><br>' +
+          '<strong>Immediate action:</strong> If LP has not yet been performed, it should be sent urgently with VZV IgG antibody (intrathecal synthesis), VZV PCR, HSV PCR (HSV-1 and HSV-2), and cell count. Do not delay antiviral therapy if VZV is clinically suspected — the CSF result will confirm or redirect. (Nagel MA et al. J Neurol Sci 2008, n=30: anti-VZV IgG 93% sensitive, VZV PCR 30% sensitive; negative for both excludes VZV.)';
+      } else {
+        mechLabel = 'VZV/HSV post-infectious vasculopathy → granulomatous arterial inflammation → thrombosis/stenosis';
+        const lpStatus = {
+          'vzv-igg-pos': ' Anti-VZV IgG confirmed in CSF (intrathecal synthesis).',
+          'vzv-pcr-pos': ' VZV DNA confirmed by CSF PCR.',
+          'hsv-pos': ' HSV confirmed by CSF PCR.',
+          'pleocytosis': ' CSF pleocytosis present; VZV/HSV serology pending.',
+          'nd': ' LP not yet performed — VZV/HSV confirmation pending.',
+          '': ' LP not yet performed — VZV/HSV confirmation pending.'
+        }[S['postinfect-lp'] || ''] || '';
+        const vwmriRec = (S.vwmri === 'nd' || !S.vwmri) ?
+          '<br><br><strong style="color:var(--amber)">⚠ VW-MRI Recommended:</strong> Vessel wall MRI has not been performed. VZV/HSV vasculopathy and PACNS cannot be reliably distinguished on clinical grounds or standard MRI alone — both cause concentric wall enhancement (92% of CNS vasculitis cases show concentric enhancement; MDPI Diagnostics 2024). Key differentiators: <strong>CSF analysis is essential</strong> — test for VZV DNA by PCR (sensitivity ~30% but specific) and anti-VZV IgG antibody (more sensitive). VZV DNA or anti-VZV IgG in CSF confirms VZV vasculopathy and excludes idiopathic PACNS. VW-MRI: both show concentric mural enhancement; VZV tends to involve terminal ICA and M1 MCA preferentially. Resolution of enhancement on follow-up VW-MRI (3–21 months) confirms treatment response. (ScienceDirect 2018; AJNR case collection 2023)' :
+          (S.vwmri === 'eccentric' ? '<br><br><strong style="color:var(--amber)">⚠ Atypical VW-MRI:</strong> Eccentric enhancement is more characteristic of atherosclerotic ICAD than vasculitis. VZV/HSV vasculopathy typically shows <em>concentric</em> enhancement (though eccentric occurs in a minority). Consider whether ICAD is a competing etiology. CSF VZV/HSV testing remains essential for definitive diagnosis.' : '');
+        othMech = ' — <strong>Sub-etiology: VZV/HSV Post-infectious Vasculopathy.' + lpStatus + '</strong> Zoster within 6 months; stroke risk 1.3–4× higher post-zoster (Langan 2014, Lancet); direct viral arterial invasion → granulomatous transmural inflammation. Antiviral therapy (IV acyclovir) + corticosteroids; neurology/ID co-management.' + vwmriRec;
+      }
+    } else if (S['oth-postinfect']==='vzv' && S['postinfect-lp'] === 'both-neg') {
+      // VZV virologically excluded by CSF — redirect to PACNS if vasculitis is suspected
+      if (S['oth-vasc'] === 'high' || S['oth-vasc'] === 'confirmed') {
+        mechLabel = 'PACNS / CNS vasculitis — VZV/HSV virologically excluded by CSF';
+        othMech = ' — <strong>Sub-etiology: Primary Angiitis of the CNS (PACNS) — VZV/HSV Excluded.</strong> Both VZV DNA (PCR) and anti-VZV IgG are negative in CSF, virologically excluding VZV vasculopathy (Nagel MA et al. J Neurol Sci 2008: negative for both = VZV excluded). With high clinical vasculitis suspicion and VZV excluded, PACNS is the most likely diagnosis. Immunosuppression indicated; brain biopsy for definitive confirmation. Rheumatology/neurology co-management.';
+      } else {
+        mechLabel = 'Post-infectious vasculopathy — VZV/HSV excluded by CSF; other infectious etiology possible';
+        othMech = ' — <strong>VZV/HSV virologically excluded</strong> (both PCR and IgG negative). If CNS vasculitis features remain, consider PACNS, bacterial/fungal vasculitis, or other infectious etiologies. CSF culture, cryptococcal antigen, and syphilis serology indicated if not already performed.';
+      }
     } else if (S['oth-postinfect']==='covid') {
       mechLabel = 'COVID-19 thromboinflammatory vasculopathy → stroke';
       othMech = ' — <strong>Sub-etiology: COVID-19 Thromboinflammatory Vasculopathy.</strong> Endothelial injury, procoagulant state, and cytokine-driven thrombosis. Anticoagulation/antiplatelet per dominant mechanism; neurology co-management.';
