@@ -378,7 +378,7 @@ header { padding: 24px 0 16px; border-bottom: 1px solid var(--border); margin-bo
   <div>
     <div class="h-title">Ischemic Stroke Etiology · <span>TOAST+ Classifier</span></div>
     <div class="h-sub">Adams HP et al. · Stroke 1993;24:35–41 · TOAST criteria with evidence-weighted adjudication<br>For educator use only</div>
-    <div style="font-family:var(--sans);font-size:11px;font-weight:700;color:var(--teal);margin-top:2px;">Designed by physician Daniel Short, MD</div>
+    <div style="font-family:var(--sans);font-size:11px;font-weight:700;color:var(--teal);margin-top:2px;">Designed by Daniel Short, MD</div>
   </div>
   <button class="reset-btn" onclick="resetAll()">↺ Reset</button>
 </header>
@@ -1841,20 +1841,24 @@ let cur = 0;
 // ─── TOPO MULTI-SELECT ────────────────────────────────────
 function toggleTopo(btn, val) {
   if (!S.topos) S.topos = [];
-  // Mutual exclusion: cortical and cortical-sub cannot both be active
-  const exclusive = {'cortical': 'cortical-sub', 'cortical-sub': 'cortical'};
-  if (exclusive[val]) {
-    const otherVal = exclusive[val];
-    const otherIdx = S.topos.indexOf(otherVal);
-    if (otherIdx !== -1) {
-      S.topos.splice(otherIdx, 1);
-      document.querySelectorAll('.toggle-topo').forEach(b => {
-        const oc = b.getAttribute('onclick') || '';
-        if (oc.indexOf("'" + otherVal + "'") !== -1)
-          b.classList.remove('ay','at','ab','aw','av','an','aa');
+  // Mutual exclusion groups — values in same group cannot coexist
+  const exclusiveGroups = [['cortical', 'cortical-sub', 'striatocapsular']];
+  exclusiveGroups.forEach(group => {
+    if (group.includes(val)) {
+      group.forEach(otherVal => {
+        if (otherVal === val) return;
+        const otherIdx = S.topos.indexOf(otherVal);
+        if (otherIdx !== -1) {
+          S.topos.splice(otherIdx, 1);
+          document.querySelectorAll('.toggle-topo').forEach(b => {
+            const oc = b.getAttribute('onclick') || '';
+            if (oc.indexOf("'" + otherVal + "'") !== -1)
+              b.classList.remove('ay','an','at','ab','aa','aw','av');
+          });
+        }
       });
     }
-  }
+  });
   const idx = S.topos.indexOf(val);
   if (idx === -1) {
     S.topos.push(val);
@@ -1866,13 +1870,11 @@ function toggleTopo(btn, val) {
     S.topo = S.topos.length > 0 ? S.topos[0] : null;
   }
   ui();
-  // Show/hide bilateral carotid panel for watershed/cortical-sub patterns
   const _bcp = document.getElementById('bilateral-carotid-panel');
   if (_bcp) {
     const showBilat = S.topos && (S.topos.includes('watershed') || S.topos.includes('cortical-sub') || S.topos.includes('cortical'));
     _bcp.style.display = showBilat ? 'block' : 'none';
   }
-  // Show/hide basilar panel for brainstem/thalamus patterns
   const _bap = document.getElementById('basilar-hemo-panel');
   if (_bap) {
     const showBasilar = S.topos && (S.topos.includes('brainstem') || S.topos.includes('thalamus'));
