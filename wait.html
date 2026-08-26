@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Weight Trajectory</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#F5F6F8; --surface:#FFFFFF; --ink:#182634; --muted:#5B6A79;
+    --hair:#E3E7EC; --hair2:#EDF0F3;
+    --data:#0F766E; --trend:#4338CA; --goal:#B45309; --today:#94A3B8;
+    --ok:#0F766E; --err:#B4231F;
+    --font:'Lexend',ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{
+    background:var(--bg); color:var(--ink); font-family:var(--font);
+    font-weight:400; line-height:1.5; -webkit-font-smoothing:antialiased;
+    font-variant-numeric:tabular-nums; padding:clamp(16px,3vw,40px);
+  }
+  .wrap{max-width:1040px;margin:0 auto}
+
+  header{margin-bottom:16px}
+  .eyebrow{font-size:11px;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin:0 0 6px}
+  h1{font-size:clamp(22px,3.4vw,30px);font-weight:600;margin:0;letter-spacing:-.01em}
+  .sub{color:var(--muted);margin:6px 0 0;font-size:14px;max-width:62ch}
+
+  /* live data bar */
+  .source{
+    display:flex;gap:10px;align-items:center;flex-wrap:wrap;
+    background:var(--surface);border:1px solid var(--hair);border-radius:12px;
+    padding:10px 12px;margin:0 0 16px;font-size:13px;
+  }
+  .status{display:inline-flex;align-items:center;gap:7px;font-weight:500;white-space:nowrap}
+  .status .led{width:8px;height:8px;border-radius:50%;background:var(--muted);flex:none}
+  .status.ok .led{background:var(--ok)} .status.err .led{background:var(--err)}
+  .status.load .led{background:var(--today);animation:pulse 1s infinite}
+  @keyframes pulse{50%{opacity:.3}}
+  .source .grow{flex:1;min-width:180px}
+  .source input{
+    width:100%;font-family:var(--font);font-size:12.5px;color:var(--ink);
+    padding:7px 10px;border:1px solid var(--hair);border-radius:8px;background:#fff;
+  }
+  .source input:focus{outline:2px solid var(--trend);outline-offset:1px;border-color:var(--trend)}
+  .btn{
+    font-family:var(--font);font-size:13px;font-weight:500;padding:8px 14px;cursor:pointer;
+    background:var(--ink);color:#fff;border:none;border-radius:8px;white-space:nowrap;
+  }
+  .btn:focus-visible{outline:2px solid var(--trend);outline-offset:2px}
+  .btn.ghost{background:#fff;color:var(--ink);border:1px solid var(--hair)}
+  .srcmsg{flex-basis:100%;font-size:12px;color:var(--muted);margin-top:-2px}
+  .srcmsg a{color:var(--trend)}
+
+  .panel{background:var(--surface);border:1px solid var(--hair);border-radius:14px}
+  .chartwrap{padding:14px 14px 6px}
+  svg{display:block;width:100%;height:auto}
+  svg text{font-family:var(--font)}
+
+  .legend{display:flex;gap:16px;flex-wrap:wrap;padding:2px 16px 12px;font-size:12.5px;color:var(--muted)}
+  .legend span{display:inline-flex;align-items:center;gap:7px}
+  .swatch{width:16px;height:0;border-top-width:3px;border-top-style:solid;border-radius:2px}
+  .dot{width:9px;height:9px;border-radius:50%}
+
+  .readouts{display:grid;grid-template-columns:repeat(auto-fit,minmax(128px,1fr));border-top:1px solid var(--hair)}
+  .stat{padding:14px 16px;border-left:1px solid var(--hair2)}
+  .stat:first-child{border-left:none}
+  .stat .k{font-size:10.5px;font-weight:500;letter-spacing:.13em;text-transform:uppercase;color:var(--muted);margin-bottom:5px}
+  .stat .v{font-size:20px;font-weight:600;letter-spacing:-.01em}
+  .stat .v small{font-size:12px;font-weight:400;color:var(--muted)}
+  .stat.hero .v{color:var(--trend)}
+  .stat .v.warn{color:var(--goal);font-size:15px}
+
+  .note{font-size:12.5px;color:var(--muted);padding:11px 16px;border-top:1px solid var(--hair);display:flex;gap:8px;align-items:flex-start}
+  .note b{color:var(--ink);font-weight:600}
+
+  .controls{display:grid;grid-template-columns:1fr;gap:16px;margin-top:16px}
+  @media(min-width:720px){.controls{grid-template-columns:1fr 1fr}}
+  .ctl{padding:16px}
+  .ctl h2{font-size:12px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:0 0 12px}
+  label{display:block;font-size:12px;color:var(--muted);margin:0 0 5px}
+  input[type=number],input[type=date]{font-family:var(--font);font-size:15px;color:var(--ink);padding:8px 10px;border:1px solid var(--hair);border-radius:8px;background:#fff;width:100%}
+  input:focus{outline:2px solid var(--trend);outline-offset:1px;border-color:var(--trend)}
+  .seg{display:inline-flex;border:1px solid var(--hair);border-radius:8px;overflow:hidden;margin-top:2px}
+  .seg button{font-family:var(--font);font-size:13px;padding:8px 12px;border:none;background:#fff;color:var(--muted);cursor:pointer;border-left:1px solid var(--hair)}
+  .seg button:first-child{border-left:none}
+  .seg button[aria-pressed=true]{background:var(--ink);color:#fff}
+  .seg button:focus-visible{outline:2px solid var(--trend);outline-offset:-2px}
+
+  details{margin-top:16px}
+  summary{cursor:pointer;font-size:12px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding:14px 16px;background:var(--surface);border:1px solid var(--hair);border-radius:12px;list-style:none;display:flex;justify-content:space-between;align-items:center}
+  summary::-webkit-details-marker{display:none}
+  summary .cnt{color:var(--data);text-transform:none;letter-spacing:0}
+  details[open] summary{border-radius:12px 12px 0 0}
+  .editor{border:1px solid var(--hair);border-top:none;border-radius:0 0 12px 12px;padding:14px 16px;background:#fff}
+  textarea{width:100%;min-height:130px;font-family:var(--font);font-size:13px;line-height:1.6;border:1px solid var(--hair);border-radius:8px;padding:10px;resize:vertical;color:var(--ink)}
+  textarea:focus{outline:2px solid var(--trend);outline-offset:1px;border-color:var(--trend)}
+  .hint{font-size:12px;color:var(--muted);margin:8px 0 0}
+  .hint code{background:var(--hair2);padding:1px 5px;border-radius:4px}
+
+  @media(prefers-reduced-motion:no-preference){
+    .proj{animation:fade .5s ease both}
+    @keyframes fade{from{opacity:0}to{opacity:1}}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <p class="eyebrow">Weight Trajectory · linear projection</p>
+    <h1>When does the trend reach goal?</h1>
+    <p class="sub">Reads your Health Log live on every load, fits a least-squares line to the window you choose, and extends it to the goal. The projected date is only as good as its window — watch R² and the point count.</p>
+  </header>
+
+  <div class="source">
+    <span class="status load" id="status"><span class="led"></span><span id="statusTxt">Loading…</span></span>
+    <div class="grow"><input id="src" spellcheck="false" aria-label="Sheet CSV URL"></div>
+    <button class="btn" id="reload">Reload from sheet</button>
+    <div class="srcmsg" id="srcmsg"></div>
+  </div>
+
+  <div class="panel">
+    <div class="chartwrap"><svg id="chart" viewBox="0 0 960 540" role="img" aria-label="Weight over time with projected trend"></svg></div>
+    <div class="legend">
+      <span><i class="dot" style="background:var(--data)"></i>Measured weight</span>
+      <span><i class="swatch" style="border-top-color:var(--trend)"></i>Fitted trend</span>
+      <span><i class="swatch" style="border-top-color:var(--trend);border-top-style:dashed"></i>Projected</span>
+      <span><i class="swatch" style="border-top-color:var(--goal);border-top-style:dashed"></i>Goal</span>
+    </div>
+    <div class="readouts" id="readouts"></div>
+    <div class="note"><span>⚠</span><span id="caveat"></span></div>
+  </div>
+
+  <div class="controls">
+    <div class="ctl panel">
+      <h2>Target</h2>
+      <label for="goal">Goal weight (lb)</label>
+      <input type="number" id="goal" value="215" step="1" min="0">
+    </div>
+    <div class="ctl panel">
+      <h2>Fit window</h2>
+      <div class="seg" id="seg" role="group" aria-label="Fit window">
+        <button data-w="all" aria-pressed="true">All data</button>
+        <button data-w="60">Last 60 days</button>
+        <button data-w="30">Last 30 days</button>
+        <button data-w="since">Since date</button>
+      </div>
+      <div style="margin-top:12px">
+        <label for="since">Fit only readings on/after</label>
+        <input type="date" id="since" value="2026-08-17">
+      </div>
+    </div>
+  </div>
+
+  <details>
+    <summary>Readings <span class="cnt" id="cnt"></span></summary>
+    <div class="editor">
+      <textarea id="data" spellcheck="false"></textarea>
+      <p class="hint">Auto-filled from the sheet on load. One reading per line: <code>M/D/YYYY, weight</code>. Edit here to test what-ifs; <b>Reload from sheet</b> pulls the live data back.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>Host it on GitHub Pages</summary>
+    <div class="editor" style="font-size:13px;color:var(--muted);line-height:1.7">
+      <p style="margin-top:0">1. In a repo, add this file as <code>index.html</code>. Settings → Pages → deploy from <code>main</code> / root.<br>
+      2. In the sheet: Share → General access → <b>Anyone with the link → Viewer</b>. Each refresh of the page then pulls the newest rows.<br>
+      3. If the chart shows a load error, use <b>File → Share → Publish to web</b>, pick the Health Log tab, choose <b>CSV</b>, and paste that link into the box above (it's the most reliable cross-site source). You can also pass it via URL: <code>?src=…</code>.</p>
+    </div>
+  </details>
+</div>
+
+<script>
+const DAY=86400000;
+const MONTHS=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+const SHEET_ID="1oacMNBH2PCpAKNB_dEy2wa2VjF7iuirlXxPtBZKzktQ";
+const GID="0"; // Health Log is the first tab
+const DEFAULT_SRC=`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&gid=${GID}`;
+const DATE_COL=0, WEIGHT_COL=5; // A = Date/Time, F = Weight in the raw log
+
+// fallback so the tool is never blank if the fetch is blocked
+const SEED=`5/26/2026, 284
+6/9/2026, 278
+6/25/2026, 280
+7/7/2026, 284
+8/12/2026, 280
+8/16/2026, 280
+8/24/2026, 272`;
+
+const el=id=>document.getElementById(id);
+const state={window:"all"};
+
+/* ---------- CSV + date parsing (robust to gviz & published-CSV formats) ---------- */
+function parseCSV(text){
+  const rows=[]; let row=[], cur="", q=false;
+  for(let i=0;i<text.length;i++){
+    const c=text[i];
+    if(q){
+      if(c==='"'){ if(text[i+1]==='"'){cur+='"';i++;} else q=false; }
+      else cur+=c;
+    } else {
+      if(c==='"') q=true;
+      else if(c===","){ row.push(cur); cur=""; }
+      else if(c==="\n"){ row.push(cur); rows.push(row); row=[]; cur=""; }
+      else if(c==="\r"){}
+      else cur+=c;
+    }
+  }
+  if(cur!==""||row.length){ row.push(cur); rows.push(row); }
+  return rows;
+}
+function parseDateCell(s){
+  if(s==null) return null;
+  s=String(s).trim(); if(!s) return null;
+  let m=s.match(/^Date\((\d+),(\d+),(\d+)/);          // gviz: Date(y, monthIndex, d)
+  if(m) return new Date(+m[1],+m[2],+m[3]).getTime();
+  m=s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})/);          // M/D/YYYY
+  if(m) return new Date(+m[3],+m[1]-1,+m[2]).getTime();
+  const t=Date.parse(s);                                // ISO / other
+  return isNaN(t)?null:new Date(t).setHours(0,0,0,0);
+}
+function rowsToPoints(rows){
+  const pts=[];
+  for(const r of rows){
+    const t=parseDateCell(r[DATE_COL]);
+    const wRaw=r[WEIGHT_COL];
+    if(t==null||wRaw==null) continue;
+    const w=parseFloat(String(wRaw).replace(/[^0-9.\-]/g,""));
+    if(isNaN(w)||w<=0) continue;
+    pts.push({t,w});
+  }
+  pts.sort((a,b)=>a.t-b.t);
+  return pts;
+}
+function textToPoints(text){
+  const pts=[];
+  for(const line of text.split("\n")){
+    const s=line.trim(); if(!s) continue;
+    const m=s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})\s*[, \t]+\s*(-?\d+(?:\.\d+)?)/);
+    if(!m) continue;
+    pts.push({t:new Date(+m[3],+m[1]-1,+m[2]).getTime(), w:parseFloat(m[4])});
+  }
+  pts.sort((a,b)=>a.t-b.t);
+  return pts;
+}
+function pointsToText(pts){
+  return pts.map(p=>{const d=new Date(p.t);return `${d.getMonth()+1}/${d.getDate()}/${d.getFullYear()}, ${p.w}`;}).join("\n");
+}
+
+/* ---------- live fetch ---------- */
+function setStatus(cls,txt,msg){
+  const s=el("status"); s.className="status "+cls; el("statusTxt").textContent=txt;
+  el("srcmsg").innerHTML=msg||"";
+}
+async function loadFromSheet(url){
+  setStatus("load","Loading…","");
+  try{
+    const res=await fetch(url,{redirect:"follow"});
+    if(!res.ok) throw new Error("HTTP "+res.status);
+    const txt=await res.text();
+    const pts=rowsToPoints(parseCSV(txt));
+    if(!pts.length) throw new Error("no date+weight rows found");
+    el("data").value=pointsToText(pts);
+    const when=new Date().toLocaleTimeString([], {hour:"numeric",minute:"2-digit"});
+    setStatus("ok",`Live · ${pts.length} readings · ${when}`,"");
+    render();
+  }catch(e){
+    if(!el("data").value.trim()) el("data").value=SEED;
+    setStatus("err","Couldn’t load sheet — showing saved data",
+      `${e.message}. Check the sheet is shared <b>Anyone with the link → Viewer</b>, or paste a <b>Publish to web → CSV</b> link above.`);
+    render();
+  }
+}
+
+/* ---------- stats ---------- */
+function todayMs(pts){ const real=Date.now(); return pts.length?Math.max(pts[pts.length-1].t, real-DAY):real; }
+function regress(pts,x0){
+  const n=pts.length; if(n<2) return null;
+  let sx=0,sy=0,sxx=0,sxy=0;
+  for(const p of pts){const x=(p.t-x0)/DAY,y=p.w;sx+=x;sy+=y;sxx+=x*x;sxy+=x*y;}
+  const den=n*sxx-sx*sx; if(den===0) return null;
+  const slope=(n*sxy-sx*sy)/den, inter=(sy-slope*sx)/n, mean=sy/n;
+  let ssr=0,sst=0;
+  for(const p of pts){const x=(p.t-x0)/DAY,f=slope*x+inter;ssr+=(p.w-f)**2;sst+=(p.w-mean)**2;}
+  return {slope,inter,r2:sst===0?1:1-ssr/sst,n};
+}
+function niceStep(range,target){const raw=range/target,mag=Math.pow(10,Math.floor(Math.log10(raw))),n=raw/mag;return (n<1.5?1:n<3?2:n<7?5:10)*mag;}
+function fmtDate(ms){const d=new Date(ms);return MONTHS[d.getMonth()]+" "+d.getDate()+", "+d.getFullYear();}
+function fmtMon(ms){const d=new Date(ms);return MONTHS[d.getMonth()]+" '"+String(d.getFullYear()).slice(2);}
+
+/* ---------- render ---------- */
+function render(){
+  const pts=textToPoints(el("data").value);
+  el("cnt").textContent=pts.length+" points";
+  const goal=parseFloat(el("goal").value);
+  const svg=el("chart");
+  if(pts.length<2||isNaN(goal)){
+    svg.innerHTML=`<text x="480" y="270" text-anchor="middle" fill="#5B6A79" font-size="15">Waiting for at least two readings and a goal weight.</text>`;
+    el("readouts").innerHTML=""; el("caveat").textContent=""; return;
+  }
+  const firstT=pts[0].t,lastT=pts[pts.length-1].t,today=todayMs(pts);
+  let fitStart=firstT;
+  if(state.window==="30") fitStart=today-30*DAY;
+  else if(state.window==="60") fitStart=today-60*DAY;
+  else if(state.window==="since"){const d=new Date(el("since").value+"T00:00:00");if(!isNaN(d))fitStart=d.getTime();}
+  const fitPts=pts.filter(p=>p.t>=fitStart);
+  const reg=regress(fitPts,firstT);
+  const valAt=ms=>reg?reg.slope*((ms-firstT)/DAY)+reg.inter:null;
+  const trendOk=reg&&reg.slope<0;
+  let crossMs=reg?firstT+((goal-reg.inter)/reg.slope)*DAY:null;
+  const alreadyBelow=reg&&valAt(lastT)<=goal;
+
+  const horizonCap=lastT+3*365*DAY;
+  let xMax=Math.max(lastT,today)+20*DAY, crossVisible=false, crossBeyond=false;
+  if(trendOk&&!alreadyBelow&&crossMs>lastT){
+    if(crossMs<=horizonCap){xMax=crossMs+25*DAY;crossVisible=true;}
+    else{xMax=horizonCap;crossBeyond=true;}
+  }
+  const xMin=firstT-10*DAY;
+
+  let wMin=goal,wMax=goal;
+  for(const p of pts){wMin=Math.min(wMin,p.w);wMax=Math.max(wMax,p.w);}
+  const pad=Math.max((wMax-wMin)*0.10,3);
+  let yLo=wMin-pad,yHi=wMax+pad;
+  const yStep=niceStep(yHi-yLo,6);
+  yLo=Math.floor(yLo/yStep)*yStep; yHi=Math.ceil(yHi/yStep)*yStep;
+
+  const W=960,H=540,mL=52,mR=22,mT=20,mB=46;
+  const px=t=>mL+(t-xMin)/(xMax-xMin)*(W-mL-mR);
+  const py=w=>mT+(yHi-w)/(yHi-yLo)*(H-mT-mB);
+
+  let s="";
+  for(let w=yLo;w<=yHi+0.001;w+=yStep){
+    const y=py(w);
+    s+=`<line x1="${mL}" y1="${y.toFixed(1)}" x2="${W-mR}" y2="${y.toFixed(1)}" stroke="var(--hair2)" stroke-width="1"/>`;
+    s+=`<text x="${mL-8}" y="${(y+4).toFixed(1)}" text-anchor="end" font-size="11" fill="var(--muted)">${w}</text>`;
+  }
+  const d0=new Date(xMin),dEnd=new Date(xMax);
+  const totalMonths=(dEnd.getFullYear()-d0.getFullYear())*12+(dEnd.getMonth()-d0.getMonth());
+  const stepM=Math.max(1,Math.ceil((totalMonths+1)/8));
+  let my=d0.getFullYear(),mm=d0.getMonth();
+  if(d0.getDate()>1){mm++;if(mm>11){mm=0;my++;}}
+  for(let i=0;i<=totalMonths+1;i+=stepM){
+    const t=new Date(my,mm+i,1).getTime();
+    if(t<xMin||t>xMax) continue;
+    const x=px(t);
+    s+=`<line x1="${x.toFixed(1)}" y1="${mT}" x2="${x.toFixed(1)}" y2="${H-mB}" stroke="var(--hair2)" stroke-width="1"/>`;
+    s+=`<text x="${x.toFixed(1)}" y="${H-mB+18}" text-anchor="middle" font-size="11" fill="var(--muted)">${fmtMon(t)}</text>`;
+  }
+  const gy=py(goal);
+  s+=`<line x1="${mL}" y1="${gy.toFixed(1)}" x2="${W-mR}" y2="${gy.toFixed(1)}" stroke="var(--goal)" stroke-width="1.6" stroke-dasharray="7 5"/>`;
+  s+=`<text x="${W-mR}" y="${(gy-7).toFixed(1)}" text-anchor="end" font-size="11.5" fill="var(--goal)">goal ${goal}</text>`;
+  if(today>=xMin&&today<=xMax){
+    const tx=px(today);
+    s+=`<line x1="${tx.toFixed(1)}" y1="${mT}" x2="${tx.toFixed(1)}" y2="${H-mB}" stroke="var(--today)" stroke-width="1" stroke-dasharray="2 4"/>`;
+    s+=`<text x="${(tx+4).toFixed(1)}" y="${mT+12}" font-size="10" fill="var(--today)">today</text>`;
+  }
+  if(reg){
+    const a=Math.max(fitStart,firstT),b=lastT;
+    s+=`<line x1="${px(a).toFixed(1)}" y1="${py(valAt(a)).toFixed(1)}" x2="${px(b).toFixed(1)}" y2="${py(valAt(b)).toFixed(1)}" stroke="var(--trend)" stroke-width="2.4"/>`;
+    if(trendOk&&!alreadyBelow){
+      const endMs=crossVisible?crossMs:xMax;
+      s+=`<g class="proj"><line x1="${px(b).toFixed(1)}" y1="${py(valAt(b)).toFixed(1)}" x2="${px(endMs).toFixed(1)}" y2="${py(valAt(endMs)).toFixed(1)}" stroke="var(--trend)" stroke-width="2.2" stroke-dasharray="6 5"/>`;
+      if(crossVisible){
+        const cx=px(crossMs),cy=py(goal);
+        s+=`<circle cx="${cx.toFixed(1)}" cy="${cy.toFixed(1)}" r="5.5" fill="var(--trend)" stroke="#fff" stroke-width="2"/>`;
+        const right=cx>W-170, lx=right?cx-12:cx+12, anch=right?"end":"start";
+        s+=`<text x="${lx.toFixed(1)}" y="${(cy-14).toFixed(1)}" text-anchor="${anch}" font-size="13" font-weight="600" fill="var(--trend)">${fmtDate(crossMs)}</text>`;
+        s+=`<text x="${lx.toFixed(1)}" y="${(cy+2).toFixed(1)}" text-anchor="${anch}" font-size="10.5" fill="var(--muted)">projected</text>`;
+      }
+      s+=`</g>`;
+    }
+  }
+  for(const p of pts){
+    const inFit=p.t>=fitStart;
+    s+=`<circle cx="${px(p.t).toFixed(1)}" cy="${py(p.w).toFixed(1)}" r="3.6" fill="${inFit?'var(--data)':'#fff'}" stroke="var(--data)" stroke-width="1.6"><title>${fmtDate(p.t)} — ${p.w} lb</title></circle>`;
+  }
+  svg.innerHTML=s;
+
+  const cur=pts[pts.length-1], toGo=cur.w-goal;
+  let projStr,projCls="v",timeStr="—";
+  if(!reg) projStr="—";
+  else if(alreadyBelow){projStr="At/below goal";projCls="v warn";}
+  else if(!trendOk){projStr="No downward trend";projCls="v warn";}
+  else if(crossBeyond){projStr=fmtDate(crossMs);projCls="v warn";timeStr=((crossMs-today)/(365.25*DAY)).toFixed(1)+" yr";}
+  else{projStr=fmtDate(crossMs);const yrs=(crossMs-today)/(365.25*DAY);timeStr=yrs<1?Math.round((crossMs-today)/DAY)+" days":yrs.toFixed(1)+" yr";}
+  const slopeWk=reg?reg.slope*7:null;
+  el("readouts").innerHTML=`
+    <div class="stat"><div class="k">Current</div><div class="v">${cur.w}<small> lb</small></div></div>
+    <div class="stat"><div class="k">To goal</div><div class="v">${toGo>0?'−':'+'}${Math.abs(toGo).toFixed(0)}<small> lb</small></div></div>
+    <div class="stat"><div class="k">Fit slope</div><div class="v">${reg?(slopeWk>0?'+':'')+slopeWk.toFixed(2):'—'}<small> lb/wk</small></div></div>
+    <div class="stat"><div class="k">R² · n</div><div class="v">${reg?reg.r2.toFixed(2):'—'}<small> · ${reg?reg.n:0}</small></div></div>
+    <div class="stat hero"><div class="k">Projected goal</div><div class="${projCls}">${projStr}</div></div>
+    <div class="stat"><div class="k">From today</div><div class="v">${timeStr}</div></div>`;
+  let c;
+  if(!reg) c="Not enough readings in this window to fit a line.";
+  else if(reg.n<4) c=`<b>${reg.n} points in the fit</b> — the line is drawn through a handful of readings, so the projected date is a placeholder, not a forecast. It steadies as you log more.`;
+  else if(reg.r2<0.4) c=`<b>Low R² (${reg.r2.toFixed(2)})</b> — a straight line explains little of the scatter, so read the date as rough direction only.`;
+  else c=`A straight line assumes a constant rate. Early GLP-1 loss is front-loaded and flattens over ~16 months, so a linear fit tends to run optimistic at the tail — refit periodically.`;
+  el("caveat").innerHTML=c;
+}
+
+/* ---------- events ---------- */
+el("goal").addEventListener("input",render);
+el("since").addEventListener("input",()=>setWin("since"));
+el("data").addEventListener("input",render);
+el("seg").addEventListener("click",e=>{const b=e.target.closest("button");if(b)setWin(b.dataset.w);});
+function setWin(w){state.window=w;[...el("seg").children].forEach(b=>b.setAttribute("aria-pressed",b.dataset.w===w));render();}
+el("reload").addEventListener("click",()=>loadFromSheet(el("src").value.trim()||DEFAULT_SRC));
+
+// allow ?src= override for pointing Pages at a different tab/link
+const override=new URLSearchParams(location.search).get("src");
+el("src").value=override||DEFAULT_SRC;
+el("data").value=SEED;         // show something immediately
+render();
+loadFromSheet(el("src").value); // then pull live
+</script>
+</body>
+</html>
