@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>TCD Teaching Curriculum — Stroke Neurology</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=JetBrains+Mono:wght@300;400;500;700&family=Outfit:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap');
 
 :root {
   --bg:        #f8fafc;
@@ -21,10 +21,102 @@
   --red:       #dc2626;
   --green:     #059669;
   --pink:      #db2777;
-  --serif:     'DM Serif Display', serif;
-  --mono:      'JetBrains Mono', monospace;
-  --sans:      'Outfit', sans-serif;
+  /* every font is Lexend */
+  --serif:     'Lexend', sans-serif;
+  --mono:      'Lexend', sans-serif;
+  --sans:      'Lexend', sans-serif;
+  /* structural tokens used by the SVG figures + inline styles (flip in dark mode) */
+  --svg-panel:    #f1f5f9;
+  --svg-elevated: #ffffff;
+  --muted2:       #94a3b8;
+  --grid:         #e2e8f0;
+  --grid-strong:  #1f2d45;
+  --tint-red:     #fef2f2;
+  --tint-green:   #f0fdf4;
+  --tint-amber:   #fef3c7;
+  --tint-purple:  #fdf8ff;
+  --tint-blue:    #f0f9ff;
 }
+
+/* ── DARK THEME ── */
+:root[data-theme="dark"] {
+  --bg:        #0b1120;
+  --bg2:       #131c2e;
+  --bg3:       #1b2740;
+  --border:    #2b3a55;
+  --text:      #e6edf7;
+  --muted:     #93a4bd;
+  --cyan:      #22d3ee;
+  --blue:      #60a5fa;
+  --purple:    #a78bfa;
+  --amber:     #fbbf24;
+  --red:       #f87171;
+  --green:     #34d399;
+  --pink:      #f472b6;
+  --svg-panel:    #131c2e;
+  --svg-elevated: #1b2740;
+  --muted2:       #7d8ba6;
+  --grid:         #263449;
+  --grid-strong:  #46587a;
+  --tint-red:     rgba(248,113,113,0.14);
+  --tint-green:   rgba(52,211,153,0.14);
+  --tint-amber:   rgba(251,191,36,0.14);
+  --tint-purple:  rgba(167,139,250,0.16);
+  --tint-blue:    rgba(96,165,250,0.14);
+}
+
+/* ── Theme the existing inline SVG figures via attribute selectors.
+      No-ops in light mode (values equal the originals); flip in dark mode.
+      This avoids rewriting hundreds of SVG presentation attributes. ── */
+[fill="#f1f5f9"]   { fill:   var(--svg-panel); }
+[fill="white"]     { fill:   var(--svg-elevated); }
+[fill="#64748b"]   { fill:   var(--muted); }
+[fill="#94a3b8"]   { fill:   var(--muted2); }
+[fill="#1e293b"]   { fill:   var(--text); }
+[fill="#e2e8f0"]   { fill:   var(--grid); }
+[fill="#fef2f2"]   { fill:   var(--tint-red); }
+[fill="#fee2e2"]   { fill:   var(--tint-red); }
+[fill="#fff8f8"]   { fill:   var(--tint-red); }
+[fill="#f0fdf4"]   { fill:   var(--tint-green); }
+[fill="#fef3c7"]   { fill:   var(--tint-amber); }
+[stroke="#cbd5e1"] { stroke: var(--border); }
+[stroke="#e2e8f0"] { stroke: var(--grid); }
+[stroke="#1f2d45"] { stroke: var(--grid-strong); }
+[stroke="#94a3b8"] { stroke: var(--muted2); }
+[stroke="#64748b"] { stroke: var(--muted); }
+/* every inline monospace font attribute → Lexend */
+[font-family="monospace"] { font-family: var(--mono); }
+
+/* sticky nav translucency needs a theme-aware backdrop */
+:root[data-theme="dark"] .sticky-nav { background: rgba(11,17,32,0.9); }
+
+/* ── THEME TOGGLE BUTTON ── */
+.theme-toggle {
+  position: fixed;
+  top: 0.85rem;
+  right: 1rem;
+  z-index: 300;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  padding: 0.4rem 0.85rem;
+  cursor: pointer;
+  transition: color 0.2s, border-color 0.2s, background 0.2s;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+}
+.theme-toggle:hover {
+  color: var(--cyan);
+  border-color: rgba(8,145,178,0.5);
+}
+.theme-toggle .tt-icon { font-size: 0.9rem; line-height: 1; }
 
 * { margin:0; padding:0; box-sizing:border-box; }
 
@@ -239,6 +331,7 @@ body {
 .lesson-card.c4::before { background: var(--amber); }
 .lesson-card.c5::before { background: var(--red); }
 .lesson-card.c6::before { background: var(--green); }
+.lesson-card.c7::before { background: var(--pink); }
 
 .card-num {
   font-family: var(--mono);
@@ -626,6 +719,10 @@ footer {
 </head>
 <body>
 
+<button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" aria-label="Toggle light and dark mode">
+  <span class="tt-icon" id="ttIcon">☾</span><span id="ttLabel">Dark</span>
+</button>
+
 <div class="progress-bar" id="progress"></div>
 
 <!-- HERO -->
@@ -635,7 +732,7 @@ footer {
   <span class="hero-badge">Stroke Neurology · TCD Teaching Series</span>
   <h1>Reading <em>Transcranial Doppler</em> for the Stroke Resident</h1>
   <p class="hero-sub">A complete lesson plan covering velocities, waveform interpretation, intracranial stenosis, vasospasm, microembolic signals, and PFO grading — written for junior residents with limited TCD exposure.</p>
-  <p class="hero-meta">A Succinct Lesson By Shorty &nbsp;·&nbsp; Vascular Neurology &nbsp;·&nbsp; 6 Lessons &nbsp;·&nbsp; ~30 minutes total</p>
+  <p class="hero-meta">DS, MD &nbsp;·&nbsp; Vascular Neurology &nbsp;·&nbsp; 7 Lessons &nbsp;·&nbsp; ~40 minutes total</p>
   <div class="hero-scroll">scroll ↓</div>
 </section>
 
@@ -648,7 +745,8 @@ footer {
   <a class="nav-item" href="#lesson3">L3: Vasospasm</a>
   <a class="nav-item" href="#lesson4">L4: MES</a>
   <a class="nav-item" href="#lesson5">L5: PFO</a>
-  <a class="nav-item" href="#lesson6">L6: Cases</a>
+  <a class="nav-item" href="#lesson6">L6: Waveforms</a>
+  <a class="nav-item" href="#lesson7">L7: Cases</a>
   <a class="nav-item" href="#tcdanalysis">TCD Analysis</a>
 </nav>
 
@@ -656,14 +754,14 @@ footer {
 <section class="section" id="overview">
 <div class="page">
   <div class="section-eyebrow">Lesson Plan</div>
-  <h2 class="section-title">The 6-Lesson Curriculum</h2>
+  <h2 class="section-title">The 7-Lesson Curriculum</h2>
   <p class="section-intro">Each session is designed to stand alone (for opportunistic teaching on rounds) or be delivered sequentially as a formal curriculum. Sessions 1–2 are prerequisites for all others.</p>
 
   <div class="lesson-grid">
     <div class="lesson-card c1">
       <div class="card-num">LESSON 01</div>
       <div class="card-title">TCD Fundamentals</div>
-      <div class="card-time">⏱ 40 min</div>
+      <div class="card-time">⏱ 6 min</div>
       <ul class="card-topics">
         <li>What TCD actually measures</li>
         <li>Physics: Doppler angle, depth, gate</li>
@@ -676,7 +774,7 @@ footer {
     <div class="lesson-card c2">
       <div class="card-num">LESSON 02</div>
       <div class="card-title">Intracranial Stenosis</div>
-      <div class="card-time">⏱ 45 min</div>
+      <div class="card-time">⏱ 6 min</div>
       <ul class="card-topics">
         <li>Focal vs extensive stenosis patterns</li>
         <li>The stenotic jet — depth specificity</li>
@@ -689,7 +787,7 @@ footer {
     <div class="lesson-card c3">
       <div class="card-num">LESSON 03</div>
       <div class="card-title">Vasospasm (SAH)</div>
-      <div class="card-time">⏱ 40 min</div>
+      <div class="card-time">⏱ 3 min</div>
       <ul class="card-topics">
         <li>Why SAH causes vasospasm</li>
         <li>Lindegaard Ratio — derivation & use</li>
@@ -702,7 +800,7 @@ footer {
     <div class="lesson-card c4">
       <div class="card-num">LESSON 04</div>
       <div class="card-title">Microembolic Signals</div>
-      <div class="card-time">⏱ 35 min</div>
+      <div class="card-time">⏱ 4 min</div>
       <ul class="card-topics">
         <li>What produces a MES</li>
         <li>HITS criteria (consensus 1995)</li>
@@ -715,7 +813,7 @@ footer {
     <div class="lesson-card c5">
       <div class="card-num">LESSON 05</div>
       <div class="card-title">PFO Detection & Grading</div>
-      <div class="card-time">⏱ 35 min</div>
+      <div class="card-time">⏱ 3 min</div>
       <ul class="card-topics">
         <li>c-TCD agitated saline technique</li>
         <li>Valsalva protocol — why it matters</li>
@@ -727,8 +825,21 @@ footer {
     </div>
     <div class="lesson-card c6">
       <div class="card-num">LESSON 06</div>
+      <div class="card-title">Waveform Pattern Recognition</div>
+      <div class="card-time">⏱ 6 min</div>
+      <ul class="card-topics">
+        <li>The 8 waveforms to recognise on sight</li>
+        <li>Oscillating / reverberating flow (brain death)</li>
+        <li>Systolic spikes & flow arrest progression</li>
+        <li>Vasospasm & stenotic-jet turbulence</li>
+        <li>High-resistance / raised-ICP pattern</li>
+        <li>Blunted, dampened & reversed flow</li>
+      </ul>
+    </div>
+    <div class="lesson-card c7">
+      <div class="card-num">LESSON 07</div>
       <div class="card-title">Case-Based Consolidation</div>
-      <div class="card-time">⏱ 45 min</div>
+      <div class="card-time">⏱ 5 min</div>
       <ul class="card-topics">
         <li>4 structured cases with full data</li>
         <li>Guided interpretation practice</li>
@@ -742,7 +853,7 @@ footer {
 
   <div class="callout tip">
     <div class="callout-label">Teaching Strategy</div>
-    Sessions 1 and 2 should be delivered before ward rounds begin — ideally as a 90-minute combined session. Sessions 3–5 are best taught when a relevant patient is on the ward (e.g., teach SAH vasospasm when you have a Hunt-Hess grade III in the NeuroICU). Session 6 should be the final consolidation with all three residents present.
+    Sessions 1 and 2 should be delivered before ward rounds begin — ideally read together in one ~12-minute sitting. Sessions 3–5 are best taught when a relevant patient is on the ward (e.g., teach SAH vasospasm when you have a Hunt-Hess grade III in the NeuroICU). Session 6 (waveform pattern recognition) works well as a rapid-fire "name that tracing" drill and is a natural lead-in to the case work. Session 7 should be the final consolidation with all three residents present.
   </div>
 
   <div class="teacher-note">
@@ -754,12 +865,12 @@ footer {
 <!-- LESSON 1 -->
 <section class="section" id="lesson1">
 <div class="page">
-  <div class="section-eyebrow">Lesson 01 · 40 minutes</div>
+  <div class="section-eyebrow">Lesson 01 · 6 min read</div>
   <h2 class="section-title">TCD Fundamentals</h2>
   <p class="section-intro">Before residents can read a single number, they need to understand what the machine is actually measuring and why the vessels appear where they do. This is the scaffolding for everything else.</p>
 
   <div class="content-block">
-    <div class="block-label">Opening Frame — 5 min</div>
+    <div class="block-label">Opening Frame — 1 min</div>
     <div class="block-title">What TCD Tells You That Nothing Else Does</div>
     <div class="block-body">
       <p>Open with this question: <em>"MRI, CTA, and MRA tell you what a vessel looks like. What does TCD tell you?"</em> Let them guess. The answer is: <strong>TCD tells you how blood is moving through a vessel right now, in real time, at the bedside.</strong></p>
@@ -775,7 +886,7 @@ footer {
   <hr class="divider">
 
   <div class="content-block">
-    <div class="block-label">Physics — 10 min</div>
+    <div class="block-label">Physics — 1 min</div>
     <div class="block-title">The Doppler Equation (Just Enough)</div>
     <div class="block-body">
       <p>Residents do not need to memorize the Doppler equation, but they must understand its two practical consequences:</p>
@@ -809,7 +920,7 @@ footer {
   <hr class="divider">
 
   <div class="content-block">
-    <div class="block-label">Vessel Map — 10 min</div>
+    <div class="block-label">Vessel Map — 2 min</div>
     <div class="block-title">Where Each Vessel Lives</div>
     <div class="block-body">
       <p>Residents must memorize this table. It is the equivalent of knowing dermatomes — without it, you cannot read a TCD report. Drill them on it: cover the depth column and ask them to recall.</p>
@@ -822,31 +933,34 @@ footer {
           <th>Window</th>
           <th>Depth (mm)</th>
           <th>Direction</th>
-          <th>Normal MFV</th>
-          <th>Stenosis ≥</th>
+          <th>Normal MFV*</th>
+          <th>Stenosis ≥50%</th>
+          <th>Threshold source</th>
         </tr>
       </thead>
       <tbody>
-        <tr><td>MCA (M1)</td><td>Temporal</td><td class="num">45–65</td><td>Toward ↑</td><td class="num">55–75</td><td><span class="flag r">≥100</span></td></tr>
-        <tr><td>ACA (A1)</td><td>Temporal</td><td class="num">60–75</td><td>Away ↓</td><td class="num">40–60</td><td><span class="flag a">≥80</span></td></tr>
-        <tr><td>PCA (P1)</td><td>Temporal</td><td class="num">60–70</td><td>Toward ↑</td><td class="num">35–55</td><td><span class="flag a">≥70</span></td></tr>
-        <tr><td>Terminal ICA</td><td>Temporal</td><td class="num">60–70</td><td>Bidirectional</td><td class="num">40–60</td><td><span class="flag a">≥80</span></td></tr>
-        <tr><td>Ophthalmic</td><td>Orbital</td><td class="num">40–55</td><td>Toward ↑</td><td class="num">15–25</td><td>—</td></tr>
-        <tr><td>Carotid siphon</td><td>Orbital</td><td class="num">55–65</td><td>Variable</td><td class="num">40–60</td><td><span class="flag a">≥80</span></td></tr>
-        <tr><td>Basilar</td><td>Suboccipital</td><td class="num">75–110</td><td>Away ↓</td><td class="num">30–50</td><td><span class="flag r">≥60</span></td></tr>
-        <tr><td>Vertebral (V4)</td><td>Suboccipital</td><td class="num">40–75</td><td>Away ↓</td><td class="num">35–50</td><td><span class="flag a">≥50</span></td></tr>
+        <tr><td>MCA (M1)</td><td>Temporal</td><td class="num">45–65</td><td>Toward ↑</td><td class="num">55–75</td><td><span class="flag r">&gt;100</span></td><td><span class="flag g">SONIA</span></td></tr>
+        <tr><td>ACA (A1)</td><td>Temporal</td><td class="num">60–75</td><td>Away ↓</td><td class="num">40–60</td><td><span class="flag a">&gt;90</span></td><td><span class="flag g">SONIA ‡</span></td></tr>
+        <tr><td>PCA (P1)</td><td>Temporal</td><td class="num">60–70</td><td>Toward ↑</td><td class="num">35–55</td><td><span class="flag a">&gt;60</span></td><td><span class="flag g">SONIA ‡</span></td></tr>
+        <tr><td>Terminal ICA</td><td>Temporal</td><td class="num">60–70</td><td>Bidirectional</td><td class="num">40–60</td><td><span class="flag a">&gt;90</span></td><td><span class="flag g">SONIA ‡</span></td></tr>
+        <tr><td>Carotid siphon</td><td>Orbital</td><td class="num">55–65</td><td>Variable</td><td class="num">40–60</td><td><span class="flag a">&gt;90</span></td><td><span class="flag g">SONIA ‡</span></td></tr>
+        <tr><td>Vertebral (V4)</td><td>Suboccipital</td><td class="num">40–75</td><td>Away ↓</td><td class="num">35–50</td><td><span class="flag r">&gt;80</span></td><td><span class="flag g">SONIA</span></td></tr>
+        <tr><td>Basilar</td><td>Suboccipital</td><td class="num">75–110</td><td>Away ↓</td><td class="num">30–50</td><td><span class="flag r">&gt;80</span></td><td><span class="flag g">SONIA</span></td></tr>
+        <tr><td>Ophthalmic</td><td>Orbital</td><td class="num">40–55</td><td>Toward ↑</td><td class="num">15–25</td><td>— <span style="font-size:0.7rem;color:var(--muted)">(sentinel)</span></td><td>—</td></tr>
       </tbody>
     </table>
     <div class="callout ref">
-      <div class="callout-label">Primary Source</div>
-      Normal MFV ranges from Aaslid R et al., <em>J Neurosurg</em> 1982;57:769–774 — the foundational normative study using 50 healthy volunteers. Stenosis thresholds from the SONIA trial: Feldmann E et al., <em>Stroke</em> 2007;38:503–508 (validated against ≥50% stenosis on DSA).
+      <div class="callout-label">Primary Source — SONIA (Corrected)</div>
+      <strong>These stenosis thresholds are the SONIA criteria in full — the same set your attending's handbook uses.</strong> Feldmann E, Wilterdink JL, Kosinski A, et al. The Stroke Outcomes and Neuroimaging of Intracranial Atherosclerosis (SONIA) trial. <em>Neurology</em> 2007;68(24):2099–2106 (TCD validated against catheter DSA in the WASID cohort). SONIA pre-specified MFV cut-offs for ≥50% stenosis of <strong>MCA &gt;100 cm/s</strong> (and/or a stenotic-to-prestenotic MCA velocity ratio ≥2), <strong>ACA &gt;90</strong>, <strong>terminal ICA &gt;90</strong>, <strong>vertebral/basilar &gt;80</strong>, and <strong>PCA &gt;60 cm/s</strong>.<br><br>
+      <strong>‡ The catch worth knowing (and what most handbooks omit).</strong> SONIA's diagnostic accuracy was <em>robustly validated only for the MCA and the vertebral/basilar</em> — those vessels carried enough disease in the cohort to compute meaningful sensitivity and specificity. Too few ACA, terminal-ICA, and PCA lesions were present to validate their cut-offs, so subsequent re-analyses reported performance for MCA and VA/BA only (Zhao L et al., <em>Stroke</em> 2011;42:3429–3434, quoting: "other vessels were not included … due to low prevalence of the disease"). So the ACA/ICA/PCA numbers are legitimate SONIA cut-offs but rest on thin evidence — fine for screening, but confirm with CTA/MRA/DSA, and note that velocity tracks stenosis least well in the ACA and PCA.<br><br>
+      <strong>* Normal MFV ranges are a separate matter</strong> — normative data from Aaslid R et al., <em>J Neurosurg</em> 1982;57:769–774. SONIA did not publish "normal" values.
     </div>
   </div>
 
   <hr class="divider">
 
   <div class="content-block">
-    <div class="block-label">Waveform Morphology — 10 min</div>
+    <div class="block-label">Waveform Morphology — 1 min</div>
     <div class="block-title">Reading the Shape Before the Number</div>
     <div class="block-body">
       <p>Before residents look at any MFV number, they should describe the waveform shape. The shape encodes information the number alone cannot convey.</p>
@@ -915,7 +1029,7 @@ footer {
     </div>
 
     <div class="content-block" style="margin-top:1.5rem">
-      <div class="block-label">The Three Numbers — 5 min</div>
+      <div class="block-label">The Three Numbers — 1 min</div>
       <div class="block-title">MFV, PSV, and PI Explained</div>
       <table class="data-table">
         <thead><tr><th>Metric</th><th>Formula</th><th>What It Encodes</th><th>Primary Use</th></tr></thead>
@@ -960,12 +1074,12 @@ footer {
 <!-- LESSON 2 -->
 <section class="section" id="lesson2">
 <div class="page">
-  <div class="section-eyebrow">Lesson 02 · 45 minutes</div>
+  <div class="section-eyebrow">Lesson 02 · 6 min read</div>
   <h2 class="section-title">Intracranial Stenosis</h2>
   <p class="section-intro">Teach residents to distinguish the three stenosis patterns they will encounter on rounds: focal stenosis with a jet, focal stenosis with post-stenotic dampening, and extensive disease. Then teach them the extracranial localization logic using sentinel vessels.</p>
 
   <div class="content-block">
-    <div class="block-label">The Core Concept — 5 min</div>
+    <div class="block-label">The Core Concept — 1 min</div>
     <div class="block-title">Bernoulli's Principle at the Bedside</div>
     <div class="block-body">
       <p>When a vessel narrows, flow must accelerate through the stenotic segment to maintain volume. This is exactly analogous to water flowing faster through a kinked hose. The TCD detects this focal acceleration as a velocity jet at one specific depth. The key teaching point:</p>
@@ -979,7 +1093,7 @@ footer {
   <hr class="divider">
 
   <div class="content-block">
-    <div class="block-label">Three Patterns — 15 min</div>
+    <div class="block-label">Three Patterns — 3 min</div>
     <div class="block-title">Focal Stenosis · Post-Stenotic · Extensive</div>
 
     <div class="tab-bar">
@@ -1209,7 +1323,7 @@ footer {
   <hr class="divider">
 
   <div class="content-block">
-    <div class="block-label">Localization Logic — 15 min</div>
+    <div class="block-label">Localization Logic — 2 min</div>
     <div class="block-title">Sentinel Vessels: Is It Intra- or Extracranial?</div>
     <div class="block-body">
       <p>This is the most sophisticated skill in basic TCD reading. The ophthalmic artery and carotid siphon together answer a single binary question: <strong>Is the extracranial ICA intact?</strong></p>
@@ -1276,7 +1390,7 @@ footer {
         <div class="waveform-desc">Still antegrade (above baseline) but waveform is rounded with sustained diastolic flow — lower resistance than normal. Partial ICA stenosis driving partial collateralization through the ophthalmic artery.</div>
       </div>
       <div class="waveform-card">
-        <div class="waveform-title" style="color:#94a3b8">④ Absent Signal → Non-diagnostic</div>
+        <div class="waveform-title" style="color:var(--muted2)">④ Absent Signal → Non-diagnostic</div>
         <svg viewBox="0 0 240 90" fill="none" xmlns="http://www.w3.org/2000/svg">
           <rect width="240" height="90" fill="#f1f5f9" rx="6"/>
           <line x1="0" y1="45" x2="240" y2="45" stroke="#cbd5e1" stroke-width="0.5" stroke-dasharray="2 2"/>
@@ -1307,7 +1421,7 @@ footer {
 <!-- COLLATERALS SECTION -->
 <section class="section" id="collaterals">
 <div class="page">
-  <div class="section-eyebrow">Lesson 02b · Bonus</div>
+  <div class="section-eyebrow">Lesson 02b · Bonus · 9 min read</div>
   <h2 class="section-title">TCD-Detectable Collateral Pathways</h2>
   <p class="section-intro">The ophthalmic artery is only one of six collateral channels the brain recruits when the anterior circulation fails. Each has a distinct TCD signature. Recognising these patterns tells you which routes are active, how complete collateralisation is, and — critically — whether the ischaemic territory is being rescued or not.</p>
 
@@ -1686,9 +1800,6 @@ footer {
     </div>
   </div>
 
-</div>
-</section>
-
   <div class="quiz-block">
     <div class="quiz-q">Knowledge Check: A patient with right MCA territory stroke has TCD showing R MCA MFV 32 cm/s (dampened waveform), R ophthalmic flow reversed (negative), R ophthalmic PI 0.72. What does this suggest?</div>
     <ul class="quiz-options" id="q2-opts">
@@ -1705,7 +1816,7 @@ footer {
 <!-- LESSON 3 -->
 <section class="section" id="lesson3">
 <div class="page">
-  <div class="section-eyebrow">Lesson 03 · 40 minutes</div>
+  <div class="section-eyebrow">Lesson 03 · 3 min read</div>
   <h2 class="section-title">Vasospasm in SAH</h2>
   <p class="section-intro">Vasospasm monitoring is one of the most time-critical TCD applications in the NeuroICU. Residents need to understand the Lindegaard Ratio deeply — not just memorize the cutoffs, but know why it exists and what it can and cannot tell them.</p>
 
@@ -1714,7 +1825,7 @@ footer {
   </div>
 
   <div class="content-block">
-    <div class="block-label">Pathophysiology — 10 min</div>
+    <div class="block-label">Pathophysiology — 1 min</div>
     <div class="block-title">Why Subarachnoid Blood Causes Vasospasm</div>
     <div class="block-body">
       <p>Subarachnoid hemorrhage deposits oxyhemoglobin in the CSF surrounding the intracranial arteries. Oxyhemoglobin is a potent spasmogen — it triggers endothelin-1 release, reduces nitric oxide bioavailability, and causes sustained smooth muscle contraction in the arterial wall over 4–14 days post-bleed.</p>
@@ -1729,7 +1840,7 @@ footer {
   <hr class="divider">
 
   <div class="content-block">
-    <div class="block-label">The Core Tool — 15 min</div>
+    <div class="block-label">The Core Tool — 1 min</div>
     <div class="block-title">The Lindegaard Ratio — Why It Exists</div>
     <div class="block-body">
       <p>Here is the problem the Lindegaard Ratio solves: <strong>an elevated MCA MFV can come from two completely different causes</strong> — vasospasm or systemic hyperemia. Patients post-SAH are frequently febrile, anemic, and receiving IV fluids, all of which increase cardiac output and raise cerebral blood flow velocity globally. If you see MCA MFV 130 cm/s, is that vasospasm in the MCA or is it a globally hyperdynamic patient whose MCA happens to be running fast?</p>
@@ -1759,7 +1870,7 @@ footer {
   <hr class="divider">
 
   <div class="content-block">
-    <div class="block-label">Posterior Circulation — 5 min</div>
+    <div class="block-label">Posterior Circulation — 1 min</div>
     <div class="block-title">Basilar Vasospasm — A Different Ratio</div>
     <div class="block-body">
       <p>For the basilar artery, the equivalent of the Lindegaard Ratio is the <strong>Soustiel Ratio</strong> (or basilar/vertebral ratio): Basilar MFV ÷ Extracranial Vertebral MFV. Thresholds: &gt;2 = mild-moderate vasospasm, &gt;3 = severe. This is less well-validated than the Lindegaard Ratio but useful when basilar MFV is elevated after posterior fossa or basilar aneurysm SAH.</p>
@@ -1767,7 +1878,7 @@ footer {
     </div>
     <div class="callout ref">
       <div class="callout-label">Reference</div>
-      Soustiel JF et al., <em>Stroke</em> 2002;33:1886–1893. Basilar artery MFV threshold for vasospasm: ≥60 cm/s (same SONIA-derived stenosis threshold), but in the SAH context, rising trend on serial studies is often more useful than a single threshold value.
+      Soustiel JF et al., <em>Stroke</em> 2002;33:1886–1893. For basilar <em>vasospasm</em>, a basilar MFV around 80–85 cm/s combined with a Soustiel (basilar/extracranial-vertebral) ratio &gt;2–3 has been associated with basilar narrowing. Note this is separate from — and not "the same as" — SONIA's basilar <em>stenosis</em> cut-off, which is &gt;80 cm/s (not 60). In the SAH context, the rising trend on serial studies is often more useful than any single threshold value.
     </div>
   </div>
 
@@ -1787,12 +1898,12 @@ footer {
 <!-- LESSON 4 -->
 <section class="section" id="lesson4">
 <div class="page">
-  <div class="section-eyebrow">Lesson 04 · 35 minutes</div>
+  <div class="section-eyebrow">Lesson 04 · 4 min read</div>
   <h2 class="section-title">Microembolic Signals (MES)</h2>
   <p class="section-intro">Microembolic signals are the TCD finding that most directly changes acute stroke management — detecting ongoing embolism from a culprit source. Residents need to know the consensus criteria, the solid/gaseous distinction, and when to order monitoring.</p>
 
   <div class="content-block">
-    <div class="block-label">What Produces a MES — 8 min</div>
+    <div class="block-label">What Produces a MES — 1 min</div>
     <div class="block-title">The Physics of an Embolus on Doppler</div>
     <div class="block-body">
       <p>When a microembolus (platelet aggregate, thrombus fragment, lipid particle, or air bubble) passes through the Doppler sample gate, it reflects ultrasound with dramatically higher intensity than surrounding red blood cells — because the acoustic impedance mismatch between the embolus and blood is much greater. This produces a brief, high-intensity transient signal (HITS) superimposed on the background Doppler spectrum.</p>
@@ -1801,34 +1912,34 @@ footer {
   </div>
 
   <div class="content-block">
-    <div class="block-label">Consensus Criteria — 10 min</div>
+    <div class="block-label">Consensus Criteria — 1 min</div>
     <div class="block-title">HITS Criteria (Basic Consensus 1995, Revised 2009)</div>
 
     <!-- ARTHUR mnemonic card -->
-    <div style="background:#f0f9ff;border:1px solid #0891b2;border-radius:12px;padding:1.25rem 1.5rem;margin:1rem 0">
+    <div style="background:var(--tint-blue);border:1px solid #0891b2;border-radius:12px;padding:1.25rem 1.5rem;margin:1rem 0">
       <div style="font-family:var(--mono);font-size:0.65rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--cyan);margin-bottom:0.75rem;font-weight:700">THE ARTHUR MNEMONIC — All criteria must be met</div>
       <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:0.75rem">
-        <div style="background:white;border-radius:8px;padding:0.75rem;border:1px solid #e2e8f0">
+        <div style="background:var(--bg2);border-radius:8px;padding:0.75rem;border:1px solid var(--grid)">
           <div style="font-family:var(--mono);font-size:1.4rem;font-weight:700;color:var(--cyan);line-height:1">A</div>
           <div style="font-weight:600;font-size:0.88rem;margin-bottom:0.2rem">Audio signal</div>
           <div style="font-size:0.78rem;color:var(--muted)">Chirp, click, or whistle distinct from background Doppler whoosh</div>
         </div>
-        <div style="background:white;border-radius:8px;padding:0.75rem;border:1px solid #e2e8f0">
+        <div style="background:var(--bg2);border-radius:8px;padding:0.75rem;border:1px solid var(--grid)">
           <div style="font-family:var(--mono);font-size:1.4rem;font-weight:700;color:var(--cyan);line-height:1">R</div>
           <div style="font-weight:600;font-size:0.88rem;margin-bottom:0.2rem">Random timing</div>
           <div style="font-size:0.78rem;color:var(--muted)">Occurs randomly within the cardiac cycle — not locked to a fixed phase (unlike artefact)</div>
         </div>
-        <div style="background:white;border-radius:8px;padding:0.75rem;border:1px solid #e2e8f0">
+        <div style="background:var(--bg2);border-radius:8px;padding:0.75rem;border:1px solid var(--grid)">
           <div style="font-family:var(--mono);font-size:1.4rem;font-weight:700;color:var(--cyan);line-height:1">T</div>
           <div style="font-weight:600;font-size:0.88rem;margin-bottom:0.2rem">Transient</div>
           <div style="font-size:0.78rem;color:var(--muted)">Duration &lt;300 ms — brief flash. Prolonged signal = movement artefact</div>
         </div>
-        <div style="background:white;border-radius:8px;padding:0.75rem;border:1px solid #e2e8f0">
+        <div style="background:var(--bg2);border-radius:8px;padding:0.75rem;border:1px solid var(--grid)">
           <div style="font-family:var(--mono);font-size:1.4rem;font-weight:700;color:var(--cyan);line-height:1">H</div>
           <div style="font-weight:600;font-size:0.88rem;margin-bottom:0.2rem">High intensity</div>
           <div style="font-size:0.78rem;color:var(--muted)">≥3 dB above the background Doppler spectrum — clearly stands out</div>
         </div>
-        <div style="background:white;border-radius:8px;padding:0.75rem;border:1px solid #e2e8f0">
+        <div style="background:var(--bg2);border-radius:8px;padding:0.75rem;border:1px solid var(--grid)">
           <div style="font-family:var(--mono);font-size:1.4rem;font-weight:700;color:var(--cyan);line-height:1">U</div>
           <div style="font-weight:600;font-size:0.88rem;margin-bottom:0.2rem">Unidirectional</div>
           <div style="font-size:0.78rem;color:var(--muted)">Stays on one side of the y-axis baseline only — does not cross zero. Artefact is bidirectional</div>
@@ -1917,7 +2028,7 @@ footer {
   <hr class="divider">
 
   <div class="content-block">
-    <div class="block-label">Solid vs Gaseous — 8 min</div>
+    <div class="block-label">Solid vs Gaseous — 1 min</div>
     <div class="block-title">The Clinical Importance of Embolus Type</div>
     <div class="block-body">
       <p>Not all MES are equal. Gas emboli (air bubbles, agitated saline bubbles in PFO testing) and solid emboli (thrombus, platelets) produce different intensities and frequency characteristics. This distinction is now possible with dual-frequency TCD (using simultaneous 2 MHz and 2.5 MHz probes), which the HITS Automatic Embolus Differentiation (HITS-AED) algorithm exploits.</p>
@@ -1942,7 +2053,7 @@ footer {
   <hr class="divider">
 
   <div class="content-block">
-    <div class="block-label">Clinical Contexts — 10 min</div>
+    <div class="block-label">Clinical Contexts — 1 min</div>
     <div class="block-title">When to Order MES Monitoring and What It Changes</div>
 
     <div class="accordion">
@@ -2010,12 +2121,12 @@ footer {
 <!-- LESSON 5 -->
 <section class="section" id="lesson5">
 <div class="page">
-  <div class="section-eyebrow">Lesson 05 · 35 minutes</div>
+  <div class="section-eyebrow">Lesson 05 · 3 min read</div>
   <h2 class="section-title">PFO Detection & Grading</h2>
   <p class="section-intro">Contrast TCD (c-TCD) is one of the most important PFO screening tools available — it is more sensitive than c-TTE and approaches the sensitivity of c-TEE in experienced hands. Residents need to understand the technique, the Valsalva maneuver's role, and the Spencer grading scale.</p>
 
   <div class="content-block">
-    <div class="block-label">The Technique — 10 min</div>
+    <div class="block-label">The Technique — 1 min</div>
     <div class="block-title">Agitated Saline and the Valsalva Maneuver</div>
     <div class="block-body">
       <p>The principle: inject agitated saline (creating microbubbles) into a peripheral vein. In a normal heart, bubbles are trapped in the pulmonary capillary bed and never reach the arterial circulation. In a right-to-left shunt (PFO, ASD, pulmonary AVM), bubbles cross directly into the arterial circulation and appear as MES in the MCAs within 5–25 cardiac cycles of injection.</p>
@@ -2061,7 +2172,7 @@ footer {
   <hr class="divider">
 
   <div class="content-block">
-    <div class="block-label">Grading — 10 min</div>
+    <div class="block-label">Grading — 1 min</div>
     <div class="block-title">Spencer Grading Scale</div>
     <div class="block-body">
       <p>The Spencer scale grades shunt size based on the total number of MES appearing in the MCA within 25 cardiac cycles of contrast injection. It is the most widely used grading system for c-TCD PFO assessment.</p>
@@ -2142,7 +2253,7 @@ footer {
   <hr class="divider">
 
   <div class="content-block">
-    <div class="block-label">Clinical Integration — 8 min</div>
+    <div class="block-label">Clinical Integration — 1 min</div>
     <div class="block-title">What to Do With a Positive c-TCD</div>
     <div class="block-body">
       <p>A positive c-TCD does not, by itself, determine stroke mechanism. PFO is present in approximately 25% of the general population (Hagen PT et al., <em>Mayo Clin Proc</em> 1984). The clinical question is: is this PFO causally related to the stroke, or is it an incidental finding?</p>
@@ -2170,7 +2281,229 @@ footer {
 <!-- LESSON 6 -->
 <section class="section" id="lesson6">
 <div class="page">
-  <div class="section-eyebrow">Lesson 06 · 45 minutes</div>
+  <div class="section-eyebrow">Lesson 06 · 6 min read</div>
+  <h2 class="section-title">Waveform Pattern Recognition</h2>
+  <p class="section-intro">Numbers matter — but the shape of the waveform is often diagnostic before you read a single velocity. This lesson trains the reflex: see the tracing, name the pattern, know the mechanism. These are the waveforms a resident must recognise on sight, from a normal low-resistance signal to the reverberating flow of cerebral circulatory arrest.</p>
+
+  <div class="teacher-note">
+    Run this as a rapid-fire "name that tracing" drill. Project each waveform, cover the label, and ask three questions in order: (1) Where is the baseline and which way does flow go? (2) What is diastole doing — sustained, absent, or reversed? (3) What is the single most likely mechanism? The goal is pattern-recognition speed, so keep the pace brisk and come back to the hard ones.
+  </div>
+
+  <div class="content-block">
+    <div class="block-label">The Core Idea — 1 min</div>
+    <div class="block-title">Diastole Tells the Story</div>
+    <div class="block-body">
+      <p>Systole is driven by the heart and looks broadly similar everywhere. The <strong>diastolic portion of the waveform</strong> is where the diagnostic information lives, because diastolic flow reflects <em>downstream resistance</em>. As resistance rises — from a low-resistance brain toward the extreme of cerebral circulatory arrest — diastolic flow is progressively stripped away: sustained → blunted → absent → reversed → gone. Learn to read diastole first and most patterns fall out immediately.</p>
+    </div>
+    <div class="callout key">
+      <div class="callout-label">Read In This Order</div>
+      <strong>1. Baseline &amp; direction</strong> (antegrade above, retrograde below) → <strong>2. Diastole</strong> (sustained / blunted / absent / reversed) → <strong>3. Systolic shape</strong> (sharp / broad / delayed) → <strong>4. Amplitude &amp; turbulence</strong> (spectral broadening?). Only then reach for the MFV number.
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- GROUP A: the rising-ICP / cerebral circulatory arrest ladder -->
+  <div class="content-block">
+    <div class="block-label">The Rising-Resistance Ladder — 3 min</div>
+    <div class="block-title">From Normal Perfusion to Circulatory Arrest</div>
+    <div class="block-body">
+      <p>As intracranial pressure climbs toward and past diastolic arterial pressure, the waveform marches through a predictable sequence. This is the single most important progression to recognise, because its end stages are the TCD signature of <strong>cerebral circulatory arrest (CCA)</strong> used to support a diagnosis of brain death.</p>
+    </div>
+
+    <div class="waveform-row">
+      <!-- Normal low-resistance -->
+      <div class="waveform-card">
+        <div class="waveform-title" style="color:#0891b2">① Normal — Low Resistance</div>
+        <svg viewBox="0 0 240 110" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="240" height="110" fill="#f1f5f9" rx="6"/>
+          <line x1="0" y1="84" x2="240" y2="84" stroke="#1f2d45" stroke-width="0.5" stroke-dasharray="3 3"/>
+          <path d="M10,84 C16,84 18,40 24,32 C28,28 32,48 36,58 C40,66 46,63 54,63 L70,63 C76,63 80,84 84,84
+                   C90,84 92,40 98,32 C102,28 106,48 110,58 C114,66 120,63 128,63 L144,63 C150,63 154,84 158,84
+                   C164,84 166,40 172,32 C176,28 180,48 184,58 C188,66 194,63 202,63 L218,63 C224,63 228,84 232,84"
+                stroke="#22d3ee" stroke-width="1.6" stroke-linejoin="round"/>
+          <text x="8" y="100" fill="#64748b" font-size="6.5" font-family="monospace">PI 0.7–1.0 · sustained diastole above baseline</text>
+        </svg>
+        <div class="waveform-desc">Broad peak, diastolic flow held well above baseline. The reference pattern — brain is a low-resistance bed demanding continuous perfusion.</div>
+      </div>
+
+      <!-- High resistance / raised ICP -->
+      <div class="waveform-card">
+        <div class="waveform-title" style="color:#d97706">② High Resistance — Raised ICP</div>
+        <svg viewBox="0 0 240 110" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="240" height="110" fill="#f1f5f9" rx="6"/>
+          <line x1="0" y1="84" x2="240" y2="84" stroke="#1f2d45" stroke-width="0.5" stroke-dasharray="3 3"/>
+          <path d="M10,84 L22,84 L28,30 L34,66 L38,78 L44,82 L58,83 L74,84
+                   L86,84 L92,30 L98,66 L102,78 L108,82 L122,83 L138,84
+                   L150,84 L156,30 L162,66 L166,78 L172,82 L186,83 L206,84 L232,84"
+                stroke="#d97706" stroke-width="1.6" stroke-linejoin="round"/>
+          <text x="8" y="100" fill="#64748b" font-size="6.5" font-family="monospace">PI &gt;1.2 · tall sharp systole · diastole falls toward baseline</text>
+        </svg>
+        <div class="waveform-desc">Tall, spiky systolic peak with diastolic flow driven down toward baseline. Rising pulsatility index — the first rung of raised intracranial pressure or distal high resistance.</div>
+      </div>
+
+      <!-- Reverberating / oscillating -->
+      <div class="waveform-card">
+        <div class="waveform-title" style="color:#dc2626">③ Reverberating / Oscillating — CCA</div>
+        <svg viewBox="0 0 240 110" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="240" height="110" fill="#f1f5f9" rx="6"/>
+          <line x1="0" y1="56" x2="240" y2="56" stroke="#1f2d45" stroke-width="0.6" stroke-dasharray="3 3"/>
+          <path d="M10,56 L20,56 L27,22 L34,56 L41,90 L52,56
+                   L62,56 L69,22 L76,56 L83,90 L94,56
+                   L104,56 L111,22 L118,56 L125,90 L136,56
+                   L146,56 L153,22 L160,56 L167,90 L178,56
+                   L188,56 L195,22 L202,56 L209,90 L220,56 L232,56"
+                stroke="#dc2626" stroke-width="1.6" stroke-linejoin="round"/>
+          <text x="8" y="16" fill="#dc2626" font-size="6.5" font-family="monospace">antegrade systole</text>
+          <text x="150" y="104" fill="#dc2626" font-size="6.5" font-family="monospace">retrograde diastole</text>
+          <text x="8" y="104" fill="#64748b" font-size="6.5" font-family="monospace">areas ≈ equal → net flow ≈ 0</text>
+        </svg>
+        <div class="waveform-desc">To-and-fro flow: brief forward flow in systole, reversed flow in diastole, with roughly equal areas — net cerebral flow near zero. A cerebral-circulatory-arrest pattern.</div>
+      </div>
+
+      <!-- Systolic spikes -->
+      <div class="waveform-card">
+        <div class="waveform-title" style="color:#dc2626">④ Systolic Spikes — CCA</div>
+        <svg viewBox="0 0 240 110" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="240" height="110" fill="#f1f5f9" rx="6"/>
+          <line x1="0" y1="84" x2="240" y2="84" stroke="#1f2d45" stroke-width="0.5" stroke-dasharray="3 3"/>
+          <path d="M10,84 L26,84 L30,52 L34,84 L70,84 L74,52 L78,84 L114,84 L118,52 L122,84 L158,84 L162,52 L166,84 L202,84 L206,52 L210,84 L232,84"
+                stroke="#dc2626" stroke-width="1.6" stroke-linejoin="round"/>
+          <line x1="30" y1="52" x2="30" y2="40" stroke="#64748b" stroke-width="0.5" stroke-dasharray="2 2"/>
+          <text x="34" y="44" fill="#64748b" font-size="6" font-family="monospace">peak &lt;50 cm/s</text>
+          <text x="8" y="100" fill="#64748b" font-size="6.5" font-family="monospace">sharp early-systolic spikes &lt;200 ms · no diastolic flow</text>
+        </svg>
+        <div class="waveform-desc">Short, sharp early-systolic spikes (peak &lt;50 cm/s, duration &lt;200 ms) with no diastolic flow at all. A later, more ominous CCA pattern than reverberating flow.</div>
+      </div>
+
+      <!-- Absent flow -->
+      <div class="waveform-card">
+        <div class="waveform-title" style="color:var(--muted2)">⑤ Absent Signal — CCA End-Stage</div>
+        <svg viewBox="0 0 240 110" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="240" height="110" fill="#f1f5f9" rx="6"/>
+          <line x1="0" y1="60" x2="240" y2="60" stroke="#1f2d45" stroke-width="0.5" stroke-dasharray="3 3"/>
+          <path d="M10,60 L230,60" stroke="#94a3b8" stroke-width="1.4" stroke-dasharray="5 4"/>
+          <text x="120" y="42" fill="#94a3b8" font-size="8" font-family="monospace" text-anchor="middle">— no flow signal —</text>
+          <text x="8" y="100" fill="#64748b" font-size="6.5" font-family="monospace">previously documented flow now disappeared</text>
+        </svg>
+        <div class="waveform-desc">Loss of a <em>previously documented</em> signal. Only meaningful when a good window and prior flow were confirmed — a fresh no-signal exam may just be a poor window (~8% of patients).</div>
+      </div>
+    </div>
+
+    <div class="callout warn">
+      <div class="callout-label">Cerebral Circulatory Arrest — The Rules That Matter</div>
+      Reverberating (oscillating) flow and/or systolic spikes support CCA only when found in <strong>both middle cerebral arteries AND the basilar artery</strong>, and confirmed on a <strong>repeat study ~30 minutes later</strong>. In arrest, judge the <strong>waveform, not the MFV</strong>. TCD is an <strong>ancillary/confirmatory</strong> test — it supports, and never replaces, the clinical determination of brain death, and requires a documented adequate window (a poor window is not "absent flow").
+      <div style="margin-top:0.6rem;font-size:0.82rem;color:var(--muted)">Sources: Ducrocq X et al., meta-analysis, <em>J Neurol Sci</em> 1998; Segura T et al. (Spanish Neurosonology Society) recommendations, <em>Neurologia</em> 2009; Llompart-Pou JA et al., <em>ISRN</em> 2013 (systolic spike peak &lt;50 cm/s, duration &lt;200 ms).</div>
+    </div>
+
+    <div class="callout pearl">
+      <div class="callout-label">The Ladder, In One Line</div>
+      Sustained diastole (normal) → blunted diastole (rising ICP) → <strong>absent diastole</strong> → <strong>reversed diastole</strong> (reverberating) → <strong>systolic spikes</strong> → no signal. Each rung is a higher ICP relative to blood pressure. Recognising <em>where on the ladder</em> a patient sits is more useful than any single velocity.
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- GROUP B: flow-limiting lesions -->
+  <div class="content-block">
+    <div class="block-label">Flow-Limiting Lesions — 2 min</div>
+    <div class="block-title">Vasospasm / Stenotic Jet vs Post-Stenotic Dampening</div>
+    <div class="block-body">
+      <p>Two patterns bracket a flow-limiting lesion. <strong>At</strong> the narrowing you get a high-velocity, turbulent jet (vasospasm and stenosis look identical here — the Lindegaard ratio and clinical context separate them). <strong>Distal</strong> to it you get a slow, blunted, delayed waveform (<em>tardus–parvus</em>).</p>
+    </div>
+
+    <div class="waveform-row">
+      <!-- Vasospasm / stenotic jet -->
+      <div class="waveform-card">
+        <div class="waveform-title" style="color:#7c3aed">⑥ Vasospasm / Stenotic Jet — Turbulent</div>
+        <svg viewBox="0 0 240 110" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="240" height="110" fill="#f1f5f9" rx="6"/>
+          <line x1="0" y1="84" x2="240" y2="84" stroke="#1f2d45" stroke-width="0.5" stroke-dasharray="3 3"/>
+          <!-- filled turbulent envelope -->
+          <path d="M10,84 C16,84 18,24 24,18 C28,15 32,30 36,44 C40,54 46,50 54,52 L70,52 C76,52 80,84 84,84
+                   C90,84 92,24 98,18 C102,15 106,30 110,44 C114,54 120,50 128,52 L144,52 C150,52 154,84 158,84
+                   C164,84 166,24 172,18 C176,15 180,30 184,44 C188,54 194,50 202,52 L218,52 C224,52 228,84 232,84 Z"
+                fill="rgba(124,58,237,0.18)" stroke="#7c3aed" stroke-width="1.5" stroke-linejoin="round"/>
+          <!-- spectral-broadening speckle -->
+          <path d="M24,26 L30,40 M34,30 L40,48 M98,26 L104,40 M108,30 L114,48 M172,26 L178,40 M182,30 L188,48"
+                stroke="#a78bfa" stroke-width="0.7"/>
+          <text x="8" y="100" fill="#64748b" font-size="6.5" font-family="monospace">high MFV · dense fill (spectral broadening) · harsh audio</text>
+        </svg>
+        <div class="waveform-desc">Tall peaks with a dense, filled-in spectrum (spectral broadening) and a harsh/"seagull" audio quality. Vasospasm and focal stenosis share this look — use the Lindegaard ratio and clinical context to tell them apart.</div>
+      </div>
+
+      <!-- Post-stenotic dampened -->
+      <div class="waveform-card">
+        <div class="waveform-title" style="color:#d97706">⑦ Post-Stenotic Dampened — Tardus–Parvus</div>
+        <svg viewBox="0 0 240 110" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="240" height="110" fill="#f1f5f9" rx="6"/>
+          <line x1="0" y1="84" x2="240" y2="84" stroke="#1f2d45" stroke-width="0.5" stroke-dasharray="3 3"/>
+          <path d="M10,80 C24,80 30,64 42,60 C52,57 60,66 72,70 C80,72 84,72 90,71
+                   C104,71 110,55 122,51 C132,48 140,57 152,61 C160,63 164,63 170,62
+                   C184,62 190,55 202,52 C210,50 216,56 224,60"
+                stroke="#d97706" stroke-width="1.6" stroke-linejoin="round"/>
+          <text x="30" y="52" fill="#64748b" font-size="6" font-family="monospace">slow, delayed upstroke</text>
+          <text x="8" y="100" fill="#64748b" font-size="6.5" font-family="monospace">low MFV · rounded blunt peak · low PI · monophasic</text>
+        </svg>
+        <div class="waveform-desc">Low-amplitude, rounded, slow-rising ("tardus"), small ("parvus") waveform sampled <em>distal</em> to a tight stenosis or proximal occlusion. A negative jet search plus this pattern means you are downstream — image the vessel.</div>
+      </div>
+
+      <!-- Reversed / steal -->
+      <div class="waveform-card">
+        <div class="waveform-title" style="color:#dc2626">⑧ Reversed Flow — Steal / Collateral</div>
+        <svg viewBox="0 0 240 110" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="240" height="110" fill="#f1f5f9" rx="6"/>
+          <line x1="0" y1="34" x2="240" y2="34" stroke="#1f2d45" stroke-width="0.5" stroke-dasharray="3 3"/>
+          <path d="M10,34 C18,34 22,52 30,60 C38,68 46,64 56,62 L74,62 C82,62 88,50 96,44
+                   C102,40 108,44 114,54 C120,64 126,60 136,58 L154,58 C162,58 168,48 176,44
+                   C182,41 188,45 194,54 C200,63 206,60 214,58 L230,58"
+                stroke="#dc2626" stroke-width="1.6" stroke-linejoin="round"/>
+          <text x="12" y="26" fill="#64748b" font-size="6" font-family="monospace">baseline</text>
+          <text x="12" y="100" fill="#dc2626" font-size="6.5" font-family="monospace">flow BELOW baseline — reversed / retrograde</text>
+        </svg>
+        <div class="waveform-desc">Flow inverted below the expected baseline — a collateral or steal signature (e.g., reversed ophthalmic in ICA occlusion, reversed A1 via the anterior communicating artery, or vertebral reversal in subclavian steal). Direction is the whole message here.</div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <div class="content-block">
+    <div class="block-label">One-Screen Summary</div>
+    <div class="block-title">The Eight Patterns at a Glance</div>
+    <table class="data-table">
+      <thead><tr><th>Pattern</th><th>What you see</th><th>Mechanism</th><th>Classic context</th></tr></thead>
+      <tbody>
+        <tr><td>Normal low-resistance</td><td>Broad peak, sustained diastole, PI 0.7–1.0</td><td>Healthy low-resistance brain bed</td><td>Reference / baseline</td></tr>
+        <tr><td>High-resistance</td><td>Tall spiky systole, diastole falls to baseline, PI &gt;1.2</td><td>Rising ICP or high distal resistance</td><td>Early raised ICP, distal occlusion</td></tr>
+        <tr><td><span class="flag r">Reverberating</span></td><td>Antegrade systole + retrograde diastole, net ≈ 0</td><td>ICP ≈ arterial pressure; to-and-fro column</td><td><strong>Cerebral circulatory arrest / brain death</strong></td></tr>
+        <tr><td><span class="flag r">Systolic spikes</span></td><td>Sharp spikes &lt;50 cm/s, &lt;200 ms, no diastole</td><td>ICP &gt; systolic pressure</td><td><strong>Cerebral circulatory arrest / brain death</strong></td></tr>
+        <tr><td>Absent signal</td><td>Loss of a previously present signal</td><td>Flow ceased (or lost window)</td><td>CCA end-stage · confirm window</td></tr>
+        <tr><td><span class="flag a">Turbulent jet</span></td><td>High MFV, spectral broadening, harsh audio</td><td>Focal narrowing → accelerated turbulent flow</td><td>Vasospasm (SAH) or stenosis</td></tr>
+        <tr><td>Dampened (tardus–parvus)</td><td>Low MFV, rounded blunt peak, delayed upstroke, low PI</td><td>Flow sampled distal to a tight lesion</td><td>Post-stenotic / post-occlusive</td></tr>
+        <tr><td>Reversed flow</td><td>Waveform below expected baseline</td><td>Collateral recruitment or steal</td><td>ICA occlusion, ACoA/PCoA collateral, subclavian steal</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Knowledge Check -->
+  <div class="quiz-block">
+    <div class="quiz-q">Knowledge Check: A comatose, apnoeic patient off sedation is being evaluated. TCD of both middle cerebral arteries and the basilar artery shows brief forward flow in systole followed by reversed flow in diastole, with the forward and reverse areas approximately equal. What does this pattern represent, and what is the correct next step?</div>
+    <ul class="quiz-options" id="q6-opts">
+      <li class="quiz-opt" onclick="checkQuiz('q6',this,false)" data-fb="Severe vasospasm produces high-velocity turbulent forward flow with a high Lindegaard ratio — not a to-and-fro pattern with reversed diastole. This waveform is qualitatively different.">A. Severe global vasospasm — start nimodipine and induced hypertension</li>
+      <li class="quiz-opt" onclick="checkQuiz('q6',this,true)" data-fb="Correct. Reverberating (oscillating) to-and-fro flow with roughly equal antegrade-systolic and retrograde-diastolic areas means net cerebral flow ≈ 0 — a cerebral circulatory arrest pattern. Because it is present in both MCAs and the basilar, it supports CCA, but TCD is an ancillary test: it must be confirmed on a repeat study (~30 min later) and never substitutes for the clinical/brain-death examination.">B. Reverberating flow = cerebral circulatory arrest; confirm with a repeat study and treat TCD as ancillary to the clinical exam</li>
+      <li class="quiz-opt" onclick="checkQuiz('q6',this,false)" data-fb="A poor temporal window gives no signal at all, not a structured to-and-fro waveform. Here a clear oscillating signal was obtained, so this is a real flow pattern, not a technical failure.">C. Poor insonation windows — the finding is a technical artifact</li>
+      <li class="quiz-opt" onclick="checkQuiz('q6',this,false)" data-fb="Post-stenotic dampening is a low-amplitude, forward, monophasic waveform with a slow upstroke — it never reverses in diastole. Reversed diastolic flow is the key distinguishing feature here.">D. Post-stenotic dampened flow from a proximal occlusion</li>
+    </ul>
+    <div class="quiz-feedback" id="q6-fb"></div>
+  </div>
+</div>
+</section>
+
+<!-- LESSON 7 -->
+<section class="section" id="lesson7">
+<div class="page">
+  <div class="section-eyebrow">Lesson 07 · 5 min read</div>
   <h2 class="section-title">Case-Based Consolidation</h2>
   <p class="section-intro">Four cases designed to integrate all prior lessons. Work through each case together before revealing the answer. Encourage residents to narrate their reasoning out loud — correct interpretation requires sequential logic, not just pattern matching.</p>
 
@@ -2300,7 +2633,7 @@ footer {
     <table class="data-table">
       <thead><tr><th>Step</th><th>Question</th><th>Tool</th><th>Key Threshold</th></tr></thead>
       <tbody>
-        <tr><td><strong>1</strong></td><td>Is any vessel above stenosis threshold?</td><td>MFV vs threshold</td><td>MCA ≥100, BA ≥60, Vert ≥50</td></tr>
+        <tr><td><strong>1</strong></td><td>Is any vessel above stenosis threshold?</td><td>MFV vs threshold</td><td>MCA &gt;100, VA/BA &gt;80 (SONIA)</td></tr>
         <tr><td><strong>2</strong></td><td>Is there side-to-side asymmetry?</td><td>|L−R| ÷ higher × 100</td><td>&gt;30% significant</td></tr>
         <tr><td><strong>3</strong></td><td>Is elevated MCA velocity vasospasm or hyperemia?</td><td>Lindegaard Ratio</td><td>LR &lt;3 = exclude; &gt;6 = vasospasm</td></tr>
         <tr><td><strong>4</strong></td><td>Is the lesion intra- or extracranial?</td><td>Ophthalmic PI + direction, siphon PI</td><td>High PI + antegrade = ICA intact</td></tr>
@@ -2317,10 +2650,32 @@ footer {
 </section>
 
 <footer>
-  A Succinct Lesson By Shorty &nbsp;·&nbsp; Vascular Neurology &nbsp;·&nbsp; TCD Teaching Curriculum &nbsp;·&nbsp; All thresholds evidence-based with primary sources cited
+  DS, MD &nbsp;·&nbsp; Vascular Neurology &nbsp;·&nbsp; TCD Teaching Curriculum &nbsp;·&nbsp; All thresholds evidence-based with primary sources cited
 </footer>
 
 <script>
+// Theme toggle — default is light; switch to dark on demand
+function applyTheme(mode) {
+  const root = document.documentElement;
+  const icon = document.getElementById('ttIcon');
+  const label = document.getElementById('ttLabel');
+  if (mode === 'dark') {
+    root.setAttribute('data-theme', 'dark');
+    if (icon)  icon.textContent = '☀';
+    if (label) label.textContent = 'Light';
+  } else {
+    root.removeAttribute('data-theme');
+    if (icon)  icon.textContent = '☾';
+    if (label) label.textContent = 'Dark';
+  }
+}
+function toggleTheme() {
+  const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  applyTheme(isDark ? 'light' : 'dark');
+}
+// Default: light mode
+applyTheme('light');
+
 // Progress bar
 window.addEventListener('scroll', () => {
   const scrolled = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
@@ -2456,14 +2811,14 @@ const TCD_QS = [
   {
     diff: "EASY",
     context: "Bedside TCD in a 60-year-old man with hypertension and diabetes admitted for dizziness. The technician hands you this MFV table from the right MCA survey.",
-    visual: `<table style="width:100%;border-collapse:collapse;font-size:0.85rem;background:white;border-radius:8px;overflow:hidden;border:1px solid #cbd5e1;margin-bottom:0.5rem">
-      <thead><tr style="background:#f1f5f9"><th style="padding:0.6rem 1rem;text-align:left;font-family:monospace;font-size:0.65rem;letter-spacing:0.1em;color:#0891b2">Depth (mm)</th><th style="padding:0.6rem 1rem;text-align:left;font-family:monospace;font-size:0.65rem;letter-spacing:0.1em;color:#0891b2">MFV (cm/s)</th><th style="padding:0.6rem 1rem;text-align:left;font-family:monospace;font-size:0.65rem;letter-spacing:0.1em;color:#0891b2">PI</th><th style="padding:0.6rem 1rem;text-align:left;font-family:monospace;font-size:0.65rem;letter-spacing:0.1em;color:#0891b2">Direction</th></tr></thead>
+    visual: `<table style="width:100%;border-collapse:collapse;font-size:0.85rem;background:var(--bg2);border-radius:8px;overflow:hidden;border:1px solid var(--border);margin-bottom:0.5rem">
+      <thead><tr style="background:var(--bg3)"><th style="padding:0.6rem 1rem;text-align:left;font-family:var(--mono);font-size:0.65rem;letter-spacing:0.1em;color:#0891b2">Depth (mm)</th><th style="padding:0.6rem 1rem;text-align:left;font-family:var(--mono);font-size:0.65rem;letter-spacing:0.1em;color:#0891b2">MFV (cm/s)</th><th style="padding:0.6rem 1rem;text-align:left;font-family:var(--mono);font-size:0.65rem;letter-spacing:0.1em;color:#0891b2">PI</th><th style="padding:0.6rem 1rem;text-align:left;font-family:var(--mono);font-size:0.65rem;letter-spacing:0.1em;color:#0891b2">Direction</th></tr></thead>
       <tbody>
-        <tr style="border-top:1px solid #f1f5f9"><td style="padding:0.5rem 1rem">46</td><td style="padding:0.5rem 1rem;font-family:monospace;color:#1e293b">68</td><td style="padding:0.5rem 1rem;font-family:monospace">0.94</td><td style="padding:0.5rem 1rem">Toward</td></tr>
-        <tr style="border-top:1px solid #f1f5f9"><td style="padding:0.5rem 1rem">48</td><td style="padding:0.5rem 1rem;font-family:monospace;color:#1e293b">72</td><td style="padding:0.5rem 1rem;font-family:monospace">0.96</td><td style="padding:0.5rem 1rem">Toward</td></tr>
-        <tr style="border-top:1px solid #f1f5f9"><td style="padding:0.5rem 1rem">50</td><td style="padding:0.5rem 1rem;font-family:monospace;color:#1e293b">70</td><td style="padding:0.5rem 1rem;font-family:monospace">0.93</td><td style="padding:0.5rem 1rem">Toward</td></tr>
-        <tr style="border-top:1px solid #f1f5f9"><td style="padding:0.5rem 1rem">52</td><td style="padding:0.5rem 1rem;font-family:monospace;color:#1e293b">66</td><td style="padding:0.5rem 1rem;font-family:monospace">0.91</td><td style="padding:0.5rem 1rem">Toward</td></tr>
-        <tr style="border-top:1px solid #f1f5f9"><td style="padding:0.5rem 1rem">54</td><td style="padding:0.5rem 1rem;font-family:monospace;color:#1e293b">64</td><td style="padding:0.5rem 1rem;font-family:monospace">0.90</td><td style="padding:0.5rem 1rem">Toward</td></tr>
+        <tr style="border-top:1px solid var(--border)"><td style="padding:0.5rem 1rem">46</td><td style="padding:0.5rem 1rem;font-family:var(--mono);color:var(--text)">68</td><td style="padding:0.5rem 1rem;font-family:var(--mono)">0.94</td><td style="padding:0.5rem 1rem">Toward</td></tr>
+        <tr style="border-top:1px solid var(--border)"><td style="padding:0.5rem 1rem">48</td><td style="padding:0.5rem 1rem;font-family:var(--mono);color:var(--text)">72</td><td style="padding:0.5rem 1rem;font-family:var(--mono)">0.96</td><td style="padding:0.5rem 1rem">Toward</td></tr>
+        <tr style="border-top:1px solid var(--border)"><td style="padding:0.5rem 1rem">50</td><td style="padding:0.5rem 1rem;font-family:var(--mono);color:var(--text)">70</td><td style="padding:0.5rem 1rem;font-family:var(--mono)">0.93</td><td style="padding:0.5rem 1rem">Toward</td></tr>
+        <tr style="border-top:1px solid var(--border)"><td style="padding:0.5rem 1rem">52</td><td style="padding:0.5rem 1rem;font-family:var(--mono);color:var(--text)">66</td><td style="padding:0.5rem 1rem;font-family:var(--mono)">0.91</td><td style="padding:0.5rem 1rem">Toward</td></tr>
+        <tr style="border-top:1px solid var(--border)"><td style="padding:0.5rem 1rem">54</td><td style="padding:0.5rem 1rem;font-family:var(--mono);color:var(--text)">64</td><td style="padding:0.5rem 1rem;font-family:var(--mono)">0.90</td><td style="padding:0.5rem 1rem">Toward</td></tr>
       </tbody>
     </table>`,
     question: "Based on the SONIA trial thresholds, how should this MCA survey be interpreted?",
@@ -2481,14 +2836,14 @@ const TCD_QS = [
   {
     diff: "EASY",
     context: "Day 7 post-SAH from a ruptured MCA aneurysm. The patient is mildly confused but GCS 14. You obtain the following TCD measurements.",
-    visual: `<table style="width:100%;border-collapse:collapse;font-size:0.85rem;background:white;border-radius:8px;overflow:hidden;border:1px solid #cbd5e1">
-      <thead><tr style="background:#f1f5f9"><th style="padding:0.6rem 1rem;text-align:left;font-family:monospace;font-size:0.65rem;color:#0891b2">Vessel</th><th style="padding:0.6rem 1rem;text-align:left;font-family:monospace;font-size:0.65rem;color:#0891b2">MFV (cm/s)</th><th style="padding:0.6rem 1rem;text-align:left;font-family:monospace;font-size:0.65rem;color:#0891b2">Note</th></tr></thead>
+    visual: `<table style="width:100%;border-collapse:collapse;font-size:0.85rem;background:var(--bg2);border-radius:8px;overflow:hidden;border:1px solid var(--border)">
+      <thead><tr style="background:var(--bg3)"><th style="padding:0.6rem 1rem;text-align:left;font-family:var(--mono);font-size:0.65rem;color:#0891b2">Vessel</th><th style="padding:0.6rem 1rem;text-align:left;font-family:var(--mono);font-size:0.65rem;color:#0891b2">MFV (cm/s)</th><th style="padding:0.6rem 1rem;text-align:left;font-family:var(--mono);font-size:0.65rem;color:#0891b2">Note</th></tr></thead>
       <tbody>
-        <tr style="border-top:1px solid #f1f5f9"><td style="padding:0.5rem 1rem;font-weight:600">L MCA</td><td style="padding:0.5rem 1rem;font-family:monospace;color:#dc2626;font-weight:700">198</td><td style="padding:0.5rem 1rem;font-size:0.8rem;color:#dc2626">Above vasospasm threshold</td></tr>
-        <tr style="border-top:1px solid #f1f5f9"><td style="padding:0.5rem 1rem">R MCA</td><td style="padding:0.5rem 1rem;font-family:monospace">74</td><td style="padding:0.5rem 1rem;font-size:0.8rem;color:#64748b">Normal</td></tr>
-        <tr style="border-top:1px solid #f1f5f9"><td style="padding:0.5rem 1rem">L EX-ICA (submandibular)</td><td style="padding:0.5rem 1rem;font-family:monospace">28</td><td style="padding:0.5rem 1rem;font-size:0.8rem;color:#64748b">Extracranial ICA</td></tr>
-        <tr style="border-top:1px solid #f1f5f9"><td style="padding:0.5rem 1rem">Patient temp</td><td style="padding:0.5rem 1rem;font-family:monospace">37.1°C</td><td style="padding:0.5rem 1rem;font-size:0.8rem;color:#64748b">Afebrile</td></tr>
-        <tr style="border-top:1px solid #f1f5f9"><td style="padding:0.5rem 1rem">Hgb</td><td style="padding:0.5rem 1rem;font-family:monospace">12.4 g/dL</td><td style="padding:0.5rem 1rem;font-size:0.8rem;color:#64748b">Normal</td></tr>
+        <tr style="border-top:1px solid var(--border)"><td style="padding:0.5rem 1rem;font-weight:600">L MCA</td><td style="padding:0.5rem 1rem;font-family:var(--mono);color:#dc2626;font-weight:700">198</td><td style="padding:0.5rem 1rem;font-size:0.8rem;color:#dc2626">Above vasospasm threshold</td></tr>
+        <tr style="border-top:1px solid var(--border)"><td style="padding:0.5rem 1rem">R MCA</td><td style="padding:0.5rem 1rem;font-family:var(--mono)">74</td><td style="padding:0.5rem 1rem;font-size:0.8rem;color:var(--muted)">Normal</td></tr>
+        <tr style="border-top:1px solid var(--border)"><td style="padding:0.5rem 1rem">L EX-ICA (submandibular)</td><td style="padding:0.5rem 1rem;font-family:var(--mono)">28</td><td style="padding:0.5rem 1rem;font-size:0.8rem;color:var(--muted)">Extracranial ICA</td></tr>
+        <tr style="border-top:1px solid var(--border)"><td style="padding:0.5rem 1rem">Patient temp</td><td style="padding:0.5rem 1rem;font-family:var(--mono)">37.1°C</td><td style="padding:0.5rem 1rem;font-size:0.8rem;color:var(--muted)">Afebrile</td></tr>
+        <tr style="border-top:1px solid var(--border)"><td style="padding:0.5rem 1rem">Hgb</td><td style="padding:0.5rem 1rem;font-family:var(--mono)">12.4 g/dL</td><td style="padding:0.5rem 1rem;font-size:0.8rem;color:var(--muted)">Normal</td></tr>
       </tbody>
     </table>`,
     question: "Calculate the left Lindegaard Ratio. What is the correct interpretation?",
@@ -2506,13 +2861,13 @@ const TCD_QS = [
   {
     diff: "MODERATE",
     context: "58-year-old man with sudden-onset right arm weakness. MRI shows acute left MCA territory infarct. TCD performed at bedside within 6 hours of symptom onset.",
-    visual: `<table style="width:100%;border-collapse:collapse;font-size:0.85rem;background:white;border-radius:8px;overflow:hidden;border:1px solid #cbd5e1">
-      <thead><tr style="background:#f1f5f9"><th style="padding:0.6rem 1rem;text-align:left;font-family:monospace;font-size:0.65rem;color:#0891b2">Vessel</th><th style="padding:0.6rem 1rem;text-align:left;font-family:monospace;font-size:0.65rem;color:#0891b2">MFV (cm/s)</th><th style="padding:0.6rem 1rem;text-align:left;font-family:monospace;font-size:0.65rem;color:#0891b2">PI</th><th style="padding:0.6rem 1rem;text-align:left;font-family:monospace;font-size:0.65rem;color:#0891b2">Direction</th></tr></thead>
+    visual: `<table style="width:100%;border-collapse:collapse;font-size:0.85rem;background:var(--bg2);border-radius:8px;overflow:hidden;border:1px solid var(--border)">
+      <thead><tr style="background:var(--bg3)"><th style="padding:0.6rem 1rem;text-align:left;font-family:var(--mono);font-size:0.65rem;color:#0891b2">Vessel</th><th style="padding:0.6rem 1rem;text-align:left;font-family:var(--mono);font-size:0.65rem;color:#0891b2">MFV (cm/s)</th><th style="padding:0.6rem 1rem;text-align:left;font-family:var(--mono);font-size:0.65rem;color:#0891b2">PI</th><th style="padding:0.6rem 1rem;text-align:left;font-family:var(--mono);font-size:0.65rem;color:#0891b2">Direction</th></tr></thead>
       <tbody>
-        <tr style="border-top:1px solid #f1f5f9"><td style="padding:0.5rem 1rem;font-weight:600">L MCA (48–60mm)</td><td style="padding:0.5rem 1rem;font-family:monospace;color:#dc2626;font-weight:700">24–28</td><td style="padding:0.5rem 1rem;font-family:monospace">0.86</td><td style="padding:0.5rem 1rem">Toward</td></tr>
-        <tr style="border-top:1px solid #f1f5f9"><td style="padding:0.5rem 1rem">R MCA (52mm)</td><td style="padding:0.5rem 1rem;font-family:monospace">70</td><td style="padding:0.5rem 1rem;font-family:monospace">0.91</td><td style="padding:0.5rem 1rem">Toward</td></tr>
-        <tr style="border-top:1px solid #f1f5f9"><td style="padding:0.5rem 1rem;font-weight:600">L Ophthalmic (48mm)</td><td style="padding:0.5rem 1rem;font-family:monospace;color:#dc2626">18</td><td style="padding:0.5rem 1rem;font-family:monospace;color:#dc2626;font-weight:700">0.72</td><td style="padding:0.5rem 1rem;color:#dc2626;font-weight:600">Away (reversed)</td></tr>
-        <tr style="border-top:1px solid #f1f5f9"><td style="padding:0.5rem 1rem">L Siphon (62mm)</td><td style="padding:0.5rem 1rem;font-family:monospace;color:#dc2626">14</td><td style="padding:0.5rem 1rem;font-family:monospace;color:#dc2626">0.68</td><td style="padding:0.5rem 1rem">Reduced/absent</td></tr>
+        <tr style="border-top:1px solid var(--border)"><td style="padding:0.5rem 1rem;font-weight:600">L MCA (48–60mm)</td><td style="padding:0.5rem 1rem;font-family:var(--mono);color:#dc2626;font-weight:700">24–28</td><td style="padding:0.5rem 1rem;font-family:var(--mono)">0.86</td><td style="padding:0.5rem 1rem">Toward</td></tr>
+        <tr style="border-top:1px solid var(--border)"><td style="padding:0.5rem 1rem">R MCA (52mm)</td><td style="padding:0.5rem 1rem;font-family:var(--mono)">70</td><td style="padding:0.5rem 1rem;font-family:var(--mono)">0.91</td><td style="padding:0.5rem 1rem">Toward</td></tr>
+        <tr style="border-top:1px solid var(--border)"><td style="padding:0.5rem 1rem;font-weight:600">L Ophthalmic (48mm)</td><td style="padding:0.5rem 1rem;font-family:var(--mono);color:#dc2626">18</td><td style="padding:0.5rem 1rem;font-family:var(--mono);color:#dc2626;font-weight:700">0.72</td><td style="padding:0.5rem 1rem;color:#dc2626;font-weight:600">Away (reversed)</td></tr>
+        <tr style="border-top:1px solid var(--border)"><td style="padding:0.5rem 1rem">L Siphon (62mm)</td><td style="padding:0.5rem 1rem;font-family:var(--mono);color:#dc2626">14</td><td style="padding:0.5rem 1rem;font-family:var(--mono);color:#dc2626">0.68</td><td style="padding:0.5rem 1rem">Reduced/absent</td></tr>
       </tbody>
     </table>`,
     question: "What do the ophthalmic artery and siphon findings tell you, and where is the culprit lesion?",
@@ -2530,10 +2885,10 @@ const TCD_QS = [
   {
     diff: "MODERATE",
     context: "Day 9 post-SAH. Patient febrile at 38.9°C, Hgb 8.8 g/dL. Team is concerned about vasospasm. You are handed this bilateral TCD data.",
-    visual: `<table style="width:100%;border-collapse:collapse;font-size:0.85rem;background:white;border-radius:8px;overflow:hidden;border:1px solid #cbd5e1">
-      <thead><tr style="background:#f1f5f9"><th style="padding:0.6rem 1rem;font-family:monospace;font-size:0.65rem;color:#0891b2">Vessel</th><th style="padding:0.6rem 1rem;font-family:monospace;font-size:0.65rem;color:#0891b2">L MFV</th><th style="padding:0.6rem 1rem;font-family:monospace;font-size:0.65rem;color:#0891b2">R MFV</th><th style="padding:0.6rem 1rem;font-family:monospace;font-size:0.65rem;color:#0891b2">EX-ICA MFV</th><th style="padding:0.6rem 1rem;font-family:monospace;font-size:0.65rem;color:#0891b2">LR</th></tr></thead>
+    visual: `<table style="width:100%;border-collapse:collapse;font-size:0.85rem;background:var(--bg2);border-radius:8px;overflow:hidden;border:1px solid var(--border)">
+      <thead><tr style="background:var(--bg3)"><th style="padding:0.6rem 1rem;font-family:var(--mono);font-size:0.65rem;color:#0891b2">Vessel</th><th style="padding:0.6rem 1rem;font-family:var(--mono);font-size:0.65rem;color:#0891b2">L MFV</th><th style="padding:0.6rem 1rem;font-family:var(--mono);font-size:0.65rem;color:#0891b2">R MFV</th><th style="padding:0.6rem 1rem;font-family:var(--mono);font-size:0.65rem;color:#0891b2">EX-ICA MFV</th><th style="padding:0.6rem 1rem;font-family:var(--mono);font-size:0.65rem;color:#0891b2">LR</th></tr></thead>
       <tbody>
-        <tr style="border-top:1px solid #f1f5f9"><td style="padding:0.5rem 1rem;font-weight:600">MCA</td><td style="padding:0.5rem 1rem;font-family:monospace;color:#d97706;font-weight:600">138</td><td style="padding:0.5rem 1rem;font-family:monospace;color:#d97706;font-weight:600">132</td><td style="padding:0.5rem 1rem;font-family:monospace">L 56 / R 54</td><td style="padding:0.5rem 1rem;font-family:monospace">L 2.46 / R 2.44</td></tr>
+        <tr style="border-top:1px solid var(--border)"><td style="padding:0.5rem 1rem;font-weight:600">MCA</td><td style="padding:0.5rem 1rem;font-family:var(--mono);color:#d97706;font-weight:600">138</td><td style="padding:0.5rem 1rem;font-family:var(--mono);color:#d97706;font-weight:600">132</td><td style="padding:0.5rem 1rem;font-family:var(--mono)">L 56 / R 54</td><td style="padding:0.5rem 1rem;font-family:var(--mono)">L 2.46 / R 2.44</td></tr>
       </tbody>
     </table>`,
     question: "The team wants to start hypertensive hypervolemic therapy for vasospasm. Is this the right call?",
@@ -2552,8 +2907,8 @@ const TCD_QS = [
     diff: "MODERATE",
     context: "30-minute bilateral MCA monitoring in a 52-year-old with recent left hemisphere TIA. No atrial fibrillation on current monitoring. Left carotid duplex shows 75% stenosis.",
     visual: `<div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem">
-      <div style="background:#f1f5f9;border-radius:8px;padding:0.75rem">
-        <div style="font-family:monospace;font-size:0.7rem;color:#0891b2;margin-bottom:0.5rem">LEFT MCA — 30 min monitoring</div>
+      <div style="background:var(--bg3);border-radius:8px;padding:0.75rem">
+        <div style="font-family:var(--mono);font-size:0.7rem;color:#0891b2;margin-bottom:0.5rem">LEFT MCA — 30 min monitoring</div>
         <svg viewBox="0 0 200 70" fill="none" xmlns="http://www.w3.org/2000/svg">
           <rect width="200" height="70" fill="white" rx="4"/>
           <line x1="0" y1="40" x2="200" y2="40" stroke="#e2e8f0" stroke-width="0.5" stroke-dasharray="2 2"/>
@@ -2565,8 +2920,8 @@ const TCD_QS = [
           <text x="4" y="62" fill="#059669" font-size="6.5" font-family="monospace">9 MES detected · all unidirectional · &lt;150ms · random timing</text>
         </svg>
       </div>
-      <div style="background:#f1f5f9;border-radius:8px;padding:0.75rem">
-        <div style="font-family:monospace;font-size:0.7rem;color:#0891b2;margin-bottom:0.5rem">RIGHT MCA — 30 min monitoring</div>
+      <div style="background:var(--bg3);border-radius:8px;padding:0.75rem">
+        <div style="font-family:var(--mono);font-size:0.7rem;color:#0891b2;margin-bottom:0.5rem">RIGHT MCA — 30 min monitoring</div>
         <svg viewBox="0 0 200 70" fill="none" xmlns="http://www.w3.org/2000/svg">
           <rect width="200" height="70" fill="white" rx="4"/>
           <line x1="0" y1="40" x2="200" y2="40" stroke="#e2e8f0" stroke-width="0.5" stroke-dasharray="2 2"/>
@@ -2591,15 +2946,15 @@ const TCD_QS = [
   {
     diff: "HARD",
     context: "72-year-old woman with known intracranial atherosclerosis and a 65% left MCA stenosis on prior MRA, presenting with transient right hand weakness lasting 20 minutes. TCD obtained urgently.",
-    visual: `<table style="width:100%;border-collapse:collapse;font-size:0.83rem;background:white;border-radius:8px;overflow:hidden;border:1px solid #cbd5e1">
-      <thead><tr style="background:#f1f5f9"><th style="padding:0.5rem 0.75rem;font-family:monospace;font-size:0.62rem;color:#0891b2">Vessel</th><th style="padding:0.5rem 0.75rem;font-family:monospace;font-size:0.62rem;color:#0891b2">Depth</th><th style="padding:0.5rem 0.75rem;font-family:monospace;font-size:0.62rem;color:#0891b2">MFV</th><th style="padding:0.5rem 0.75rem;font-family:monospace;font-size:0.62rem;color:#0891b2">PI</th><th style="padding:0.5rem 0.75rem;font-family:monospace;font-size:0.62rem;color:#0891b2">Notes</th></tr></thead>
+    visual: `<table style="width:100%;border-collapse:collapse;font-size:0.83rem;background:var(--bg2);border-radius:8px;overflow:hidden;border:1px solid var(--border)">
+      <thead><tr style="background:var(--bg3)"><th style="padding:0.5rem 0.75rem;font-family:var(--mono);font-size:0.62rem;color:#0891b2">Vessel</th><th style="padding:0.5rem 0.75rem;font-family:var(--mono);font-size:0.62rem;color:#0891b2">Depth</th><th style="padding:0.5rem 0.75rem;font-family:var(--mono);font-size:0.62rem;color:#0891b2">MFV</th><th style="padding:0.5rem 0.75rem;font-family:var(--mono);font-size:0.62rem;color:#0891b2">PI</th><th style="padding:0.5rem 0.75rem;font-family:var(--mono);font-size:0.62rem;color:#0891b2">Notes</th></tr></thead>
       <tbody>
-        <tr style="border-top:1px solid #f1f5f9"><td style="padding:0.45rem 0.75rem">L MCA 46mm</td><td style="padding:0.45rem 0.75rem;font-family:monospace">46</td><td style="padding:0.45rem 0.75rem;font-family:monospace;color:#1e293b">78</td><td style="padding:0.45rem 0.75rem;font-family:monospace">0.88</td><td style="padding:0.45rem 0.75rem;font-size:0.78rem;color:#64748b">Normal</td></tr>
-        <tr style="border-top:1px solid #f1f5f9"><td style="padding:0.45rem 0.75rem;font-weight:600">L MCA 48mm</td><td style="padding:0.45rem 0.75rem;font-family:monospace">48</td><td style="padding:0.45rem 0.75rem;font-family:monospace;color:#dc2626;font-weight:700">142</td><td style="padding:0.45rem 0.75rem;font-family:monospace;color:#dc2626">0.86</td><td style="padding:0.45rem 0.75rem;font-size:0.78rem;color:#dc2626;font-weight:600">Spectral broadening · harsh audio</td></tr>
-        <tr style="border-top:1px solid #f1f5f9"><td style="padding:0.45rem 0.75rem">L MCA 50mm</td><td style="padding:0.45rem 0.75rem;font-family:monospace">50</td><td style="padding:0.45rem 0.75rem;font-family:monospace;color:#1e293b">80</td><td style="padding:0.45rem 0.75rem;font-family:monospace">0.90</td><td style="padding:0.45rem 0.75rem;font-size:0.78rem;color:#64748b">Normal</td></tr>
-        <tr style="border-top:1px solid #f1f5f9"><td style="padding:0.45rem 0.75rem">R MCA 52mm</td><td style="padding:0.45rem 0.75rem;font-family:monospace">52</td><td style="padding:0.45rem 0.75rem;font-family:monospace">72</td><td style="padding:0.45rem 0.75rem;font-family:monospace">0.91</td><td style="padding:0.45rem 0.75rem;font-size:0.78rem;color:#64748b">Normal</td></tr>
-        <tr style="border-top:1px solid #f1f5f9"><td style="padding:0.45rem 0.75rem">L Ophthalmic 48mm</td><td style="padding:0.45rem 0.75rem;font-family:monospace">48</td><td style="padding:0.45rem 0.75rem;font-family:monospace">20</td><td style="padding:0.45rem 0.75rem;font-family:monospace;color:#059669;font-weight:600">1.58</td><td style="padding:0.45rem 0.75rem;font-size:0.78rem;color:#059669">Antegrade · high resistance</td></tr>
-        <tr style="border-top:1px solid #f1f5f9"><td style="padding:0.45rem 0.75rem">L EX-ICA submand.</td><td style="padding:0.45rem 0.75rem;font-family:monospace">—</td><td style="padding:0.45rem 0.75rem;font-family:monospace">44</td><td style="padding:0.45rem 0.75rem;font-family:monospace">—</td><td style="padding:0.45rem 0.75rem;font-size:0.78rem;color:#64748b">Extracranial</td></tr>
+        <tr style="border-top:1px solid var(--border)"><td style="padding:0.45rem 0.75rem">L MCA 46mm</td><td style="padding:0.45rem 0.75rem;font-family:var(--mono)">46</td><td style="padding:0.45rem 0.75rem;font-family:var(--mono);color:var(--text)">78</td><td style="padding:0.45rem 0.75rem;font-family:var(--mono)">0.88</td><td style="padding:0.45rem 0.75rem;font-size:0.78rem;color:var(--muted)">Normal</td></tr>
+        <tr style="border-top:1px solid var(--border)"><td style="padding:0.45rem 0.75rem;font-weight:600">L MCA 48mm</td><td style="padding:0.45rem 0.75rem;font-family:var(--mono)">48</td><td style="padding:0.45rem 0.75rem;font-family:var(--mono);color:#dc2626;font-weight:700">142</td><td style="padding:0.45rem 0.75rem;font-family:var(--mono);color:#dc2626">0.86</td><td style="padding:0.45rem 0.75rem;font-size:0.78rem;color:#dc2626;font-weight:600">Spectral broadening · harsh audio</td></tr>
+        <tr style="border-top:1px solid var(--border)"><td style="padding:0.45rem 0.75rem">L MCA 50mm</td><td style="padding:0.45rem 0.75rem;font-family:var(--mono)">50</td><td style="padding:0.45rem 0.75rem;font-family:var(--mono);color:var(--text)">80</td><td style="padding:0.45rem 0.75rem;font-family:var(--mono)">0.90</td><td style="padding:0.45rem 0.75rem;font-size:0.78rem;color:var(--muted)">Normal</td></tr>
+        <tr style="border-top:1px solid var(--border)"><td style="padding:0.45rem 0.75rem">R MCA 52mm</td><td style="padding:0.45rem 0.75rem;font-family:var(--mono)">52</td><td style="padding:0.45rem 0.75rem;font-family:var(--mono)">72</td><td style="padding:0.45rem 0.75rem;font-family:var(--mono)">0.91</td><td style="padding:0.45rem 0.75rem;font-size:0.78rem;color:var(--muted)">Normal</td></tr>
+        <tr style="border-top:1px solid var(--border)"><td style="padding:0.45rem 0.75rem">L Ophthalmic 48mm</td><td style="padding:0.45rem 0.75rem;font-family:var(--mono)">48</td><td style="padding:0.45rem 0.75rem;font-family:var(--mono)">20</td><td style="padding:0.45rem 0.75rem;font-family:var(--mono);color:#059669;font-weight:600">1.58</td><td style="padding:0.45rem 0.75rem;font-size:0.78rem;color:#059669">Antegrade · high resistance</td></tr>
+        <tr style="border-top:1px solid var(--border)"><td style="padding:0.45rem 0.75rem">L EX-ICA submand.</td><td style="padding:0.45rem 0.75rem;font-family:var(--mono)">—</td><td style="padding:0.45rem 0.75rem;font-family:var(--mono)">44</td><td style="padding:0.45rem 0.75rem;font-family:var(--mono)">—</td><td style="padding:0.45rem 0.75rem;font-size:0.78rem;color:var(--muted)">Extracranial</td></tr>
       </tbody>
     </table>`,
     question: "Working through all 5 steps: what is the complete interpretation and what does it tell you about the mechanism of her TIA?",
@@ -2618,8 +2973,8 @@ const TCD_QS = [
     diff: "HARD",
     context: "34-year-old marathon runner with no vascular risk factors. Wake-up stroke — right parietal DWI lesion. Holter x 2 weeks: no AF. Hypercoagulable workup pending. c-TCD ordered for PFO evaluation.",
     visual: `<div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem">
-      <div style="background:#f1f5f9;border-radius:8px;padding:0.75rem">
-        <div style="font-family:monospace;font-size:0.7rem;color:#0891b2;margin-bottom:0.5rem">At rest injection — bilateral MCA</div>
+      <div style="background:var(--bg3);border-radius:8px;padding:0.75rem">
+        <div style="font-family:var(--mono);font-size:0.7rem;color:#0891b2;margin-bottom:0.5rem">At rest injection — bilateral MCA</div>
         <svg viewBox="0 0 200 75" fill="none" xmlns="http://www.w3.org/2000/svg">
           <rect width="200" height="75" fill="white" rx="4"/>
           <line x1="0" y1="40" x2="200" y2="40" stroke="#e2e8f0" stroke-width="0.5" stroke-dasharray="2 2"/>
@@ -2628,8 +2983,8 @@ const TCD_QS = [
           <text x="4" y="68" fill="#94a3b8" font-size="6.5" font-family="monospace">No spontaneous shunting at rest</text>
         </svg>
       </div>
-      <div style="background:#f1f5f9;border-radius:8px;padding:0.75rem">
-        <div style="font-family:monospace;font-size:0.7rem;color:#7c3aed;margin-bottom:0.5rem">Valsalva injection — bilateral MCA</div>
+      <div style="background:var(--bg3);border-radius:8px;padding:0.75rem">
+        <div style="font-family:var(--mono);font-size:0.7rem;color:#7c3aed;margin-bottom:0.5rem">Valsalva injection — bilateral MCA</div>
         <svg viewBox="0 0 200 75" fill="none" xmlns="http://www.w3.org/2000/svg">
           <rect width="200" height="75" fill="white" rx="4"/>
           <line x1="0" y1="40" x2="200" y2="40" stroke="#e2e8f0" stroke-width="0.5" stroke-dasharray="2 2"/>
@@ -2660,13 +3015,13 @@ const TCD_QS = [
   {
     diff: "VERY HARD",
     context: "A 68-year-old hypertensive man presents with dizziness, diplopia, and dysarthria. MRI shows an acute left lateral medullary infarct. TCD is performed to characterise the posterior circulation.",
-    visual: `<table style="width:100%;border-collapse:collapse;font-size:0.82rem;background:white;border-radius:8px;overflow:hidden;border:1px solid #cbd5e1">
-      <thead><tr style="background:#f1f5f9"><th style="padding:0.5rem 0.75rem;font-family:monospace;font-size:0.62rem;color:#0891b2">Vessel</th><th style="padding:0.5rem 0.75rem;font-family:monospace;font-size:0.62rem;color:#0891b2">MFV</th><th style="padding:0.5rem 0.75rem;font-family:monospace;font-size:0.62rem;color:#0891b2">PI</th><th style="padding:0.5rem 0.75rem;font-family:monospace;font-size:0.62rem;color:#0891b2">Notes</th></tr></thead>
+    visual: `<table style="width:100%;border-collapse:collapse;font-size:0.82rem;background:var(--bg2);border-radius:8px;overflow:hidden;border:1px solid var(--border)">
+      <thead><tr style="background:var(--bg3)"><th style="padding:0.5rem 0.75rem;font-family:var(--mono);font-size:0.62rem;color:#0891b2">Vessel</th><th style="padding:0.5rem 0.75rem;font-family:var(--mono);font-size:0.62rem;color:#0891b2">MFV</th><th style="padding:0.5rem 0.75rem;font-family:var(--mono);font-size:0.62rem;color:#0891b2">PI</th><th style="padding:0.5rem 0.75rem;font-family:var(--mono);font-size:0.62rem;color:#0891b2">Notes</th></tr></thead>
       <tbody>
-        <tr style="border-top:1px solid #f1f5f9"><td style="padding:0.45rem 0.75rem">L MCA / R MCA</td><td style="padding:0.45rem 0.75rem;font-family:monospace">72 / 68</td><td style="padding:0.45rem 0.75rem;font-family:monospace">0.92</td><td style="padding:0.45rem 0.75rem;font-size:0.78rem;color:#64748b">Normal</td></tr>
-        <tr style="border-top:1px solid #f1f5f9"><td style="padding:0.45rem 0.75rem;font-weight:600">L Vertebral (44–64mm)</td><td style="padding:0.45rem 0.75rem;font-family:monospace;color:#dc2626;font-weight:700">8–12</td><td style="padding:0.45rem 0.75rem;font-family:monospace;color:#dc2626">1.82</td><td style="padding:0.45rem 0.75rem;font-size:0.78rem;color:#dc2626">Very low MFV · high PI · away</td></tr>
-        <tr style="border-top:1px solid #f1f5f9"><td style="padding:0.45rem 0.75rem">R Vertebral (44–64mm)</td><td style="padding:0.45rem 0.75rem;font-family:monospace">38</td><td style="padding:0.45rem 0.75rem;font-family:monospace">0.84</td><td style="padding:0.45rem 0.75rem;font-size:0.78rem;color:#64748b">Low-normal, away</td></tr>
-        <tr style="border-top:1px solid #f1f5f9"><td style="padding:0.45rem 0.75rem">Basilar (80–90mm)</td><td style="padding:0.45rem 0.75rem;font-family:monospace">34</td><td style="padding:0.45rem 0.75rem;font-family:monospace">0.78</td><td style="padding:0.45rem 0.75rem;font-size:0.78rem;color:#64748b">Low-normal, away</td></tr>
+        <tr style="border-top:1px solid var(--border)"><td style="padding:0.45rem 0.75rem">L MCA / R MCA</td><td style="padding:0.45rem 0.75rem;font-family:var(--mono)">72 / 68</td><td style="padding:0.45rem 0.75rem;font-family:var(--mono)">0.92</td><td style="padding:0.45rem 0.75rem;font-size:0.78rem;color:var(--muted)">Normal</td></tr>
+        <tr style="border-top:1px solid var(--border)"><td style="padding:0.45rem 0.75rem;font-weight:600">L Vertebral (44–64mm)</td><td style="padding:0.45rem 0.75rem;font-family:var(--mono);color:#dc2626;font-weight:700">8–12</td><td style="padding:0.45rem 0.75rem;font-family:var(--mono);color:#dc2626">1.82</td><td style="padding:0.45rem 0.75rem;font-size:0.78rem;color:#dc2626">Very low MFV · high PI · away</td></tr>
+        <tr style="border-top:1px solid var(--border)"><td style="padding:0.45rem 0.75rem">R Vertebral (44–64mm)</td><td style="padding:0.45rem 0.75rem;font-family:var(--mono)">38</td><td style="padding:0.45rem 0.75rem;font-family:var(--mono)">0.84</td><td style="padding:0.45rem 0.75rem;font-size:0.78rem;color:var(--muted)">Low-normal, away</td></tr>
+        <tr style="border-top:1px solid var(--border)"><td style="padding:0.45rem 0.75rem">Basilar (80–90mm)</td><td style="padding:0.45rem 0.75rem;font-family:var(--mono)">34</td><td style="padding:0.45rem 0.75rem;font-family:var(--mono)">0.78</td><td style="padding:0.45rem 0.75rem;font-size:0.78rem;color:var(--muted)">Low-normal, away</td></tr>
       </tbody>
     </table>`,
     question: "The left vertebral MFV is 8–12 cm/s with a PI of 1.82. What is the significance of the high PI in this context, and what does the combined pattern suggest?",
@@ -2684,18 +3039,18 @@ const TCD_QS = [
   {
     diff: "HARDEST",
     context: "A 61-year-old man with hypertension, diabetes, and hyperlipidaemia presents with a 10-minute episode of right arm and face numbness. He was previously diagnosed with moderate left MCA atherosclerosis. You perform a complete TCD + 30-minute MES monitoring. Temperature 37.0°C. Hgb 13.8 g/dL.",
-    visual: `<div style="font-family:monospace;font-size:0.7rem;color:#0891b2;margin-bottom:0.5rem">COMPLETE TCD + MES DATA</div>
-    <table style="width:100%;border-collapse:collapse;font-size:0.82rem;background:white;border-radius:8px;overflow:hidden;border:1px solid #cbd5e1;margin-bottom:0.75rem">
-      <thead><tr style="background:#f1f5f9"><th style="padding:0.45rem 0.6rem;font-family:monospace;font-size:0.6rem;color:#0891b2">Vessel / Study</th><th style="padding:0.45rem 0.6rem;font-family:monospace;font-size:0.6rem;color:#0891b2">Finding</th><th style="padding:0.45rem 0.6rem;font-family:monospace;font-size:0.6rem;color:#0891b2">Value / Note</th></tr></thead>
+    visual: `<div style="font-family:var(--mono);font-size:0.7rem;color:#0891b2;margin-bottom:0.5rem">COMPLETE TCD + MES DATA</div>
+    <table style="width:100%;border-collapse:collapse;font-size:0.82rem;background:var(--bg2);border-radius:8px;overflow:hidden;border:1px solid var(--border);margin-bottom:0.75rem">
+      <thead><tr style="background:var(--bg3)"><th style="padding:0.45rem 0.6rem;font-family:var(--mono);font-size:0.6rem;color:#0891b2">Vessel / Study</th><th style="padding:0.45rem 0.6rem;font-family:var(--mono);font-size:0.6rem;color:#0891b2">Finding</th><th style="padding:0.45rem 0.6rem;font-family:var(--mono);font-size:0.6rem;color:#0891b2">Value / Note</th></tr></thead>
       <tbody>
-        <tr style="border-top:1px solid #f1f5f9"><td style="padding:0.4rem 0.6rem">L MCA 46mm</td><td style="padding:0.4rem 0.6rem;font-family:monospace">MFV</td><td style="padding:0.4rem 0.6rem;font-family:monospace;color:#1e293b">82 cm/s</td></tr>
-        <tr style="border-top:1px solid #f1f5f9;background:#fff8f8"><td style="padding:0.4rem 0.6rem;font-weight:600">L MCA 48mm</td><td style="padding:0.4rem 0.6rem;font-family:monospace;color:#dc2626;font-weight:700">MFV + spectral broadening</td><td style="padding:0.4rem 0.6rem;font-family:monospace;color:#dc2626;font-weight:700">128 cm/s · harsh audio</td></tr>
-        <tr style="border-top:1px solid #f1f5f9"><td style="padding:0.4rem 0.6rem">L MCA 50mm</td><td style="padding:0.4rem 0.6rem;font-family:monospace">MFV</td><td style="padding:0.4rem 0.6rem;font-family:monospace;color:#1e293b">84 cm/s</td></tr>
-        <tr style="border-top:1px solid #f1f5f9"><td style="padding:0.4rem 0.6rem">R MCA 52mm</td><td style="padding:0.4rem 0.6rem;font-family:monospace">MFV</td><td style="padding:0.4rem 0.6rem;font-family:monospace;color:#1e293b">70 cm/s (normal)</td></tr>
-        <tr style="border-top:1px solid #f1f5f9"><td style="padding:0.4rem 0.6rem">L EX-ICA</td><td style="padding:0.4rem 0.6rem;font-family:monospace">MFV</td><td style="padding:0.4rem 0.6rem;font-family:monospace;color:#1e293b">40 cm/s</td></tr>
-        <tr style="border-top:1px solid #f1f5f9;background:#f0fdf4"><td style="padding:0.4rem 0.6rem">L Ophthalmic</td><td style="padding:0.4rem 0.6rem;font-family:monospace;color:#059669">PI + direction</td><td style="padding:0.4rem 0.6rem;font-family:monospace;color:#059669;font-weight:600">PI 1.54 · antegrade</td></tr>
-        <tr style="border-top:1px solid #f1f5f9;background:#fdf8ff"><td style="padding:0.4rem 0.6rem;font-weight:600">MES monitoring — L MCA</td><td style="padding:0.4rem 0.6rem;font-family:monospace;color:#7c3aed;font-weight:700">14 MES · 30 min</td><td style="padding:0.4rem 0.6rem;font-family:monospace;color:#7c3aed">All unidirectional, &lt;200ms, random, audio chirp</td></tr>
-        <tr style="border-top:1px solid #f1f5f9"><td style="padding:0.4rem 0.6rem">MES monitoring — R MCA</td><td style="padding:0.4rem 0.6rem;font-family:monospace">0 MES · 30 min</td><td style="padding:0.4rem 0.6rem;font-family:monospace;color:#64748b">Negative</td></tr>
+        <tr style="border-top:1px solid var(--border)"><td style="padding:0.4rem 0.6rem">L MCA 46mm</td><td style="padding:0.4rem 0.6rem;font-family:var(--mono)">MFV</td><td style="padding:0.4rem 0.6rem;font-family:var(--mono);color:var(--text)">82 cm/s</td></tr>
+        <tr style="border-top:1px solid var(--border);background:var(--tint-red)"><td style="padding:0.4rem 0.6rem;font-weight:600">L MCA 48mm</td><td style="padding:0.4rem 0.6rem;font-family:var(--mono);color:#dc2626;font-weight:700">MFV + spectral broadening</td><td style="padding:0.4rem 0.6rem;font-family:var(--mono);color:#dc2626;font-weight:700">128 cm/s · harsh audio</td></tr>
+        <tr style="border-top:1px solid var(--border)"><td style="padding:0.4rem 0.6rem">L MCA 50mm</td><td style="padding:0.4rem 0.6rem;font-family:var(--mono)">MFV</td><td style="padding:0.4rem 0.6rem;font-family:var(--mono);color:var(--text)">84 cm/s</td></tr>
+        <tr style="border-top:1px solid var(--border)"><td style="padding:0.4rem 0.6rem">R MCA 52mm</td><td style="padding:0.4rem 0.6rem;font-family:var(--mono)">MFV</td><td style="padding:0.4rem 0.6rem;font-family:var(--mono);color:var(--text)">70 cm/s (normal)</td></tr>
+        <tr style="border-top:1px solid var(--border)"><td style="padding:0.4rem 0.6rem">L EX-ICA</td><td style="padding:0.4rem 0.6rem;font-family:var(--mono)">MFV</td><td style="padding:0.4rem 0.6rem;font-family:var(--mono);color:var(--text)">40 cm/s</td></tr>
+        <tr style="border-top:1px solid var(--border);background:var(--tint-green)"><td style="padding:0.4rem 0.6rem">L Ophthalmic</td><td style="padding:0.4rem 0.6rem;font-family:var(--mono);color:#059669">PI + direction</td><td style="padding:0.4rem 0.6rem;font-family:var(--mono);color:#059669;font-weight:600">PI 1.54 · antegrade</td></tr>
+        <tr style="border-top:1px solid var(--border);background:var(--tint-purple)"><td style="padding:0.4rem 0.6rem;font-weight:600">MES monitoring — L MCA</td><td style="padding:0.4rem 0.6rem;font-family:var(--mono);color:#7c3aed;font-weight:700">14 MES · 30 min</td><td style="padding:0.4rem 0.6rem;font-family:var(--mono);color:#7c3aed">All unidirectional, &lt;200ms, random, audio chirp</td></tr>
+        <tr style="border-top:1px solid var(--border)"><td style="padding:0.4rem 0.6rem">MES monitoring — R MCA</td><td style="padding:0.4rem 0.6rem;font-family:var(--mono)">0 MES · 30 min</td><td style="padding:0.4rem 0.6rem;font-family:var(--mono);color:var(--muted)">Negative</td></tr>
       </tbody>
     </table>`,
     question: "⭐ HARDEST QUESTION: Synthesise all 5 steps and both the velocity and MES data. What is the complete interpretation, what is the stroke mechanism, and what management does the combined data support?",
@@ -2720,7 +3075,7 @@ const diffColors = {
   'MODERATE':  {bg:'rgba(217,119,6,0.1)',  color:'#d97706'},
   'HARD':      {bg:'rgba(220,38,38,0.1)',  color:'#dc2626'},
   'VERY HARD': {bg:'rgba(124,58,237,0.1)', color:'#7c3aed'},
-  'HARDEST':   {bg:'rgba(15,23,42,0.12)',  color:'#0f172a'}
+  'HARDEST':   {bg:'rgba(148,163,184,0.18)',  color:'var(--muted)'}
 };
 
 function renderQ(idx) {
